@@ -1,0 +1,891 @@
+{
+  "events": [
+    {
+      "id": "ev_1789840467398_qse3",
+      "timestamp": 1789840467398,
+      "isoTime": "1:54:27 AM",
+      "type": "click",
+      "visitorId": "v_test_99",
+      "sessionId": "s_test_99",
+      "data": {
+        "label": "Test Wooden Block Tap",
+        "xPercent": 45,
+        "yPercent": 30,
+        "tag": "button"
+      }
+    },
+    {
+      "id": "ev_1789853241196_86jz",
+      "timestamp": 1789853241196,
+      "isoTime": "5:27:21 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1789853241205_hvz9",
+      "timestamp": 1789853241205,
+      "isoTime": "5:27:21 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1789853241238_1k4b",
+      "timestamp": 1789853241238,
+      "isoTime": "5:27:21 AM",
+      "type": "route_navigate",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "route": "launch"
+      }
+    },
+    {
+      "id": "ev_1789853246439_8tvx",
+      "timestamp": 1789853246439,
+      "isoTime": "5:27:26 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "tag": "button",
+        "id": "sub-tab-feed",
+        "className": "subdomain-tab active",
+        "label": "feed.jeemu.fun",
+        "x": 520,
+        "y": 22,
+        "xPercent": 34.19,
+        "yPercent": 2.02,
+        "section": "body"
+      }
+    },
+    {
+      "id": "ev_1789853445723_szdq",
+      "timestamp": 1789853445723,
+      "isoTime": "5:30:45 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 200,
+      "data": {
+        "tag": "button",
+        "id": "sub-tab-chaos",
+        "className": "subdomain-tab active",
+        "label": "chaos.jeemu.fun",
+        "x": 668,
+        "y": 21,
+        "xPercent": 43.92,
+        "yPercent": 1.93,
+        "section": "body"
+      }
+    },
+    {
+      "id": "ev_1789853447440_c61h",
+      "timestamp": 1789853447440,
+      "isoTime": "5:30:47 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 205,
+      "data": {
+        "tag": "button",
+        "id": "sub-tab-journey",
+        "className": "subdomain-tab active",
+        "label": "journey.jeemu.fun",
+        "x": 792,
+        "y": 11,
+        "xPercent": 52.07,
+        "yPercent": 0.72,
+        "section": "body"
+      }
+    },
+    {
+      "id": "ev_1789853448834_05ny",
+      "timestamp": 1789853448834,
+      "isoTime": "5:30:48 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 205,
+      "data": {
+        "tag": "button",
+        "id": "sub-tab-login",
+        "className": "subdomain-tab tab-auth active",
+        "label": "login.jeemu.fun",
+        "x": 919,
+        "y": 21,
+        "xPercent": 60.42,
+        "yPercent": 1.83,
+        "section": "body"
+      }
+    },
+    {
+      "id": "ev_1789853451306_7qux",
+      "timestamp": 1789853451306,
+      "isoTime": "5:30:51 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 210,
+      "data": {
+        "tag": "select",
+        "id": "login-member-select",
+        "className": "portal-select",
+        "label": "Shiva Manickam (Platform & AI Architecture) Anna V",
+        "x": 757,
+        "y": 417,
+        "xPercent": 49.77,
+        "yPercent": 36.36,
+        "section": "portal-hero-section"
+      }
+    },
+    {
+      "id": "ev_1789853452079_rgq9",
+      "timestamp": 1789853452079,
+      "isoTime": "5:30:52 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 210,
+      "data": {
+        "tag": "select",
+        "id": "login-member-select",
+        "className": "portal-select",
+        "label": "Shiva Manickam (Platform & AI Architecture) Anna V",
+        "x": 757,
+        "y": 417,
+        "xPercent": 49.77,
+        "yPercent": 36.36,
+        "section": "portal-hero-section"
+      }
+    },
+    {
+      "id": "ev_1789853453146_z4zv",
+      "timestamp": 1789853453146,
+      "isoTime": "5:30:53 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 210,
+      "data": {
+        "tag": "input",
+        "id": "login-password-input",
+        "className": "portal-input",
+        "label": "Input: Enter password (default: jeemu2026)",
+        "x": 748,
+        "y": 508,
+        "xPercent": 49.18,
+        "yPercent": 44.29,
+        "section": "portal-hero-section"
+      }
+    },
+    {
+      "id": "ev_1789853453916_o495",
+      "timestamp": 1789853453916,
+      "isoTime": "5:30:53 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 210,
+      "data": {
+        "tag": "button",
+        "id": null,
+        "className": "btn-portal-submit",
+        "label": "Enter Team Studio & Admin →",
+        "x": 741,
+        "y": 559,
+        "xPercent": 48.72,
+        "yPercent": 48.74,
+        "section": "portal-hero-section"
+      }
+    },
+    {
+      "id": "ev_1789853462944_5de5",
+      "timestamp": 1789853462944,
+      "isoTime": "5:31:02 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 220,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1789853462945_ihdb",
+      "timestamp": 1789853462945,
+      "isoTime": "5:31:02 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 220,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1789853473462_15uu",
+      "timestamp": 1789853473462,
+      "isoTime": "5:31:13 AM",
+      "type": "view_vip_modal",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 230,
+      "data": {
+        "source": "funnel_step"
+      }
+    },
+    {
+      "id": "ev_1789853473474_6vfg",
+      "timestamp": 1789853473474,
+      "isoTime": "5:31:13 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 230,
+      "data": {
+        "tag": "button",
+        "id": "btn-open-vip-nav",
+        "className": "btn-ghost-sm",
+        "label": "VIP $1 Perks",
+        "x": 1151,
+        "y": 71,
+        "xPercent": 75.67,
+        "yPercent": 5.17,
+        "section": "site-header"
+      }
+    },
+    {
+      "id": "ev_1789853489979_c8c9",
+      "timestamp": 1789853489979,
+      "isoTime": "5:31:29 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 245,
+      "data": {
+        "tag": "div",
+        "id": "vip-modal",
+        "className": "modal-backdrop hidden",
+        "label": "× 👑 VIP BACKER UPGRADE Lock in 45% Off + Founder'",
+        "x": 338,
+        "y": 269,
+        "xPercent": 22.22,
+        "yPercent": 19.58,
+        "section": "body"
+      }
+    },
+    {
+      "id": "ev_1789853497835_kouz",
+      "timestamp": 1789853497835,
+      "isoTime": "5:31:37 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 255,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1789853500621_esmu",
+      "timestamp": 1789853500621,
+      "isoTime": "5:31:40 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 255,
+      "data": {
+        "tag": "a",
+        "id": "nav-brand-logo",
+        "className": "brand-logo",
+        "label": "JEEMU.",
+        "x": 174,
+        "y": 61,
+        "xPercent": 11.44,
+        "yPercent": 4.44,
+        "section": "site-header"
+      }
+    },
+    {
+      "id": "ev_1789853500629_pihw",
+      "timestamp": 1789853500629,
+      "isoTime": "5:31:40 AM",
+      "type": "route_navigate",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 255,
+      "data": {
+        "route": "launch"
+      }
+    },
+    {
+      "id": "ev_1789853506881_wg8d",
+      "timestamp": 1789853506881,
+      "isoTime": "5:31:46 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 265,
+      "data": {
+        "tag": "button",
+        "id": "sub-tab-dashboard",
+        "className": "subdomain-tab tab-dashboard active",
+        "label": "dashboard.jeemu.fun (Live)",
+        "x": 1291,
+        "y": 18,
+        "xPercent": 84.88,
+        "yPercent": 1,
+        "section": "body"
+      }
+    },
+    {
+      "id": "ev_1789853517274_fxrk",
+      "timestamp": 1789853517274,
+      "isoTime": "5:31:57 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 275,
+      "data": {
+        "tag": "section",
+        "id": null,
+        "className": "dashboard-portal-section",
+        "label": "LIVE TELEMETRY STREAM · dashboard.jeemu.fun Real-T",
+        "x": 1403,
+        "y": 1177,
+        "xPercent": 92.24,
+        "yPercent": 65.28,
+        "section": "dashboard-portal-section"
+      }
+    },
+    {
+      "id": "ev_1789853519026_u17v",
+      "timestamp": 1789853519026,
+      "isoTime": "5:31:59 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 275,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "dash-kpi-card highlighted-rev",
+        "label": "Deposit Revenue $2.00 100% Refundable Stripe pool",
+        "x": 1344,
+        "y": 367,
+        "xPercent": 88.36,
+        "yPercent": 20.35,
+        "section": "dashboard-portal-section"
+      }
+    },
+    {
+      "id": "ev_1789853528370_p5rr",
+      "timestamp": 1789853528370,
+      "isoTime": "5:32:08 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 285,
+      "data": {
+        "tag": "button",
+        "id": "sub-tab-launch",
+        "className": "subdomain-tab active",
+        "label": "launch.jeemu.fun",
+        "x": 553,
+        "y": 13,
+        "xPercent": 36.36,
+        "yPercent": 0.27,
+        "section": "body"
+      }
+    },
+    {
+      "id": "ev_1789853532090_1is6",
+      "timestamp": 1789853532090,
+      "isoTime": "5:32:12 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 290,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1789853541671_wnqm",
+      "timestamp": 1789853541671,
+      "isoTime": "5:32:21 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 300,
+      "data": {
+        "tag": "button",
+        "id": "btn-open-team-studio",
+        "className": "btn-team-studio",
+        "label": "✍️ Team Studio",
+        "x": 0,
+        "y": 4084,
+        "xPercent": 0,
+        "yPercent": 85.33,
+        "section": "site-header"
+      }
+    },
+    {
+      "id": "ev_1789853541672_5npr",
+      "timestamp": 1789853541672,
+      "isoTime": "5:32:21 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 300,
+      "data": {
+        "tag": "button",
+        "id": null,
+        "className": "footer-link-btn",
+        "label": "✍️ Team Studio (Add Post)",
+        "x": 1238,
+        "y": 4538,
+        "xPercent": 81.39,
+        "yPercent": 94.82,
+        "section": "site-footer"
+      }
+    },
+    {
+      "id": "ev_1789853545825_nw6o",
+      "timestamp": 1789853545825,
+      "isoTime": "5:32:25 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 300,
+      "data": {
+        "tag": "div",
+        "id": "team-studio-modal",
+        "className": "modal-backdrop hidden",
+        "label": "× ✍️ JEEMU TEAM STUDIO Publish Content with Your T",
+        "x": 1276,
+        "y": 4498,
+        "xPercent": 83.89,
+        "yPercent": 93.98,
+        "section": "body"
+      }
+    },
+    {
+      "id": "ev_1789853548628_3fo9",
+      "timestamp": 1789853548628,
+      "isoTime": "5:32:28 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 305,
+      "data": {
+        "tag": "button",
+        "id": "sub-tab-login",
+        "className": "subdomain-tab tab-auth active",
+        "label": "login.jeemu.fun",
+        "x": 1136,
+        "y": 2076,
+        "xPercent": 74.69,
+        "yPercent": 180.99,
+        "section": "body"
+      }
+    },
+    {
+      "id": "ev_1789853938507_saog",
+      "timestamp": 1789853938507,
+      "isoTime": "5:38:58 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_ggt4gyw_mu8wenos",
+      "url": "/#launch",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 695,
+      "data": {
+        "tag": "section",
+        "id": null,
+        "className": "portal-hero-section",
+        "label": "🔐 Team & Admin Gateway Sign In to Jeemu Studio Se",
+        "x": 379,
+        "y": 254,
+        "xPercent": 24.92,
+        "yPercent": 22.14,
+        "section": "portal-hero-section"
+      }
+    }
+  ],
+  "subscribers": [
+    {
+      "id": "sub_init_1",
+      "email": "alex.tabletop@gmail.com",
+      "name": "Alex Rivera",
+      "referralCode": "JEEMU-VIP982",
+      "referredBy": null,
+      "timestamp": 1789754046217,
+      "isVip": true,
+      "depositAmount": 1,
+      "friendsReferred": 4,
+      "stripeChargeId": "ch_3M001StripeJeemu"
+    },
+    {
+      "id": "sub_init_2",
+      "email": "chloe.boardgames@hey.com",
+      "name": "Chloe Bennett",
+      "referralCode": "JEEMU-B382",
+      "referredBy": "JEEMU-VIP982",
+      "timestamp": 1789775646217,
+      "isVip": false,
+      "depositAmount": 0,
+      "friendsReferred": 1
+    },
+    {
+      "id": "sub_1789840467430",
+      "email": "shiva.backer@jeemu.fun",
+      "name": "Shiva Test",
+      "referralCode": "JEEMU-RWDX",
+      "referredBy": "JEEMU-VIP982",
+      "timestamp": 1789840467430,
+      "isVip": true,
+      "depositAmount": 1,
+      "friendsReferred": 0,
+      "vipTimestamp": 1789840486212,
+      "stripeChargeId": "ch_3Md7jly34StripeJeemu"
+    }
+  ],
+  "posts": {
+    "feed": [
+      {
+        "id": "feed_1",
+        "author": "Anna Vu",
+        "role": "Hardware & Industrial Design",
+        "authorInitials": "AV",
+        "date": "Sep 18, 2026",
+        "title": "Batch #3 Beechwood Milling: Custom Chamfer & Friction Testing",
+        "category": "Hardware",
+        "content": "We tested 4 different wood finishes this week. High-gloss polyurethane looks shiny on photos, but in real play it caused the blocks to stick together unpredictably when pulling from the middle levels. We settled on a bespoke double-sanded beeswax matte polish. It provides the signature buttery Jenga slide while maintaining a silky tactile warmth in your hand.",
+        "image": "/images/jeemu-hardware.jpg",
+        "likes": 42,
+        "comments": 9
+      },
+      {
+        "id": "feed_2",
+        "author": "Ishaan",
+        "role": "Embedded Firmware & NFC",
+        "authorInitials": "IS",
+        "date": "Sep 14, 2026",
+        "title": "Firmware v2.4: Achieving Sub-80ms Tag Detection on the Dock",
+        "category": "Firmware",
+        "content": "The biggest headache with earlier prototypes was the delay between slamming a block on the reader and seeing the OLED prompt appear. If it takes more than 300ms, the physical party rhythm is interrupted. With our custom dual-antenna coil arrangement inside the dock and SPI bus tuning, we brought tag response time down to 78 milliseconds. It feels instantaneous.",
+        "likes": 67,
+        "comments": 14
+      },
+      {
+        "id": "feed_3",
+        "author": "Shiva Manickam",
+        "role": "Platform & AI Architecture",
+        "authorInitials": "SM",
+        "date": "Sep 09, 2026",
+        "title": "Why AI Game Creation Changes Everything",
+        "category": "AI Engine",
+        "content": "Traditional board games are static. You play 3 times and memorize all the cards. With Jeemu's mobile companion, you can literally type \"Spicy Date Night for couple celebrating 5th anniversary who love sushi\" and our model populates 45 custom prompt blocks in 8 seconds. You sync it via Bluetooth to the dock once, then turn your phone OFF for the entire game.",
+        "likes": 89,
+        "comments": 23
+      }
+    ],
+    "chaos": [
+      {
+        "id": "chaos_1",
+        "author": "Jack",
+        "role": "Game Systems",
+        "authorInitials": "JK",
+        "date": "Yesterday",
+        "tag": "💀 EPIC FAIL",
+        "content": "Playtester Marcus tried to remove Block #45 using his elbows because the rule said \"non-dominant limb\". The entire 32-level tower collapsed into Anna's gin & tonic. 10/10 gameplay experience.",
+        "reactions": {
+          "rip": 54,
+          "chaos": 38,
+          "sip": 29
+        }
+      },
+      {
+        "id": "chaos_2",
+        "author": "Shefali",
+        "role": "Community",
+        "authorInitials": "SH",
+        "date": "2 days ago",
+        "tag": "🍺 UNHINGED DARE",
+        "content": "New prompt submission approved for the \"After Dark\" expansion pack: \"Call your most recent food delivery driver and thank them for changing your life, or finish your beverage.\" Who hurt the person who submitted this??",
+        "reactions": {
+          "rip": 19,
+          "chaos": 82,
+          "sip": 45
+        }
+      },
+      {
+        "id": "chaos_3",
+        "author": "Yana C",
+        "role": "Operations",
+        "authorInitials": "YC",
+        "date": "4 days ago",
+        "tag": "🧪 LAB OUTTAKE",
+        "content": "Engineering note: Do NOT stack 45 blocks horizontally on the OLED dock to test \"simultaneous read capability\". It threw error code #420: \"Too much wood on desk\".",
+        "reactions": {
+          "rip": 41,
+          "chaos": 65,
+          "sip": 18
+        }
+      }
+    ],
+    "journey": [
+      {
+        "id": "journey_1",
+        "milestone": "Phase 1: The Frustration",
+        "date": "January 2026",
+        "author": "Shiva & Jack",
+        "title": "Classic Jenga is great for 15 minutes, then gathers dust.",
+        "description": "We taped index cards with handwritten drinking dares to standard blocks. It was hilarious, but within 2 games the tape peeled. We asked: what if the physical wood could dynamically trigger ANY game mode digitally?",
+        "badge": "The Spark"
+      },
+      {
+        "id": "journey_2",
+        "milestone": "Phase 2: Prototype V1 (Garage Hack)",
+        "date": "March 2026",
+        "author": "Anna & Ishaan",
+        "title": "Drilling 45 blocks and frying two Arduino Nanos.",
+        "description": "We drilled cavities into beechwood blocks with a Dremel press and embedded 13.56MHz NFC tags with wood epoxy. The first reader was a messy cardboard box with an Arduino taped to it.",
+        "badge": "First Hardware"
+      },
+      {
+        "id": "journey_3",
+        "milestone": "Phase 3: The Custom Dock & Standalone OS",
+        "date": "June 2026",
+        "author": "Entire Team",
+        "title": "Zero phones at the table. Standalone hardware decision.",
+        "description": "Gamers hate staring at apps while playing tabletop games. We built the Jeemu Smart Box as a standalone game master with an amber OLED display and internal battery. Phone-free during play.",
+        "badge": "Core Breakthrough"
+      }
+    ]
+  },
+  "settings": {
+    "stripePaymentLink": "https://buy.stripe.com/00wbJ0ahV5htgzrgxLbAs0k",
+    "earlyBirdGoal": 500,
+    "launchDate": "2026-10-15T18:00:00Z"
+  }
+}

@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeemu: Customizable Smart Jenga with NFC Blocks | Launching Soon on Kickstarter</title>
+
+  <!-- SEO & Social Meta -->
+  <meta name="description"
+    content="Jeemu turns classic Jenga into an infinite game platform. NFC-enabled wooden blocks + independent smart dock with OLED display. Sign up for 40% Super Early Bird Kickstarter discount.">
+  <meta name="keywords"
+    content="Jeemu, smart Jenga, NFC board game, Kickstarter launch, party game, drinking games, educational board games">
+  <meta name="author" content="Jeemu Team">
+  <link rel="canonical" href="https://jeemu.game/launch">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jeemu.game/launch">
+  <meta property="og:title" content="Jeemu — Customizable Smart Jenga with NFC Blocks">
+  <meta property="og:description"
+    content="Turn physical Jenga into an infinite party game. Tap NFC blocks on the smart dock to reveal dynamic questions, dares & AI modes. Launching soon on Kickstarter.">
+  <meta property="og:image" content="/images/jeemu-hero.jpg">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Jeemu — Smart Jenga on Kickstarter">
+  <meta name="twitter:description"
+    content="Every block is NFC-tagged. Phone-free gameplay with OLED smart reader dock. 40% OFF Early Bird VIP list open.">
+  <meta name="twitter:image" content="/images/jeemu-hero.jpg">
+
+  <!-- Google Fonts: Fraunces (editorial display) + Plus Jakarta Sans (body) + JetBrains Mono (tech/OLED) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="/src/css/style.css">
+</head>
+
+<body>
+  <!-- Heatmap Canvas Overlay (Toggled via Analytics) -->
+  <canvas id="heatmap-canvas" class="heatmap-canvas hidden"></canvas>
+
+  <!-- Global Subdomain Switcher Bar (jeemu.fun) -->
+  <div class="subdomain-bar">
+    <div class="subdomain-bar-container">
+      <div class="subdomain-bar-left">
+        <span class="subdomain-brand-badge">🌐 DOMAIN: jeemu.fun</span>
+        <span class="subdomain-divider">/</span>
+        <span class="subdomain-hint">Subdomain Switcher:</span>
+      </div>
+      <div class="subdomain-tabs-scroll">
+        <button class="subdomain-tab active" data-subdomain="launch" id="sub-tab-launch">
+          <span class="tab-indicator"></span>
+          <span>launch.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab" data-subdomain="feed" id="sub-tab-feed">
+          <span class="tab-indicator"></span>
+          <span>feed.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab" data-subdomain="chaos" id="sub-tab-chaos">
+          <span class="tab-indicator"></span>
+          <span>chaos.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab" data-subdomain="journey" id="sub-tab-journey">
+          <span class="tab-indicator"></span>
+          <span>journey.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab tab-auth" data-subdomain="login" id="sub-tab-login">
+          <span class="tab-indicator"></span>
+          <span>login.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab tab-admin" data-subdomain="admin" id="sub-tab-admin">
+          <span class="tab-indicator"></span>
+          <span>admin.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab tab-dashboard" data-subdomain="dashboard" id="sub-tab-dashboard">
+          <span class="tab-indicator live-pulse"></span>
+          <span>dashboard.jeemu.fun (Live)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Header & Multi-Page Navigation -->
+  <header class="site-header" id="site-header">
+    <div class="header-container">
+      <a href="#launch" class="brand-logo" data-route="launch" id="nav-brand-logo">
+        <span class="logo-mark">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M4 6h16M7 12h10M9 18h6" />
+            <circle cx="19" cy="18" r="2" fill="currentColor" />
+          </svg>
+        </span>
+        <span class="brand-text">JEEMU<span class="brand-accent">.</span></span>
+      </a>
+
+      <!-- Page Routes: Launch, Feed, Chaos, Journey, Rewards -->
+      <nav class="nav-links">
+        <button class="nav-link active" data-route="launch" id="nav-route-launch">Launch</button>
+        <button class="nav-link" data-route="feed" id="nav-route-feed">Updates Feed</button>
+        <button class="nav-link" data-route="chaos" id="nav-route-chaos">Chaos & Memes</button>
+        <button class="nav-link" data-route="journey" id="nav-route-journey">Journey</button>
+        <button class="nav-link" data-route="rewards" id="nav-route-rewards">Referral Ladder</button>
+      </nav>
+
+      <div class="header-actions">
+        <!-- Team Publishing Studio Button -->
+        <button class="btn-team-studio" id="btn-open-team-studio"
+          title="Add updates, chaos posts, or milestones as a team member">
+          <span>✍️ Team Studio</span>
+        </button>
+
+        <button class="btn-ghost-sm" id="btn-open-vip-nav">VIP $1 Perks</button>
+        <a href="#signup" class="btn-kickstarter-sm" id="nav-cta-btn">
+          <svg class="ks-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5v-3.2l2.8 3.2h3.2l-3.8-4.2 3.5-3.8h-3.1L13 11.2V7.5h-2.5v9H13z" />
+          </svg>
+          <span>Get 40% Off</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= VIEW 1: LAUNCH PAGE ================= -->
+  <main id="view-launch" class="view-container">
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="hero-bg-wrapper">
+        <img src="/images/jeemu-hero.jpg" alt="Friends playing Jeemu smart Jenga at night" class="hero-bg-image"
+          fetchpriority="high">
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="hero-content container">
+        <!-- Kickstarter Announcement Badge -->
+        <div class="kickstarter-pill-badge" id="hero-ks-pill">
+          <span class="ks-pill-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5v-3.2l2.8 3.2h3.2l-3.8-4.2 3.5-3.8h-3.1L13 11.2V7.5h-2.5v9H13z" />
+            </svg>
+          </span>
+          <span class="ks-pill-text">Launching Soon on Kickstarter · Fall 2026</span>
+          <span class="ks-pulse-dot"></span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="hero-headline">
+          The Physical Jenga Tower with <span class="gradient-text">Infinite Digital Soul.</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="hero-subhead">
+          Every beechwood block is NFC-tagged. Tap any block onto the Jeemu smart dock to trigger instant questions,
+          drinking dares, fitness challenges, or custom AI modes. <strong>No phones needed during gameplay.</strong>
+        </p>
+
+        <!-- Pre-Launch Capture Form (Adam Webb Framework) -->
+        <div class="hero-form-card" id="signup">
+          <form class="signup-form" id="waitlist-form">
+            <div class="form-header">
+              <div class="badge-discount">🔥 Super Early Bird — Save 40%</div>
+              <div class="form-countdown" id="launch-countdown">
+                <span class="cd-item"><b id="cd-days">04</b>d</span> :
+                <span class="cd-item"><b id="cd-hours">12</b>h</span> :
+                <span class="cd-item"><b id="cd-minutes">38</b>m</span> :
+                <span class="cd-item"><b id="cd-seconds">19</b>s</span>
+              </div>
+            </div>
+
+            <div class="form-inputs-row">
+              <div class="input-group email-group">
+                <label for="subscriber-email" class="sr-only">Email address</label>
+                <svg class="input-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+                <input type="email" id="subscriber-email" name="email" required
+                  placeholder="Enter your email for early access" class="hero-input" autocomplete="email">
+              </div>
+
+              <div class="input-group name-group">
+                <label for="subscriber-name" class="sr-only">First name (optional)</label>
+                <input type="text" id="subscriber-name" name="name" placeholder="First name (optional)"
+                  class="hero-input name-input" autocomplete="given-name">
+              </div>
+
+              <button type="submit" class="btn-submit-hero" id="hero-submit-btn">
+                <span>Notify Me & Lock 40% Off</span>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="form-footer">
+              <p class="micro-copy">
+                <span class="lock-icon">🔒</span> Optional name just so we say <em>“Hi Alex”</em> instead of <em>“Hi
+                  backer”</em>. Free to join. Never spammed.
+              </p>
+              <div class="social-proof-indicator">
+                <div class="avatar-stack">
+                  <span class="avatar-dot av-1">AV</span>
+                  <span class="avatar-dot av-2">IS</span>
+                  <span class="avatar-dot av-3">JK</span>
+                  <span class="avatar-dot av-4">+1.8k</span>
+                </div>
+                <span class="proof-text"><strong id="live-backer-count">1,847</strong> creators on waitlist</span>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Quick Trust Badges -->
+        <div class="hero-trust-bar">
+          <div class="trust-item">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <span>100% Refundable $1 VIP Deposit</span>
+          </div>
+          <div class="trust-item">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m5 12 5 5L20 7" />
+            </svg>
+            <span>45 Solid NFC Beechwood Blocks</span>
+          </div>
+          <div class="trust-item">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="14" height="20" x="5" y="2" rx="2" />
+              <path d="M12 18h.01" />
+            </svg>
+            <span>Phone-Free Standalone Gameplay</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Hardware Simulator -->
+    <section class="simulator-section" id="simulator">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="eyebrow-pill">Interactive Experience</div>
+          <h2 class="section-title">Tap a Block. See What Jeemu Displays.</h2>
+          <p class="section-subtitle">
+            Test the physical-to-digital magic right now. Select an experience category below, then click any wooden
+            block to place it on the Jeemu smart dock.
+          </p>
+        </div>
+
+        <!-- Category Pills -->
+        <div class="category-pills-wrap" id="sim-category-pills">
+          <button class="cat-pill active" data-cat="party" id="cat-party">🍻 Drinking & Party</button>
+          <button class="cat-pill" data-cat="icebreaker" id="cat-icebreaker">❄️ Icebreakers & Social</button>
+          <button class="cat-pill" data-cat="fitness" id="cat-fitness">⚡ Fitness Challenges</button>
+          <button class="cat-pill" data-cat="kids" id="cat-kids">🧠 Kids Math & Trivia</button>
+          <button class="cat-pill" data-cat="weddings" id="cat-weddings">💍 Weddings & Events</button>
+          <button class="cat-pill" data-cat="workshops" id="cat-workshops">💼 Team Workshops</button>
+          <button class="cat-pill" data-cat="ai" id="cat-ai">🤖 AI Theme Generator</button>
+        </div>
+
+        <!-- Simulator Stage -->
+        <div class="simulator-stage">
+          <!-- Interactive Wooden Blocks Rack -->
+          <div class="sim-blocks-rack">
+            <div class="rack-header">
+              <span class="rack-title">NFC Wooden Blocks (Click to Tap on Dock)</span>
+              <span class="rack-hint">5 sample blocks from 45</span>
+            </div>
+
+            <div class="blocks-grid">
+              <button class="wooden-block-btn active" data-block="7" id="block-btn-7">
+                <span class="block-wood-grain"></span>
+                <span class="nfc-chip-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path
+                      d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zm14 0H6v12h12V6zM8 9a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1zm0 3a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1zm0 3a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1z" />
+                  </svg>
+                </span>
+                <span class="block-label">BLOCK #07</span>
+                <span class="block-tag">High Peril</span>
+              </button>
+
+              <button class="wooden-block-btn" data-block="14" id="block-btn-14">
+                <span class="block-wood-grain"></span>
+                <span class="nfc-chip-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path
+                      d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zm14 0H6v12h12V6zM8 9a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1zm0 3a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1zm0 3a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1z" />
+                  </svg>
+                </span>
+                <span class="block-label">BLOCK #14</span>
+                <span class="block-tag">Core Twist</span>
+              </button>
+
+              <button class="wooden-block-btn" data-block="23" id="block-btn-23">
+                <span class="block-wood-grain"></span>
+                <span class="nfc-chip-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path
+                      d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zm14 0H6v12h12V6zM8 9a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1zm0 3a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1zm0 3a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1z" />
+                  </svg>
+                </span>
+                <span class="block-label">BLOCK #23</span>
+                <span class="block-tag">Group Dare</span>
+              </button>
+
+              <button class="wooden-block-btn" data-block="36" id="block-btn-36">
+                <span class="block-wood-grain"></span>
+                <span class="nfc-chip-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path
+                      d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zm14 0H6v12h12V6zM8 9a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1zm0 3a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1zm0 3a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1z" />
+                  </svg>
+                </span>
+                <span class="block-label">BLOCK #36</span>
+                <span class="block-tag">Secret Rule</span>
+              </button>
+
+              <button class="wooden-block-btn" data-block="45" id="block-btn-45">
+                <span class="block-wood-grain"></span>
+                <span class="nfc-chip-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path
+                      d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zm14 0H6v12h12V6zM8 9a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1zm0 3a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1zm0 3a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1z" />
+                  </svg>
+                </span>
+                <span class="block-label">BLOCK #45</span>
+                <span class="block-tag">Tower Climax</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- The Jeemu Smart Box Reader Dock -->
+          <div class="sim-device-stage">
+            <div class="device-chassis" id="device-chassis">
+              <!-- NFC Reading Pad -->
+              <div class="nfc-pad-target" id="nfc-pad-target">
+                <div class="nfc-glow-ring" id="nfc-glow-ring"></div>
+                <div class="active-block-avatar" id="docked-block-avatar">
+                  <span class="docked-icon">📡</span>
+                  <span class="docked-text" id="docked-block-text">Block #07 Detected</span>
+                </div>
+              </div>
+
+              <!-- Crisp Amber OLED Display -->
+              <div class="oled-screen-frame">
+                <div class="oled-screen" id="oled-display">
+                  <div class="oled-top-bar">
+                    <span class="oled-mode-name" id="oled-mode-name">MODE: DRINKING & PARTY</span>
+                    <span class="oled-status" id="oled-status">● NFC READY</span>
+                  </div>
+                  <div class="oled-main-content">
+                    <div class="oled-block-id" id="oled-block-id">BLOCK #07</div>
+                    <div class="oled-prompt-text" id="oled-prompt-text">
+                      "Choose another player. Both of you must keep one eye closed until the next turn or take 2 sips!"
+                    </div>
+                  </div>
+                  <div class="oled-bottom-bar">
+                    <span class="oled-brand">JEEMU HARDWARE OS v2.4</span>
+                    <span class="oled-stat">BLOCKS READ: <span id="oled-read-count">1</span>/45</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Hardware Buttons & Controls -->
+              <div class="chassis-hardware-controls">
+                <div class="hardware-button-group">
+                  <button class="hw-btn" id="hw-btn-prev" title="Previous Configuration">◀</button>
+                  <button class="hw-btn hw-btn-select" id="hw-btn-select" title="Select / Action">CONFIRM</button>
+                  <button class="hw-btn" id="hw-btn-next" title="Next Configuration">▶</button>
+                </div>
+                <div class="hw-port-indicator">
+                  <span class="hw-led active"></span>
+                  <span class="hw-led-label">STANDALONE (NO PHONE NEEDED)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The 3 Core Connected Layers -->
+    <section class="features-section" id="features">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="eyebrow-pill">Engineered For Endless Play</div>
+          <h2 class="section-title">The Three Connected Layers of Jeemu</h2>
+          <p class="section-subtitle">
+            Traditional Jenga is always the exact same game. Jeemu combines precision physical craftsmanship with an
+            open digital universe.
+          </p>
+        </div>
+
+        <div class="layers-grid">
+          <div class="layer-card">
+            <div class="layer-number">01</div>
+            <div class="layer-icon-box">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                <line x1="12" y1="22.08" x2="12" y2="12" />
+              </svg>
+            </div>
+            <h3 class="layer-title">45 NFC Beechwood Blocks</h3>
+            <p class="layer-desc">
+              Hand-finished natural beechwood with embedded micro-NFC tags. Each block carries a unique cryptographic
+              identity that triggers custom actions when placed on the box. Standard official Jenga sizing.
+            </p>
+            <ul class="layer-features">
+              <li>✓ 45 Base Blocks + 9-Block Expansion Pack</li>
+              <li>✓ Friction-optimized smooth glide finish</li>
+              <li>✓ Passive NFC (zero batteries in blocks)</li>
+            </ul>
+          </div>
+
+          <div class="layer-card highlighted-layer">
+            <div class="layer-badge">Core Innovation</div>
+            <div class="layer-number">02</div>
+            <div class="layer-icon-box">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+                <rect width="18" height="12" x="3" y="4" rx="2" />
+                <line x1="2" x2="22" y1="20" y2="20" />
+              </svg>
+            </div>
+            <h3 class="layer-title">The Jeemu Smart Box & Dock</h3>
+            <p class="layer-desc">
+              The resting box doubles as the high-speed NFC reader and game master. Features a high-contrast amber OLED
+              display, physical tactile buttons, and internal game processor.
+            </p>
+            <ul class="layer-features">
+              <li>✓ <strong>100% Phone-Free During Play</strong></li>
+              <li>✓ Ultra-fast &lt;80ms NFC detection time</li>
+              <li>✓ 12+ hour rechargeable battery via USB-C</li>
+            </ul>
+          </div>
+
+          <div class="layer-card">
+            <div class="layer-number">03</div>
+            <div class="layer-icon-box">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a10 10 0 1 0 10 10H12V2z" />
+                <path d="M12 12 2.1 10.5" />
+                <path d="M12 12V2a10 10 0 0 1 10 10" />
+              </svg>
+            </div>
+            <h3 class="layer-title">AI Game Creator & Marketplace</h3>
+            <p class="layer-desc">
+              Create any game mode in 10 seconds. Type a prompt like <em>"Harry Potter Trivia for adults"</em> and our
+              AI drafts 45 tailored challenges. Syncs in 1 click via Bluetooth.
+            </p>
+            <ul class="layer-features">
+              <li>✓ AI-assisted full-game generator</li>
+              <li>✓ Community marketplace of creator packs</li>
+              <li>✓ Assign custom rewards to perilous blocks</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Hardware Detail Showcase -->
+        <div class="hardware-detail-banner">
+          <div class="detail-image-box">
+            <img src="/images/jeemu-hardware.jpg" alt="Jeemu smart dock closeup with gold foil NFC beechwood blocks"
+              class="detail-img" loading="lazy">
+          </div>
+          <div class="detail-content-box">
+            <div class="eyebrow-pill">Craftsmanship Meets Code</div>
+            <h3 class="detail-title">Tactile Wood. Zero Screen Distraction.</h3>
+            <p class="detail-text">
+              Everyone is exhausted by tabletop games that force players to stare at phone screens. Jeemu gives you
+              infinite digital variety while keeping eyes locked onto the wobbly tower and friends across your table.
+            </p>
+            <div class="detail-stat-row">
+              <div class="d-stat">
+                <span class="d-stat-val">45</span>
+                <span class="d-stat-label">Unique NFC Blocks</span>
+              </div>
+              <div class="d-stat">
+                <span class="d-stat-val">7+</span>
+                <span class="d-stat-label">Launch Game Packs</span>
+              </div>
+              <div class="d-stat">
+                <span class="d-stat-val">&lt;0.08s</span>
+                <span class="d-stat-label">Instant NFC Read</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="eyebrow-pill">Answers & Specs</div>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-accordion">
+          <details class="faq-item" open>
+            <summary class="faq-question">
+              <span>What exactly is Jeemu and how does it work?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>Jeemu combines 45 precision-milled beechwood blocks with internal NFC tags and a dedicated smart game
+                box. You pull a block from the tower, tap it onto the dock, and the dock immediately identifies the
+                block and displays dynamic questions, challenges, or rules on its OLED screen based on your chosen game
+                mode.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Do we need our phones out while playing?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p><strong>No!</strong> Once you choose or create a game configuration in the mobile app, you beam it to
+                the Jeemu smart dock via Bluetooth. After that, put all smartphones away. The Jeemu hardware runs the
+                entire game independently.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>How does the $1 VIP Reservation deposit work?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>By putting down a small refundable $1 deposit, you lock in the guaranteed lowest price of $89 (a $70
+                discount off the $159 MSRP), plus a free gold-stamped Founder's Edition block and Wave 1 priority
+                delivery. If you change your mind for any reason before Kickstarter ends, we refund 100% of your $1
+                deposit immediately.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Can I make my own game modes with custom questions?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>Yes! You can manually type prompts for every block or use our AI Generator to build complete themed
+                game packs in seconds (e.g. "Law School Graduation Party", "Couple's Anniversary", or "Late Night Horror
+                Trivia").</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 2: FEED PAGE (UPDATES) ================= -->
+  <main id="view-feed" class="view-container hidden">
+    <section class="page-hero-section">
+      <div class="container text-center">
+        <div class="eyebrow-pill">Official Updates & Devlogs</div>
+        <h1 class="page-hero-title">Jeemu Engineering & Campaign Feed</h1>
+        <p class="page-hero-subtitle">
+          Real dev logs, hardware testing footage, wood milling updates, and backer polls from Anna, Ishaan, Jack,
+          Shefali, Shiva, and Yana.
+        </p>
+        <button class="btn-create-post" onclick="document.getElementById('btn-open-team-studio').click()">
+          <span>✍️ Post an Update as Team Member</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="feed-content-section">
+      <div class="container feed-container" id="feed-posts-container">
+        <!-- Injected dynamically by router.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 3: CHAOS PAGE (SHITPOSTING) ================= -->
+  <main id="view-chaos" class="view-container hidden">
+    <section class="page-hero-section chaos-hero">
+      <div class="container text-center">
+        <div class="eyebrow-pill eyebrow-chaos">The Shitposting & Fails Lab</div>
+        <h1 class="page-hero-title">Welcome to the Chaos Board 💀🔥</h1>
+        <p class="page-hero-subtitle">
+          Unfiltered Jenga tower collapses, out-of-context quotes from drunken playtesters, spicy dare submissions, and
+          hardware torture tests.
+        </p>
+        <button class="btn-create-chaos" onclick="document.getElementById('btn-open-team-studio').click()">
+          <span>💥 Drop a Chaos Post or Fail</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="chaos-content-section">
+      <div class="container chaos-grid" id="chaos-posts-container">
+        <!-- Injected dynamically by router.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 4: JOURNEY PAGE ================= -->
+  <main id="view-journey" class="view-container hidden">
+    <section class="page-hero-section">
+      <div class="container text-center">
+        <div class="eyebrow-pill">Founder & Hardware Timeline</div>
+        <h1 class="page-hero-title">The Journey Behind Jeemu</h1>
+        <p class="page-hero-subtitle">
+          From handwritten index cards taped to Jenga blocks in a student apartment to precision CNC beechwood and
+          custom OLED hardware.
+        </p>
+      </div>
+    </section>
+
+    <section class="journey-content-section">
+      <div class="container">
+        <!-- Interactive Vertical Timeline -->
+        <div class="timeline-container" id="journey-timeline-container">
+          <!-- Injected dynamically by router.js -->
+        </div>
+
+        <!-- Team Profiles Grid -->
+        <div class="team-profiles-wrapper">
+          <div class="section-header text-center mt-5">
+            <h2 class="section-title">The Core Team</h2>
+            <p class="section-subtitle">Six creators uniting hardware craftsmanship, firmware, AI, and game design.</p>
+          </div>
+
+          <div class="team-grid">
+            <div class="team-card">
+              <div class="team-avatar">AV</div>
+              <h3 class="member-name">Anna Vu</h3>
+              <span class="member-role">Hardware & Industrial Design</span>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">IS</div>
+              <h3 class="member-name">Ishaan</h3>
+              <span class="member-role">Embedded Firmware & NFC</span>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">JK</div>
+              <h3 class="member-name">Jack</h3>
+              <span class="member-role">Game Systems & Content</span>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">SH</div>
+              <h3 class="member-name">Shefali</h3>
+              <span class="member-role">Mobile App & Community</span>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">SM</div>
+              <h3 class="member-name">Shiva Manickam</h3>
+              <span class="member-role">Platform & AI Architecture</span>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">YC</div>
+              <h3 class="member-name">Yana C</h3>
+              <span class="member-role">Operations & Production</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 5: REWARDS & REFERRAL LADDER ================= -->
+  <main id="view-rewards" class="view-container hidden">
+    <section class="page-hero-section">
+      <div class="container text-center">
+        <div class="eyebrow-pill">Pre-Launch Referral Program</div>
+        <h1 class="page-hero-title">Your Referral Reward Ladder</h1>
+        <p class="page-hero-subtitle">
+          Every friend who joins via your personal invite link bumps you up the ladder. Unlock free worldwide shipping,
+          expansion packs, and custom engraved blocks!
+        </p>
+      </div>
+    </section>
+
+    <section class="rewards-section" style="border: none;">
+      <div class="container">
+        <div class="rewards-wrapper">
+          <!-- Reward Ladder Tiers -->
+          <div class="rewards-info">
+            <div class="ladder-tiers">
+              <div class="tier-item" id="tier-item-1">
+                <div class="tier-bubble">1</div>
+                <div class="tier-body">
+                  <div class="tier-head">
+                    <span class="tier-name">1 Friend Joined</span>
+                    <span class="tier-value">$15 Value</span>
+                  </div>
+                  <div class="tier-reward-text">Free Worldwide Shipping on your Kickstarter pledge.</div>
+                </div>
+              </div>
+
+              <div class="tier-item" id="tier-item-2">
+                <div class="tier-bubble">3</div>
+                <div class="tier-body">
+                  <div class="tier-head">
+                    <span class="tier-name">3 Friends Joined</span>
+                    <span class="tier-value">$25 Value</span>
+                  </div>
+                  <div class="tier-reward-text">Exclusive "After Dark & Party Chaos" Expansion Content Pack.</div>
+                </div>
+              </div>
+
+              <div class="tier-item" id="tier-item-3">
+                <div class="tier-bubble">5</div>
+                <div class="tier-body">
+                  <div class="tier-head">
+                    <span class="tier-name">5 Friends Joined</span>
+                    <span class="tier-value">$35 Value</span>
+                  </div>
+                  <div class="tier-reward-text">Custom Laser-Engraved Personalized NFC Wooden Block with your gamertag.
+                  </div>
+                </div>
+              </div>
+
+              <div class="tier-item tier-highlighted" id="tier-item-4">
+                <div class="tier-bubble tier-gold">10</div>
+                <div class="tier-body">
+                  <div class="tier-head">
+                    <span class="tier-name">10 Friends Joined · ULTRA VIP</span>
+                    <span class="tier-value">$49 Value</span>
+                  </div>
+                  <div class="tier-reward-text">Free 9-Block NFC Extension Pack + 1-Hour Early Access to launch.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Referral Interactive Card -->
+          <div class="referral-interactive-card" id="ref-interactive-card">
+            <div class="ref-card-header">
+              <div class="ref-user-status">
+                <span class="ref-status-tag">Live Invite Tracker</span>
+                <span class="ref-current-count"><strong id="friends-joined-display">0</strong> Friends Joined</span>
+              </div>
+              <!-- Test Simulation Button -->
+              <button class="btn-simulate-friend" id="btn-simulate-referral"
+                title="Simulate a friend clicking your link and signing up">
+                <span>+1 Test Friend Signup</span>
+              </button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="ref-progress-container">
+              <div class="ref-progress-bar" id="ref-progress-bar" style="width: 10%;"></div>
+            </div>
+            <div class="ref-progress-labels">
+              <span>0</span>
+              <span>1 Friend</span>
+              <span>3 Friends</span>
+              <span>5 Friends</span>
+              <span>10 Ultra</span>
+            </div>
+
+            <!-- Invite Link Box -->
+            <div class="invite-link-box">
+              <label class="invite-label">Your Personal Referral Link</label>
+              <div class="invite-input-row">
+                <input type="text" readonly value="https://jeemu.game/launch?ref=JEEMU-VIP982" id="user-referral-link"
+                  class="invite-input">
+                <button class="btn-copy-link" id="btn-copy-referral">
+                  <span id="copy-btn-text">Copy Link</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Social Share Shortcuts -->
+            <div class="social-share-group">
+              <span class="share-label">Quick Share to Friends:</span>
+              <div class="share-buttons">
+                <button class="share-btn share-whatsapp" id="share-whatsapp">WhatsApp</button>
+                <button class="share-btn share-x" id="share-x">X / Twitter</button>
+                <button class="share-btn share-facebook" id="share-fb">Facebook</button>
+                <button class="share-btn share-reddit" id="share-reddit">Reddit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 6: LOGIN PORTAL (login.jeemu.fun) ================= -->
+  <main id="view-login" class="view-container hidden">
+    <section class="portal-hero-section">
+      <div class="portal-card-container">
+        <div class="portal-auth-card">
+          <div class="portal-header text-center">
+            <div class="portal-pill">🔐 Team & Admin Gateway</div>
+            <h1 class="portal-title">Sign In to Jeemu Studio</h1>
+            <p class="portal-sub">Select your team profile to manage posts, backer lists, and Stripe checkout.</p>
+          </div>
+
+          <form id="login-portal-form" class="portal-form">
+            <div class="portal-field">
+              <label class="portal-label">Team Member Profile</label>
+              <select id="login-member-select" class="portal-select">
+                <option value="shiva">Shiva Manickam (Platform & AI Architecture)</option>
+                <option value="anna">Anna Vu (Hardware & Industrial Design)</option>
+                <option value="ishaan">Ishaan (Embedded Firmware & NFC)</option>
+                <option value="jack">Jack (Game Systems & Content)</option>
+                <option value="shefali">Shefali (Mobile App & Community)</option>
+                <option value="yana">Yana C (Operations & Production)</option>
+                <option value="admin">Super Admin / Creator</option>
+              </select>
+            </div>
+
+            <div class="portal-field">
+              <label class="portal-label">Access Password</label>
+              <input type="password" id="login-password-input" class="portal-input" placeholder="Enter password (default: jeemu2026)" value="jeemu2026" required>
+            </div>
+
+            <button type="submit" class="btn-portal-submit">
+              <span>Enter Team Studio & Admin →</span>
+            </button>
+          </form>
+          <p class="portal-hint text-center">Protected route · Team members only · Session cookie enabled</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 7: ADMIN PORTAL (admin.jeemu.fun) ================= -->
+  <main id="view-admin" class="view-container hidden">
+    <section class="admin-portal-section">
+      <div class="container">
+        <!-- Admin Header -->
+        <div class="admin-header-row">
+          <div>
+            <div class="admin-pill">⚙️ ADMIN PORTAL · admin.jeemu.fun</div>
+            <h1 class="admin-title">Campaign Management & Backers</h1>
+          </div>
+          <div class="admin-quick-actions">
+            <button class="btn-admin-action" onclick="document.getElementById('btn-open-team-studio').click()">
+              <span>✍️ New Team Post</span>
+            </button>
+            <button class="btn-admin-action btn-admin-export" id="btn-admin-export-csv">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              <span>Export Backers CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Stripe Settings Bar -->
+        <div class="admin-card stripe-settings-card">
+          <div class="stripe-settings-head">
+            <div class="s-logo-mini">S</div>
+            <div>
+              <h3 class="s-title">Stripe Payment Link Configuration</h3>
+              <p class="s-sub">Point pre-launch VIP deposits to your live Stripe payment link</p>
+            </div>
+          </div>
+          <div class="stripe-settings-row">
+            <input type="url" id="admin-stripe-link-input" class="admin-input" value="https://buy.stripe.com/00wbJ0ahV5htgzrgxLbAs0k" placeholder="https://buy.stripe.com/your_deposit_link">
+            <button class="btn-save-settings" id="btn-save-stripe-settings">Save Link</button>
+          </div>
+        </div>
+
+        <!-- Backers Table Card -->
+        <div class="admin-card">
+          <div class="admin-table-head">
+            <h3 class="table-title">Waitlist & VIP Backers (<span id="admin-total-subs">2</span>)</h3>
+            <span class="table-note">Real-time database sync</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Referral Code</th>
+                  <th>Referred By</th>
+                  <th>Friends Joined</th>
+                  <th>Tier Status</th>
+                </tr>
+              </thead>
+              <tbody id="admin-subscribers-tbody">
+                <!-- Injected via subdomains.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 8: REAL-TIME DASHBOARD (dashboard.jeemu.fun) ================= -->
+  <main id="view-dashboard" class="view-container hidden">
+    <section class="dashboard-portal-section">
+      <div class="container">
+        <!-- Dashboard Top Header -->
+        <div class="dash-header-row">
+          <div class="dash-title-group">
+            <div class="dash-pill" id="dash-live-pulse-badge">
+              <span class="live-dot pulse"></span>
+              <span>LIVE TELEMETRY STREAM · dashboard.jeemu.fun</span>
+            </div>
+            <h1 class="dash-title">Real-Time Behavior & Click Analytics Cockpit</h1>
+          </div>
+          <div class="dash-actions">
+            <button class="btn-dash-action" onclick="document.getElementById('btn-open-vip-nav').click()">Test VIP Modal</button>
+            <button class="btn-dash-action" onclick="document.getElementById('btn-simulate-referral').click()">+1 Test Backer</button>
+          </div>
+        </div>
+
+        <!-- 6 Live Real-Time KPIs -->
+        <div class="dash-kpi-grid">
+          <div class="dash-kpi-card">
+            <span class="kpi-tag">Unique Visitors</span>
+            <span class="kpi-num" id="dash-kpi-visitors">1</span>
+            <span class="kpi-sub">Real-time session tracker</span>
+          </div>
+
+          <div class="dash-kpi-card">
+            <span class="kpi-tag">Total Clicks Tracked</span>
+            <span class="kpi-num" id="dash-kpi-clicks">0</span>
+            <span class="kpi-sub">Every element & coordinate</span>
+          </div>
+
+          <div class="dash-kpi-card">
+            <span class="kpi-tag">Waitlist Signups</span>
+            <span class="kpi-num text-amber" id="dash-kpi-signups">0</span>
+            <span class="kpi-sub">Email captured</span>
+          </div>
+
+          <div class="dash-kpi-card">
+            <span class="kpi-tag">Email Conversion Rate</span>
+            <span class="kpi-num text-green" id="dash-kpi-conv">0.0%</span>
+            <span class="kpi-sub">Visitor → Backer ratio</span>
+          </div>
+
+          <div class="dash-kpi-card highlighted-vip">
+            <span class="kpi-tag">VIP $1 Deposits</span>
+            <span class="kpi-num text-green" id="dash-kpi-vip">0</span>
+            <span class="kpi-sub">Guaranteed 45% backers</span>
+          </div>
+
+          <div class="dash-kpi-card highlighted-rev">
+            <span class="kpi-tag">Deposit Revenue</span>
+            <span class="kpi-num" id="dash-kpi-revenue">$0.00</span>
+            <span class="kpi-sub">100% Refundable Stripe pool</span>
+          </div>
+        </div>
+
+        <!-- Split Grid: Live Event Stream + Click Heatmap -->
+        <div class="dash-main-split">
+          <!-- Left: Real-time Live Event Feed -->
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="flex-center gap-2">
+                <span class="stream-pulse-icon">⚡</span>
+                <h3 class="dash-card-title">Live Server-Sent Event Stream</h3>
+              </div>
+              <span class="sse-status-badge">SSE Active</span>
+            </div>
+
+            <div class="dash-stream-scroll" id="dash-live-event-stream">
+              <div class="dash-stream-empty">Listening for live clicks, scrolls, and signups on jeemu.fun...</div>
+            </div>
+          </div>
+
+          <!-- Right: Visual Click Heatmap & Funnel -->
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <h3 class="dash-card-title">Real-Time Click Heatmap</h3>
+              <span class="heatmap-tag">Page Coordinates</span>
+            </div>
+
+            <div class="heatmap-wrapper">
+              <canvas id="dash-heatmap-canvas" class="dash-canvas"></canvas>
+            </div>
+
+            <!-- Funnel Progression Bars -->
+            <div class="dash-funnel-box">
+              <h4 class="funnel-title">Conversion Funnel Drop-off</h4>
+              <div class="funnel-list">
+                <div class="funnel-item" id="dash-funnel-1">
+                  <span class="funnel-name">1. Page Landed</span>
+                  <div class="funnel-track"><div class="funnel-fill" style="width: 100%;"></div></div>
+                  <span class="funnel-count">1 (100%)</span>
+                </div>
+                <div class="funnel-item" id="dash-funnel-2">
+                  <span class="funnel-name">2. Simulator Tested</span>
+                  <div class="funnel-track"><div class="funnel-fill" style="width: 0%;"></div></div>
+                  <span class="funnel-count">0 (0%)</span>
+                </div>
+                <div class="funnel-item" id="dash-funnel-3">
+                  <span class="funnel-name">3. Email Waitlist</span>
+                  <div class="funnel-track"><div class="funnel-fill fill-amber" style="width: 0%;"></div></div>
+                  <span class="funnel-count">0 (0%)</span>
+                </div>
+                <div class="funnel-item" id="dash-funnel-4">
+                  <span class="funnel-name">4. VIP Modal Opened</span>
+                  <div class="funnel-track"><div class="funnel-fill" style="width: 0%;"></div></div>
+                  <span class="funnel-count">0 (0%)</span>
+                </div>
+                <div class="funnel-item" id="dash-funnel-5">
+                  <span class="funnel-name">5. VIP $1 Deposited</span>
+                  <div class="funnel-track"><div class="funnel-fill fill-green" style="width: 0%;"></div></div>
+                  <span class="funnel-count">0 (0%)</span>
+                </div>
+                <div class="funnel-item" id="dash-funnel-6">
+                  <span class="funnel-name">6. Referral Shared</span>
+                  <div class="funnel-track"><div class="funnel-fill" style="width: 0%;"></div></div>
+                  <span class="funnel-count">0 (0%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-col-brand">
+        <a href="#launch" class="brand-logo" data-route="launch">
+          <span class="brand-text">JEEMU<span class="brand-accent">.</span></span>
+        </a>
+        <p class="footer-tagline">Customizable Smart Jenga with NFC Blocks & OLED Dock.</p>
+        <span class="partner-badge">Kickstarter Pre-Launch Architecture</span>
+      </div>
+
+      <div class="footer-nav-col">
+        <span class="footer-heading">Pages</span>
+        <button class="footer-link-btn" data-route="launch">Launch Landing Page</button>
+        <button class="footer-link-btn" data-route="feed">Engineering Feed</button>
+        <button class="footer-link-btn" data-route="chaos">Chaos Board</button>
+        <button class="footer-link-btn" data-route="journey">Our Journey Timeline</button>
+      </div>
+
+      <div class="footer-nav-col">
+        <span class="footer-heading">Backers</span>
+        <button class="footer-link-btn" id="footer-vip-link">VIP $1 Reservation</button>
+        <button class="footer-link-btn" data-route="rewards">My Referral Rewards</button>
+        <a href="#faq" class="footer-link">Kickstarter FAQ</a>
+      </div>
+
+      <div class="footer-nav-col">
+        <span class="footer-heading">Admin & Telemetry</span>
+        <button class="footer-link-btn" onclick="document.getElementById('btn-open-team-studio').click()">✍️ Team Studio
+          (Add Post)</button>
+        <button class="footer-link-btn analytics-toggle-btn" id="footer-analytics-link">📊 Analytics Hub</button>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>© 2026 Jeemu. All rights reserved. Jenga® is a registered trademark of Pokonobe Associates. Jeemu is an
+        independent original creation.</p>
+      <div class="footer-bottom-links">
+        <span>Press Kit</span> · <span>Contact Team</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Modal 1: VIP Reservation Modal (Step 2) -->
+  <div class="modal-backdrop hidden" id="vip-modal">
+    <div class="modal-card vip-modal-card">
+      <button class="btn-close-modal" id="btn-close-vip" aria-label="Close modal">×</button>
+
+      <div class="vip-modal-header">
+        <div class="vip-crown-badge">👑 VIP BACKER UPGRADE</div>
+        <h2 class="vip-modal-title">Lock in 45% Off + Founder's Gold Block</h2>
+        <p class="vip-modal-subtitle">
+          Place a refundable <strong>$1 deposit</strong> to guarantee our deepest discount tier and exclusive perks
+          before public launch.
+        </p>
+      </div>
+
+      <div class="vip-pricing-compare">
+        <div class="price-box retail">
+          <span class="p-label">Planned Retail MSRP</span>
+          <span class="p-val strike">$159</span>
+        </div>
+        <div class="price-arrow">→</div>
+        <div class="price-box vip-deal">
+          <span class="p-label">Your VIP Guaranteed Price</span>
+          <span class="p-val highlighted">$89</span>
+          <span class="p-save">Save $70 (45% OFF)</span>
+        </div>
+      </div>
+
+      <div class="vip-perks-list">
+        <div class="vip-perk-item">
+          <span class="check-icon">✓</span>
+          <span><strong>Guaranteed Lowest Price:</strong> Lock in $89 forever, even if Early Bird tiers sell out.</span>
+        </div>
+        <div class="vip-perk-item">
+          <span class="check-icon">✓</span>
+          <span><strong>Free Founder’s Edition Block:</strong> Gold-foil laser-engraved NFC wooden block ($25
+            value).</span>
+        </div>
+        <div class="vip-perk-item">
+          <span class="check-icon">✓</span>
+          <span><strong>Wave 1 Express Shipping:</strong> Your Jeemu unit ships first from factory batch #1.</span>
+        </div>
+        <div class="vip-perk-item">
+          <span class="check-icon">✓</span>
+          <span><strong>100% Money-Back Guarantee:</strong> Cancel and refund your $1 anytime with one click.</span>
+        </div>
+      </div>
+
+      <div class="vip-checkout-box">
+        <div class="deposit-amount-row">
+          <span>Refundable Reservation Deposit:</span>
+          <span class="deposit-price">$1.00 USD</span>
+        </div>
+
+        <button class="btn-stripe-pay" id="btn-submit-vip-deposit">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect width="20" height="14" x="2" y="5" rx="2" />
+            <line x1="2" x2="22" y1="10" y2="10" />
+          </svg>
+          <span>Pay $1.00 Deposit via Stripe →</span>
+        </button>
+
+        <p class="vip-security-note">
+          🔒 Powered by Stripe · Instant receipt · 100% Refundable
+        </p>
+      </div>
+
+      <div class="vip-skip-row">
+        <button class="btn-text-skip" id="btn-skip-vip">No thanks, keep my standard 40% waitlist spot →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Stripe Checkout Modal (Real $1 Deposit Flow) -->
+  <div class="modal-backdrop hidden" id="stripe-checkout-modal">
+    <div class="modal-card stripe-modal-card">
+      <button class="btn-close-modal" id="btn-close-stripe" aria-label="Close modal">×</button>
+
+      <div class="stripe-modal-header">
+        <div class="stripe-logo-badge">
+          <span class="stripe-s-icon">S</span>
+          <span>Stripe Secure Checkout</span>
+        </div>
+        <div class="stripe-total-badge">$1.00 USD</div>
+      </div>
+
+      <p class="stripe-desc">
+        Jeemu Kickstarter VIP Reservation Deposit · 100% Refundable
+      </p>
+
+      <!-- 1-Click Test Card Autofill for easy testing -->
+      <div class="stripe-test-banner">
+        <span>Need a test card?</span>
+        <button type="button" class="btn-autofill-card" id="btn-autofill-stripe-card">
+          Fill Test Card (Stripe 4242)
+        </button>
+      </div>
+
+      <form id="stripe-payment-form" class="stripe-form">
+        <div class="form-row">
+          <label class="stripe-label">Cardholder Name</label>
+          <input type="text" id="stripe-card-name" required placeholder="Alex Backer" class="stripe-input">
+        </div>
+
+        <div class="form-row">
+          <label class="stripe-label">Card Information</label>
+          <div class="stripe-card-field-box">
+            <input type="text" id="stripe-card-number" required placeholder="1234 5678 9012 3456"
+              class="stripe-input card-num">
+            <div class="stripe-split-row">
+              <input type="text" id="stripe-card-expiry" required placeholder="MM/YY" maxlength="5"
+                class="stripe-input exp">
+              <input type="text" id="stripe-card-cvc" required placeholder="CVC" maxlength="4" class="stripe-input cvc">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="stripe-label">ZIP / Postal Code</label>
+          <input type="text" id="stripe-card-zip" required placeholder="90210" class="stripe-input">
+        </div>
+
+        <button type="submit" class="btn-confirm-stripe" id="btn-confirm-stripe-pay">
+          <span>Pay $1.00 USD</span>
+        </button>
+      </form>
+
+      <div class="stripe-custom-link-row">
+        <button type="button" class="btn-custom-link" id="btn-custom-stripe-link">
+          🔗 Or open live Stripe Payment Link (buy.stripe.com)
+        </button>
+      </div>
+
+      <div class="stripe-modal-footer">
+        <div class="encryption-note">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          <span>256-bit SSL encrypted · Powered by Stripe Elements</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Share Hub Modal (Step 3) -->
+  <div class="modal-backdrop hidden" id="share-modal">
+    <div class="modal-card share-modal-card">
+      <button class="btn-close-modal" id="btn-close-share" aria-label="Close modal">×</button>
+
+      <div class="share-modal-header text-center">
+        <div class="confetti-emoji">🎉</div>
+        <h2 class="share-modal-title">VIP Spot Locked! Now Unlock Free Rewards</h2>
+        <p class="share-modal-subtitle">
+          Your $1 deposit is confirmed. Share your personal invite link with friends to climb the reward ladder.
+        </p>
+      </div>
+
+      <div class="share-link-pill-box">
+        <span class="link-label">Your Unique Referral Link:</span>
+        <div class="link-copy-row">
+          <input type="text" readonly id="modal-referral-input" value="https://jeemu.game/launch?ref=JEEMU-VIP982"
+            class="share-code-input">
+          <button class="btn-copy-modal" id="btn-modal-copy-link">Copy</button>
+        </div>
+      </div>
+
+      <div class="modal-ladder-preview">
+        <div class="m-ladder-step active">
+          <span class="step-dot">1</span>
+          <span>1 Friend: <strong>Free Worldwide Shipping</strong></span>
+        </div>
+        <div class="m-ladder-step">
+          <span class="step-dot">3</span>
+          <span>3 Friends: <strong>"After Dark" Content Pack</strong></span>
+        </div>
+        <div class="m-ladder-step">
+          <span class="step-dot">5</span>
+          <span>5 Friends: <strong>Laser-Engraved Custom Block</strong></span>
+        </div>
+      </div>
+
+      <div class="modal-social-actions">
+        <button class="social-share-pill share-whatsapp" id="modal-share-wa">Share on WhatsApp</button>
+        <button class="social-share-pill share-x" id="modal-share-x">Post on X</button>
+        <button class="social-share-pill share-reddit" id="modal-share-reddit">Share on Reddit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Team Studio Authoring Modal (Add Content) -->
+  <div class="modal-backdrop hidden" id="team-studio-modal">
+    <div class="modal-card team-studio-card">
+      <button class="btn-close-modal" id="btn-close-team-studio" aria-label="Close modal">×</button>
+
+      <div class="studio-header">
+        <div class="studio-badge">✍️ JEEMU TEAM STUDIO</div>
+        <h2 class="studio-title">Publish Content with Your Team</h2>
+        <p class="studio-sub">
+          Post directly to the Updates Feed, Chaos Board, or Journey Timeline. Posts are saved persistently to
+          localStorage.
+        </p>
+      </div>
+
+      <form id="team-post-form" class="studio-form">
+        <div class="form-row-split">
+          <div class="studio-field">
+            <label class="studio-label">Who is posting?</label>
+            <select id="post-author" class="studio-select" required>
+              <option value="Anna Vu">Anna Vu (Hardware & Industrial Design)</option>
+              <option value="Ishaan">Ishaan (Embedded Firmware & NFC)</option>
+              <option value="Jack">Jack (Game Systems & Content)</option>
+              <option value="Shefali">Shefali (Mobile App & Community)</option>
+              <option value="Shiva Manickam" selected>Shiva Manickam (Platform & AI Architecture)</option>
+              <option value="Yana C">Yana C (Operations & Production)</option>
+            </select>
+          </div>
+
+          <div class="studio-field">
+            <label class="studio-label">Target Page</label>
+            <select id="post-target-view" class="studio-select" required>
+              <option value="feed">Updates Feed (Devlog / News)</option>
+              <option value="chaos">Chaos Board (Fails / Shitposts / Memes)</option>
+              <option value="journey">Journey (Timeline Milestone)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="studio-field">
+          <label class="studio-label">Post Title or Milestone Name</label>
+          <input type="text" id="post-title" required
+            placeholder="e.g. Prototype V4 Milling Complete or Drunk Playtest Fails" class="studio-input">
+        </div>
+
+        <div class="studio-field">
+          <label class="studio-label">Badge or Category Tag</label>
+          <input type="text" id="post-tag" placeholder="e.g. Hardware, 💀 EPIC FAIL, Firmware, AI Engine"
+            class="studio-input">
+        </div>
+
+        <div class="studio-field">
+          <label class="studio-label">Content / Story</label>
+          <textarea id="post-content" required rows="5"
+            placeholder="Write your devlog update, funny fail quote, or milestone story..."
+            class="studio-textarea"></textarea>
+        </div>
+
+        <div class="studio-actions">
+          <button type="submit" class="btn-publish-post" id="btn-publish-submit">
+            <span>🚀 Publish Live to Site</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= BUILT-IN ANALYTICS HUB CONSOLE ================= -->
+  <!-- Floating Analytics Trigger Button -->
+  <button class="analytics-floating-trigger" id="analytics-floating-btn"
+    title="Open Real-time Click & Behavior Analytics (or press Shift+A)">
+    <span class="analytics-pulse-dot"></span>
+    <span class="analytics-trigger-icon">📊</span>
+    <span class="analytics-trigger-text">Analytics Engine</span>
+    <span class="analytics-badge-count" id="badge-events-count">0</span>
+  </button>
+
+  <!-- Full Built-in Analytics Dashboard Slide-Over -->
+  <aside class="analytics-drawer hidden" id="analytics-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title-wrap">
+        <span class="drawer-icon">📊</span>
+        <div>
+          <h3 class="drawer-title">Jeemu Telemetry & Click Analytics</h3>
+          <p class="drawer-sub">Real-time user behavior & conversion intelligence</p>
+        </div>
+      </div>
+      <div class="drawer-actions">
+        <button class="btn-heatmap-toggle" id="btn-toggle-heatmap">
+          <span class="heatmap-dot-preview"></span>
+          <span id="heatmap-toggle-label">Show Click Heatmap</span>
+        </button>
+        <button class="btn-close-drawer" id="btn-close-analytics" aria-label="Close analytics drawer">✕</button>
+      </div>
+    </div>
+
+    <div class="drawer-body">
+      <!-- High-Level KPI Metric Cards -->
+      <div class="analytics-kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Total Visitors</span>
+          <span class="kpi-value" id="kpi-visitors">1</span>
+          <span class="kpi-sub" id="kpi-sessions-sub">1 Session</span>
+        </div>
+
+        <div class="kpi-card">
+          <span class="kpi-label">Email Waitlist</span>
+          <span class="kpi-value" id="kpi-signups">0</span>
+          <span class="kpi-sub kpi-rate" id="kpi-conv-rate">0.0% Conv</span>
+        </div>
+
+        <div class="kpi-card highlighted-kpi">
+          <span class="kpi-label">VIP $1 Deposits</span>
+          <span class="kpi-value" id="kpi-vip-count">0</span>
+          <span class="kpi-sub" id="kpi-vip-revenue">$0.00 Locked</span>
+        </div>
+
+        <div class="kpi-card">
+          <span class="kpi-label">Total Clicks Tracked</span>
+          <span class="kpi-value" id="kpi-clicks">0</span>
+          <span class="kpi-sub" id="kpi-clicks-heatmap-sub">Heatmap ready</span>
+        </div>
+
+        <div class="kpi-card">
+          <span class="kpi-label">Avg Dwell Time</span>
+          <span class="kpi-value" id="kpi-dwell-time">0m 15s</span>
+          <span class="kpi-sub">Active browsing</span>
+        </div>
+
+        <div class="kpi-card">
+          <span class="kpi-label">Max Scroll Depth</span>
+          <span class="kpi-value" id="kpi-scroll-depth">25%</span>
+          <span class="kpi-sub" id="kpi-scroll-status">Hero viewed</span>
+        </div>
+      </div>
+
+      <!-- Funnel Drop-Off Tracker -->
+      <div class="analytics-section-card">
+        <div class="sec-card-header">
+          <h4 class="sec-card-title">Pre-Launch Conversion Funnel</h4>
+          <span class="sec-card-badge">Adam Webb Architecture</span>
+        </div>
+        <div class="funnel-bars">
+          <div class="funnel-step-row">
+            <span class="f-step-name">1. Page Landed</span>
+            <div class="f-bar-track">
+              <div class="f-bar-fill" id="funnel-bar-1" style="width: 100%;"></div>
+            </div>
+            <span class="f-step-val" id="funnel-val-1">1 (100%)</span>
+          </div>
+
+          <div class="funnel-step-row">
+            <span class="f-step-name">2. Simulator Played</span>
+            <div class="f-bar-track">
+              <div class="f-bar-fill" id="funnel-bar-2" style="width: 0%;"></div>
+            </div>
+            <span class="f-step-val" id="funnel-val-2">0 (0%)</span>
+          </div>
+
+          <div class="funnel-step-row">
+            <span class="f-step-name">3. Email Submitted</span>
+            <div class="f-bar-track">
+              <div class="f-bar-fill" id="funnel-bar-3" style="width: 0%;"></div>
+            </div>
+            <span class="f-step-val" id="funnel-val-3">0 (0%)</span>
+          </div>
+
+          <div class="funnel-step-row">
+            <span class="f-step-name">4. VIP Modal Viewed</span>
+            <div class="f-bar-track">
+              <div class="f-bar-fill" id="funnel-bar-4" style="width: 0%;"></div>
+            </div>
+            <span class="f-step-val" id="funnel-val-4">0 (0%)</span>
+          </div>
+
+          <div class="funnel-step-row">
+            <span class="f-step-name">5. VIP $1 Reserved</span>
+            <div class="f-bar-track">
+              <div class="f-bar-fill f-vip-fill" id="funnel-bar-5" style="width: 0%;"></div>
+            </div>
+            <span class="f-step-val" id="funnel-val-5">0 (0%)</span>
+          </div>
+
+          <div class="funnel-step-row">
+            <span class="f-step-name">6. Referral Link Copied</span>
+            <div class="f-bar-track">
+              <div class="f-bar-fill" id="funnel-bar-6" style="width: 0%;"></div>
+            </div>
+            <span class="f-step-val" id="funnel-val-6">0 (0%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-time Clickstream & Event Log -->
+      <div class="analytics-section-card">
+        <div class="sec-card-header">
+          <div class="flex-title">
+            <h4 class="sec-card-title">Live Real-time Event Stream</h4>
+            <span class="live-indicator"><span class="live-dot"></span> LIVE</span>
+          </div>
+          <span class="event-stream-counter"><span id="stream-count">0</span> events captured</span>
+        </div>
+
+        <div class="event-stream-container" id="event-stream-list">
+          <div class="event-stream-empty">Tracking initiated. Clicks, scrolls, and actions will appear here in real
+            time...</div>
+        </div>
+      </div>
+
+      <!-- Top Click Targets Breakdown -->
+      <div class="analytics-section-card">
+        <div class="sec-card-header">
+          <h4 class="sec-card-title">Top Clicked Elements</h4>
+          <span class="sec-card-badge">Click Analytics</span>
+        </div>
+        <div class="top-clicks-list" id="top-clicks-list">
+          <div class="top-clicks-empty">No element clicks logged yet. Click anywhere on the page to register clicks.
+          </div>
+        </div>
+      </div>
+
+      <!-- Export & Testing Tools -->
+      <div class="analytics-tools-card">
+        <h4 class="sec-card-title">Analytics Actions & Export</h4>
+        <div class="tools-btn-row">
+          <button class="btn-tool btn-export-csv" id="btn-export-subscribers-csv">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" x2="12" y1="15" y2="3" />
+            </svg>
+            <span>Export Subscribers CSV</span>
+          </button>
+          <button class="btn-tool btn-export-csv" id="btn-export-clicks-csv">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" x2="12" y1="15" y2="3" />
+            </svg>
+            <span>Export Clickstream CSV</span>
+          </button>
+          <button class="btn-tool btn-seed" id="btn-seed-data">
+            <span>🎲 Seed Sample Test Data</span>
+          </button>
+          <button class="btn-tool btn-reset" id="btn-reset-analytics">
+            <span>🗑️ Reset All Data</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Global Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Entry Script -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
