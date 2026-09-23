@@ -1,5 +1,5 @@
 /**
- * JEEMU HARDWARE & OLED SIMULATOR
+ * JEEMU HARDWARE & SMART DISPLAY SIMULATOR
  * Interactive demonstration of NFC wooden blocks tapping onto the smart box reader.
  */
 
@@ -93,10 +93,10 @@ class Simulator {
   _bindElements() {
     this.pills = document.querySelectorAll('.cat-pill');
     this.blockButtons = document.querySelectorAll('.wooden-block-btn');
-    this.oledModeName = document.getElementById('oled-mode-name');
-    this.oledBlockId = document.getElementById('oled-block-id');
-    this.oledPromptText = document.getElementById('oled-prompt-text');
-    this.oledReadCount = document.getElementById('oled-read-count');
+    this.displayModeName = document.getElementById('display-mode-name') || document.getElementById('oled-mode-name');
+    this.displayBlockId = document.getElementById('display-block-id') || document.getElementById('oled-block-id');
+    this.displayPromptText = document.getElementById('display-prompt-text') || document.getElementById('oled-prompt-text');
+    this.displayReadCount = document.getElementById('display-read-count') || document.getElementById('oled-read-count');
     this.dockedAvatarText = document.getElementById('docked-block-text');
     this.nfcGlowRing = document.getElementById('nfc-glow-ring');
   }
@@ -187,8 +187,8 @@ class Simulator {
 
   triggerHwConfirmation() {
     this.animateNfcPulse();
-    const prevText = this.oledPromptText.textContent;
-    this.oledPromptText.textContent = '>> ACTION CONFIRMED! PASS TO NEXT PLAYER <<';
+    const prevText = this.displayPromptText ? this.displayPromptText.textContent : '';
+    if (this.displayPromptText) this.displayPromptText.textContent = '>> ACTION CONFIRMED! PASS TO NEXT PLAYER <<';
     setTimeout(() => {
       this.updateDisplay(false);
     }, 1200);
@@ -198,30 +198,30 @@ class Simulator {
     const catData = GAME_CATEGORIES[this.currentCategory] || GAME_CATEGORIES.party;
     const blockData = catData.blocks[this.currentBlockId] || catData.blocks[7];
 
-    if (this.oledModeName) this.oledModeName.textContent = catData.name;
-    if (this.oledBlockId) this.oledBlockId.textContent = `BLOCK #${this.currentBlockId < 10 ? '0' : ''}${this.currentBlockId} · ${blockData.tag.toUpperCase()}`;
+    if (this.displayModeName) this.displayModeName.textContent = catData.name;
+    if (this.displayBlockId) this.displayBlockId.textContent = `BLOCK #${this.currentBlockId < 10 ? '0' : ''}${this.currentBlockId} · ${blockData.tag.toUpperCase()}`;
     if (this.dockedAvatarText) this.dockedAvatarText.textContent = `Block #${this.currentBlockId} Detected`;
-    if (this.oledReadCount) this.oledReadCount.textContent = this.readCount;
+    if (this.displayReadCount) this.displayReadCount.textContent = this.readCount;
 
     const fullPrompt = `"${blockData.text}"`;
 
     // Telemetry capture
     analytics.trackSimulatorBlockTap(this.currentCategory, this.currentBlockId, blockData.text);
 
-    if (!withTypewriter || !this.oledPromptText) {
-      if (this.oledPromptText) this.oledPromptText.textContent = fullPrompt;
+    if (!withTypewriter || !this.displayPromptText) {
+      if (this.displayPromptText) this.displayPromptText.textContent = fullPrompt;
       return;
     }
 
-    // Typewriter effect on OLED screen
+    // Typewriter effect on smart display screen
     this.isTyping = true;
-    this.oledPromptText.textContent = '';
+    this.displayPromptText.textContent = '';
     let index = 0;
     const speed = 16; // ms per character
 
     const typeChar = () => {
       if (index < fullPrompt.length) {
-        this.oledPromptText.textContent += fullPrompt.charAt(index);
+        this.displayPromptText.textContent += fullPrompt.charAt(index);
         index++;
         setTimeout(typeChar, speed);
       } else {

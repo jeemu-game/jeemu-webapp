@@ -33,7 +33,7 @@ const SEED_FEED = [
     date: 'Sep 14, 2026',
     title: 'Firmware v2.4: Achieving Sub-80ms Tag Detection on the Dock',
     category: 'Firmware',
-    content: 'The biggest headache with earlier prototypes was the delay between slamming a block on the reader and seeing the OLED prompt appear. If it takes more than 300ms, the physical party rhythm is interrupted. With our custom dual-antenna coil arrangement inside the dock and SPI bus tuning, we brought tag response time down to 78 milliseconds. It feels instantaneous. Tap -> OLED burst.',
+    content: 'The biggest headache with earlier prototypes was the delay between slamming a block on the reader and seeing the IPS display prompt appear. If it takes more than 300ms, the physical party rhythm is interrupted. With our custom dual-antenna coil arrangement inside the dock and SPI bus tuning, we brought tag response time down to 78 milliseconds. It feels instantaneous. Tap -> prompt burst.',
     likes: 67,
     comments: 14
   },
@@ -79,7 +79,7 @@ const SEED_CHAOS = [
     authorInitials: 'YC',
     date: '4 days ago',
     tag: '🧪 LAB OUTTAKE',
-    content: 'Engineering note: Do NOT stack 45 blocks horizontally on the OLED dock to test "simultaneous read capability". It threw error code #420: "Too much wood on desk".',
+    content: 'Engineering note: Do NOT stack 45 blocks horizontally on the smart dock to test "simultaneous read capability". It threw error code #420: "Too much wood on desk".',
     reactions: { rip: 41, chaos: 65, sip: 18 }
   },
   {
@@ -119,7 +119,7 @@ const SEED_JOURNEY = [
     date: 'June 2026',
     author: 'Entire Team',
     title: 'Zero phones at the table. Standalone hardware decision.',
-    description: 'Early feedback was unanimous: gamers hate staring at apps while playing tabletop games. We made the bold architectural choice to build the Jeemu Smart Box as a standalone game master. It holds the high-speed reader, internal battery, and crisp amber OLED display. You sync game configurations in 5 seconds via Bluetooth, then put all phones in another room.',
+    description: 'Early feedback was unanimous: gamers hate staring at apps while playing tabletop games. We made the bold architectural choice to build the Jeemu Smart Box as a standalone game master. It holds the high-speed reader, internal battery, and crisp panoramic IPS display. You sync game configurations in 5 seconds via Bluetooth, then put all phones in another room.',
     badge: 'Core Breakthrough'
   },
   {

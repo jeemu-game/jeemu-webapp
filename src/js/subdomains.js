@@ -1,6 +1,6 @@
 /**
  * JEEMU SUBDOMAIN ROUTER & REAL-TIME DASHBOARD CONTROLLER
- * Manages:
+ * Ultra-clean routing across:
  * - launch.jeemu.fun
  * - feed.jeemu.fun
  * - chaos.jeemu.fun
@@ -9,7 +9,7 @@
  * - admin.jeemu.fun
  * - dashboard.jeemu.fun
  * 
- * Includes Server-Sent Events (SSE) real-time streaming to dashboard!
+ * Supports native DNS hostnames, hash navigation, and clean navbar routing.
  */
 
 class SubdomainManager {
@@ -18,7 +18,7 @@ class SubdomainManager {
     this.currentSubdomain = this._detectSubdomain();
     this.sseSource = null;
 
-    this._initSwitcher();
+    this._initNavLinks();
     this._initAuthForm();
     this._initAdminView();
     this._routeToSubdomain(this.currentSubdomain);
@@ -51,11 +51,11 @@ class SubdomainManager {
     return 'launch';
   }
 
-  _initSwitcher() {
-    document.querySelectorAll('.subdomain-tab').forEach(tab => {
-      tab.addEventListener('click', (e) => {
+  _initNavLinks() {
+    document.querySelectorAll('[data-subdomain]').forEach(link => {
+      link.addEventListener('click', (e) => {
         e.preventDefault();
-        const target = tab.dataset.subdomain;
+        const target = link.dataset.subdomain;
         if (target) {
           this.switchSubdomain(target);
         }
@@ -67,7 +67,7 @@ class SubdomainManager {
     if (!this.subdomains.includes(targetSubdomain)) return;
     this.currentSubdomain = targetSubdomain;
 
-    // Update URL cleanly without reload
+    // Update URL query cleanly without reload
     const url = new URL(window.location.href);
     url.searchParams.set('subdomain', targetSubdomain);
     window.history.pushState({}, '', url.toString());
@@ -78,12 +78,12 @@ class SubdomainManager {
   _routeToSubdomain(subdomain) {
     this.currentSubdomain = subdomain;
 
-    // Update active tab in switcher
-    document.querySelectorAll('.subdomain-tab').forEach(tab => {
-      if (tab.dataset.subdomain === subdomain) {
-        tab.classList.add('active');
+    // Update active nav links
+    document.querySelectorAll('[data-subdomain]').forEach(link => {
+      if (link.dataset.subdomain === subdomain) {
+        link.classList.add('active');
       } else {
-        tab.classList.remove('active');
+        link.classList.remove('active');
       }
     });
 
@@ -101,13 +101,13 @@ class SubdomainManager {
 
     // Update page title
     const titles = {
-      launch: 'Jeemu — Smart Jenga Launch Page | launch.jeemu.fun',
-      feed: 'Engineering & Campaign Updates | feed.jeemu.fun',
-      chaos: 'The Shitposting Lab & Tower Fails | chaos.jeemu.fun',
-      journey: 'Prototype Timeline & Founder Story | journey.jeemu.fun',
-      login: 'Team Login | login.jeemu.fun',
-      admin: 'Team Publishing & Backer Admin | admin.jeemu.fun',
-      dashboard: 'Real-Time Telemetry & Click Heatmap Command Center | dashboard.jeemu.fun'
+      launch: 'Jeemu — Customizable Smart Jenga | launch.jeemu.fun',
+      feed: 'Engineering Updates & Devlogs | feed.jeemu.fun',
+      chaos: 'The Chaos Lab & Tower Fails | chaos.jeemu.fun',
+      journey: 'Hardware Evolution Timeline | journey.jeemu.fun',
+      login: 'Team Authentication Gateway | login.jeemu.fun',
+      admin: 'Backer & Content Management Console | admin.jeemu.fun',
+      dashboard: 'Real-Time Telemetry & Click Heatmap | dashboard.jeemu.fun'
     };
     document.title = titles[subdomain] || 'Jeemu — Smart Jenga';
 
@@ -125,25 +125,67 @@ class SubdomainManager {
     }
   }
 
-  /* ---------------- Real-Time Dashboard & SSE Stream ---------------- */
-  _initRealTimeDashboard() {
+  /* ---------------- Real-Time Dashboard & Telemetry Stream ---------------- */
+  async _initRealTimeDashboard() {
     this._fetchMetrics();
 
+    // Periodic KPI polling backup (every 15s) while dashboard is active
+    if (!this.metricsInterval) {
+      this.metricsInterval = setInterval(() => this._fetchMetrics(), 15000);
+    }
+
+    // 1. Prefer Supabase Realtime WebSockets if cloud credentials configured
+    const supabaseUrl = typeof import.meta !== 'undefined' && (import.meta.env?.VITE_SUPABASE_URL || 'https://quhpizadgfhhrdfompnm.supabase.co');
+    const supabasePublishableKey = typeof import.meta !== 'undefined' && (
+      import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY || 
+      import.meta.env?.VITE_SUPABASE_ANON_KEY
+    );
+
+    if (supabaseUrl && supabasePublishableKey && !this.realtimeChannel) {
+      try {
+        const { createClient } = await import('@supabase/supabase-js');
+        const client = createClient(supabaseUrl, supabasePublishableKey);
+        this.realtimeChannel = client.channel('jeemu-realtime')
+          .on('broadcast', { event: '*' }, (payload) => {
+            this._handleLiveSSEEvent(payload.payload || payload);
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'telemetry_events' }, (payload) => {
+            this._handleLiveSSEEvent({ type: 'telemetry_event', event: payload.new });
+          })
+          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'subscribers' }, (payload) => {
+            this._handleLiveSSEEvent({ type: 'new_subscriber', subscriber: payload.new });
+          })
+          .subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              console.log('⚡ Connected to Supabase Realtime Channel');
+            }
+          });
+        return;
+      } catch (err) {
+        console.warn('Could not initialize Supabase Realtime, using fallback:', err);
+      }
+    }
+
+    // 2. Fallback to SSE Stream for local development
     if (!this.sseSource) {
-      this.sseSource = new EventSource('/api/telemetry/stream');
+      try {
+        this.sseSource = new EventSource('/api/telemetry/stream');
 
-      this.sseSource.onmessage = (e) => {
-        try {
-          const data = JSON.parse(e.data);
-          this._handleLiveSSEEvent(data);
-        } catch (err) {
-          console.error('Error parsing SSE payload:', err);
-        }
-      };
+        this.sseSource.onmessage = (e) => {
+          try {
+            const data = JSON.parse(e.data);
+            this._handleLiveSSEEvent(data);
+          } catch (err) {
+            console.error('Error parsing SSE payload:', err);
+          }
+        };
 
-      this.sseSource.onerror = () => {
-        console.warn('SSE stream disconnected, attempting reconnect...');
-      };
+        this.sseSource.onerror = () => {
+          console.warn('SSE stream reconnecting...');
+        };
+      } catch (err) {
+        console.warn('SSE not supported, relying on periodic polling');
+      }
     }
   }
 
@@ -151,6 +193,14 @@ class SubdomainManager {
     if (this.sseSource) {
       this.sseSource.close();
       this.sseSource = null;
+    }
+    if (this.realtimeChannel) {
+      this.realtimeChannel.unsubscribe();
+      this.realtimeChannel = null;
+    }
+    if (this.metricsInterval) {
+      clearInterval(this.metricsInterval);
+      this.metricsInterval = null;
     }
   }
 
@@ -221,7 +271,6 @@ class SubdomainManager {
       setTimeout(() => pulseBadge.classList.remove('pulse-active'), 800);
     }
 
-    // Prepend event to live stream
     const listEl = document.getElementById('dash-live-event-stream');
     if (listEl && (payload.event || payload.subscriber)) {
       const ev = payload.event || {
@@ -233,7 +282,6 @@ class SubdomainManager {
       listEl.insertAdjacentHTML('afterbegin', itemHtml);
     }
 
-    // Increment click or signup counters dynamically
     if (payload.type === 'telemetry_event') {
       const elClicks = document.getElementById('dash-kpi-clicks');
       if (elClicks && payload.event && payload.event.type === 'click') {
@@ -242,7 +290,7 @@ class SubdomainManager {
     } else if (payload.type === 'new_subscriber') {
       const elSignups = document.getElementById('dash-kpi-signups');
       if (elSignups) elSignups.textContent = parseInt(elSignups.textContent || 0, 10) + 1;
-      this.showToast(`🔥 Real-time: New waitlist backer ${payload.subscriber.email}`);
+      this.showToast(`New backer waitlist entry: ${payload.subscriber.email}`);
     } else if (payload.type === 'vip_deposit') {
       const elVip = document.getElementById('dash-kpi-vip');
       const elRev = document.getElementById('dash-kpi-revenue');
@@ -251,10 +299,9 @@ class SubdomainManager {
         const cur = parseFloat(elRev.textContent.replace('$', '') || 0);
         elRev.textContent = `$${(cur + 1.0).toFixed(2)}`;
       }
-      this.showToast(`👑 Real-time: $1 VIP Deposit locked! Charge: ${payload.chargeId}`);
+      this.showToast(`Stripe deposit confirmed: ${payload.chargeId}`);
     }
 
-    // Refresh full metrics after slight debounce
     this._fetchMetrics();
   }
 
@@ -270,7 +317,7 @@ class SubdomainManager {
       detail = `Waitlist Signup: ${ev.data?.email || ev.subscriber?.email}`;
     } else if (ev.type === 'vip_deposit') {
       typeClass = 'dash-ev-vip';
-      detail = `Stripe $1 VIP Deposit (${ev.data?.chargeId || ev.chargeId || 'Confirmed'})`;
+      detail = `Stripe $1 Deposit (${ev.data?.chargeId || ev.chargeId || 'Confirmed'})`;
     } else if (ev.type === 'scroll_depth') {
       typeClass = 'dash-ev-scroll';
       detail = `Scrolled to ${ev.data?.depth}% depth`;
@@ -300,33 +347,31 @@ class SubdomainManager {
     canvas.width = width;
     canvas.height = height;
 
-    ctx.fillStyle = '#080a0f';
+    ctx.fillStyle = '#050608';
     ctx.fillRect(0, 0, width, height);
 
-    // Draw wireframe representation of webpage sections
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-    ctx.strokeRect(20, 20, width - 40, 70); // Hero
-    ctx.strokeRect(20, 100, width - 40, 90); // Simulator
-    ctx.strokeRect(20, 200, width - 40, 70); // 3 Layers
-    ctx.strokeRect(20, 280, width - 40, 50); // Rewards
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.strokeRect(20, 20, width - 40, 70);
+    ctx.strokeRect(20, 100, width - 40, 90);
+    ctx.strokeRect(20, 200, width - 40, 70);
+    ctx.strokeRect(20, 280, width - 40, 50);
 
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
     ctx.font = '10px monospace';
     ctx.fillText('HERO SECTION', 30, 40);
-    ctx.fillText('SIMULATOR & OLED', 30, 120);
-    ctx.fillText('THE 3 LAYERS', 30, 220);
-    ctx.fillText('REFERRAL LADDER', 30, 300);
+    ctx.fillText('SIMULATOR & DOCK', 30, 120);
+    ctx.fillText('BENTO GRID', 30, 220);
+    ctx.fillText('REFERRAL REWARDS', 30, 300);
 
-    // Render glow heat dots
     points.forEach(pt => {
       const cx = (pt.xPercent / 100) * (width - 40) + 20;
       const cy = (pt.yPercent / 100) * (height - 40) + 20;
       const radius = 18;
 
       const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-      grad.addColorStop(0, 'rgba(255, 60, 0, 0.85)');
-      grad.addColorStop(0.4, 'rgba(255, 170, 0, 0.5)');
-      grad.addColorStop(1, 'rgba(255, 220, 0, 0)');
+      grad.addColorStop(0, 'rgba(245, 158, 11, 0.85)');
+      grad.addColorStop(0.4, 'rgba(245, 158, 11, 0.35)');
+      grad.addColorStop(1, 'rgba(245, 158, 11, 0)');
 
       ctx.fillStyle = grad;
       ctx.beginPath();
@@ -355,12 +400,12 @@ class SubdomainManager {
       .then(data => {
         if (data.success) {
           sessionStorage.setItem('jeemu_logged_in_member', username);
-          this.showToast(`🎉 Logged in as ${username.toUpperCase()}! Redirecting to admin.jeemu.fun...`);
+          this.showToast(`Authenticated as ${username.toUpperCase()}`);
           setTimeout(() => {
             this.switchSubdomain('admin');
-          }, 600);
+          }, 500);
         } else {
-          alert(data.error || 'Login failed. Password is "jeemu2026"');
+          alert(data.error || 'Password is "jeemu2026"');
         }
       })
       .catch(err => {
@@ -378,7 +423,7 @@ class SubdomainManager {
     document.getElementById('btn-save-stripe-settings')?.addEventListener('click', () => {
       const link = document.getElementById('admin-stripe-link-input')?.value.trim();
       if (link) {
-        this.showToast('✅ Saved live Stripe Payment Link: ' + link);
+        this.showToast('Saved Stripe Payment Link: ' + link);
       }
     });
   }
@@ -402,9 +447,9 @@ class SubdomainManager {
             <td><code>${s.email}</code></td>
             <td><span class="ref-code-tag">${s.referralCode}</span></td>
             <td>${s.referredBy ? `<code>${s.referredBy}</code>` : 'Direct'}</td>
-            <td><strong class="text-green">${s.friendsReferred || 0}</strong></td>
+            <td><strong>${s.friendsReferred || 0}</strong></td>
             <td>
-              ${s.isVip ? `<span class="badge-vip-confirmed">✓ VIP ($1.00)</span>` : `<span class="badge-waitlist">Waitlist (40%)</span>`}
+              ${s.isVip ? `<span class="badge-vip-confirmed">VIP ($1.00)</span>` : `<span class="badge-waitlist">Waitlist</span>`}
             </td>
           </tr>
         `).join('');
@@ -452,7 +497,7 @@ class SubdomainManager {
 
     const toast = document.createElement('div');
     toast.className = 'toast toast-success';
-    toast.innerHTML = `<span>⚡</span><span>${message}</span>`;
+    toast.innerHTML = `<span>●</span><span>${message}</span>`;
     container.appendChild(toast);
 
     setTimeout(() => {

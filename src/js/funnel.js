@@ -50,14 +50,18 @@ class FunnelManager {
   }
 
   _bindEvents() {
-    // 1. Waitlist Form
-    this.waitlistForm?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.handleWaitlistSubmit();
+    // 1. Waitlist Forms (both Panel 4 and Section 6)
+    document.querySelectorAll('#waitlist, #waitlist-form, .waitlist-form-sync').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handleWaitlistSubmit(form);
+      });
     });
 
     // 2. VIP Modal Controls
-    document.getElementById('btn-open-vip-nav')?.addEventListener('click', () => this.openVipModal());
+    document.querySelectorAll('#btn-open-vip-nav, #nav-cta-btn, .btn-open-vip, .join-waitlist-trigger').forEach(el => {
+      el.addEventListener('click', () => this.openVipModal());
+    });
     document.getElementById('footer-vip-link')?.addEventListener('click', () => this.openVipModal());
     document.getElementById('btn-close-vip')?.addEventListener('click', () => this.closeVipModal());
 
@@ -134,12 +138,12 @@ class FunnelManager {
   }
 
   /* ---------------- Waitlist Submission ---------------- */
-  handleWaitlistSubmit() {
-    const emailInput = document.getElementById('subscriber-email');
-    const nameInput = document.getElementById('subscriber-name');
+  handleWaitlistSubmit(sourceForm) {
+    const emailInput = sourceForm?.querySelector('input[type="email"]') || document.getElementById('subscriber-email') || document.getElementById('email');
+    const nameInput = sourceForm?.querySelector('input[type="text"]') || document.getElementById('subscriber-name');
 
     const email = emailInput?.value.trim();
-    const name = nameInput?.value.trim() || '';
+    const name = nameInput?.value.trim() || 'Backer';
 
     if (!email || !email.includes('@')) {
       alert('Please enter a valid email address.');
@@ -157,18 +161,24 @@ class FunnelManager {
 
     this._updateReferralUI(sub);
 
-    // Update live backer counter
-    const backerCountEl = document.getElementById('live-backer-count');
-    if (backerCountEl) {
-      const currentVal = parseInt(backerCountEl.textContent.replace(/,/g, ''), 10) || 1847;
-      backerCountEl.textContent = (currentVal + 1).toLocaleString();
+    // Update status element if present
+    const formStatus = document.getElementById('form-status');
+    if (formStatus) {
+      formStatus.textContent = `✓ You're on the list! Referral Code: ${sub.referralCode}`;
+      formStatus.style.color = 'var(--orange)';
     }
+
+    // Update live backer counters
+    document.querySelectorAll('#live-backer-count, .live-backer-count').forEach(el => {
+      const currentVal = parseInt(el.textContent.replace(/,/g, ''), 10) || 1847;
+      el.textContent = (currentVal + 1).toLocaleString();
+    });
 
     this.showToast(`🎉 Spot secured for ${email}! VIP upgrade available next.`);
 
     setTimeout(() => {
       this.openVipModal();
-    }, 500);
+    }, 600);
   }
 
   _creditReferrer(refCode) {
@@ -365,7 +375,7 @@ class FunnelManager {
     el.addEventListener('click', () => {
       const refCode = this.currentSubscriber ? this.currentSubscriber.referralCode : 'JEEMU-VIP982';
       const shareUrl = encodeURIComponent(`${window.location.origin}/?ref=${refCode}`);
-      const shareText = encodeURIComponent(`Check out Jeemu! It's customizable smart Jenga with NFC blocks and an independent OLED dock. 40% OFF Early Bird Kickstarter:`);
+      const shareText = encodeURIComponent(`Check out Jeemu! It's customizable smart Jenga with NFC blocks and an independent smart dock. 45% OFF Early Bird Kickstarter:`);
 
       let targetUrl = '';
       if (network === 'whatsapp') targetUrl = `https://api.whatsapp.com/send?text=${shareText}%20${shareUrl}`;
