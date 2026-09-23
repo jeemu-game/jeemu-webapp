@@ -11,9 +11,19 @@ class AppRouter {
     this.currentRoute = 'launch';
     this.routes = ['launch', 'feed', 'chaos', 'journey', 'rewards'];
 
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this._init());
+    } else {
+      this._init();
+    }
+  }
+
+  _init() {
     this._bindNavEvents();
     this._bindTeamStudioEvents();
-    this._handleHashChange();
+    if (window.location.hash) {
+      this._handleHashChange();
+    }
 
     window.addEventListener('hashchange', () => this._handleHashChange());
   }
@@ -23,25 +33,37 @@ class AppRouter {
       el.addEventListener('click', (e) => {
         const route = el.dataset.route;
         if (route) {
-          window.location.hash = '#' + route;
+          if (window.subdomainManager && window.subdomainManager.subdomains.includes(route)) {
+            e.preventDefault();
+            window.subdomainManager.switchSubdomain(route);
+          } else {
+            window.location.hash = '#' + route;
+          }
         }
       });
     });
   }
 
   _handleHashChange() {
-    let hash = window.location.hash.replace(/^#\/?/, '') || 'launch';
-    // Handle query params like #launch?ref=xyz
-    const cleanRoute = hash.split('?')[0];
+    let rawHash = window.location.hash.replace(/^#\/?/, '');
+    if (!rawHash) return;
+    const cleanRoute = rawHash.split('?')[0];
+
+    if (window.subdomainManager && window.subdomainManager.subdomains.includes(cleanRoute)) {
+      window.subdomainManager.switchSubdomain(cleanRoute);
+      return;
+    }
 
     if (this.routes.includes(cleanRoute)) {
       this.navigate(cleanRoute);
-    } else {
-      this.navigate('launch');
     }
   }
 
   navigate(route) {
+    if (window.subdomainManager && window.subdomainManager.subdomains.includes(route)) {
+      window.subdomainManager.switchSubdomain(route);
+      return;
+    }
     this.currentRoute = route;
 
     // Toggle active view containers

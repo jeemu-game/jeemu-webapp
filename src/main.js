@@ -12,8 +12,10 @@ import { simulator } from './js/simulator.js';
 import { funnel } from './js/funnel.js';
 import { analytics } from './js/analytics.js';
 import { analyticsUI } from './js/analytics-ui.js';
+import { router } from './js/router.js';
+import { subdomainManager } from './js/subdomains.js';
 
-export { canvasScrubber, simulator, funnel, analytics, analyticsUI };
+export { canvasScrubber, simulator, funnel, analytics, analyticsUI, router, subdomainManager };
 
 // Smooth Anchor Link Handler
 function initAnchorNavigation() {

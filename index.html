@@ -16,6 +16,47 @@
   <script src="/frames.js" defer></script>
 </head>
 <body>
+  <!-- Global Subdomain Switcher Bar (jeemu.fun) -->
+  <div class="subdomain-bar">
+    <div class="subdomain-bar-container">
+      <div class="subdomain-bar-left">
+        <span class="subdomain-brand-badge">🌐 DOMAIN: jeemu.fun</span>
+        <span class="subdomain-divider">/</span>
+        <span class="subdomain-hint">Subdomain Switcher:</span>
+      </div>
+      <div class="subdomain-tabs-scroll">
+        <button class="subdomain-tab active" data-subdomain="launch" id="sub-tab-launch">
+          <span class="tab-indicator"></span>
+          <span>launch.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab" data-subdomain="feed" id="sub-tab-feed">
+          <span class="tab-indicator"></span>
+          <span>feed.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab" data-subdomain="chaos" id="sub-tab-chaos">
+          <span class="tab-indicator"></span>
+          <span>chaos.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab" data-subdomain="journey" id="sub-tab-journey">
+          <span class="tab-indicator"></span>
+          <span>journey.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab tab-auth" data-subdomain="login" id="sub-tab-login">
+          <span class="tab-indicator"></span>
+          <span>login.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab tab-admin" data-subdomain="admin" id="sub-tab-admin">
+          <span class="tab-indicator"></span>
+          <span>admin.jeemu.fun</span>
+        </button>
+        <button class="subdomain-tab tab-dashboard" data-subdomain="dashboard" id="sub-tab-dashboard">
+          <span class="tab-indicator live-pulse"></span>
+          <span>dashboard.jeemu.fun (Live)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Accessible SVG Flame Gradient Definition -->
   <svg width="0" height="0" style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
     <defs>
@@ -54,7 +95,7 @@
     </div>
   </header>
 
-  <main aria-label="Jeemu product experience">
+  <main id="view-launch" class="view-container" aria-label="Jeemu product experience">
     <!-- ================= SECTION 1: 3D HERO STAGE & IMMEDIATE RESERVATION ================= -->
     <section class="hero-scrolly-track" id="experience">
       <div class="hero-sticky-stage">
@@ -596,6 +637,351 @@
     </section>
   </main>
 
+  <!-- ================= VIEW 2: FEED PAGE (UPDATES) ================= -->
+  <main id="view-feed" class="view-container hidden">
+    <section class="page-hero-section">
+      <div class="container text-center">
+        <div class="eyebrow-pill">Official Updates & Devlogs</div>
+        <h1 class="page-hero-title">Jeemu Engineering & Campaign Feed</h1>
+        <p class="page-hero-subtitle">
+          Real dev logs, hardware testing footage, wood milling updates, and backer polls from Anna, Ishaan, Jack,
+          Shefali, Shiva, and Yana.
+        </p>
+        <button class="btn-create-post" onclick="document.getElementById('btn-open-team-studio').click()">
+          <span>✍️ Post an Update as Team Member</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="feed-content-section">
+      <div class="container feed-container" id="feed-posts-container">
+        <!-- Injected dynamically by router.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 3: CHAOS PAGE (SHITPOSTING) ================= -->
+  <main id="view-chaos" class="view-container hidden">
+    <section class="page-hero-section chaos-hero">
+      <div class="container text-center">
+        <div class="eyebrow-pill eyebrow-chaos">The Shitposting & Fails Lab</div>
+        <h1 class="page-hero-title">Welcome to the Chaos Board 💀🔥</h1>
+        <p class="page-hero-subtitle">
+          Unfiltered Jenga tower collapses, out-of-context quotes from drunken playtesters, spicy dare submissions, and
+          hardware torture tests.
+        </p>
+        <button class="btn-create-chaos" onclick="document.getElementById('btn-open-team-studio').click()">
+          <span>💥 Drop a Chaos Post or Fail</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="chaos-content-section">
+      <div class="container chaos-grid" id="chaos-posts-container">
+        <!-- Injected dynamically by router.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 4: JOURNEY PAGE ================= -->
+  <main id="view-journey" class="view-container hidden">
+    <section class="page-hero-section">
+      <div class="container text-center">
+        <div class="eyebrow-pill">Founder & Hardware Timeline</div>
+        <h1 class="page-hero-title">The Journey Behind Jeemu</h1>
+        <p class="page-hero-subtitle">
+          From handwritten index cards taped to Jenga blocks in a student apartment to precision CNC beechwood and
+          custom OLED hardware.
+        </p>
+      </div>
+    </section>
+
+    <section class="journey-content-section">
+      <div class="container">
+        <!-- Interactive Vertical Timeline -->
+        <div class="timeline-container" id="journey-timeline-container">
+          <!-- Injected dynamically by router.js -->
+        </div>
+
+        <!-- Team Profiles Grid -->
+        <div class="team-profiles-wrapper">
+          <div class="section-header text-center mt-5">
+            <h2 class="section-title">The Core Team</h2>
+            <p class="section-subtitle">Six creators uniting hardware craftsmanship, firmware, AI, and game design.</p>
+          </div>
+
+          <div class="team-grid">
+            <div class="team-card">
+              <div class="team-avatar">AV</div>
+              <h3 class="member-name">Anna Vu</h3>
+              <span class="member-role">Hardware & Industrial Design</span>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">IS</div>
+              <h3 class="member-name">Ishaan</h3>
+              <span class="member-role">Embedded Firmware & NFC</span>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">JK</div>
+              <h3 class="member-name">Jack</h3>
+              <span class="member-role">Game Systems & Content</span>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">SH</div>
+              <h3 class="member-name">Shefali</h3>
+              <span class="member-role">Mobile App & Community</span>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">SM</div>
+              <h3 class="member-name">Shiva Manickam</h3>
+              <span class="member-role">Platform & AI Architecture</span>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">YC</div>
+              <h3 class="member-name">Yana C</h3>
+              <span class="member-role">Operations & Production</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 6: LOGIN PORTAL (login.jeemu.fun) ================= -->
+  <main id="view-login" class="view-container hidden">
+    <section class="portal-hero-section">
+      <div class="portal-card-container">
+        <div class="portal-auth-card">
+          <div class="portal-header text-center">
+            <div class="portal-pill">🔐 Team & Admin Gateway</div>
+            <h1 class="portal-title">Sign In to Jeemu Studio</h1>
+            <p class="portal-sub">Select your team profile to manage posts, backer lists, and Stripe checkout.</p>
+            <p id="login-required-msg" style="display:none; color: #ff641e; font-weight: 600; margin-top: 8px; font-size: 13px;"></p>
+          </div>
+
+          <form id="login-portal-form" class="portal-form">
+            <div class="portal-field">
+              <label class="portal-label">Team Member Profile</label>
+              <select id="login-member-select" class="portal-select">
+                <option value="shiva">Shiva Manickam (Platform & AI Architecture)</option>
+                <option value="anna">Anna Vu (Hardware & Industrial Design)</option>
+                <option value="ishaan">Ishaan (Embedded Firmware & NFC)</option>
+                <option value="jack">Jack (Game Systems & Content)</option>
+                <option value="shefali">Shefali (Mobile App & Community)</option>
+                <option value="yana">Yana C (Operations & Production)</option>
+                <option value="admin">Super Admin / Creator</option>
+              </select>
+            </div>
+
+            <div class="portal-field">
+              <label class="portal-label">Access Password</label>
+              <input type="password" id="login-password-input" class="portal-input" placeholder="Enter password (default: jeemu2026)" value="jeemu2026" required>
+            </div>
+
+            <button type="submit" class="btn-portal-submit">
+              <span>Enter Team Studio & Admin →</span>
+            </button>
+          </form>
+          <p class="portal-hint text-center">Protected route · Team members only · Session cookie enabled</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 7: ADMIN PORTAL (admin.jeemu.fun) ================= -->
+  <main id="view-admin" class="view-container hidden">
+    <section class="admin-portal-section">
+      <div class="container">
+        <!-- Admin Header -->
+        <div class="admin-header-row">
+          <div>
+            <div class="admin-pill">⚙️ ADMIN PORTAL · admin.jeemu.fun</div>
+            <h1 class="admin-title">Campaign Management & Backers</h1>
+          </div>
+          <div class="admin-quick-actions">
+            <button class="btn-admin-action" onclick="document.getElementById('btn-open-team-studio').click()">
+              <span>✍️ New Team Post</span>
+            </button>
+            <button class="btn-admin-action btn-admin-export" id="btn-admin-export-csv">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              <span>Export Backers CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Stripe Settings Bar -->
+        <div class="admin-card stripe-settings-card">
+          <div class="stripe-settings-head">
+            <div class="s-logo-mini">S</div>
+            <div>
+              <h3 class="s-title">Stripe Payment Link Configuration</h3>
+              <p class="s-sub">Point pre-launch VIP deposits to your live Stripe payment link</p>
+            </div>
+          </div>
+          <div class="stripe-settings-row">
+            <input type="url" id="admin-stripe-link-input" class="admin-input" value="https://buy.stripe.com/00wbJ0ahV5htgzrgxLbAs0k" placeholder="https://buy.stripe.com/your_deposit_link">
+            <button class="btn-save-settings" id="btn-save-stripe-settings">Save Link</button>
+          </div>
+        </div>
+
+        <!-- Backers Table Card -->
+        <div class="admin-card">
+          <div class="admin-table-head">
+            <h3 class="table-title">Waitlist & VIP Backers (<span id="admin-total-subs">2</span>)</h3>
+            <span class="table-note">Real-time database sync</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Referral Code</th>
+                  <th>Referred By</th>
+                  <th>Friends Joined</th>
+                  <th>Tier Status</th>
+                </tr>
+              </thead>
+              <tbody id="admin-subscribers-tbody">
+                <!-- Injected via subdomains.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= VIEW 8: REAL-TIME DASHBOARD (dashboard.jeemu.fun) ================= -->
+  <main id="view-dashboard" class="view-container hidden">
+    <section class="dashboard-portal-section">
+      <div class="container">
+        <!-- Dashboard Top Header -->
+        <div class="dash-header-row">
+          <div class="dash-title-group">
+            <div class="dash-pill" id="dash-live-pulse-badge">
+              <span class="live-dot pulse"></span>
+              <span>LIVE TELEMETRY STREAM · dashboard.jeemu.fun</span>
+            </div>
+            <h1 class="dash-title">Real-Time Behavior & Click Analytics Cockpit</h1>
+          </div>
+          <div class="dash-actions">
+            <button class="btn-dash-action" onclick="document.getElementById('btn-open-vip-nav').click()">Test VIP Modal</button>
+            <button class="btn-dash-action" onclick="document.getElementById('btn-simulate-referral').click()">+1 Test Backer</button>
+          </div>
+        </div>
+
+        <!-- 6 Live Real-Time KPIs -->
+        <div class="dash-kpi-grid">
+          <div class="dash-kpi-card">
+            <span class="kpi-tag">Unique Visitors</span>
+            <span class="kpi-num" id="dash-kpi-visitors">1</span>
+            <span class="kpi-sub">Real-time session tracker</span>
+          </div>
+
+          <div class="dash-kpi-card">
+            <span class="kpi-tag">Total Clicks Tracked</span>
+            <span class="kpi-num" id="dash-kpi-clicks">0</span>
+            <span class="kpi-sub">Every element & coordinate</span>
+          </div>
+
+          <div class="dash-kpi-card">
+            <span class="kpi-tag">Waitlist Signups</span>
+            <span class="kpi-num text-amber" id="dash-kpi-signups">0</span>
+            <span class="kpi-sub">Email captured</span>
+          </div>
+
+          <div class="dash-kpi-card">
+            <span class="kpi-tag">Email Conversion Rate</span>
+            <span class="kpi-num text-green" id="dash-kpi-conv">0.0%</span>
+            <span class="kpi-sub">Visitor → Backer ratio</span>
+          </div>
+
+          <div class="dash-kpi-card highlighted-vip">
+            <span class="kpi-tag">VIP $1 Deposits</span>
+            <span class="kpi-num text-green" id="dash-kpi-vip">0</span>
+            <span class="kpi-sub">Guaranteed 45% backers</span>
+          </div>
+
+          <div class="dash-kpi-card highlighted-rev">
+            <span class="kpi-tag">Deposit Revenue</span>
+            <span class="kpi-num" id="dash-kpi-revenue">$0.00</span>
+            <span class="kpi-sub">100% Refundable Stripe pool</span>
+          </div>
+        </div>
+
+        <!-- Split Grid: Live Event Stream + Click Heatmap -->
+        <div class="dash-main-split">
+          <!-- Left: Real-time Live Event Feed -->
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <div class="flex-center gap-2">
+                <span class="stream-pulse-icon">⚡</span>
+                <h3 class="dash-card-title">Live Server-Sent Event Stream</h3>
+              </div>
+              <span class="sse-status-badge">SSE Active</span>
+            </div>
+
+            <div class="dash-stream-scroll" id="dash-live-event-stream">
+              <div class="dash-stream-empty">Listening for live clicks, scrolls, and signups on jeemu.fun...</div>
+            </div>
+          </div>
+
+          <!-- Right: Visual Click Heatmap & Funnel -->
+          <div class="dash-card">
+            <div class="dash-card-head">
+              <h3 class="dash-card-title">Real-Time Click Heatmap</h3>
+              <span class="heatmap-tag">Page Coordinates</span>
+            </div>
+
+            <div class="heatmap-wrapper">
+              <canvas id="dash-heatmap-canvas" class="dash-canvas"></canvas>
+            </div>
+
+            <!-- Funnel Progression Bars -->
+            <div class="dash-funnel-box">
+              <h4 class="funnel-title">Conversion Funnel Drop-off</h4>
+              <div class="funnel-list">
+                <div class="funnel-item" id="dash-funnel-1">
+                  <span class="funnel-name">1. Page Landed</span>
+                  <div class="funnel-track"><div class="funnel-fill" style="width: 100%;"></div></div>
+                  <span class="funnel-count">1 (100%)</span>
+                </div>
+                <div class="funnel-item" id="dash-funnel-2">
+                  <span class="funnel-name">2. Simulator Tested</span>
+                  <div class="funnel-track"><div class="funnel-fill" style="width: 0%;"></div></div>
+                  <span class="funnel-count">0 (0%)</span>
+                </div>
+                <div class="funnel-item" id="dash-funnel-3">
+                  <span class="funnel-name">3. Email Waitlist</span>
+                  <div class="funnel-track"><div class="funnel-fill fill-amber" style="width: 0%;"></div></div>
+                  <span class="funnel-count">0 (0%)</span>
+                </div>
+                <div class="funnel-item" id="dash-funnel-4">
+                  <span class="funnel-name">4. VIP Modal Opened</span>
+                  <div class="funnel-track"><div class="funnel-fill" style="width: 0%;"></div></div>
+                  <span class="funnel-count">0 (0%)</span>
+                </div>
+                <div class="funnel-item" id="dash-funnel-5">
+                  <span class="funnel-name">5. VIP $1 Deposited</span>
+                  <div class="funnel-track"><div class="funnel-fill fill-green" style="width: 0%;"></div></div>
+                  <span class="funnel-count">0 (0%)</span>
+                </div>
+                <div class="funnel-item" id="dash-funnel-6">
+                  <span class="funnel-name">6. Referral Shared</span>
+                  <div class="funnel-track"><div class="funnel-fill" style="width: 0%;"></div></div>
+                  <span class="funnel-count">0 (0%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
   <!-- ================= SITE FOOTER ================= -->
   <footer class="site-footer">
     <div class="footer-inner">
@@ -933,6 +1319,72 @@
       </div>
     </div>
   </aside>
+
+    <!-- Modal 4: Team Studio Authoring Modal (Add Content) -->
+  <div class="modal-backdrop hidden" id="team-studio-modal">
+    <div class="modal-card team-studio-card">
+      <button class="btn-close-modal" id="btn-close-team-studio" aria-label="Close modal">×</button>
+
+      <div class="studio-header">
+        <div class="studio-badge">✍️ JEEMU TEAM STUDIO</div>
+        <h2 class="studio-title">Publish Content with Your Team</h2>
+        <p class="studio-sub">
+          Post directly to the Updates Feed, Chaos Board, or Journey Timeline. Posts are saved persistently to
+          localStorage.
+        </p>
+      </div>
+
+      <form id="team-post-form" class="studio-form">
+        <div class="form-row-split">
+          <div class="studio-field">
+            <label class="studio-label">Who is posting?</label>
+            <select id="post-author" class="studio-select" required>
+              <option value="Anna Vu">Anna Vu (Hardware & Industrial Design)</option>
+              <option value="Ishaan">Ishaan (Embedded Firmware & NFC)</option>
+              <option value="Jack">Jack (Game Systems & Content)</option>
+              <option value="Shefali">Shefali (Mobile App & Community)</option>
+              <option value="Shiva Manickam" selected>Shiva Manickam (Platform & AI Architecture)</option>
+              <option value="Yana C">Yana C (Operations & Production)</option>
+            </select>
+          </div>
+
+          <div class="studio-field">
+            <label class="studio-label">Target Page</label>
+            <select id="post-target-view" class="studio-select" required>
+              <option value="feed">Updates Feed (Devlog / News)</option>
+              <option value="chaos">Chaos Board (Fails / Shitposts / Memes)</option>
+              <option value="journey">Journey (Timeline Milestone)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="studio-field">
+          <label class="studio-label">Post Title or Milestone Name</label>
+          <input type="text" id="post-title" required
+            placeholder="e.g. Prototype V4 Milling Complete or Drunk Playtest Fails" class="studio-input">
+        </div>
+
+        <div class="studio-field">
+          <label class="studio-label">Badge or Category Tag</label>
+          <input type="text" id="post-tag" placeholder="e.g. Hardware, 💀 EPIC FAIL, Firmware, AI Engine"
+            class="studio-input">
+        </div>
+
+        <div class="studio-field">
+          <label class="studio-label">Content / Story</label>
+          <textarea id="post-content" required rows="5"
+            placeholder="Write your devlog update, funny fail quote, or milestone story..."
+            class="studio-textarea"></textarea>
+        </div>
+
+        <div class="studio-actions">
+          <button type="submit" class="btn-publish-post" id="btn-publish-submit">
+            <span>🚀 Publish Live to Site</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Canvas Heatmap Overlay -->
   <canvas id="heatmap-canvas" class="heatmap-canvas hidden"></canvas>

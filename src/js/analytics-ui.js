@@ -14,6 +14,16 @@ class AnalyticsUI {
     this.heatmapToggleBtn = document.getElementById('btn-toggle-heatmap');
     this.heatmapActive = false;
 
+    // Only show analytics UI to authenticated team members
+    this.isTeamMember = !!sessionStorage.getItem('jeemu_logged_in_member');
+
+    if (!this.isTeamMember) {
+      // Hide the floating button entirely for public visitors
+      if (this.floatingBtn) this.floatingBtn.style.display = 'none';
+      if (this.drawer) this.drawer.style.display = 'none';
+      return; // Skip all event binding
+    }
+
     this._bindEvents();
     this.render();
 
@@ -42,10 +52,15 @@ class AnalyticsUI {
     this.closeBtn?.addEventListener('click', () => this.closeDrawer());
 
     // Footer link trigger
-    document.getElementById('footer-analytics-link')?.addEventListener('click', () => this.openDrawer());
+    document.getElementById('footer-analytics-link')?.addEventListener('click', (e) => {
+      if (!this.isTeamMember) return;
+      e.preventDefault();
+      this.openDrawer();
+    });
 
-    // Keyboard shortcut (Shift + A)
+    // Keyboard shortcut (Shift + A) — team members only
     window.addEventListener('keydown', (e) => {
+      if (!this.isTeamMember) return;
       if (e.shiftKey && (e.key === 'A' || e.key === 'a')) {
         this.toggleDrawer();
       }

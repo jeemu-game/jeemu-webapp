@@ -15,8 +15,14 @@ class AnalyticsEngine {
     this.scrollMilestones = new Set();
     this.listeners = [];
     this.utmParams = this._parseUtm();
-    this.refCode = this.utmParams.ref || null;
+    // Check localStorage for persisted referral (set by funnel.js before analytics init)
+    this.refCode = this.utmParams.ref
+      || sessionStorage.getItem('jeemu_active_ref')
+      || localStorage.getItem('jeemu_active_ref')
+      || null;
     this.activeDwellSeconds = 0;
+    this._eventWriteQueue = null; // Debounce timer for batch writes
+    this._pendingEvents = null;   // Batch buffer
 
     this._initEvents();
     this._initAutoTracking();
@@ -99,11 +105,21 @@ class AnalyticsEngine {
       data
     };
 
-    const events = this.getEvents();
-    events.push(event);
-    // Keep max 500 events to prevent quota overflow
-    if (events.length > 500) events.shift();
-    localStorage.setItem(STORAGE_KEY_EVENTS, JSON.stringify(events));
+    // Debounced batch write to prevent localStorage race on rapid events
+    if (!this._pendingEvents) {
+      this._pendingEvents = this.getEvents();
+    }
+    this._pendingEvents.push(event);
+    if (this._pendingEvents.length > 500) this._pendingEvents.shift();
+
+    clearTimeout(this._eventWriteQueue);
+    this._eventWriteQueue = setTimeout(() => {
+      try {
+        localStorage.setItem(STORAGE_KEY_EVENTS, JSON.stringify(this._pendingEvents));
+      } catch (e) { /* quota exceeded — gracefully ignore */ }
+      this._pendingEvents = null;
+      this._eventWriteQueue = null;
+    }, 50);
 
     this._notify(event);
 

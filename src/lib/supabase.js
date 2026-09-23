@@ -226,6 +226,16 @@ export async function broadcastRealtime(eventPayload) {
 /**
  * 1. Subscribers
  */
+export async function getSubscriberCount() {
+  if (isSupabaseConfigured && supabase) {
+    const { count, error } = await supabase
+      .from('subscribers')
+      .select('*', { count: 'exact', head: true });
+    if (!error) return count || 0;
+  }
+  return localDb.subscribers.length;
+}
+
 export async function getSubscribers() {
   if (isSupabaseConfigured && supabase) {
     const { data, error } = await supabase
@@ -329,7 +339,11 @@ export async function incrementReferralCount(referralCode) {
 }
 
 export async function registerVipDeposit({ subscriberId, referralCode, amount = 1.0 }) {
-  const stripeChargeId = 'ch_3M' + Math.random().toString(36).substring(2, 9) + 'StripeJeemu';
+  return markSubscriberVip({ subscriberId, referralCode, amount, stripeSessionId: null, stripePaymentIntent: null });
+}
+
+export async function markSubscriberVip({ subscriberId, referralCode, amount = 1.0, stripeSessionId = null, stripePaymentIntent = null }) {
+  const stripeChargeId = stripePaymentIntent || ('ch_3M' + Math.random().toString(36).substring(2, 9) + 'StripeJeemu');
   const now = Date.now();
 
   if (isSupabaseConfigured && supabase) {
@@ -340,14 +354,17 @@ export async function registerVipDeposit({ subscriberId, referralCode, amount = 
 
     const { data } = await query.maybeSingle();
     if (data) {
+      const updatePayload = {
+        is_vip: true,
+        deposit_amount: amount,
+        vip_timestamp: now,
+        stripe_charge_id: stripeChargeId
+      };
+      if (stripeSessionId) updatePayload.stripe_session_id = stripeSessionId;
+
       const { data: updated, error } = await supabase
         .from('subscribers')
-        .update({
-          is_vip: true,
-          deposit_amount: amount,
-          vip_timestamp: now,
-          stripe_charge_id: stripeChargeId
-        })
+        .update(updatePayload)
         .eq('id', data.id)
         .select()
         .single();
@@ -369,6 +386,7 @@ export async function registerVipDeposit({ subscriberId, referralCode, amount = 
     sub.depositAmount = amount;
     sub.vipTimestamp = now;
     sub.stripeChargeId = stripeChargeId;
+    if (stripeSessionId) sub.stripeSessionId = stripeSessionId;
     saveLocalDb();
   }
 

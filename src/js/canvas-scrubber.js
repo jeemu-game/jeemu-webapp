@@ -52,8 +52,10 @@ export class CanvasScrubber {
     // Frame URLs
     this.urls = window.JEEMU_FRAMES || Array.from({ length: 240 }, (_, i) => `/frames-smooth/${String(i).padStart(3, '0')}.webp`);
     this.cache = new Map();
+    this._trackBounds = null; // Cached via ResizeObserver
 
     this._bindEvents();
+    this._initResizeObserver();
     this.setReduced(this.reduced);
     this.render();
 
@@ -61,6 +63,9 @@ export class CanvasScrubber {
     for (let i = 0; i < 6; i++) {
       this.requestFrame(i);
     }
+
+    // Expose globally so funnel.js can pause the tour on modal open
+    window.canvasScrubber = this;
   }
 
   clamp(v, a = 0, b = 1) {
@@ -238,15 +243,34 @@ export class CanvasScrubber {
     }
   }
 
+  _initResizeObserver() {
+    if (!this.track) return;
+    const updateBounds = () => {
+      const rect = this.track.getBoundingClientRect();
+      this._trackBounds = {
+        top: this.track.offsetTop,
+        height: this.track.offsetHeight
+      };
+    };
+    updateBounds();
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(updateBounds);
+      ro.observe(this.track);
+      ro.observe(document.body);
+    }
+    window.addEventListener('load', updateBounds, { once: true });
+  }
+
   getMaxTrackScroll() {
     if (!this.track) return window.innerHeight * 2.2;
-    return Math.max(window.innerHeight * 1.5, this.track.offsetHeight - window.innerHeight);
+    const trackHeight = this._trackBounds?.height || this.track.offsetHeight;
+    return Math.max(window.innerHeight * 1.5, trackHeight - window.innerHeight);
   }
 
   syncScrollFromProgress(progress) {
     if (!this.track) return;
     const maxScroll = this.getMaxTrackScroll();
-    const trackTop = this.track.offsetTop;
+    const trackTop = this._trackBounds?.top ?? this.track.offsetTop;
     const desiredScroll = trackTop + progress * maxScroll;
 
     this.isProgrammaticScroll = true;
@@ -254,7 +278,9 @@ export class CanvasScrubber {
       top: desiredScroll,
       behavior: this.skipTransition ? 'smooth' : 'auto'
     });
-    setTimeout(() => { this.isProgrammaticScroll = false; }, 60);
+    // Guard must be longer than the smooth scroll animation (~600ms)
+    clearTimeout(this._progScrollTimer);
+    this._progScrollTimer = setTimeout(() => { this.isProgrammaticScroll = false; }, 800);
   }
 
   handleWindowScroll() {
@@ -262,7 +288,7 @@ export class CanvasScrubber {
     if (!this.track) return;
 
     const scrollY = window.scrollY;
-    const trackTop = this.track.offsetTop;
+    const trackTop = this._trackBounds?.top ?? this.track.offsetTop;
     const maxScroll = this.getMaxTrackScroll();
 
     if (scrollY <= trackTop) {

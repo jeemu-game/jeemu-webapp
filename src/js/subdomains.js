@@ -12,12 +12,23 @@
  * Supports native DNS hostnames, hash navigation, and clean navbar routing.
  */
 
+import { router } from './router.js';
+
 class SubdomainManager {
   constructor() {
     this.subdomains = ['launch', 'feed', 'chaos', 'journey', 'login', 'admin', 'dashboard'];
     this.currentSubdomain = this._detectSubdomain();
     this.sseSource = null;
+    window.subdomainManager = this;
 
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this._init());
+    } else {
+      this._init();
+    }
+  }
+
+  _init() {
     this._initNavLinks();
     this._initAuthForm();
     this._initAdminView();
@@ -61,6 +72,16 @@ class SubdomainManager {
         }
       });
     });
+
+    document.querySelectorAll('[data-route]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const target = link.dataset.route;
+        if (target && this.subdomains.includes(target)) {
+          e.preventDefault();
+          this.switchSubdomain(target);
+        }
+      });
+    });
   }
 
   switchSubdomain(targetSubdomain) {
@@ -77,6 +98,23 @@ class SubdomainManager {
 
   _routeToSubdomain(subdomain) {
     this.currentSubdomain = subdomain;
+
+    // Auth gate: admin and dashboard require team login
+    const protectedSubdomains = ['admin', 'dashboard'];
+    const isLoggedIn = !!sessionStorage.getItem('jeemu_logged_in_member');
+
+    if (protectedSubdomains.includes(subdomain) && !isLoggedIn) {
+      subdomain = 'login';
+      this.currentSubdomain = 'login';
+      // Show a message on the login page
+      setTimeout(() => {
+        const loginMsg = document.getElementById('login-required-msg');
+        if (loginMsg) {
+          loginMsg.textContent = 'Authentication required to access this section.';
+          loginMsg.style.display = 'block';
+        }
+      }, 100);
+    }
 
     // Update active nav links
     document.querySelectorAll('[data-subdomain]').forEach(link => {
@@ -114,7 +152,13 @@ class SubdomainManager {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Handle specific subdomain logic
-    if (subdomain === 'dashboard') {
+    if (subdomain === 'feed') {
+      router?.renderFeed();
+    } else if (subdomain === 'chaos') {
+      router?.renderChaos();
+    } else if (subdomain === 'journey') {
+      router?.renderJourney();
+    } else if (subdomain === 'dashboard') {
       this._initRealTimeDashboard();
     } else {
       this._disconnectSSE();
@@ -205,12 +249,25 @@ class SubdomainManager {
   }
 
   _fetchMetrics() {
-    fetch('/api/telemetry/metrics')
-      .then(res => res.json())
+    const token = this._getAuthToken();
+    fetch('/api/telemetry/metrics', {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+    })
+      .then(res => {
+        if (res.status === 401) { this.showToast('Session expired. Please login again.'); return null; }
+        return res.json();
+      })
       .then(data => {
-        this._updateDashboardKPIs(data);
+        if (data) this._updateDashboardKPIs(data);
       })
       .catch(err => console.error('Error fetching metrics:', err));
+  }
+
+  _getAuthToken() {
+    // Read from cookie or fallback to sessionStorage
+    const match = document.cookie.match(/jeemu_auth=([^;]+)/);
+    if (match) return match[1];
+    return sessionStorage.getItem('jeemu_auth_token') || null;
   }
 
   _updateDashboardKPIs(metrics) {
@@ -400,6 +457,10 @@ class SubdomainManager {
       .then(data => {
         if (data.success) {
           sessionStorage.setItem('jeemu_logged_in_member', username);
+          if (data.token) {
+            sessionStorage.setItem('jeemu_auth_token', data.token);
+            document.cookie = `jeemu_auth=${data.token}; path=/; max-age=86400; SameSite=Lax`;
+          }
           this.showToast(`Authenticated as ${username.toUpperCase()}`);
           setTimeout(() => {
             this.switchSubdomain('admin');
@@ -429,9 +490,20 @@ class SubdomainManager {
   }
 
   loadAdminSubscribers() {
-    fetch('/api/subscribers')
-      .then(res => res.json())
+    const token = this._getAuthToken();
+    fetch('/api/subscribers', {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+    })
+      .then(res => {
+        if (res.status === 401) {
+          const tbody = document.getElementById('admin-subscribers-tbody');
+          if (tbody) tbody.innerHTML = `<tr><td colspan="7" class="text-center">Session expired. Please <a href="#" onclick="subdomainManager.switchSubdomain('login')">login</a> again.</td></tr>`;
+          return null;
+        }
+        return res.json();
+      })
       .then(data => {
+        if (!data) return;
         const tbody = document.getElementById('admin-subscribers-tbody');
         if (!tbody) return;
 
@@ -461,7 +533,10 @@ class SubdomainManager {
   }
 
   exportAdminCSV() {
-    fetch('/api/subscribers')
+    const token = this._getAuthToken();
+    fetch('/api/subscribers', {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+    })
       .then(res => res.json())
       .then(data => {
         if (!data.subscribers || data.subscribers.length === 0) {

@@ -12,6 +12,7 @@
 import 'dotenv/config';
 import path from 'path';
 import fs from 'fs';
+import express from 'express';
 import { fileURLToPath } from 'url';
 import app from './api/index.js';
 
