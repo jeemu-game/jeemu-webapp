@@ -320,16 +320,16 @@ class UIEnhancementEngine {
       height = canvas.height = heroStage.clientHeight || window.innerHeight;
     }, { passive: true });
 
-    // Subtle warm ember specs
-    const particleCount = 28;
+    // Subtle luminous emerald & sage particles
+    const particleCount = 24;
     const particles = Array.from({ length: particleCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 2.2 + 0.8,
-      speedY: Math.random() * 0.4 + 0.15,
-      speedX: (Math.random() - 0.5) * 0.25,
-      opacity: Math.random() * 0.55 + 0.15,
-      hue: Math.random() > 0.6 ? 38 : 18 // warm amber or fire orange
+      size: Math.random() * 2.0 + 0.6,
+      speedY: Math.random() * 0.35 + 0.12,
+      speedX: (Math.random() - 0.5) * 0.2,
+      opacity: Math.random() * 0.45 + 0.1,
+      hue: Math.random() > 0.5 ? 154 : 142 // emerald green & sage
     }));
 
     const render = () => {
@@ -348,9 +348,9 @@ class UIEnhancementEngine {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 100%, 60%, ${p.opacity})`;
-        ctx.shadowBlur = p.size * 3;
-        ctx.shadowColor = `hsla(${p.hue}, 100%, 55%, 0.8)`;
+        ctx.fillStyle = `hsla(${p.hue}, 65%, 62%, ${p.opacity})`;
+        ctx.shadowBlur = p.size * 2.5;
+        ctx.shadowColor = `hsla(${p.hue}, 70%, 55%, 0.5)`;
         ctx.fill();
       });
 
