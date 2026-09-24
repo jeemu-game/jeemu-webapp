@@ -44,7 +44,7 @@ const stripe = process.env.STRIPE_SECRET_KEY
 /* ========== RATE LIMITERS ========== */
 const writeLimiter = rateLimit({
   windowMs: 60 * 1000,    // 1 minute window
-  max: 10,                 // max 10 writes per IP per minute
+  max: 120,                // max 120 writes per IP per minute
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests. Please slow down.' }
@@ -52,10 +52,26 @@ const writeLimiter = rateLimit({
 
 const readLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 60,
+  max: 120,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests.' }
+});
+
+const telemetryLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 3000,               // High limit for telemetry click/scroll streams
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many telemetry events.' }
+});
+
+const authLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,                 // 60 login attempts per minute
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many login attempts. Please wait a moment.' }
 });
 
 /* ========== AUTH MIDDLEWARE ========== */

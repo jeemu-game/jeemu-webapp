@@ -121,8 +121,18 @@
             The customizable wooden tower game with<br> a new challenge in every block.
           </p>
 
-          <!-- Immediate Reservation Hero Box (Reservation First) -->
-          <div class="hero-reservation-card">
+          <!-- Immediate Reservation Hero Box (Reservation First - Cult UI / Magic UI / Manus) -->
+          <div class="hero-reservation-card spotlight-card border-beam-container">
+            <div class="border-beam" aria-hidden="true"></div>
+            
+            <div class="hero-card-status-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 8px;">
+              <span style="display: inline-flex; align-items: center; gap: 6px;">
+                <span class="pulse-dot" style="width: 6px; height: 6px;"></span>
+                <span style="color: #fbbf24; font-weight: 600;">JEEMU OS v2.4</span>
+              </span>
+              <span style="letter-spacing: 0.04em;">NFC // 13.56MHz CRYPTO</span>
+            </div>
+
             <div class="hero-offer-banner">
               <span class="offer-highlight">🔥 Guaranteed 45% Off ($89 vs $159)</span>
               <span class="offer-perk">+ Free Gold-Stamped Founder’s Block</span>
@@ -131,7 +141,7 @@
               <label for="email" class="sr-only">Email address</label>
               <div class="field">
                 <input id="email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="Enter your email to reserve early access" required maxlength="254">
-                <button type="submit" aria-label="Reserve Jeemu launch spot">
+                <button type="submit" class="btn-shimmer-primary" aria-label="Reserve Jeemu launch spot">
                   Reserve Batch 01 <span aria-hidden="true">→</span>
                 </button>
               </div>
@@ -145,7 +155,7 @@
           </div>
 
           <div class="intro-actions">
-            <button class="join-primary btn-open-vip" type="button">
+            <button class="join-primary btn-shimmer-primary btn-open-vip" type="button">
               VIP $1 Reservation <span aria-hidden="true">↗</span>
             </button>
             <button class="experience" type="button">
@@ -233,15 +243,65 @@
       </div>
     </section>
 
+    <!-- ================= HAIKEI.APP GENERATIVE ORGANIC WAVE DIVIDER ================= -->
+    <div class="haikei-wave-divider" aria-hidden="true">
+      <svg viewBox="0 0 1440 80" fill="none" preserveAspectRatio="none">
+        <path d="M0,28L60,33.3C120,38.7,240,49.3,360,54.7C480,60,600,60,720,50.7C840,41.3,960,22.7,1080,22.7C1200,22.7,1320,41.3,1380,50.7L1440,60L1440,80L1380,80C1320,80,1200,80,1080,80C960,80,840,80,720,80C600,80,480,80,360,80C240,80,120,80,60,80L0,80Z" fill="url(#haikei-wave-grad-1)"></path>
+        <path d="M0,45L60,48C120,51.3,240,57.3,360,56C480,54.7,600,46,720,42C840,38,960,38,1080,42.7C1200,47.3,1320,56,1380,60.7L1440,65.3L1440,80L1380,80C1320,80,1200,80,1080,80C960,80,840,80,720,80C600,80,480,80,360,80C240,80,120,80,60,80L0,80Z" fill="#151419"></path>
+        <defs>
+          <linearGradient id="haikei-wave-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ff3b00" stop-opacity="0.3"/>
+            <stop offset="50%" stop-color="#ff641e" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#ffc83b" stop-opacity="0.3"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <!-- ================= MAGIC UI INFINITE SPEC MARQUEE #1 ================= -->
+    <div class="marquee-wrap" aria-label="Jeemu Hardware and Gameplay Highlights">
+      <div class="marquee-track">
+        <!-- Set 1 -->
+        <div class="marquee-item"><span class="marquee-icon">⚡</span> <span>45 Cryptographic NFC Blocks</span> <span class="marquee-tag">13.56MHz</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🌲</span> <span>European Solid Beechwood</span> <span class="marquee-tag">Matte Beeswax</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🚫</span> <span>100% Phone-Free During Play</span> <span class="marquee-tag">Zero Screens</span></div>
+        <div class="marquee-item"><span class="marquee-icon">⏱️</span> <span>Sub-80ms Tag Detection</span> <span class="marquee-tag">Instant Response</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🔋</span> <span>12-Hour Rechargeable Battery</span> <span class="marquee-tag">USB-C Power</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🖥️</span> <span>Panoramic High-Contrast IPS</span> <span class="marquee-tag">Full Color</span></div>
+        <div class="marquee-item"><span class="marquee-icon">✨</span> <span>Free Gold-Stamped Founder Block</span> <span class="marquee-tag">Batch 01</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🛡️</span> <span>100% Refundable $1 Deposit</span> <span class="marquee-tag">Lowest $89</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🎲</span> <span>AI Custom Mode Generator</span> <span class="marquee-tag">8s Prompts</span></div>
+        <!-- Set 2 (Duplicate for smooth infinite marquee loop) -->
+        <div class="marquee-item"><span class="marquee-icon">⚡</span> <span>45 Cryptographic NFC Blocks</span> <span class="marquee-tag">13.56MHz</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🌲</span> <span>European Solid Beechwood</span> <span class="marquee-tag">Matte Beeswax</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🚫</span> <span>100% Phone-Free During Play</span> <span class="marquee-tag">Zero Screens</span></div>
+        <div class="marquee-item"><span class="marquee-icon">⏱️</span> <span>Sub-80ms Tag Detection</span> <span class="marquee-tag">Instant Response</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🔋</span> <span>12-Hour Rechargeable Battery</span> <span class="marquee-tag">USB-C Power</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🖥️</span> <span>Panoramic High-Contrast IPS</span> <span class="marquee-tag">Full Color</span></div>
+        <div class="marquee-item"><span class="marquee-icon">✨</span> <span>Free Gold-Stamped Founder Block</span> <span class="marquee-tag">Batch 01</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🛡️</span> <span>100% Refundable $1 Deposit</span> <span class="marquee-tag">Lowest $89</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🎲</span> <span>AI Custom Mode Generator</span> <span class="marquee-tag">8s Prompts</span></div>
+      </div>
+    </div>
+
     <!-- ================= SECTION 2: INTERACTIVE HARDWARE SIMULATOR ================= -->
-    <section class="deep-section" id="simulator">
+    <section class="deep-section haikei-ambient-grid" id="simulator">
       <div class="container">
-        <div class="section-head">
-          <span class="section-tag">Interactive Hardware Prototype</span>
-          <h2 class="section-title">Tap a Block on the Reader</h2>
-          <p class="section-desc">
-            Experience the tactile physical-to-digital interface. Choose a game category, then click any wooden block to position it on the Jeemu smart dock.
-          </p>
+        <div class="section-head" style="position: relative;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <span class="section-tag">Interactive Hardware Prototype</span>
+              <h2 class="section-title">Tap a Block on the Reader</h2>
+              <p class="section-desc">
+                Experience the tactile physical-to-digital interface. Choose a game category, then click any wooden block or press keys <kbd class="manus-kbd">1</kbd>–<kbd class="manus-kbd">5</kbd> to position it on the Jeemu smart dock.
+              </p>
+            </div>
+            <div style="margin-top: 8px;">
+              <button id="sim-sound-toggle-btn" class="sim-sound-toggle sound-active" title="Toggle tactile wood tap & NFC sound FX" aria-label="Toggle simulator sound effects">
+                <span class="sound-icon">🔊</span> <span>Sound: ON</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Category Pills Switcher -->
@@ -261,11 +321,11 @@
           <div class="blocks-column">
             <div class="column-header">
               <span class="col-title">NFC Beechwood Blocks</span>
-              <span class="col-sub">Click block to tap on dock</span>
+              <span class="col-sub">Click block or press keys 1–5</span>
             </div>
 
             <div class="blocks-stack">
-              <button class="wooden-block-btn active" data-block="7" id="block-btn-7">
+              <button class="wooden-block-btn spotlight-card active" data-block="7" id="block-btn-7" title="Press key 1 to tap Block #07">
                 <div class="block-content-row">
                   <div class="block-title-group">
                     <span class="block-nfc-mark">
@@ -273,13 +333,13 @@
                         <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zm14 0H6v12h12V6z"/>
                       </svg>
                     </span>
-                    <span class="block-num">BLOCK #07</span>
+                    <span class="block-num">BLOCK #07 <kbd class="manus-kbd">1</kbd></span>
                   </div>
                   <span class="block-peril-tag">High Peril</span>
                 </div>
               </button>
 
-              <button class="wooden-block-btn" data-block="14" id="block-btn-14">
+              <button class="wooden-block-btn spotlight-card" data-block="14" id="block-btn-14" title="Press key 2 to tap Block #14">
                 <div class="block-content-row">
                   <div class="block-title-group">
                     <span class="block-nfc-mark">
@@ -287,13 +347,13 @@
                         <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zm14 0H6v12h12V6z"/>
                       </svg>
                     </span>
-                    <span class="block-num">BLOCK #14</span>
+                    <span class="block-num">BLOCK #14 <kbd class="manus-kbd">2</kbd></span>
                   </div>
                   <span class="block-peril-tag">Core Twist</span>
                 </div>
               </button>
 
-              <button class="wooden-block-btn" data-block="23" id="block-btn-23">
+              <button class="wooden-block-btn spotlight-card" data-block="23" id="block-btn-23" title="Press key 3 to tap Block #23">
                 <div class="block-content-row">
                   <div class="block-title-group">
                     <span class="block-nfc-mark">
@@ -301,13 +361,13 @@
                         <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zm14 0H6v12h12V6z"/>
                       </svg>
                     </span>
-                    <span class="block-num">BLOCK #23</span>
+                    <span class="block-num">BLOCK #23 <kbd class="manus-kbd">3</kbd></span>
                   </div>
                   <span class="block-peril-tag">Group Dare</span>
                 </div>
               </button>
 
-              <button class="wooden-block-btn" data-block="36" id="block-btn-36">
+              <button class="wooden-block-btn spotlight-card" data-block="36" id="block-btn-36" title="Press key 4 to tap Block #36">
                 <div class="block-content-row">
                   <div class="block-title-group">
                     <span class="block-nfc-mark">
@@ -315,13 +375,13 @@
                         <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zm14 0H6v12h12V6z"/>
                       </svg>
                     </span>
-                    <span class="block-num">BLOCK #36</span>
+                    <span class="block-num">BLOCK #36 <kbd class="manus-kbd">4</kbd></span>
                   </div>
                   <span class="block-peril-tag">Secret Rule</span>
                 </div>
               </button>
 
-              <button class="wooden-block-btn" data-block="45" id="block-btn-45">
+              <button class="wooden-block-btn spotlight-card" data-block="45" id="block-btn-45" title="Press key 5 to tap Block #45">
                 <div class="block-content-row">
                   <div class="block-title-group">
                     <span class="block-nfc-mark">
@@ -329,7 +389,7 @@
                         <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zm14 0H6v12h12V6z"/>
                       </svg>
                     </span>
-                    <span class="block-num">BLOCK #45</span>
+                    <span class="block-num">BLOCK #45 <kbd class="manus-kbd">5</kbd></span>
                   </div>
                   <span class="block-peril-tag">Tower Climax</span>
                 </div>
@@ -389,7 +449,7 @@
     </section>
 
     <!-- ================= SECTION 3: SYSTEM ARCHITECTURE BENTO GRID ================= -->
-    <section class="deep-section" id="features">
+    <section class="deep-section haikei-ambient-grid" id="features">
       <div class="container">
         <div class="section-head">
           <span class="section-tag">System Architecture</span>
@@ -401,7 +461,8 @@
 
         <div class="bento-grid">
           <!-- Bento 1: 45 Beechwood Blocks (2 Columns) -->
-          <div class="bento-card bento-span-2">
+          <div class="bento-card bento-span-2 spotlight-card border-beam-container">
+            <div class="border-beam" aria-hidden="true"></div>
             <span class="bento-number">01 / HARDWARE</span>
             <h3 class="bento-title">45 Solid Beechwood NFC Blocks</h3>
             <p class="bento-desc">
@@ -416,7 +477,7 @@
           </div>
 
           <!-- Bento 2: Standalone Smart Dock -->
-          <div class="bento-card">
+          <div class="bento-card spotlight-card">
             <span class="bento-number">02 / INTERACTION</span>
             <h3 class="bento-title">The Smart Reader Dock</h3>
             <p class="bento-desc">
@@ -426,7 +487,7 @@
           </div>
 
           <!-- Bento 3: AI Game Generator -->
-          <div class="bento-card">
+          <div class="bento-card spotlight-card">
             <span class="bento-number">03 / CREATIVITY</span>
             <h3 class="bento-title">AI Game Engine & Studio</h3>
             <p class="bento-desc">
@@ -436,7 +497,7 @@
           </div>
 
           <!-- Bento 4: Hardware Showcase Banner (Aligned Rectangular Hardwood Blocks) -->
-          <div class="bento-card bento-span-2 bento-media-card">
+          <div class="bento-card bento-span-2 bento-media-card spotlight-card">
             <div class="bento-media-split">
               <div class="bento-photo-wrap">
                 <img src="/images/jeemu-hero.jpg" alt="Jeemu authentic gameplay with solid beechwood blocks and pedestal dock" class="bento-img" loading="lazy">
@@ -459,8 +520,23 @@
       </div>
     </section>
 
+    <!-- ================= HAIKEI.APP GENERATIVE ORGANIC WAVE DIVIDER 2 ================= -->
+    <div class="haikei-wave-divider" aria-hidden="true">
+      <svg viewBox="0 0 1440 80" fill="none" preserveAspectRatio="none">
+        <path d="M0,40L60,45.3C120,50.7,240,61.3,360,61.3C480,61.3,600,50.7,720,40C840,29.3,960,18.7,1080,24C1200,29.3,1320,50.7,1380,61.3L1440,72L1440,80L1380,80C1320,80,1200,80,1080,80C960,80,840,80,720,80C600,80,480,80,360,80C240,80,120,80,60,80L0,80Z" fill="url(#haikei-wave-grad-2)"></path>
+        <path d="M0,56L60,58.7C120,61.3,240,66.7,360,64C480,61.3,600,50.7,720,48C840,45.3,960,50.7,1080,56C1200,61.3,1320,66.7,1380,69.3L1440,72L1440,80L1380,80C1320,80,1200,80,1080,80C960,80,840,80,720,80C600,80,480,80,360,80C240,80,120,80,60,80L0,80Z" fill="#131419"></path>
+        <defs>
+          <linearGradient id="haikei-wave-grad-2" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ff641e" stop-opacity="0.35"/>
+            <stop offset="50%" stop-color="#fbbf24" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#ff641e" stop-opacity="0.25"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
     <!-- ================= SECTION 4: ORIGIN STORY & ENGINEERING TEAM ================= -->
-    <section class="deep-section" id="story">
+    <section class="deep-section haikei-ambient-grid" id="story">
       <div class="container">
         <div class="section-head">
           <span class="section-tag">Timeline & Origin Story</span>
@@ -547,8 +623,23 @@
       </div>
     </section>
 
+    <!-- ================= HAIKEI.APP GENERATIVE ORGANIC WAVE DIVIDER 3 ================= -->
+    <div class="haikei-wave-divider" aria-hidden="true">
+      <svg viewBox="0 0 1440 80" fill="none" preserveAspectRatio="none">
+        <path d="M0,20L60,26.7C120,33.3,240,46.7,360,48C480,49.3,600,38.7,720,32C840,25.3,960,22.7,1080,28C1200,33.3,1320,46.7,1380,53.3L1440,60L1440,80L1380,80C1320,80,1200,80,1080,80C960,80,840,80,720,80C600,80,480,80,360,80C240,80,120,80,60,80L0,80Z" fill="url(#haikei-wave-grad-3)"></path>
+        <path d="M0,42L60,45.3C120,48.7,240,55.3,360,54C480,52.7,600,43.3,720,39.3C840,35.3,960,36.7,1080,40.7C1200,44.7,1320,51.3,1380,54.7L1440,58L1440,80L1380,80C1320,80,1200,80,1080,80C960,80,840,80,720,80C600,80,480,80,360,80C240,80,120,80,60,80L0,80Z" fill="#111216"></path>
+        <defs>
+          <linearGradient id="haikei-wave-grad-3" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ff641e" stop-opacity="0.25"/>
+            <stop offset="50%" stop-color="#ff3b00" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.25"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
     <!-- ================= SECTION 5: KICKSTARTER FAQ ================= -->
-    <section class="deep-section" id="faq">
+    <section class="deep-section haikei-ambient-grid" id="faq">
       <div class="container">
         <div class="section-head">
           <span class="section-tag">Specifications & Answers</span>
@@ -599,10 +690,29 @@
       </div>
     </section>
 
+    <!-- ================= MAGIC UI INFINITE COMMUNITY MARQUEE #2 ================= -->
+    <div class="marquee-wrap" aria-label="Community and Playtester Quotes">
+      <div class="marquee-track">
+        <!-- Set 1 -->
+        <div class="marquee-item"><span class="marquee-icon">💬</span> <span>"The tactile snap of the blocks on the reader dock is pure magic."</span> <span class="marquee-tag">— Tabletop Daily</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🎉</span> <span>"Finally, a game night where nobody is staring down at iPhones."</span> <span class="marquee-tag">— Backer #142</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🤖</span> <span>"Generated 45 custom anniversary prompts in 8 seconds."</span> <span class="marquee-tag">— Playtester Sarah</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🪵</span> <span>"The European beechwood finish with beeswax feels extraordinary."</span> <span class="marquee-tag">— Craft Review</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🏆</span> <span>"Locked in my $1 VIP reservation in 5 seconds."</span> <span class="marquee-tag">— Early Backer #409</span></div>
+        <!-- Set 2 (Duplicate for smooth infinite marquee loop) -->
+        <div class="marquee-item"><span class="marquee-icon">💬</span> <span>"The tactile snap of the blocks on the reader dock is pure magic."</span> <span class="marquee-tag">— Tabletop Daily</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🎉</span> <span>"Finally, a game night where nobody is staring down at iPhones."</span> <span class="marquee-tag">— Backer #142</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🤖</span> <span>"Generated 45 custom anniversary prompts in 8 seconds."</span> <span class="marquee-tag">— Playtester Sarah</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🪵</span> <span>"The European beechwood finish with beeswax feels extraordinary."</span> <span class="marquee-tag">— Craft Review</span></div>
+        <div class="marquee-item"><span class="marquee-icon">🏆</span> <span>"Locked in my $1 VIP reservation in 5 seconds."</span> <span class="marquee-tag">— Early Backer #409</span></div>
+      </div>
+    </div>
+
     <!-- ================= SECTION 6: FINAL KICKSTARTER RESERVATION ================= -->
-    <section class="deep-section" id="join-waitlist">
+    <section class="deep-section haikei-ambient-grid" id="join-waitlist">
       <div class="container">
-        <div class="final-cta-card">
+        <div class="final-cta-card spotlight-card border-beam-container">
+          <div class="border-beam" aria-hidden="true"></div>
           <span class="section-tag">Fall 2026 Batch 01</span>
           <h2 class="section-title">Ready to Elevate Your Tabletop Nights?</h2>
           <p class="section-desc">
@@ -612,7 +722,7 @@
           <form id="waitlist-form" class="final-capture-form waitlist-form-sync">
             <div class="field">
               <input id="subscriber-email" name="email" type="email" placeholder="Enter your email address" required autocomplete="email">
-              <button type="submit">
+              <button type="submit" class="btn-shimmer-primary">
                 Reserve Early Access <span aria-hidden="true">→</span>
               </button>
             </div>
@@ -1008,7 +1118,8 @@
 
   <!-- Modal 1: VIP Reservation Modal -->
   <div class="modal-backdrop hidden" id="vip-modal">
-    <div class="clean-modal-card">
+    <div class="clean-modal-card spotlight-card border-beam-container">
+      <div class="border-beam" aria-hidden="true"></div>
       <button class="btn-close-modal" id="btn-close-vip" aria-label="Close modal">×</button>
       
       <div class="modal-header-block">
@@ -1074,7 +1185,8 @@
 
   <!-- Modal 2: Stripe Checkout Modal -->
   <div class="modal-backdrop hidden" id="stripe-checkout-modal">
-    <div class="clean-modal-card">
+    <div class="clean-modal-card spotlight-card border-beam-container">
+      <div class="border-beam" aria-hidden="true"></div>
       <button class="btn-close-modal" id="btn-close-stripe" aria-label="Close modal">×</button>
       
       <div class="modal-header-block">
@@ -1120,7 +1232,8 @@
 
   <!-- Modal 3: Share Hub Modal -->
   <div class="modal-backdrop hidden" id="share-modal">
-    <div class="clean-modal-card" style="text-align: center;">
+    <div class="clean-modal-card spotlight-card border-beam-container" style="text-align: center;">
+      <div class="border-beam" aria-hidden="true"></div>
       <button class="btn-close-modal" id="btn-close-share" aria-label="Close modal">×</button>
       
       <div class="modal-header-block">

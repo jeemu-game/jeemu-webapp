@@ -14,8 +14,9 @@ import { analytics } from './js/analytics.js';
 import { analyticsUI } from './js/analytics-ui.js';
 import { router } from './js/router.js';
 import { subdomainManager } from './js/subdomains.js';
+import { uiEnhancements } from './js/spotlight.js';
 
-export { canvasScrubber, simulator, funnel, analytics, analyticsUI, router, subdomainManager };
+export { canvasScrubber, simulator, funnel, analytics, analyticsUI, router, subdomainManager, uiEnhancements };
 
 // Smooth Anchor Link Handler
 function initAnchorNavigation() {
@@ -81,5 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initAnchorNavigation();
   initHeaderScroll();
   initTelemetryTracking();
+  uiEnhancements.init();
   console.log('🎮 Jeemu Unified Tabletop Platform loaded successfully.');
 });
