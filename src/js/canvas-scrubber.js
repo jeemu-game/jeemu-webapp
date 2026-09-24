@@ -208,10 +208,10 @@ export class CanvasScrubber {
       // Sync window scroll with tour
       this.syncScrollFromProgress(this.value);
     } else {
-      const delta = (this.target - this.value) * (1 - Math.exp(-dt / 95));
-      const speed = this.skipTransition ? 0.0009 : 0.00019;
-      this.value = this.reduced ? this.target : this.value + this.clamp(delta, -dt * speed, dt * speed);
-      if (Math.abs(this.target - this.value) < 0.00008) this.value = this.target;
+      // Responsive, smooth exponential interpolation without artificial lag
+      const factor = this.skipTransition ? 1 : 1 - Math.exp(-dt / 50);
+      this.value = this.reduced ? this.target : this.value + (this.target - this.value) * factor;
+      if (Math.abs(this.target - this.value) < 0.0004) this.value = this.target;
     }
 
     this.render();

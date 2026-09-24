@@ -1596,6 +1596,2899 @@
         "screenHeight": 702,
         "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
       }
+    },
+    {
+      "id": "ev_1790187421025_gkzz",
+      "timestamp": 1790187421025,
+      "isoTime": "2:17:01 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790187421013_6tum",
+      "timestamp": 1790187421013,
+      "isoTime": "2:17:01 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790187432289_6p32",
+      "timestamp": 1790187432289,
+      "isoTime": "2:17:12 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "label": "Reserve Batch 01\n→",
+        "id": "",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790187432288_hzhv",
+      "timestamp": 1790187432288,
+      "isoTime": "2:17:12 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "tag": "button",
+        "id": null,
+        "className": "btn-shimmer-primary",
+        "label": "Reserve Batch 01 →",
+        "x": 492,
+        "y": 611,
+        "xPercent": 32.35,
+        "yPercent": 7.64,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790187434521_xh2x",
+      "timestamp": 1790187434521,
+      "isoTime": "2:17:14 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "label": "email",
+        "id": "email",
+        "tag": "INPUT"
+      }
+    },
+    {
+      "id": "ev_1790187434520_9kr5",
+      "timestamp": 1790187434520,
+      "isoTime": "2:17:14 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "tag": "input",
+        "id": "email",
+        "className": "",
+        "label": "Input: Enter your email to reserve early access",
+        "x": 188,
+        "y": 613,
+        "xPercent": 12.36,
+        "yPercent": 7.66,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790187436058_0nu4",
+      "timestamp": 1790187436058,
+      "isoTime": "2:17:16 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "offer-perk",
+        "label": "+ Free Gold-Stamped Founder’s Block",
+        "x": 426,
+        "y": 552,
+        "xPercent": 28.01,
+        "yPercent": 6.9,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790187438715_p21s",
+      "timestamp": 1790187438715,
+      "isoTime": "2:17:18 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790187444649_6nwy",
+      "timestamp": 1790187444649,
+      "isoTime": "2:17:24 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790187447531_0vcv",
+      "timestamp": 1790187447532,
+      "isoTime": "2:17:27 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790212470746_cacc",
+      "timestamp": 1790212470746,
+      "isoTime": "9:14:30 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790212470750_y9uv",
+      "timestamp": 1790212470750,
+      "isoTime": "9:14:30 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790212486222_m1xt",
+      "timestamp": 1790212486222,
+      "isoTime": "9:14:46 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790212494339_c3mz",
+      "timestamp": 1790212494339,
+      "isoTime": "9:14:54 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790212497120_dfrb",
+      "timestamp": 1790212497120,
+      "isoTime": "9:14:57 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790212497122_rqtv",
+      "timestamp": 1790212497122,
+      "isoTime": "9:14:57 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790212766899_um7u",
+      "timestamp": 1790212766899,
+      "isoTime": "9:19:26 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790212766902_1v1z",
+      "timestamp": 1790212766902,
+      "isoTime": "9:19:26 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790212772037_x6jv",
+      "timestamp": 1790212772037,
+      "isoTime": "9:19:32 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "hero-sticky-stage",
+        "label": "1,847 Tabletop Backers on Waitlist STACK. TAP. PLA",
+        "x": 908,
+        "y": 341,
+        "xPercent": 59.7,
+        "yPercent": 5.07,
+        "section": "experience"
+      }
+    },
+    {
+      "id": "ev_1790212783105_zk17",
+      "timestamp": 1790212783105,
+      "isoTime": "9:19:43 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790212786347_4fec",
+      "timestamp": 1790212786347,
+      "isoTime": "9:19:46 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790212795723_0ivv",
+      "timestamp": 1790212795723,
+      "isoTime": "9:19:55 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "team-title",
+        "label": "Operations & Tooling",
+        "x": 1298,
+        "y": 4654,
+        "xPercent": 85.34,
+        "yPercent": 69.14,
+        "section": "story"
+      }
+    },
+    {
+      "id": "ev_1790212796363_zdot",
+      "timestamp": 1790212796363,
+      "isoTime": "9:19:56 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "tag": "section",
+        "id": "story",
+        "className": "deep-section haikei-ambient-grid",
+        "label": "Timeline & Origin Story From Garage Hack to Smart ",
+        "x": 1028,
+        "y": 4751,
+        "xPercent": 67.59,
+        "yPercent": 70.58,
+        "section": "story"
+      }
+    },
+    {
+      "id": "ev_1790212796913_rr2s",
+      "timestamp": 1790212796913,
+      "isoTime": "9:19:56 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790212799222_79kl",
+      "timestamp": 1790212799222,
+      "isoTime": "9:19:59 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790212811707_kbam",
+      "timestamp": 1790212811707,
+      "isoTime": "9:20:11 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 40,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "",
+        "label": "1,847 Tabletop Backers on Waitlist",
+        "x": 247,
+        "y": 113,
+        "xPercent": 16.24,
+        "yPercent": 1.68,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790212977966_0nl2",
+      "timestamp": 1790212977966,
+      "isoTime": "9:22:57 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "label": "BLOCK #14 2\nCore Twist",
+        "id": "block-btn-14",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790212977962_ofh8",
+      "timestamp": 1790212977962,
+      "isoTime": "9:22:57 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "category": "kids",
+        "blockId": 14,
+        "promptSnippet": "Which animal sleeps while floating on water holding hands wi"
+      }
+    },
+    {
+      "id": "ev_1790212977597_j3mc",
+      "timestamp": 1790212977597,
+      "isoTime": "9:22:57 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "blocks-stack",
+        "label": "BLOCK #07 1 High Peril BLOCK #14 2 Core Twist BLOC",
+        "x": 608,
+        "y": 1549,
+        "xPercent": 39.97,
+        "yPercent": 23.01,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790212977966_9mrz",
+      "timestamp": 1790212977966,
+      "isoTime": "9:22:57 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-14",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #14 2 Core Twist",
+        "x": 608,
+        "y": 1549,
+        "xPercent": 39.97,
+        "yPercent": 23.01,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790212979561_okvv",
+      "timestamp": 1790212979561,
+      "isoTime": "9:22:59 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-14",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #14 2 Core Twist",
+        "x": 567,
+        "y": 1557,
+        "xPercent": 37.28,
+        "yPercent": 23.13,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790212979561_0bjk",
+      "timestamp": 1790212979561,
+      "isoTime": "9:22:59 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "label": "BLOCK #14 2\nCore Twist",
+        "id": "block-btn-14",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790212979558_4mig",
+      "timestamp": 1790212979558,
+      "isoTime": "9:22:59 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "category": "kids",
+        "blockId": 14,
+        "promptSnippet": "Which animal sleeps while floating on water holding hands wi"
+      }
+    },
+    {
+      "id": "ev_1790212980293_rajz",
+      "timestamp": 1790212980293,
+      "isoTime": "9:23:00 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-14",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #14 2 Core Twist",
+        "x": 649,
+        "y": 1573,
+        "xPercent": 42.67,
+        "yPercent": 23.37,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790212980294_laat",
+      "timestamp": 1790212980294,
+      "isoTime": "9:23:00 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "label": "BLOCK #14 2\nCore Twist",
+        "id": "block-btn-14",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790212981678_jax2",
+      "timestamp": 1790212981678,
+      "isoTime": "9:23:01 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-14",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #14 2 Core Twist",
+        "x": 537,
+        "y": 1556,
+        "xPercent": 35.31,
+        "yPercent": 23.12,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790213038031_54m7",
+      "timestamp": 1790213038031,
+      "isoTime": "9:23:58 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "category": "party",
+        "blockId": 23,
+        "promptSnippet": "WATERFALL: The player who pulled this starts drinking. Every"
+      }
+    },
+    {
+      "id": "ev_1790213038033_5g6y",
+      "timestamp": 1790213038033,
+      "isoTime": "9:23:58 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-23",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #23 3 Group Dare",
+        "x": 0,
+        "y": 988,
+        "xPercent": 0,
+        "yPercent": 14.68,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790213038033_9vlv",
+      "timestamp": 1790213038033,
+      "isoTime": "9:23:58 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "label": "BLOCK #23 3\nGroup Dare",
+        "id": "block-btn-23",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790213038308_vkxa",
+      "timestamp": 1790213038308,
+      "isoTime": "9:23:58 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "category": "party",
+        "blockId": 36,
+        "promptSnippet": "SILENT TOWER: No player may speak above a whisper for the ne"
+      }
+    },
+    {
+      "id": "ev_1790213038309_kr2l",
+      "timestamp": 1790213038309,
+      "isoTime": "9:23:58 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "label": "BLOCK #36 4\nSecret Rule",
+        "id": "block-btn-36",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790213038309_gui8",
+      "timestamp": 1790213038309,
+      "isoTime": "9:23:58 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-36",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #36 4 Secret Rule",
+        "x": 0,
+        "y": 988,
+        "xPercent": 0,
+        "yPercent": 14.68,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790213038643_y152",
+      "timestamp": 1790213038643,
+      "isoTime": "9:23:58 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "label": "BLOCK #45 5\nTower Climax",
+        "id": "block-btn-45",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790213038642_c08l",
+      "timestamp": 1790213038642,
+      "isoTime": "9:23:58 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-45",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #45 5 Tower Climax",
+        "x": 0,
+        "y": 1032,
+        "xPercent": 0,
+        "yPercent": 15.33,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790213038641_isyx",
+      "timestamp": 1790213038641,
+      "isoTime": "9:23:58 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "category": "party",
+        "blockId": 45,
+        "promptSnippet": "DEATHMATCH: You must place this block on top using only your"
+      }
+    },
+    {
+      "id": "ev_1790213042616_r80f",
+      "timestamp": 1790213042616,
+      "isoTime": "9:24:02 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790213119132_jjfn",
+      "timestamp": 1790213119132,
+      "isoTime": "9:25:19 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790213119133_t953",
+      "timestamp": 1790213119133,
+      "isoTime": "9:25:19 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790213118368_37wb",
+      "timestamp": 1790213118368,
+      "isoTime": "9:25:18 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "tag": "header",
+        "id": null,
+        "className": "",
+        "label": "Jeemu HIGHER TOGETHER · KICKSTARTER Reservation In",
+        "x": 783,
+        "y": 52,
+        "xPercent": 51.48,
+        "yPercent": 5.53,
+        "section": "header"
+      }
+    },
+    {
+      "id": "ev_1790213119130_x2w0",
+      "timestamp": 1790213119130,
+      "isoTime": "9:25:19 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790213119133_pd0v",
+      "timestamp": 1790213119133,
+      "isoTime": "9:25:19 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790213125011_87dj",
+      "timestamp": 1790213125011,
+      "isoTime": "9:25:25 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790213125017_05rx",
+      "timestamp": 1790213125017,
+      "isoTime": "9:25:25 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790213128300_1onz",
+      "timestamp": 1790213128300,
+      "isoTime": "9:25:28 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "tag": "a",
+        "id": null,
+        "className": "wordmark",
+        "label": "Jeemu",
+        "x": 140,
+        "y": 45,
+        "xPercent": 9.2,
+        "yPercent": 0.67,
+        "section": "header"
+      }
+    },
+    {
+      "id": "ev_1790213128301_cqlu",
+      "timestamp": 1790213128301,
+      "isoTime": "9:25:28 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "label": "Jeemu",
+        "id": "",
+        "tag": "A"
+      }
+    },
+    {
+      "id": "ev_1790213129970_aiq4",
+      "timestamp": 1790213129970,
+      "isoTime": "9:25:29 AM",
+      "type": "view_vip_modal",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_xog0ykv_muedur2m",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "source": "funnel_step"
+      }
+    },
+    {
+      "id": "ev_1790213194412_40px",
+      "timestamp": 1790213194412,
+      "isoTime": "9:26:34 AM",
+      "type": "page_view",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_xoslioh_mueuppd7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790213194438_w374",
+      "timestamp": 1790213194438,
+      "isoTime": "9:26:34 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_xoslioh_mueuppd7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790213197032_gyoz",
+      "timestamp": 1790213197032,
+      "isoTime": "9:26:37 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_xoslioh_mueuppd7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790213198883_avrp",
+      "timestamp": 1790213198883,
+      "isoTime": "9:26:38 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_xoslioh_mueuppd7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790213198882_aghw",
+      "timestamp": 1790213198882,
+      "isoTime": "9:26:38 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_xoslioh_mueuppd7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790213198883_sbde",
+      "timestamp": 1790213198883,
+      "isoTime": "9:26:38 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_xoslioh_mueuppd7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790213204536_wkeo",
+      "timestamp": 1790213204536,
+      "isoTime": "9:26:44 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_3lfqyt3_muedzb0w",
+      "sessionId": "s_9czv25m_muedzb0w",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790213204523_yagm",
+      "timestamp": 1790213204523,
+      "isoTime": "9:26:44 AM",
+      "type": "page_view",
+      "visitorId": "v_3lfqyt3_muedzb0w",
+      "sessionId": "s_9czv25m_muedzb0w",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790213210765_gz1c",
+      "timestamp": 1790213210765,
+      "isoTime": "9:26:50 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_3lfqyt3_muedzb0w",
+      "sessionId": "s_9czv25m_muedzb0w",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790213210765_h67j",
+      "timestamp": 1790213210765,
+      "isoTime": "9:26:50 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_3lfqyt3_muedzb0w",
+      "sessionId": "s_9czv25m_muedzb0w",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790213255930_gq13",
+      "timestamp": 1790213255930,
+      "isoTime": "9:27:35 AM",
+      "type": "click",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_aflx3vx_muedylh4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "container text-center",
+        "label": "Official Updates & Devlogs Jeemu Engineering & Cam",
+        "x": 339,
+        "y": 209,
+        "xPercent": 22.29,
+        "yPercent": 8.35,
+        "section": "page-hero-section"
+      }
+    },
+    {
+      "id": "ev_1790213257286_94du",
+      "timestamp": 1790213257286,
+      "isoTime": "9:27:37 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_aflx3vx_muedylh4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790213257286_0p97",
+      "timestamp": 1790213257286,
+      "isoTime": "9:27:37 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_aflx3vx_muedylh4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790213257286_62c9",
+      "timestamp": 1790213257286,
+      "isoTime": "9:27:37 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_aflx3vx_muedylh4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790213265258_y5mw",
+      "timestamp": 1790213265258,
+      "isoTime": "9:27:45 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_xoslioh_mueuppd7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790213265243_podi",
+      "timestamp": 1790213265243,
+      "isoTime": "9:27:45 AM",
+      "type": "page_view",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_xoslioh_mueuppd7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790213271665_rj52",
+      "timestamp": 1790213271665,
+      "isoTime": "9:27:51 AM",
+      "type": "page_view",
+      "visitorId": "v_z6x9x14_muedz6gh",
+      "sessionId": "s_wjeb0m0_muedz6gi",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790213271681_mw42",
+      "timestamp": 1790213271681,
+      "isoTime": "9:27:51 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_z6x9x14_muedz6gh",
+      "sessionId": "s_wjeb0m0_muedz6gi",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790213274796_eh0w",
+      "timestamp": 1790213274796,
+      "isoTime": "9:27:54 AM",
+      "type": "click",
+      "visitorId": "v_z6x9x14_muedz6gh",
+      "sessionId": "s_wjeb0m0_muedz6gi",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "tag": "button",
+        "id": null,
+        "className": "btn-portal-submit",
+        "label": "Enter Team Studio & Admin →",
+        "x": 739,
+        "y": 594,
+        "xPercent": 48.59,
+        "yPercent": 63.19,
+        "section": "portal-hero-section"
+      }
+    },
+    {
+      "id": "ev_1790213274797_0qo0",
+      "timestamp": 1790213274797,
+      "isoTime": "9:27:54 AM",
+      "type": "click",
+      "visitorId": "v_z6x9x14_muedz6gh",
+      "sessionId": "s_wjeb0m0_muedz6gi",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "label": "Enter Team Studio & Admin →",
+        "id": "",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790215150770_gxy0",
+      "timestamp": 1790215150770,
+      "isoTime": "9:59:10 AM",
+      "type": "scroll",
+      "scrollY": 0
+    },
+    {
+      "id": "ev_1790215153267_qscj",
+      "timestamp": 1790215153267,
+      "isoTime": "9:59:13 AM",
+      "type": "scroll",
+      "scrollY": 10
+    },
+    {
+      "id": "ev_1790215154518_h585",
+      "timestamp": 1790215154518,
+      "isoTime": "9:59:14 AM",
+      "type": "scroll",
+      "scrollY": 20
+    },
+    {
+      "id": "ev_1790215155609_3zms",
+      "timestamp": 1790215155609,
+      "isoTime": "9:59:15 AM",
+      "type": "scroll",
+      "scrollY": 30
+    },
+    {
+      "id": "ev_1790215156815_n1df",
+      "timestamp": 1790215156815,
+      "isoTime": "9:59:16 AM",
+      "type": "scroll",
+      "scrollY": 40
+    },
+    {
+      "id": "ev_1790215157448_9xmj",
+      "timestamp": 1790215157448,
+      "isoTime": "9:59:17 AM",
+      "type": "scroll",
+      "scrollY": 50
+    },
+    {
+      "id": "ev_1790215158164_g5uv",
+      "timestamp": 1790215158164,
+      "isoTime": "9:59:18 AM",
+      "type": "scroll",
+      "scrollY": 60
+    },
+    {
+      "id": "ev_1790215159814_g97a",
+      "timestamp": 1790215159814,
+      "isoTime": "9:59:19 AM",
+      "type": "scroll",
+      "scrollY": 70
+    },
+    {
+      "id": "ev_1790215160613_nkq0",
+      "timestamp": 1790215160613,
+      "isoTime": "9:59:20 AM",
+      "type": "scroll",
+      "scrollY": 80
+    },
+    {
+      "id": "ev_1790215161213_y0w9",
+      "timestamp": 1790215161213,
+      "isoTime": "9:59:21 AM",
+      "type": "scroll",
+      "scrollY": 90
+    },
+    {
+      "id": "ev_1790215252099_4wv8",
+      "timestamp": 1790215252099,
+      "isoTime": "10:00:52 AM",
+      "type": "scroll",
+      "scrollY": 0
+    },
+    {
+      "id": "ev_1790215254318_tb33",
+      "timestamp": 1790215254318,
+      "isoTime": "10:00:54 AM",
+      "type": "scroll",
+      "scrollY": 10
+    },
+    {
+      "id": "ev_1790215254988_fgxb",
+      "timestamp": 1790215254988,
+      "isoTime": "10:00:54 AM",
+      "type": "scroll",
+      "scrollY": 20
+    },
+    {
+      "id": "ev_1790215256018_pf77",
+      "timestamp": 1790215256018,
+      "isoTime": "10:00:56 AM",
+      "type": "scroll",
+      "scrollY": 30
+    },
+    {
+      "id": "ev_1790215256694_zwdu",
+      "timestamp": 1790215256694,
+      "isoTime": "10:00:56 AM",
+      "type": "scroll",
+      "scrollY": 40
+    },
+    {
+      "id": "ev_1790215257620_kbw1",
+      "timestamp": 1790215257620,
+      "isoTime": "10:00:57 AM",
+      "type": "scroll",
+      "scrollY": 50
+    },
+    {
+      "id": "ev_1790215258314_vivw",
+      "timestamp": 1790215258314,
+      "isoTime": "10:00:58 AM",
+      "type": "scroll",
+      "scrollY": 60
+    },
+    {
+      "id": "ev_1790215259507_juns",
+      "timestamp": 1790215259508,
+      "isoTime": "10:00:59 AM",
+      "type": "scroll",
+      "scrollY": 70
+    },
+    {
+      "id": "ev_1790215260620_oqfd",
+      "timestamp": 1790215260620,
+      "isoTime": "10:01:00 AM",
+      "type": "scroll",
+      "scrollY": 80
+    },
+    {
+      "id": "ev_1790215261253_e5p0",
+      "timestamp": 1790215261253,
+      "isoTime": "10:01:01 AM",
+      "type": "scroll",
+      "scrollY": 90
+    },
+    {
+      "id": "ev_1790215261891_7p3g",
+      "timestamp": 1790215261891,
+      "isoTime": "10:01:01 AM",
+      "type": "scroll",
+      "scrollY": 100
+    },
+    {
+      "id": "ev_1790215262518_qv7l",
+      "timestamp": 1790215262518,
+      "isoTime": "10:01:02 AM",
+      "type": "scroll",
+      "scrollY": 110
+    },
+    {
+      "id": "ev_1790215263620_7hei",
+      "timestamp": 1790215263620,
+      "isoTime": "10:01:03 AM",
+      "type": "scroll",
+      "scrollY": 120
+    },
+    {
+      "id": "ev_1790215264353_0jyv",
+      "timestamp": 1790215264353,
+      "isoTime": "10:01:04 AM",
+      "type": "scroll",
+      "scrollY": 130
+    },
+    {
+      "id": "ev_1790215265622_5k5l",
+      "timestamp": 1790215265622,
+      "isoTime": "10:01:05 AM",
+      "type": "scroll",
+      "scrollY": 140
+    },
+    {
+      "id": "ev_1790215266377_38ts",
+      "timestamp": 1790215266377,
+      "isoTime": "10:01:06 AM",
+      "type": "scroll",
+      "scrollY": 150
+    },
+    {
+      "id": "ev_1790215266993_se5v",
+      "timestamp": 1790215266993,
+      "isoTime": "10:01:06 AM",
+      "type": "scroll",
+      "scrollY": 160
+    },
+    {
+      "id": "ev_1790215267796_3yjm",
+      "timestamp": 1790215267796,
+      "isoTime": "10:01:07 AM",
+      "type": "scroll",
+      "scrollY": 170
+    },
+    {
+      "id": "ev_1790215268913_tr0p",
+      "timestamp": 1790215268913,
+      "isoTime": "10:01:08 AM",
+      "type": "scroll",
+      "scrollY": 180
+    },
+    {
+      "id": "ev_1790215269573_bwaj",
+      "timestamp": 1790215269573,
+      "isoTime": "10:01:09 AM",
+      "type": "scroll",
+      "scrollY": 190
+    },
+    {
+      "id": "ev_1790215325028_lssq",
+      "timestamp": 1790215325029,
+      "isoTime": "10:02:05 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790215325032_xu7d",
+      "timestamp": 1790215325032,
+      "isoTime": "10:02:05 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790215326811_ha2p",
+      "timestamp": 1790215326811,
+      "isoTime": "10:02:06 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790215326813_3ff7",
+      "timestamp": 1790215326813,
+      "isoTime": "10:02:06 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790215326813_xzeq",
+      "timestamp": 1790215326813,
+      "isoTime": "10:02:06 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790215326813_7rb3",
+      "timestamp": 1790215326813,
+      "isoTime": "10:02:06 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790215352696_pcyz",
+      "timestamp": 1790215352696,
+      "isoTime": "10:02:32 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "label": "See 3D Tour\n↓",
+        "id": "",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790215352692_ajeu",
+      "timestamp": 1790215352692,
+      "isoTime": "10:02:32 AM",
+      "type": "start_guided_tour",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "source": "button"
+      }
+    },
+    {
+      "id": "ev_1790215352695_l67t",
+      "timestamp": 1790215352695,
+      "isoTime": "10:02:32 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "tag": "button",
+        "id": null,
+        "className": "experience",
+        "label": "See 3D Tour ↓",
+        "x": 552,
+        "y": 645,
+        "xPercent": 36.29,
+        "yPercent": 8.28,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790215357931_u80a",
+      "timestamp": 1790215357931,
+      "isoTime": "10:02:37 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790215357937_ai1v",
+      "timestamp": 1790215357937,
+      "isoTime": "10:02:37 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790215369161_hj3h",
+      "timestamp": 1790215369161,
+      "isoTime": "10:02:49 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "label": "Test Interactive Dock ↓",
+        "id": "",
+        "tag": "A"
+      }
+    },
+    {
+      "id": "ev_1790215369160_s2t2",
+      "timestamp": 1790215369160,
+      "isoTime": "10:02:49 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "tag": "a",
+        "id": null,
+        "className": "btn-explore-anchor",
+        "label": "Test Interactive Dock ↓",
+        "x": 630,
+        "y": 657,
+        "xPercent": 41.42,
+        "yPercent": 8.44,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790215370168_9ugw",
+      "timestamp": 1790215370168,
+      "isoTime": "10:02:50 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790215373776_vfky",
+      "timestamp": 1790215373776,
+      "isoTime": "10:02:53 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "blocks-stack",
+        "label": "BLOCK #07 1 High Peril BLOCK #14 2 Core Twist BLOC",
+        "x": 260,
+        "y": 2547,
+        "xPercent": 17.09,
+        "yPercent": 32.71,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790215374495_dyyo",
+      "timestamp": 1790215374495,
+      "isoTime": "10:02:54 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "label": "BLOCK #07 1\nHigh Peril",
+        "id": "block-btn-7",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790215374491_q4ye",
+      "timestamp": 1790215374491,
+      "isoTime": "10:02:54 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-7",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #07 1 High Peril",
+        "x": 420,
+        "y": 2538,
+        "xPercent": 27.61,
+        "yPercent": 32.59,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790215376884_ty2s",
+      "timestamp": 1790215376884,
+      "isoTime": "10:02:56 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "category": "party",
+        "blockId": 14,
+        "promptSnippet": "TRUTH OR DARE: Reveal your most embarrassing purchase, or fi"
+      }
+    },
+    {
+      "id": "ev_1790215376888_7jyt",
+      "timestamp": 1790215376888,
+      "isoTime": "10:02:56 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-14",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #14 2 Core Twist",
+        "x": 449,
+        "y": 2633,
+        "xPercent": 29.52,
+        "yPercent": 33.81,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790215376888_mcb4",
+      "timestamp": 1790215376888,
+      "isoTime": "10:02:56 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "label": "BLOCK #14 2\nCore Twist",
+        "id": "block-btn-14",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790215445152_2wgr",
+      "timestamp": 1790215445152,
+      "isoTime": "10:04:05 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 85,
+      "data": {
+        "tag": "a",
+        "id": null,
+        "className": "nav-link",
+        "label": "Interactive Dock",
+        "x": 820,
+        "y": 37,
+        "xPercent": 53.91,
+        "yPercent": 0.48,
+        "section": "header"
+      }
+    },
+    {
+      "id": "ev_1790215445153_fdjf",
+      "timestamp": 1790215445153,
+      "isoTime": "10:04:05 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 85,
+      "data": {
+        "label": "Interactive Dock",
+        "id": "",
+        "tag": "A"
+      }
+    },
+    {
+      "id": "ev_1790215448342_3gp7",
+      "timestamp": 1790215448342,
+      "isoTime": "10:04:08 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 90,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790215467348_n169",
+      "timestamp": 1790215467348,
+      "isoTime": "10:04:27 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 105,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790215472068_1wh1",
+      "timestamp": 1790215472068,
+      "isoTime": "10:04:32 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_8q1tvmr_muefdahg",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 110,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790215477665_4sv8",
+      "timestamp": 1790215477665,
+      "isoTime": "10:04:37 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_lnymwe9_muew2n4l",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790215477654_p6j0",
+      "timestamp": 1790215477654,
+      "isoTime": "10:04:37 AM",
+      "type": "page_view",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_lnymwe9_muew2n4l",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790215479054_t12u",
+      "timestamp": 1790215479054,
+      "isoTime": "10:04:39 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_lnymwe9_muew2n4l",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790215480269_sn09",
+      "timestamp": 1790215480269,
+      "isoTime": "10:04:40 AM",
+      "type": "click",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_lnymwe9_muew2n4l",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "label": "✍️ Post an Update as Team Member",
+        "id": "",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790215480269_1lp3",
+      "timestamp": 1790215480269,
+      "isoTime": "10:04:40 AM",
+      "type": "click",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_lnymwe9_muew2n4l",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "tag": "button",
+        "id": null,
+        "className": "btn-create-post",
+        "label": "✍️ Post an Update as Team Member",
+        "x": 808,
+        "y": 411,
+        "xPercent": 53.12,
+        "yPercent": 16.57,
+        "section": "page-hero-section"
+      }
+    },
+    {
+      "id": "ev_1790215482620_ntka",
+      "timestamp": 1790215482620,
+      "isoTime": "10:04:42 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_lnymwe9_muew2n4l",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790215483424_vebf",
+      "timestamp": 1790215483424,
+      "isoTime": "10:04:43 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_lnymwe9_muew2n4l",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790215483424_y1hu",
+      "timestamp": 1790215483424,
+      "isoTime": "10:04:43 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_9m1dykb_muedylh4",
+      "sessionId": "s_lnymwe9_muew2n4l",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790215488152_xr88",
+      "timestamp": 1790215488152,
+      "isoTime": "10:04:48 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_x6tj5cv_muedyf72",
+      "sessionId": "s_lamtvgm_muew2v7v",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790215488139_c5ab",
+      "timestamp": 1790215488139,
+      "isoTime": "10:04:48 AM",
+      "type": "page_view",
+      "visitorId": "v_x6tj5cv_muedyf72",
+      "sessionId": "s_lamtvgm_muew2v7v",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790215493659_hiqf",
+      "timestamp": 1790215493659,
+      "isoTime": "10:04:53 AM",
+      "type": "page_view",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_r8742b2_muew2zh7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790215493672_bul6",
+      "timestamp": 1790215493672,
+      "isoTime": "10:04:53 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_r8742b2_muew2zh7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790215494802_a8pd",
+      "timestamp": 1790215494802,
+      "isoTime": "10:04:54 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_r8742b2_muew2zh7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790215495629_xvre",
+      "timestamp": 1790215495629,
+      "isoTime": "10:04:55 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_r8742b2_muew2zh7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790215495769_clpq",
+      "timestamp": 1790215495769,
+      "isoTime": "10:04:55 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_r8742b2_muew2zh7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790215495770_zg9h",
+      "timestamp": 1790215495770,
+      "isoTime": "10:04:55 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_bjbajux_mueuppd7",
+      "sessionId": "s_r8742b2_muew2zh7",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790215501742_2t9i",
+      "timestamp": 1790215501742,
+      "isoTime": "10:05:01 AM",
+      "type": "page_view",
+      "visitorId": "v_3lfqyt3_muedzb0w",
+      "sessionId": "s_lkxgia8_muew35pp",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790215501756_7fv2",
+      "timestamp": 1790215501756,
+      "isoTime": "10:05:01 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_3lfqyt3_muedzb0w",
+      "sessionId": "s_lkxgia8_muew35pp",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790215502589_iic7",
+      "timestamp": 1790215502589,
+      "isoTime": "10:05:02 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_3lfqyt3_muedzb0w",
+      "sessionId": "s_lkxgia8_muew35pp",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790215502590_2yrd",
+      "timestamp": 1790215502590,
+      "isoTime": "10:05:02 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_3lfqyt3_muedzb0w",
+      "sessionId": "s_lkxgia8_muew35pp",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790215656728_1f9d",
+      "timestamp": 1790215656728,
+      "isoTime": "10:07:36 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_3lfqyt3_muedzb0w",
+      "sessionId": "s_lkxgia8_muew35pp",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 50,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790215662186_b5e4",
+      "timestamp": 1790215662186,
+      "isoTime": "10:07:42 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_x6tj5cv_muedyf72",
+      "sessionId": "s_lamtvgm_muew2v7v",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790215662175_hy3u",
+      "timestamp": 1790215662175,
+      "isoTime": "10:07:42 AM",
+      "type": "page_view",
+      "visitorId": "v_x6tj5cv_muedyf72",
+      "sessionId": "s_lamtvgm_muew2v7v",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
     }
   ],
   "subscribers": [

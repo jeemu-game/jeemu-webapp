@@ -160,7 +160,7 @@ router.get('/telemetry/stream', requireAuth, (req, res) => {
 });
 
 // ── 4. Telemetry Event Ingestion (public write, rate-limited)
-router.post('/telemetry/event', writeLimiter, async (req, res) => {
+router.post('/telemetry/event', telemetryLimiter, async (req, res) => {
   try {
     const event = await logTelemetryEvent(req.body);
     await notifyEvent({ type: 'telemetry_event', event });
@@ -396,7 +396,7 @@ router.post('/posts/react', writeLimiter, async (req, res) => {
 });
 
 // ── 11. Team Authentication
-router.post('/auth/login', writeLimiter, (req, res) => {
+router.post('/auth/login', authLimiter, (req, res) => {
   const { username, password } = req.body;
 
   if (

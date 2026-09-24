@@ -462,15 +462,34 @@ class SubdomainManager {
             document.cookie = `jeemu_auth=${data.token}; path=/; max-age=86400; SameSite=Lax`;
           }
           this.showToast(`Authenticated as ${username.toUpperCase()}`);
+          const msgEl = document.getElementById('login-required-msg');
+          if (msgEl) msgEl.style.display = 'none';
           setTimeout(() => {
             this.switchSubdomain('admin');
           }, 500);
         } else {
-          alert(data.error || 'Password is "jeemu2026"');
+          const errMsg = data.error || 'Invalid credentials. Password is "jeemu2026"';
+          const msgEl = document.getElementById('login-required-msg');
+          if (msgEl) {
+            msgEl.textContent = `⚠️ ${errMsg}`;
+            msgEl.style.display = 'block';
+          }
+          this.showToast(errMsg);
+          const card = document.querySelector('.portal-auth-card');
+          if (card) {
+            card.classList.add('shake-error');
+            setTimeout(() => card.classList.remove('shake-error'), 600);
+          }
         }
       })
       .catch(err => {
-        alert('Authentication error: ' + err.message);
+        const errMsg = 'Authentication error: ' + (err.message || 'Please try again.');
+        const msgEl = document.getElementById('login-required-msg');
+        if (msgEl) {
+          msgEl.textContent = `⚠️ ${errMsg}`;
+          msgEl.style.display = 'block';
+        }
+        this.showToast(errMsg);
       });
     });
   }
