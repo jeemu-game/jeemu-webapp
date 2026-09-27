@@ -105,81 +105,85 @@ export default function MicroFunnel() {
   };
 
   return (
-    <div className="micro-funnel-card" id="reserve-funnel">
+    <div className="hero-reservation-card spotlight-card border-beam-container" id="reserve-funnel">
+      {/* Magic UI Border Beam - Shiny rotating overlay light */}
+      <div className="border-beam" aria-hidden="true" />
+
+      {/* Decorative neon corner slash matching Jeemu.fun */}
+      <div className="corner-neon-line" aria-hidden="true">
+        <svg viewBox="0 0 80 80" fill="none">
+          <line x1="0" y1="80" x2="80" y2="0" stroke="#00d97e" strokeWidth="2.5" />
+        </svg>
+      </div>
+
       {step === 1 ? (
         <>
-          <div className="funnel-header">
-            <span className="funnel-step-badge">STEP 1 OF 2</span>
-            <div className="funnel-guarantee-note">
-              <ShieldCheck size={14} color="#10b981" />
-              <span>100% Refundable $1 Deposit</span>
-            </div>
+          {/* Top Status Bar matching Screenshot 2 */}
+          <div className="hero-card-status-bar">
+            <span className="status-os">
+              <span className="pulse-indicator-dot" />
+              <span>JEEMU OS v2.4</span>
+            </span>
+            <span className="status-crypto">NFC // 13.56MHz CRYPTO</span>
           </div>
 
-          <form onSubmit={handleSubmit} className="funnel-form">
+          {/* Offer Banner matching Screenshot 2 */}
+          <div className="hero-offer-banner">
+            <span className="offer-highlight">🔥 Guaranteed 45% Off ($89 vs $159)</span>
+            <span className="offer-perk">+ Free Gold-Stamped Founder’s Block</span>
+          </div>
+
+          {/* Form matching Screenshot 2 */}
+          <form onSubmit={handleSubmit} className="hero-capture-form">
             {/* Invisible bot honeypot shield */}
             <input 
               type="text" 
               name="hp_jeemu_check" 
               value={honeypot} 
-              onChange={(e) => setHoneypot(e.target.value)}
-              className="hp-bot-field"
-              tabIndex={-1}
-              autoComplete="off"
+              onChange={(e) => setHoneypot(e.target.value)} 
+              className="hp-bot-field" 
+              tabIndex={-1} 
+              autoComplete="off" 
             />
 
-            <div className="form-inputs-row">
-              <div className="input-wrap">
-                <Mail size={18} />
-                <input 
-                  type="email" 
-                  required
-                  placeholder="Enter your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="funnel-input"
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="input-wrap">
-                <User size={18} />
-                <input 
-                  type="text" 
-                  placeholder="First name (optional)"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="funnel-input"
-                  disabled={loading}
-                />
-              </div>
+            <div className="field">
+              <input 
+                id="subscriber-email"
+                type="email" 
+                required
+                placeholder="Enter your email to reserve early access"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                autoComplete="email"
+              />
+              <button type="submit" className="btn-shimmer-primary funnel-submit-btn" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    <span>Securing...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Reserve Batch 01</span>
+                    <span aria-hidden="true" style={{ fontSize: '1.1em', marginLeft: '4px' }}>→</span>
+                  </>
+                )}
+              </button>
             </div>
 
             {errorMsg && (
-              <div style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 600 }}>
+              <div style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 600, marginTop: '8px' }}>
                 {errorMsg}
               </div>
             )}
-
-            <button type="submit" className="btn-primary funnel-submit-btn" disabled={loading}>
-              {loading ? (
-                <>
-                  <Loader2 size={18} className="animate-spin" />
-                  <span>Securing Batch 01 Spot...</span>
-                </>
-              ) : (
-                <>
-                  <span>Join Kickstarter VIP Waitlist</span>
-                  <ArrowRight size={18} />
-                </>
-              )}
-            </button>
           </form>
 
-          <div className="funnel-perks-row">
-            <span>✓ 45% Early Bird Discount</span>
-            <span>✓ Batch 01 Priority</span>
-            <span>✓ Free Founder Block</span>
+          {/* Subtext Perks matching Screenshot 2 */}
+          <div className="hero-reservation-meta">
+            <span>✓ 100% Refundable $1 VIP Deposit Option</span>
+            <span>✓ Priority Batch 01 Delivery</span>
+            <span>✓ No pledge required today</span>
           </div>
         </>
       ) : (
@@ -207,6 +211,43 @@ export default function MicroFunnel() {
                 <Copy size={14} />
                 <span>{copied ? 'Copied!' : 'Copy'}</span>
               </button>
+            </div>
+
+            {/* 1-Click Social Share Links (WhatsApp, X, Facebook) */}
+            <div className="social-share-row">
+              <span className="social-share-label">1-Click Share:</span>
+              <div className="social-share-btns">
+                <a
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out Jeemu — smart beechwood tumbling tower with embedded NFC tags & standalone IPS display! Reserve Batch 01: ${window.location.origin}/?ref=${subscriberData?.referralCode || 'JEEMU'}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-share-btn share-wa"
+                  id="share-wa-btn"
+                  title="Share on WhatsApp"
+                >
+                  WhatsApp
+                </a>
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just backed @JeemuGame — the world's first smart beechwood tumbling tower with embedded NFC! Join early:`)}&url=${encodeURIComponent(`${window.location.origin}/?ref=${subscriberData?.referralCode || 'JEEMU'}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-share-btn share-x"
+                  id="share-x-btn"
+                  title="Share on X (Twitter)"
+                >
+                  X / Twitter
+                </a>
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${window.location.origin}/?ref=${subscriberData?.referralCode || 'JEEMU'}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-share-btn share-fb"
+                  id="share-fb-btn"
+                  title="Share on Facebook"
+                >
+                  Facebook
+                </a>
+              </div>
             </div>
           </div>
 

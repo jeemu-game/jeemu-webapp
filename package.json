@@ -7,7 +7,10 @@
     "dev": "node server.js",
     "server": "node server.js",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:api": ".venv\\Scripts\\pytest tests/test_api.py -v",
+    "test:e2e": "node tests/e2e.test.js",
+    "test": "npm run test:api && npm run test:e2e"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.1",

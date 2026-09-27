@@ -37,19 +37,31 @@ const stripe = process.env.STRIPE_SECRET_KEY
   : null;
 
 /* ========== HARDENED RATE LIMITERS (DDoS & Spam Defense) ========== */
+const isTestEnv = process.env.NODE_ENV === 'test';
+
 // Max 5 waitlist submissions per IP per 5 minutes
 const waitlistWriteLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
-  max: 5,
+  max: isTestEnv ? 100 : 5,
   standardHeaders: true,
   legacyHeaders: false,
+  skipFailedRequests: true, // Don't penalize user for simple validation/syntax mistakes
   message: { error: 'Too many signup attempts from this network. Please wait a few minutes.' }
+});
+
+// Max 15 stripe sessions per IP per 5 minutes
+const stripeSessionLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: isTestEnv ? 100 : 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many checkout attempts. Please wait a few minutes.' }
 });
 
 // Max 60 read requests per IP per minute
 const generalReadLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 60,
+  max: isTestEnv ? 300 : 60,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests. Please slow down.' }
@@ -163,7 +175,7 @@ router.patch('/subscribers/:referralCode/refer', waitlistWriteLimiter, async (re
 });
 
 // 5. Stripe Checkout Session
-router.post('/stripe/create-session', waitlistWriteLimiter, async (req, res) => {
+router.post('/stripe/create-session', stripeSessionLimiter, async (req, res) => {
   const { subscriberId, referralCode, email } = req.body;
   const paymentLink = process.env.STRIPE_PAYMENT_LINK || 'https://buy.stripe.com/00wbJ0ahV5htgzrgxLbAs0k';
 

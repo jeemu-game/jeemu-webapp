@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Flame, ArrowRight, Sparkles } from 'lucide-react';
+import { Flame, ArrowRight } from 'lucide-react';
 
 export default function Navbar({ onCtaClick }) {
   const [backerCount, setBackerCount] = useState(1848);
@@ -34,6 +34,15 @@ export default function Navbar({ onCtaClick }) {
           </div>
           <span>JEEMU</span>
         </a>
+
+        {/* Navigation links matching jeemu.fun */}
+        <nav className="nav-links" aria-label="Main Navigation">
+          <a href="#reserve-funnel" className="nav-link">Reservation</a>
+          <a href="#simulator" className="nav-link">Interactive Dock</a>
+          <a href="#hardware" className="nav-link">Architecture</a>
+          <a href="#story" className="nav-link">Our Story</a>
+          <a href="#faq" className="nav-link">FAQ</a>
+        </nav>
 
         <div className="nav-center-stats">
           <div className="live-counter-pill">

@@ -1,10 +1,14 @@
 import React from 'react';
 import Navbar from './components/Navbar';
+import AmbientParticles from './components/AmbientParticles';
 import HeroCarousel from './components/HeroCarousel';
 import MicroFunnel from './components/MicroFunnel';
+import HaikeiWaveDivider from './components/HaikeiWaveDivider';
 import SpotlightPillars from './components/SpotlightPillars';
-import ExperiencePacks from './components/ExperiencePacks';
+import HardwareSimulator from './components/HardwareSimulator';
 import AiStudioPreview from './components/AiStudioPreview';
+import JourneyTimeline from './components/JourneyTimeline';
+import TeamSection from './components/TeamSection';
 import PricingTier from './components/PricingTier';
 import FaqFooter from './components/FaqFooter';
 
@@ -16,6 +20,16 @@ export default function App() {
 
   return (
     <div className="jeemu-app">
+      {/* Dynamic Animated Ambient Background Movement Particles */}
+      <AmbientParticles />
+
+      {/* Dynamic Ambient Background Mesh */}
+      <div className="ambient-mesh" aria-hidden="true">
+        <div className="ambient-orb orb-1" />
+        <div className="ambient-orb orb-2" />
+        <div className="ambient-orb orb-3" />
+      </div>
+
       {/* 1. Sticky Glass Navbar */}
       <Navbar onCtaClick={scrollToReserve} />
 
@@ -49,19 +63,34 @@ export default function App() {
           </div>
         </section>
 
+        {/* Generative Haikei Wave Divider #1 */}
+        <HaikeiWaveDivider variant={1} />
+
         {/* 3. Three Core Pillars (ReactBits Cursor Spotlight Cards) */}
         <SpotlightPillars />
 
-        {/* 4. 7 Official Experience Categories */}
-        <ExperiencePacks />
+        {/* Generative Haikei Wave Divider #2 */}
+        <HaikeiWaveDivider variant={2} />
+
+        {/* 4. Tactile Wooden Block Tapping Console as in jeemu.fun */}
+        <HardwareSimulator />
 
         {/* 5. AI-Assisted Game Studio */}
         <AiStudioPreview />
 
-        {/* 6. Transparent Kickstarter Pricing & VIP Guarantee */}
+        {/* Generative Haikei Wave Divider #3 */}
+        <HaikeiWaveDivider variant={3} />
+
+        {/* 6. Hardware Story & Evolution Timeline */}
+        <JourneyTimeline />
+
+        {/* 7. The Creators & Founding Team */}
+        <TeamSection />
+
+        {/* 8. Transparent Kickstarter Pricing & VIP Guarantee */}
         <PricingTier onReserveClick={scrollToReserve} />
 
-        {/* 7. FAQ & Clean Footer */}
+        {/* 9. FAQ & Clean Footer */}
         <FaqFooter />
       </main>
     </div>
