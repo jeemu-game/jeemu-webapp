@@ -11,6 +11,8 @@ lerna-debug.log*
 
 # Dependencies
 node_modules/
+.venv/
+venv/
 .pnp
 .pnp.js
 
@@ -57,3 +59,4 @@ ehthumbs_vista.db
 
 # Project-specific
 *.pdf
+**/__pycache__
