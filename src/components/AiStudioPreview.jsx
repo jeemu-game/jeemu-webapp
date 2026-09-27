@@ -73,16 +73,16 @@ export default function AiStudioPreview() {
         <div className="ai-generation-box">
           <div className="ai-terminal-header">
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Terminal size={14} color="#f59e0b" />
+              <Terminal size={14} color="#00d97e" />
               <span>JEEMU AI COMPANION ENGINE</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10b981' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#00d97e' }}>
               <Bluetooth size={13} />
               <span>Dock Synced</span>
             </div>
           </div>
 
-          <div style={{ fontSize: '0.85rem', color: 'var(--amber-500)', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ fontSize: '0.85rem', color: 'var(--jade-primary)', fontFamily: 'var(--font-mono)' }}>
             &gt; Prompt: "{selectedTheme}" (45 blocks generated)
           </div>
 
@@ -100,7 +100,7 @@ export default function AiStudioPreview() {
                   alignItems: 'flex-start'
                 }}
               >
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--amber-500)', fontWeight: 700, marginTop: '2px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--jade-primary)', fontWeight: 700, marginTop: '2px' }}>
                   #{item.id}
                 </span>
                 <span style={{ fontSize: '0.9rem', color: 'var(--text-main)', lineHeight: 1.4 }}>

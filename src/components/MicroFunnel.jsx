@@ -59,7 +59,7 @@ export default function MicroFunnel() {
           particleCount: 65,
           spread: 70,
           origin: { y: 0.7 },
-          colors: ['#f59e0b', '#ff6b35', '#10b981', '#38bdf8']
+          colors: ['#00d97e', '#1ae88d', '#e2ede5', '#8ea89a']
         });
       } catch (_) {}
 

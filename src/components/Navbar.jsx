@@ -30,7 +30,7 @@ export default function Navbar({ onCtaClick }) {
       <div className="navbar-container">
         <a href="#" className="nav-brand" aria-label="Jeemu Home">
           <div className="brand-icon">
-            <Flame size={18} color="#fff" />
+            <Flame size={18} color="#060a08" />
           </div>
           <span>JEEMU</span>
         </a>

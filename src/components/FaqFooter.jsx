@@ -76,7 +76,7 @@ export default function FaqFooter() {
         <div className="footer-container">
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 800, fontSize: '1.15rem' }}>
             <div className="brand-icon" style={{ width: '28px', height: '28px' }}>
-              <Flame size={15} color="#fff" />
+              <Flame size={15} color="#060a08" />
             </div>
             <span>JEEMU</span>
           </div>

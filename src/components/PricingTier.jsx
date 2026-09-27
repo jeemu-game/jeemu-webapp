@@ -61,11 +61,11 @@ export default function PricingTier({ onReserveClick }) {
 
           <div>
             <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', marginBottom: '4px' }}>VIP Backer Tier</h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--amber-500)' }}>$1 Refundable Deposit</p>
+            <p style={{ fontSize: '0.85rem', color: 'var(--jade-primary)' }}>$1 Refundable Deposit</p>
           </div>
 
           <div className="pricing-price-wrap">
-            <span className="price-val" style={{ color: 'var(--amber-500)' }}>$89</span>
+            <span className="price-val" style={{ color: 'var(--jade-primary)' }}>$89</span>
             <span className="price-sub" style={{ textDecoration: 'line-through', color: 'var(--text-faint)' }}>$159</span>
           </div>
 
