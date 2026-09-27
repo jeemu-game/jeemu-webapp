@@ -4,7 +4,7 @@
  * Supports:
  * - Supabase PostgreSQL Cloud Database
  * - Hardened rate-limiting & anti-bot protection
- * - Vite static build serving / development routing
+ * - Serves compiled Vite production bundle (dist/) or Vite HMR dev middleware
  */
 
 import 'dotenv/config';
@@ -24,17 +24,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/src', express.static(path.join(__dirname, 'src')));
 
 const distPath = path.join(__dirname, 'dist');
-const isProd = process.env.NODE_ENV === 'production' && fs.existsSync(distPath);
+const hasDist = fs.existsSync(distPath);
 
-if (isProd) {
+if (hasDist && process.env.VITE_DEV !== 'true') {
+  console.log('📦 Serving compiled production bundle from dist/');
   app.use(express.static(distPath));
   app.get('*', (req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
   });
 } else {
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+  console.log('⚡ Starting Vite development middleware (instant JSX compilation)...');
+  const { createServer: createViteServer } = await import('vite');
+  const vite = await createViteServer({
+    server: { middlewareMode: true },
+    appType: 'spa'
   });
+  app.use(vite.middlewares);
 }
 
 app.listen(PORT, () => {
