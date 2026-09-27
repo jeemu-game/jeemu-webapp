@@ -4489,6 +4489,4473 @@
         "screenHeight": 702,
         "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
       }
+    },
+    {
+      "id": "ev_1790216399229_mbb7",
+      "timestamp": 1790216399229,
+      "isoTime": "10:19:59 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_pdtx7v3_muewme7x",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790216399241_pcgk",
+      "timestamp": 1790216399241,
+      "isoTime": "10:19:59 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_pdtx7v3_muewme7x",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790216417775_ubkl",
+      "timestamp": 1790216417775,
+      "isoTime": "10:20:17 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_pdtx7v3_muewme7x",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790216420377_gxkx",
+      "timestamp": 1790216420377,
+      "isoTime": "10:20:20 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_pdtx7v3_muewme7x",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790216420379_tiiw",
+      "timestamp": 1790216420379,
+      "isoTime": "10:20:20 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_pdtx7v3_muewme7x",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790216420379_go5r",
+      "timestamp": 1790216420379,
+      "isoTime": "10:20:20 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_pdtx7v3_muewme7x",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790220955979_j53l",
+      "timestamp": 1790220955979,
+      "isoTime": "11:35:55 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_pdtx7v3_muewme7x",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790220955955_3ff6",
+      "timestamp": 1790220955955,
+      "isoTime": "11:35:55 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_pdtx7v3_muewme7x",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790221038599_it8e",
+      "timestamp": 1790221038599,
+      "isoTime": "11:37:18 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790221038577_hhhw",
+      "timestamp": 1790221038577,
+      "isoTime": "11:37:18 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790221054859_0ovi",
+      "timestamp": 1790221054859,
+      "isoTime": "11:37:34 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790221069693_cex8",
+      "timestamp": 1790221069693,
+      "isoTime": "11:37:49 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790221069696_n715",
+      "timestamp": 1790221069696,
+      "isoTime": "11:37:49 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790221069696_bwjf",
+      "timestamp": 1790221069696,
+      "isoTime": "11:37:49 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790221225323_97zw",
+      "timestamp": 1790221225323,
+      "isoTime": "11:40:25 AM",
+      "type": "view_vip_modal",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 85,
+      "data": {
+        "source": "funnel_step"
+      }
+    },
+    {
+      "id": "ev_1790221225345_pzkz",
+      "timestamp": 1790221225345,
+      "isoTime": "11:40:25 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 85,
+      "data": {
+        "tag": "button",
+        "id": "nav-cta-btn",
+        "className": "launch-link btn-open-vip",
+        "label": "Reserve Early Bird ↗",
+        "x": 1328,
+        "y": 2218,
+        "xPercent": 87.31,
+        "yPercent": 28.48,
+        "section": "scrolled"
+      }
+    },
+    {
+      "id": "ev_1790221225345_6zdw",
+      "timestamp": 1790221225345,
+      "isoTime": "11:40:25 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 85,
+      "data": {
+        "label": "Reserve Early Bird\n↗",
+        "id": "nav-cta-btn",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790221228191_a1dh",
+      "timestamp": 1790221228191,
+      "isoTime": "11:40:28 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 85,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "",
+        "label": "Pay $1.00 Deposit via Stripe →",
+        "x": 812,
+        "y": 2899,
+        "xPercent": 53.39,
+        "yPercent": 37.23,
+        "section": "body"
+      }
+    },
+    {
+      "id": "ev_1790221235534_6dsv",
+      "timestamp": 1790221235534,
+      "isoTime": "11:40:35 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 95,
+      "data": {
+        "tag": "p",
+        "id": "oled-prompt-text",
+        "className": "oled-prompt-output",
+        "label": "\"Choose another player. Both of you must keep one ",
+        "x": 892,
+        "y": 2680,
+        "xPercent": 58.65,
+        "yPercent": 34.42,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790221235141_98pw",
+      "timestamp": 1790221235141,
+      "isoTime": "11:40:35 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 95,
+      "data": {
+        "tag": "p",
+        "id": "oled-prompt-text",
+        "className": "oled-prompt-output",
+        "label": "\"Choose another player. Both of you must keep one ",
+        "x": 892,
+        "y": 2680,
+        "xPercent": 58.65,
+        "yPercent": 34.42,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790221235316_9qv2",
+      "timestamp": 1790221235316,
+      "isoTime": "11:40:35 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 95,
+      "data": {
+        "tag": "p",
+        "id": "oled-prompt-text",
+        "className": "oled-prompt-output",
+        "label": "\"Choose another player. Both of you must keep one ",
+        "x": 892,
+        "y": 2680,
+        "xPercent": 58.65,
+        "yPercent": 34.42,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790221236449_eajf",
+      "timestamp": 1790221236449,
+      "isoTime": "11:40:36 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 95,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "oled-bezel",
+        "label": "MODE: DRINKING & PARTY NFC ACTIVE BLOCK #07 · HIGH",
+        "x": 1300,
+        "y": 2789,
+        "xPercent": 85.47,
+        "yPercent": 35.82,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790221529249_zh22",
+      "timestamp": 1790221529249,
+      "isoTime": "11:45:29 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790221529252_mjfk",
+      "timestamp": 1790221529252,
+      "isoTime": "11:45:29 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790221566415_fkdm",
+      "timestamp": 1790221566415,
+      "isoTime": "11:46:06 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790221566410_gqdc",
+      "timestamp": 1790221566410,
+      "isoTime": "11:46:06 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790221697457_xk9c",
+      "timestamp": 1790221697457,
+      "isoTime": "11:48:17 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790221697461_zu16",
+      "timestamp": 1790221697461,
+      "isoTime": "11:48:17 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790221709005_eqsb",
+      "timestamp": 1790221709005,
+      "isoTime": "11:48:29 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790221815540_2ld1",
+      "timestamp": 1790221815540,
+      "isoTime": "11:50:15 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790221815536_r9d5",
+      "timestamp": 1790221815536,
+      "isoTime": "11:50:15 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790221827979_fnr0",
+      "timestamp": 1790221827979,
+      "isoTime": "11:50:27 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790221831539_6q3l",
+      "timestamp": 1790221831539,
+      "isoTime": "11:50:31 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790221831544_w6a4",
+      "timestamp": 1790221831544,
+      "isoTime": "11:50:31 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790221854485_qpjx",
+      "timestamp": 1790221854485,
+      "isoTime": "11:50:54 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790221854479_u1qb",
+      "timestamp": 1790221854479,
+      "isoTime": "11:50:54 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790221873839_1jok",
+      "timestamp": 1790221873839,
+      "isoTime": "11:51:13 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790221873836_vv6r",
+      "timestamp": 1790221873836,
+      "isoTime": "11:51:13 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790221903535_h7cg",
+      "timestamp": 1790221903535,
+      "isoTime": "11:51:43 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790222026352_zj0u",
+      "timestamp": 1790222026352,
+      "isoTime": "11:53:46 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790222026358_a20m",
+      "timestamp": 1790222026358,
+      "isoTime": "11:53:46 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790222029488_6yrq",
+      "timestamp": 1790222029488,
+      "isoTime": "11:53:49 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790222029491_tj1x",
+      "timestamp": 1790222029491,
+      "isoTime": "11:53:49 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790222046348_zb1j",
+      "timestamp": 1790222046348,
+      "isoTime": "11:54:06 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790222046350_4tys",
+      "timestamp": 1790222046350,
+      "isoTime": "11:54:06 AM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790222051397_3078",
+      "timestamp": 1790222051397,
+      "isoTime": "11:54:11 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "label": "Reservation",
+        "id": "",
+        "tag": "A"
+      }
+    },
+    {
+      "id": "ev_1790222051396_eodo",
+      "timestamp": 1790222051396,
+      "isoTime": "11:54:11 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "tag": "a",
+        "id": null,
+        "className": "nav-link",
+        "label": "Reservation",
+        "x": 727,
+        "y": 32,
+        "xPercent": 47.8,
+        "yPercent": 0.41,
+        "section": "header"
+      }
+    },
+    {
+      "id": "ev_1790222053725_z18u",
+      "timestamp": 1790222053725,
+      "isoTime": "11:54:13 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "tag": "a",
+        "id": null,
+        "className": "nav-link",
+        "label": "Our Story",
+        "x": 1052,
+        "y": 93,
+        "xPercent": 69.17,
+        "yPercent": 1.19,
+        "section": "scrolled"
+      }
+    },
+    {
+      "id": "ev_1790222053727_o53f",
+      "timestamp": 1790222053727,
+      "isoTime": "11:54:13 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "label": "Our Story",
+        "id": "",
+        "tag": "A"
+      }
+    },
+    {
+      "id": "ev_1790222055244_byzj",
+      "timestamp": 1790222055244,
+      "isoTime": "11:54:15 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "tag": "a",
+        "id": null,
+        "className": "nav-link",
+        "label": "FAQ",
+        "x": 1097,
+        "y": 4422,
+        "xPercent": 72.12,
+        "yPercent": 56.79,
+        "section": "scrolled"
+      }
+    },
+    {
+      "id": "ev_1790222055245_cso5",
+      "timestamp": 1790222055245,
+      "isoTime": "11:54:15 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "label": "FAQ",
+        "id": "",
+        "tag": "A"
+      }
+    },
+    {
+      "id": "ev_1790222060576_j19h",
+      "timestamp": 1790222060576,
+      "isoTime": "11:54:20 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "section-tag",
+        "label": "Fall 2026 Batch 01",
+        "x": 780,
+        "y": 7071,
+        "xPercent": 51.28,
+        "yPercent": 90.81,
+        "section": "join-waitlist"
+      }
+    },
+    {
+      "id": "ev_1790222060717_4t1u",
+      "timestamp": 1790222060717,
+      "isoTime": "11:54:20 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "section-tag",
+        "label": "Fall 2026 Batch 01",
+        "x": 780,
+        "y": 7071,
+        "xPercent": 51.28,
+        "yPercent": 90.81,
+        "section": "join-waitlist"
+      }
+    },
+    {
+      "id": "ev_1790222060940_i6iz",
+      "timestamp": 1790222060940,
+      "isoTime": "11:54:20 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "section-tag",
+        "label": "Fall 2026 Batch 01",
+        "x": 780,
+        "y": 7071,
+        "xPercent": 51.28,
+        "yPercent": 90.81,
+        "section": "join-waitlist"
+      }
+    },
+    {
+      "id": "ev_1790222061770_go8o",
+      "timestamp": 1790222061770,
+      "isoTime": "11:54:21 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 35,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "container",
+        "label": "Fall 2026 Batch 01 Ready to Elevate Your Tabletop ",
+        "x": 215,
+        "y": 7188,
+        "xPercent": 14.14,
+        "yPercent": 92.31,
+        "section": "join-waitlist"
+      }
+    },
+    {
+      "id": "ev_1790222063722_aqr5",
+      "timestamp": 1790222063722,
+      "isoTime": "11:54:23 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 35,
+      "data": {
+        "tag": "a",
+        "id": null,
+        "className": "nav-link",
+        "label": "Reservation",
+        "x": 699,
+        "y": 6941,
+        "xPercent": 45.96,
+        "yPercent": 89.14,
+        "section": "scrolled"
+      }
+    },
+    {
+      "id": "ev_1790222063724_nisy",
+      "timestamp": 1790222063724,
+      "isoTime": "11:54:23 AM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 35,
+      "data": {
+        "label": "Reservation",
+        "id": "",
+        "tag": "A"
+      }
+    },
+    {
+      "id": "ev_1790222215928_jqpy",
+      "timestamp": 1790222215928,
+      "isoTime": "11:56:55 AM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790222215921_skiw",
+      "timestamp": 1790222215921,
+      "isoTime": "11:56:55 AM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790222550395_ygt2",
+      "timestamp": 1790222550395,
+      "isoTime": "12:02:30 PM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790222550399_a5hu",
+      "timestamp": 1790222550399,
+      "isoTime": "12:02:30 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790222636081_6k6r",
+      "timestamp": 1790222636081,
+      "isoTime": "12:03:56 PM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790222636088_1ie2",
+      "timestamp": 1790222636088,
+      "isoTime": "12:03:56 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790222664434_83ea",
+      "timestamp": 1790222664434,
+      "isoTime": "12:04:24 PM",
+      "type": "start_guided_tour",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "source": "button"
+      }
+    },
+    {
+      "id": "ev_1790222664440_78yf",
+      "timestamp": 1790222664440,
+      "isoTime": "12:04:24 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "label": "See 3D Tour\n↓",
+        "id": "",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790222664439_iwej",
+      "timestamp": 1790222664439,
+      "isoTime": "12:04:24 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "tag": "button",
+        "id": null,
+        "className": "experience",
+        "label": "See 3D Tour ↓",
+        "x": 266,
+        "y": 661,
+        "xPercent": 33.84,
+        "yPercent": 7.07,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790222677369_g919",
+      "timestamp": 1790222677369,
+      "isoTime": "12:04:37 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 40,
+      "data": {
+        "label": "progress",
+        "id": "progress",
+        "tag": "INPUT"
+      }
+    },
+    {
+      "id": "ev_1790222677367_35kz",
+      "timestamp": 1790222677367,
+      "isoTime": "12:04:37 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 40,
+      "data": {
+        "tag": "input",
+        "id": "progress",
+        "className": "",
+        "label": "input",
+        "x": 355,
+        "y": 749,
+        "xPercent": 45.17,
+        "yPercent": 8.01,
+        "section": "experience"
+      }
+    },
+    {
+      "id": "ev_1790222689791_0s0a",
+      "timestamp": 1790222689791,
+      "isoTime": "12:04:49 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 50,
+      "data": {
+        "tag": "button",
+        "id": null,
+        "className": "",
+        "label": "Notify me ↗",
+        "x": 265,
+        "y": 1540,
+        "xPercent": 33.72,
+        "yPercent": 16.48,
+        "section": "signup"
+      }
+    },
+    {
+      "id": "ev_1790222689793_h216",
+      "timestamp": 1790222689793,
+      "isoTime": "12:04:49 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 50,
+      "data": {
+        "label": "Notify me\n↗",
+        "id": "",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790222692649_rx5v",
+      "timestamp": 1790222692649,
+      "isoTime": "12:04:52 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 55,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790222715118_1qw3",
+      "timestamp": 1790222715118,
+      "isoTime": "12:05:15 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 75,
+      "data": {
+        "tag": "section",
+        "id": null,
+        "className": "intro panel",
+        "label": "1,850 Tabletop Backers on Waitlist STACK. TAP. PLA",
+        "x": 436,
+        "y": 117,
+        "xPercent": 89.9,
+        "yPercent": 1.22,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790222716683_wamr",
+      "timestamp": 1790222716683,
+      "isoTime": "12:05:16 PM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 500,
+        "screenHeight": 694,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790222716688_lbbi",
+      "timestamp": 1790222716688,
+      "isoTime": "12:05:16 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790222724701_grh4",
+      "timestamp": 1790222724701,
+      "isoTime": "12:05:24 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790222724700_wo0e",
+      "timestamp": 1790222724700,
+      "isoTime": "12:05:24 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790222724702_m0wc",
+      "timestamp": 1790222724702,
+      "isoTime": "12:05:24 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790222724701_pbg9",
+      "timestamp": 1790222724701,
+      "isoTime": "12:05:24 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790222770268_w22x",
+      "timestamp": 1790222770268,
+      "isoTime": "12:06:10 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_pdtx7v3_muewme7x",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "hero-sticky-stage",
+        "label": "1,025 Tabletop Backers on Waitlist STACK. TAP. PLA",
+        "x": 938,
+        "y": 617,
+        "xPercent": 61.67,
+        "yPercent": 7.92,
+        "section": "experience"
+      }
+    },
+    {
+      "id": "ev_1790223533233_lh0e",
+      "timestamp": 1790223533233,
+      "isoTime": "12:18:53 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_j4bz9ax_muf0vain",
+      "sessionId": "s_gatist1_muf0vain",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790223533207_fpw2",
+      "timestamp": 1790223533207,
+      "isoTime": "12:18:53 PM",
+      "type": "page_view",
+      "visitorId": "v_j4bz9ax_muf0vain",
+      "sessionId": "s_gatist1_muf0vain",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 375,
+        "screenHeight": 667,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790223567573_gtur",
+      "timestamp": 1790223567573,
+      "isoTime": "12:19:27 PM",
+      "type": "page_view",
+      "visitorId": "v_8u7wh2c_muf0w13k",
+      "sessionId": "s_l7vhmvt_muf0w13k",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 768,
+        "screenHeight": 1024,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790223567597_mz9p",
+      "timestamp": 1790223567597,
+      "isoTime": "12:19:27 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_8u7wh2c_muf0w13k",
+      "sessionId": "s_l7vhmvt_muf0w13k",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790223575526_ufs9",
+      "timestamp": 1790223575526,
+      "isoTime": "12:19:35 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_skak9h2_muf0w77h",
+      "sessionId": "s_itqulek_muf0w77h",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790223575502_t6sg",
+      "timestamp": 1790223575502,
+      "isoTime": "12:19:35 PM",
+      "type": "page_view",
+      "visitorId": "v_skak9h2_muf0w77h",
+      "sessionId": "s_itqulek_muf0w77h",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1280,
+        "screenHeight": 800,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790223774855_i26n",
+      "timestamp": 1790223774855,
+      "isoTime": "12:22:54 PM",
+      "type": "page_view",
+      "visitorId": "v_wgwqw19_muf10h19",
+      "sessionId": "s_85q6sqm_muf10h1a",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 375,
+        "screenHeight": 667,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790223774878_0lp6",
+      "timestamp": 1790223774878,
+      "isoTime": "12:22:54 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_wgwqw19_muf10h19",
+      "sessionId": "s_85q6sqm_muf10h1a",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790223779202_j1hj",
+      "timestamp": 1790223779202,
+      "isoTime": "12:22:59 PM",
+      "type": "page_view",
+      "visitorId": "v_33keeal_muf10kn5",
+      "sessionId": "s_wbof8rp_muf10kn6",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 414,
+        "screenHeight": 896,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790223779225_bc8i",
+      "timestamp": 1790223779225,
+      "isoTime": "12:22:59 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_33keeal_muf10kn5",
+      "sessionId": "s_wbof8rp_muf10kn6",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790223782627_bg5t",
+      "timestamp": 1790223782627,
+      "isoTime": "12:23:02 PM",
+      "type": "page_view",
+      "visitorId": "v_h8mkhby_muf10naa",
+      "sessionId": "s_970coho_muf10naa",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 768,
+        "screenHeight": 1024,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790223782656_wjdb",
+      "timestamp": 1790223782656,
+      "isoTime": "12:23:02 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_h8mkhby_muf10naa",
+      "sessionId": "s_970coho_muf10naa",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790223786249_gm40",
+      "timestamp": 1790223786249,
+      "isoTime": "12:23:06 PM",
+      "type": "page_view",
+      "visitorId": "v_ndkc8u7_muf10ps3",
+      "sessionId": "s_7ecue0l_muf10ps3",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1280,
+        "screenHeight": 800,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790223786272_yqir",
+      "timestamp": 1790223786272,
+      "isoTime": "12:23:06 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_ndkc8u7_muf10ps3",
+      "sessionId": "s_7ecue0l_muf10ps3",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790224007449_740c",
+      "timestamp": 1790224007449,
+      "isoTime": "12:26:47 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 60,
+      "data": {
+        "category": "party",
+        "blockId": 14,
+        "promptSnippet": "TRUTH OR DARE: Reveal your most embarrassing purchase, or fi"
+      }
+    },
+    {
+      "id": "ev_1790224007453_fwpl",
+      "timestamp": 1790224007453,
+      "isoTime": "12:26:47 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 60,
+      "data": {
+        "label": "BLOCK #14 2\nCore Twist",
+        "id": "block-btn-14",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790224007452_50v4",
+      "timestamp": 1790224007452,
+      "isoTime": "12:26:47 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 60,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-14",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #14 2 Core Twist",
+        "x": 572,
+        "y": 2609,
+        "xPercent": 37.61,
+        "yPercent": 33.5,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790224112553_dwpz",
+      "timestamp": 1790224112553,
+      "isoTime": "12:28:32 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 130,
+      "data": {
+        "tag": "p",
+        "id": "oled-prompt-text",
+        "className": "oled-prompt-output",
+        "label": "\"TRUTH OR DARE: Reveal your most embarrassing purc",
+        "x": 899,
+        "y": 2681,
+        "xPercent": 59.11,
+        "yPercent": 34.43,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790224112952_p8va",
+      "timestamp": 1790224112952,
+      "isoTime": "12:28:32 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 130,
+      "data": {
+        "tag": "p",
+        "id": "oled-prompt-text",
+        "className": "oled-prompt-output",
+        "label": "\"TRUTH OR DARE: Reveal your most embarrassing purc",
+        "x": 899,
+        "y": 2681,
+        "xPercent": 59.11,
+        "yPercent": 34.43,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790224112737_nss8",
+      "timestamp": 1790224112737,
+      "isoTime": "12:28:32 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 130,
+      "data": {
+        "tag": "p",
+        "id": "oled-prompt-text",
+        "className": "oled-prompt-output",
+        "label": "\"TRUTH OR DARE: Reveal your most embarrassing purc",
+        "x": 899,
+        "y": 2681,
+        "xPercent": 59.11,
+        "yPercent": 34.43,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790224113811_ab5e",
+      "timestamp": 1790224113811,
+      "isoTime": "12:28:33 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 130,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "oled-bezel",
+        "label": "MODE: DRINKING & PARTY NFC ACTIVE BLOCK #14 · CORE",
+        "x": 1247,
+        "y": 2783,
+        "xPercent": 81.99,
+        "yPercent": 35.74,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790224162794_26aj",
+      "timestamp": 1790224162794,
+      "isoTime": "12:29:22 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 150,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "hero-sticky-stage",
+        "label": "1,847 Tabletop Backers on Waitlist STACK. TAP. PLA",
+        "x": 933,
+        "y": 892,
+        "xPercent": 61.34,
+        "yPercent": 11.45,
+        "section": "experience"
+      }
+    },
+    {
+      "id": "ev_1790225859935_y69f",
+      "timestamp": 1790225859935,
+      "isoTime": "12:57:39 PM",
+      "type": "page_view",
+      "visitorId": "v_e0ymbto_muf295vd",
+      "sessionId": "s_ee77t4u_muf295ve",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 375,
+        "screenHeight": 667,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790225859959_ywt3",
+      "timestamp": 1790225859960,
+      "isoTime": "12:57:39 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_e0ymbto_muf295vd",
+      "sessionId": "s_ee77t4u_muf295ve",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790225867860_ixia",
+      "timestamp": 1790225867860,
+      "isoTime": "12:57:47 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_57o4bn5_muf29c8n",
+      "sessionId": "s_7wh3b9h_muf29c8n",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790225867832_2g5c",
+      "timestamp": 1790225867832,
+      "isoTime": "12:57:47 PM",
+      "type": "page_view",
+      "visitorId": "v_57o4bn5_muf29c8n",
+      "sessionId": "s_7wh3b9h_muf29c8n",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 414,
+        "screenHeight": 896,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790225874016_taib",
+      "timestamp": 1790225874016,
+      "isoTime": "12:57:54 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_1sqbtgl_muf29gnp",
+      "sessionId": "s_5xly7uv_muf29gnp",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790225873984_4gyz",
+      "timestamp": 1790225873984,
+      "isoTime": "12:57:53 PM",
+      "type": "page_view",
+      "visitorId": "v_1sqbtgl_muf29gnp",
+      "sessionId": "s_5xly7uv_muf29gnp",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 768,
+        "screenHeight": 1024,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790225879236_81yt",
+      "timestamp": 1790225879237,
+      "isoTime": "12:57:59 PM",
+      "type": "page_view",
+      "visitorId": "v_1pkzoem_muf29kqs",
+      "sessionId": "s_g2yri4j_muf29kqt",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1280,
+        "screenHeight": 800,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790225879264_ueuc",
+      "timestamp": 1790225879264,
+      "isoTime": "12:57:59 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_1pkzoem_muf29kqs",
+      "sessionId": "s_g2yri4j_muf29kqt",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790225962744_jg5r",
+      "timestamp": 1790225962744,
+      "isoTime": "12:59:22 PM",
+      "type": "page_view",
+      "visitorId": "v_0bjaysf_muf2bd78",
+      "sessionId": "s_2ec1w9n_muf2bd78",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 375,
+        "screenHeight": 667,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790225962768_wjrj",
+      "timestamp": 1790225962768,
+      "isoTime": "12:59:22 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_0bjaysf_muf2bd78",
+      "sessionId": "s_2ec1w9n_muf2bd78",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790225967935_8lb6",
+      "timestamp": 1790225967935,
+      "isoTime": "12:59:27 PM",
+      "type": "page_view",
+      "visitorId": "v_dpd9ywk_muf2bhha",
+      "sessionId": "s_m0ddo9i_muf2bhha",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 414,
+        "screenHeight": 896,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790225967958_wiu6",
+      "timestamp": 1790225967958,
+      "isoTime": "12:59:27 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_dpd9ywk_muf2bhha",
+      "sessionId": "s_m0ddo9i_muf2bhha",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790225971314_kbnv",
+      "timestamp": 1790225971314,
+      "isoTime": "12:59:31 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_hpkawhh_muf2bjrv",
+      "sessionId": "s_9r6w44w_muf2bjrv",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790225971291_zi1u",
+      "timestamp": 1790225971291,
+      "isoTime": "12:59:31 PM",
+      "type": "page_view",
+      "visitorId": "v_hpkawhh_muf2bjrv",
+      "sessionId": "s_9r6w44w_muf2bjrv",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 768,
+        "screenHeight": 1024,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790225975310_tayv",
+      "timestamp": 1790225975310,
+      "isoTime": "12:59:35 PM",
+      "type": "page_view",
+      "visitorId": "v_wc15g6r_muf2bmw5",
+      "sessionId": "s_gwjmy1t_muf2bmw5",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1280,
+        "screenHeight": 800,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790225975333_dv9q",
+      "timestamp": 1790225975333,
+      "isoTime": "12:59:35 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_wc15g6r_muf2bmw5",
+      "sessionId": "s_gwjmy1t_muf2bmw5",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790226210813_h5c7",
+      "timestamp": 1790226210813,
+      "isoTime": "1:03:30 PM",
+      "type": "page_view",
+      "visitorId": "v_c0wynhj_muf2golp",
+      "sessionId": "s_2t6bodq_muf2golp",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 375,
+        "screenHeight": 667,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790226210841_gat7",
+      "timestamp": 1790226210841,
+      "isoTime": "1:03:30 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_c0wynhj_muf2golp",
+      "sessionId": "s_2t6bodq_muf2golp",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790226377644_jq6m",
+      "timestamp": 1790226377644,
+      "isoTime": "1:06:17 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 235,
+      "data": {
+        "label": "BLOCK #45 5\nTower Climax",
+        "id": "block-btn-45",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790226378172_46pl",
+      "timestamp": 1790226378172,
+      "isoTime": "1:06:18 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790226377643_2vi7",
+      "timestamp": 1790226377643,
+      "isoTime": "1:06:17 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 235,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-45",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #45 5 Tower Climax",
+        "x": 0,
+        "y": 5736,
+        "xPercent": 0,
+        "yPercent": 73.66,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790226377640_qxnc",
+      "timestamp": 1790226377640,
+      "isoTime": "1:06:17 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 235,
+      "data": {
+        "category": "party",
+        "blockId": 45,
+        "promptSnippet": "DEATHMATCH: You must place this block on top using only your"
+      }
+    },
+    {
+      "id": "ev_1790226378168_el37",
+      "timestamp": 1790226378168,
+      "isoTime": "1:06:18 PM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790226429108_t28w",
+      "timestamp": 1790226429108,
+      "isoTime": "1:07:09 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 50,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790226434086_m3fv",
+      "timestamp": 1790226434086,
+      "isoTime": "1:07:14 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 55,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790226434083_x2rw",
+      "timestamp": 1790226434083,
+      "isoTime": "1:07:14 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 55,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790226434086_7lmy",
+      "timestamp": 1790226434086,
+      "isoTime": "1:07:14 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 55,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790226437146_3m4d",
+      "timestamp": 1790226437146,
+      "isoTime": "1:07:17 PM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790226437150_r8ak",
+      "timestamp": 1790226437151,
+      "isoTime": "1:07:17 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790226447810_ykwu",
+      "timestamp": 1790226447810,
+      "isoTime": "1:07:27 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790226469473_p7mt",
+      "timestamp": 1790226469473,
+      "isoTime": "1:07:49 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790226470633_i8t5",
+      "timestamp": 1790226470633,
+      "isoTime": "1:07:50 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790226471315_pizv",
+      "timestamp": 1790226471315,
+      "isoTime": "1:07:51 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790226563247_93o0",
+      "timestamp": 1790226563247,
+      "isoTime": "1:09:23 PM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790226563251_ufkg",
+      "timestamp": 1790226563251,
+      "isoTime": "1:09:23 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790226567589_k3wp",
+      "timestamp": 1790226567589,
+      "isoTime": "1:09:27 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790226596331_i63w",
+      "timestamp": 1790226596331,
+      "isoTime": "1:09:56 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "",
+        "label": "NFC // 13.56MHz CRYPTO",
+        "x": 575,
+        "y": 359,
+        "xPercent": 37.8,
+        "yPercent": 4.62,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790226596484_z58f",
+      "timestamp": 1790226596484,
+      "isoTime": "1:09:56 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "",
+        "label": "NFC // 13.56MHz CRYPTO",
+        "x": 575,
+        "y": 359,
+        "xPercent": 37.8,
+        "yPercent": 4.62,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790226596700_js80",
+      "timestamp": 1790226596700,
+      "isoTime": "1:09:56 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "",
+        "label": "NFC // 13.56MHz CRYPTO",
+        "x": 575,
+        "y": 359,
+        "xPercent": 37.8,
+        "yPercent": 4.62,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790226596162_xbqq",
+      "timestamp": 1790226596162,
+      "isoTime": "1:09:56 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "",
+        "label": "NFC // 13.56MHz CRYPTO",
+        "x": 575,
+        "y": 359,
+        "xPercent": 37.8,
+        "yPercent": 4.62,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790226597416_5ul8",
+      "timestamp": 1790226597416,
+      "isoTime": "1:09:57 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "",
+        "label": "NFC // 13.56MHz CRYPTO",
+        "x": 575,
+        "y": 359,
+        "xPercent": 37.8,
+        "yPercent": 4.62,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790226598210_f945",
+      "timestamp": 1790226598210,
+      "isoTime": "1:09:58 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 15,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "hero-reservation-card spotlight-card border-beam-container",
+        "label": "JEEMU OS v2.4 NFC // 13.56MHz CRYPTO 🔥 Guaranteed",
+        "x": 308,
+        "y": 373,
+        "xPercent": 20.25,
+        "yPercent": 4.8,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790226612465_78ve",
+      "timestamp": 1790226612465,
+      "isoTime": "1:10:12 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "label": "BLOCK #36 4\nSecret Rule",
+        "id": "block-btn-36",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790226612460_qwu5",
+      "timestamp": 1790226612460,
+      "isoTime": "1:10:12 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "category": "party",
+        "blockId": 36,
+        "promptSnippet": "SILENT TOWER: No player may speak above a whisper for the ne"
+      }
+    },
+    {
+      "id": "ev_1790226612464_6az9",
+      "timestamp": 1790226612464,
+      "isoTime": "1:10:12 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 30,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-36",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #36 4 Secret Rule",
+        "x": 529,
+        "y": 2759,
+        "xPercent": 34.78,
+        "yPercent": 35.5,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790226614498_ns1l",
+      "timestamp": 1790226614498,
+      "isoTime": "1:10:14 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 35,
+      "data": {
+        "category": "party",
+        "blockId": 45,
+        "promptSnippet": "DEATHMATCH: You must place this block on top using only your"
+      }
+    },
+    {
+      "id": "ev_1790226614500_jyu7",
+      "timestamp": 1790226614500,
+      "isoTime": "1:10:14 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 35,
+      "data": {
+        "label": "BLOCK #45 5\nTower Climax",
+        "id": "block-btn-45",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790226614500_nyh6",
+      "timestamp": 1790226614500,
+      "isoTime": "1:10:14 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 35,
+      "data": {
+        "tag": "button",
+        "id": "block-btn-45",
+        "className": "wooden-block-btn spotlight-card active",
+        "label": "BLOCK #45 5 Tower Climax",
+        "x": 491,
+        "y": 2797,
+        "xPercent": 32.28,
+        "yPercent": 35.99,
+        "section": "simulator"
+      }
+    },
+    {
+      "id": "ev_1790238690750_2qhx",
+      "timestamp": 1790238690750,
+      "isoTime": "4:31:30 PM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790238690775_7qcl",
+      "timestamp": 1790238690775,
+      "isoTime": "4:31:30 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_gb1n7at_muezdtyo",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790238741955_jldg",
+      "timestamp": 1790238741956,
+      "isoTime": "4:32:21 PM",
+      "type": "page_view",
+      "visitorId": "v_3vdm80j_muf9x9jx",
+      "sessionId": "s_yxtkmej_muf9x9jy",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 375,
+        "screenHeight": 667,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790238742034_gvbp",
+      "timestamp": 1790238742034,
+      "isoTime": "4:32:22 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_3vdm80j_muf9x9jx",
+      "sessionId": "s_yxtkmej_muf9x9jy",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790238743869_r0fl",
+      "timestamp": 1790238743869,
+      "isoTime": "4:32:23 PM",
+      "type": "page_view",
+      "visitorId": "v_a6wr467_muf9xbgb",
+      "sessionId": "s_05q7ez8_muf9xbgc",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 414,
+        "screenHeight": 896,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790238743905_0wkz",
+      "timestamp": 1790238743905,
+      "isoTime": "4:32:23 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_a6wr467_muf9xbgb",
+      "sessionId": "s_05q7ez8_muf9xbgc",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790238747740_lxq1",
+      "timestamp": 1790238747740,
+      "isoTime": "4:32:27 PM",
+      "type": "page_view",
+      "visitorId": "v_eokcwkw_muf9xefu",
+      "sessionId": "s_t5zhrac_muf9xefv",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 768,
+        "screenHeight": 1024,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790238747785_3ymv",
+      "timestamp": 1790238747785,
+      "isoTime": "4:32:27 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_eokcwkw_muf9xefu",
+      "sessionId": "s_t5zhrac_muf9xefv",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790238751452_3uit",
+      "timestamp": 1790238751452,
+      "isoTime": "4:32:31 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_tajydbg_muf9xgw9",
+      "sessionId": "s_0ak9iqm_muf9xgw9",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790238751423_qhry",
+      "timestamp": 1790238751423,
+      "isoTime": "4:32:31 PM",
+      "type": "page_view",
+      "visitorId": "v_tajydbg_muf9xgw9",
+      "sessionId": "s_0ak9iqm_muf9xgw9",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1280,
+        "screenHeight": 800,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790239120057_urub",
+      "timestamp": 1790239120057,
+      "isoTime": "4:38:40 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_uaqkwzf_mufa5dfz",
+      "sessionId": "s_zuhztcf_mufa5dg0",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790239120034_amcg",
+      "timestamp": 1790239120034,
+      "isoTime": "4:38:40 PM",
+      "type": "page_view",
+      "visitorId": "v_uaqkwzf_mufa5dfz",
+      "sessionId": "s_zuhztcf_mufa5dg0",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 375,
+        "screenHeight": 667,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790239124575_ryxz",
+      "timestamp": 1790239124575,
+      "isoTime": "4:38:44 PM",
+      "type": "page_view",
+      "visitorId": "v_yc20nhu_mufa5h7j",
+      "sessionId": "s_cp9ed7p_mufa5h7j",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 414,
+        "screenHeight": 896,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790239124599_9t8w",
+      "timestamp": 1790239124599,
+      "isoTime": "4:38:44 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_yc20nhu_mufa5h7j",
+      "sessionId": "s_cp9ed7p_mufa5h7j",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790239128313_sl7y",
+      "timestamp": 1790239128313,
+      "isoTime": "4:38:48 PM",
+      "type": "page_view",
+      "visitorId": "v_9j3l8zm_mufa5jsi",
+      "sessionId": "s_a0vhlrg_mufa5jsi",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 768,
+        "screenHeight": 1024,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790239128338_0yeg",
+      "timestamp": 1790239128338,
+      "isoTime": "4:38:48 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_9j3l8zm_mufa5jsi",
+      "sessionId": "s_a0vhlrg_mufa5jsi",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790239132159_mzxk",
+      "timestamp": 1790239132159,
+      "isoTime": "4:38:52 PM",
+      "type": "page_view",
+      "visitorId": "v_xizan0j_mufa5mrx",
+      "sessionId": "s_cs7onm0_mufa5mrx",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1280,
+        "screenHeight": 800,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790239132183_25md",
+      "timestamp": 1790239132183,
+      "isoTime": "4:38:52 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_xizan0j_mufa5mrx",
+      "sessionId": "s_cs7onm0_mufa5mrx",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790239247344_q82j",
+      "timestamp": 1790239247344,
+      "isoTime": "4:40:47 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790239247321_uv42",
+      "timestamp": 1790239247321,
+      "isoTime": "4:40:47 PM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790239251760_blqx",
+      "timestamp": 1790239251760,
+      "isoTime": "4:40:51 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790239297431_jbt3",
+      "timestamp": 1790239297431,
+      "isoTime": "4:41:37 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 50,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790239375331_pd21",
+      "timestamp": 1790239375331,
+      "isoTime": "4:42:55 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790239375033_qusq",
+      "timestamp": 1790239375033,
+      "isoTime": "4:42:55 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 115,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790239768719_cnmk",
+      "timestamp": 1790239768719,
+      "isoTime": "4:49:28 PM",
+      "type": "page_view",
+      "visitorId": "v_jaqau9z_mufaj9yy",
+      "sessionId": "s_os5sp6n_mufaj9yy",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 375,
+        "screenHeight": 667,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790239768742_pojl",
+      "timestamp": 1790239768742,
+      "isoTime": "4:49:28 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jaqau9z_mufaj9yy",
+      "sessionId": "s_os5sp6n_mufaj9yy",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790239773343_ulr5",
+      "timestamp": 1790239773343,
+      "isoTime": "4:49:33 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_u03cw7e_mufajds6",
+      "sessionId": "s_hfjfvy4_mufajds6",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790239773319_6vab",
+      "timestamp": 1790239773319,
+      "isoTime": "4:49:33 PM",
+      "type": "page_view",
+      "visitorId": "v_u03cw7e_mufajds6",
+      "sessionId": "s_hfjfvy4_mufajds6",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1280,
+        "screenHeight": 800,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790239776478_s9o5",
+      "timestamp": 1790239776478,
+      "isoTime": "4:49:36 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_u03cw7e_mufajds6",
+      "sessionId": "s_hfjfvy4_mufajds6",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790239936020_mn8m",
+      "timestamp": 1790239936020,
+      "isoTime": "4:52:16 PM",
+      "type": "page_view",
+      "visitorId": "v_qg0mf1z_mufamv25",
+      "sessionId": "s_hwyqw7z_mufamv26",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 375,
+        "screenHeight": 667,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790239936046_q2sz",
+      "timestamp": 1790239936046,
+      "isoTime": "4:52:16 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_qg0mf1z_mufamv25",
+      "sessionId": "s_hwyqw7z_mufamv26",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790240024090_7v43",
+      "timestamp": 1790240024090,
+      "isoTime": "4:53:44 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
+    },
+    {
+      "id": "ev_1790240024084_6tlh",
+      "timestamp": 1790240024084,
+      "isoTime": "4:53:44 PM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790240028186_qptz",
+      "timestamp": 1790240028186,
+      "isoTime": "4:53:48 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "tag": "span",
+        "id": null,
+        "className": "",
+        "label": "NFC // 13.56MHz CRYPTO",
+        "x": 909,
+        "y": 528,
+        "xPercent": 59.76,
+        "yPercent": 6.79,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790240030810_4x8g",
+      "timestamp": 1790240030810,
+      "isoTime": "4:53:50 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 25
+      }
+    },
+    {
+      "id": "ev_1790240031342_fh7s",
+      "timestamp": 1790240031342,
+      "isoTime": "4:53:51 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 50
+      }
+    },
+    {
+      "id": "ev_1790240032582_biuk",
+      "timestamp": 1790240032582,
+      "isoTime": "4:53:52 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 100
+      }
+    },
+    {
+      "id": "ev_1790240031802_ser1",
+      "timestamp": 1790240031802,
+      "isoTime": "4:53:51 PM",
+      "type": "scroll_depth",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 5,
+      "data": {
+        "depth": 75
+      }
+    },
+    {
+      "id": "ev_1790240037147_yodo",
+      "timestamp": 1790240037147,
+      "isoTime": "4:53:57 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "tag": "a",
+        "id": null,
+        "className": "nav-link",
+        "label": "Interactive Dock",
+        "x": 800,
+        "y": 49,
+        "xPercent": 52.6,
+        "yPercent": 0.63,
+        "section": "header"
+      }
+    },
+    {
+      "id": "ev_1790240037149_en3g",
+      "timestamp": 1790240037149,
+      "isoTime": "4:53:57 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "label": "Interactive Dock",
+        "id": "",
+        "tag": "A"
+      }
+    },
+    {
+      "id": "ev_1790240037988_tics",
+      "timestamp": 1790240037988,
+      "isoTime": "4:53:57 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "label": "Reservation",
+        "id": "",
+        "tag": "A"
+      }
+    },
+    {
+      "id": "ev_1790240037986_yd9x",
+      "timestamp": 1790240037986,
+      "isoTime": "4:53:57 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 10,
+      "data": {
+        "tag": "a",
+        "id": null,
+        "className": "nav-link",
+        "label": "Reservation",
+        "x": 708,
+        "y": 1991,
+        "xPercent": 46.55,
+        "yPercent": 25.62,
+        "section": "scrolled"
+      }
+    },
+    {
+      "id": "ev_1790240044490_wigl",
+      "timestamp": 1790240044490,
+      "isoTime": "4:54:04 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "hero-reservation-card spotlight-card border-beam-container",
+        "label": "JEEMU OS v2.4 NFC // 13.56MHz CRYPTO 🔥 Guaranteed",
+        "x": 913,
+        "y": 651,
+        "xPercent": 60.03,
+        "yPercent": 8.38,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790240044640_lmfe",
+      "timestamp": 1790240044640,
+      "isoTime": "4:54:04 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "hero-reservation-card spotlight-card border-beam-container",
+        "label": "JEEMU OS v2.4 NFC // 13.56MHz CRYPTO 🔥 Guaranteed",
+        "x": 913,
+        "y": 651,
+        "xPercent": 60.03,
+        "yPercent": 8.38,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790240044859_oc3i",
+      "timestamp": 1790240044859,
+      "isoTime": "4:54:04 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "hero-reservation-card spotlight-card border-beam-container",
+        "label": "JEEMU OS v2.4 NFC // 13.56MHz CRYPTO 🔥 Guaranteed",
+        "x": 913,
+        "y": 651,
+        "xPercent": 60.03,
+        "yPercent": 8.38,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790240045422_7byu",
+      "timestamp": 1790240045422,
+      "isoTime": "4:54:05 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "tag": "div",
+        "id": null,
+        "className": "hero-reservation-card spotlight-card border-beam-container",
+        "label": "JEEMU OS v2.4 NFC // 13.56MHz CRYPTO 🔥 Guaranteed",
+        "x": 913,
+        "y": 651,
+        "xPercent": 60.03,
+        "yPercent": 8.38,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790240046474_o8b3",
+      "timestamp": 1790240046474,
+      "isoTime": "4:54:06 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "label": "VIP $1 Reservation\n↗",
+        "id": "",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790240046447_f07r",
+      "timestamp": 1790240046447,
+      "isoTime": "4:54:06 PM",
+      "type": "view_vip_modal",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "source": "funnel_step"
+      }
+    },
+    {
+      "id": "ev_1790240046474_frh3",
+      "timestamp": 1790240046474,
+      "isoTime": "4:54:06 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 20,
+      "data": {
+        "tag": "button",
+        "id": null,
+        "className": "join-primary btn-shimmer-primary btn-open-vip",
+        "label": "VIP $1 Reservation ↗",
+        "x": 732,
+        "y": 740,
+        "xPercent": 48.13,
+        "yPercent": 9.52,
+        "section": "intro"
+      }
+    },
+    {
+      "id": "ev_1790240051975_9117",
+      "timestamp": 1790240051975,
+      "isoTime": "4:54:11 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "label": "×",
+        "id": "btn-close-vip",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "id": "ev_1790240051974_1lr0",
+      "timestamp": 1790240051974,
+      "isoTime": "4:54:11 PM",
+      "type": "click",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 25,
+      "data": {
+        "tag": "button",
+        "id": "btn-close-vip",
+        "className": "btn-close-modal",
+        "label": "×",
+        "x": 999,
+        "y": 496,
+        "xPercent": 65.68,
+        "yPercent": 6.38,
+        "section": "body"
+      }
+    },
+    {
+      "id": "ev_1790240057049_jtn9",
+      "timestamp": 1790240057049,
+      "isoTime": "4:54:17 PM",
+      "type": "page_view",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "referrer": "direct",
+        "screenWidth": 1536,
+        "screenHeight": 702,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+      }
+    },
+    {
+      "id": "ev_1790240057055_efax",
+      "timestamp": 1790240057055,
+      "isoTime": "4:54:17 PM",
+      "type": "simulator_block_tap",
+      "visitorId": "v_jji0ot8_mu8wenos",
+      "sessionId": "s_66w8ssc_mufa83x4",
+      "url": "/",
+      "utm": {
+        "utm_source": "direct",
+        "utm_medium": "organic",
+        "utm_campaign": "launch",
+        "ref": null
+      },
+      "dwellSeconds": 0,
+      "data": {
+        "category": "party",
+        "blockId": 7,
+        "promptSnippet": "Choose another player. Both of you must keep one eye closed "
+      }
     }
   ],
   "subscribers": [
