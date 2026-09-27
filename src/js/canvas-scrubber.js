@@ -165,7 +165,6 @@ export class CanvasScrubber {
     });
 
     if (this.product) {
-      this.product.style.transform = 'none';
       this.product.style.opacity = '1';
     }
 
