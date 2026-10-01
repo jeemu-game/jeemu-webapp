@@ -214,11 +214,7 @@ class FunnelManager {
       const sub = analytics.registerEmailSignup(email, name);
       this.currentSubscriber = sub;
 
-      // Credit referrer in Supabase if applicable
-      if (this.activeReferrerCode && this.activeReferrerCode !== sub.referralCode) {
-        this._creditReferrer(this.activeReferrerCode);
-      }
-
+      // Note: Referrals are credited exclusively upon verified $1 VIP payment
       this._updateReferralUI(sub);
 
       const formStatus = document.getElementById('form-status');

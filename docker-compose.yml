@@ -1,0 +1,40 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: jeemu_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=production
+      - PORT=8000
+      - HOST=0.0.0.0
+      - DATA_ADAPTER=auto
+      - DATABASE_URL=${DATABASE_URL:-}
+      - SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL:-}
+      - SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY:-}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - STRIPE_PAYMENT_LINK=${STRIPE_PAYMENT_LINK:-https://buy.stripe.com/00wbJ0ahV5htgzrgxLbAs0k}
+      - SMTP_HOST=${SMTP_HOST:-smtp.hostinger.com}
+      - SMTP_PORT=${SMTP_PORT:-465}
+      - SMTP_USER=${SMTP_USER:-info@jeemu.fun}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - GOOGLE_SHEET_WEBHOOK_URL=${GOOGLE_SHEET_WEBHOOK_URL:-}
+      - SITE_URL=${SITE_URL:-http://localhost:3000}
+    volumes:
+      - ./backend/data:/app/data
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: jeemu_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend

@@ -230,7 +230,16 @@ class AnalyticsEngine {
     };
 
     const subscribers = this.getSubscribers();
-    // Check if email already exists
+    // Always call backend API to ensure email dispatch & server sync
+    try {
+      fetch('/api/subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name, ref: this.refCode })
+      }).catch(() => {});
+    } catch (e) {}
+
+    // Check if email already exists locally
     const existingIndex = subscribers.findIndex(s => s.email.toLowerCase() === email.toLowerCase());
     if (existingIndex >= 0) {
       return subscribers[existingIndex];
@@ -245,15 +254,6 @@ class AnalyticsEngine {
       referralCode: subscriber.referralCode,
       referredBy: this.refCode
     });
-
-    // Send to backend API
-    try {
-      fetch('/api/subscribers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name, ref: this.refCode })
-      }).catch(() => {});
-    } catch (e) {}
 
     return subscriber;
   }

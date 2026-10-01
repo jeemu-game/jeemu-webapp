@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark light">
+  <title>Batch 01 Spot Reserved — Jeemu</title>
+  <style>
+    body, table, td, p, a { -webkit-text-size-adjust: 100%; margin: 0; padding: 0; }
+    body { background-color: #0c0e12; color: #e5e7eb; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; }
+    .card { background-color: #131720; border: 1px solid #242a38; border-radius: 12px; padding: 32px 24px; }
+    .badge { display: inline-block; background-color: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35); color: #f59e0b; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    .code-box { background-color: #1a1f2c; border: 2px dashed #f59e0b; border-radius: 8px; padding: 14px 18px; text-align: center; margin: 20px 0; }
+    .code-text { font-family: monospace; font-size: 22px; font-weight: 800; color: #f59e0b; letter-spacing: 2px; }
+    .btn { display: inline-block; background-color: #f59e0b; color: #0c0e12; font-weight: 700; padding: 14px 28px; border-radius: 8px; text-decoration: none; margin-top: 16px; }
+    .milestone-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    .milestone-table td { padding: 10px 12px; border-bottom: 1px solid #242a38; font-size: 14px; }
+    .footer { font-size: 12px; color: #6b7280; text-align: center; margin-top: 32px; }
+    .footer a { color: #9ca3af; text-decoration: underline; }
+  </style>
+</head>
+<body style="background-color: #0c0e12; padding: 24px 12px;">
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto;">
+    <tr>
+      <td align="center" style="padding-bottom: 24px;">
+        <div style="font-size: 28px; font-weight: 900; letter-spacing: 2px; color: #ffffff;">JEE<span style="color: #f59e0b;">MU</span></div>
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #10b981; text-transform: uppercase; margin-top: 4px;">✦ SMART WOODEN TOWER CONSOLE ✦</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="card">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <span class="badge">BATCH 01 RESERVATION CONFIRMED</span>
+          </div>
+          <h1 style="font-size: 22px; font-weight: 800; color: #ffffff; margin-bottom: 12px; text-align: center;">Welcome to the Inner Circle, {{ subscriber.name }}!</h1>
+          <p style="color: #9ca3af; margin-bottom: 16px;">Your spot for <strong>Batch 01 Early Access</strong> is officially reserved. When we launch on Kickstarter, your reservation guarantees a <strong>45% discount ($89 vs $159 retail)</strong>.</p>
+          
+          <div class="code-box">
+            <div style="font-size: 12px; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px;">Your Personal Referral Code</div>
+            <div class="code-text">{{ subscriber.referralCode }}</div>
+            <div style="font-size: 13px; color: #d1d5db; margin-top: 8px;">Share link: <a href="{{ site_url }}/?ref={{ subscriber.referralCode }}" style="color: #f59e0b; word-break: break-all;">{{ site_url }}/?ref={{ subscriber.referralCode }}</a></div>
+          </div>
+
+          <h3 style="font-size: 16px; color: #ffffff; margin-top: 24px; margin-bottom: 8px;">🎁 Unlock Milestone Referral Rewards</h3>
+          <p style="font-size: 14px; color: #9ca3af;">Share your link with board game friends. When they lock in their $1 VIP reservation, you both unlock:</p>
+          
+          <table class="milestone-table">
+            <tr>
+              <td style="color: #f59e0b; font-weight: bold; width: 80px;">1 Friend</td>
+              <td><strong>24-Hour VIP Early Access</strong> before public launch</td>
+            </tr>
+            <tr>
+              <td style="color: #f59e0b; font-weight: bold;">3 Friends</td>
+              <td><strong>Free Physical Expansion Game Pack</strong> ($29 Value) added to pledge</td>
+            </tr>
+            <tr>
+              <td style="color: #f59e0b; font-weight: bold;">5 Friends</td>
+              <td><strong>Gold-Stamped Founder Block #01</strong> with custom laser-engraved serial</td>
+            </tr>
+          </table>
+
+          <div style="text-align: center; margin-top: 24px;">
+            <a href="{{ site_url }}/#rewards" class="btn">View Kickstarter Backer Tiers</a>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p>© 2026 Jeemu Tabletop Systems. All rights reserved.</p>
+          <p style="margin-top: 8px;">You received this email because you signed up for the Jeemu launch waitlist.</p>
+          <p style="margin-top: 6px;"><a href="{{ unsubscribe_url }}">Unsubscribe with 1-click</a></p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

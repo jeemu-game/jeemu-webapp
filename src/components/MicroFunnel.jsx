@@ -189,9 +189,12 @@ export default function MicroFunnel() {
       ) : (
         <div className="step2-card">
           <div className="step2-success-banner">
-            <CheckCircle2 size={20} color="#10b981" />
+            <CheckCircle2 size={20} color="#10b981" style={{ flexShrink: 0, marginTop: '2px' }} />
             <div>
-              <strong>Spot Confirmed!</strong> Welcome to the Jeemu Founding Waitlist.
+              <div><strong>Spot Confirmed!</strong> Welcome to the Jeemu Founding Waitlist.</div>
+              <div style={{ fontSize: '0.85rem', color: '#d1d5db', marginTop: '4px', fontWeight: 400 }}>
+                We've sent your reservation confirmation & personal referral link to <strong style={{ color: '#f59e0b' }}>{subscriberData?.email}</strong>.
+              </div>
             </div>
           </div>
 

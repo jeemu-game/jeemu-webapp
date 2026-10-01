@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unsubscribe Confirmation — Jeemu</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0a0c10;
+      color: #e5e7eb;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #131720;
+      border: 1px solid #242a38;
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      padding: 40px 32px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .logo {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+      margin-bottom: 24px;
+    }
+    .logo span { color: #f59e0b; }
+    .icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: {{ 'rgba(16, 185, 129, 0.15)' if success else 'rgba(239, 68, 68, 0.15)' }};
+      color: {{ '#10b981' if success else '#ef4444' }};
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+    p {
+      color: #9ca3af;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .email-box {
+      background: #1a1f2c;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-family: monospace;
+      color: #f59e0b;
+      margin-bottom: 24px;
+      word-break: break-all;
+    }
+    .btn {
+      display: inline-block;
+      background: #f59e0b;
+      color: #000000;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">JEE<span>MU</span></div>
+    <div class="icon">{{ '✓' if success else '✕' }}</div>
+    <h1>{{ 'You Have Been Unsubscribed' if success else 'Unsubscribe Request' }}</h1>
+    <p>{{ message }}</p>
+    {% if email %}
+      <div class="email-box">{{ email }}</div>
+    {% endif %}
+    <a href="{{ site_url }}" class="btn">Return to Jeemu Homepage</a>
+    {% if success and email %}
+      <form action="/api/resubscribe" method="POST" style="margin-top: 18px;">
+        <input type="hidden" name="email" value="{{ email }}" />
+        <button type="submit" style="background: none; border: none; color: #6b7280; font-size: 13px; text-decoration: underline; cursor: pointer;">
+          Unsubscribed by mistake? Click here to re-subscribe.
+        </button>
+      </form>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "test:api": ".venv\\Scripts\\pytest tests/test_api.py -v",
     "test:e2e": "node tests/e2e.test.js",
+    "test:emails": "node tests/email_and_sheets.test.js && node tests/api_integration.test.js",
     "test": "npm run test:api && npm run test:e2e"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.1",
     "lucide-react": "^1.48.0",
+    "nodemailer": "^10.0.11",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "stripe": "^17.7.0"
