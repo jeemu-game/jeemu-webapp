@@ -17,21 +17,21 @@ export default function SpotlightPillars() {
   const pillars = [
     {
       icon: <Layers size={24} />,
-      title: 'Handcrafted Beechwood + NFC',
-      desc: '45 solid German beechwood blocks, each with an embedded 13.56MHz micro-transponder. Finished with organic beeswax for the signature buttery slide.',
+      title: 'Wood + NFC',
+      desc: '45 wood blocks, each with embedded NFC technology. Polished for a buttery slide.',
       meta: '45 Unique Block IDs'
     },
     {
       icon: <Cpu size={24} />,
       title: 'Panoramic IPS Smart Dock',
-      desc: 'High-contrast wide curved display reads any docked block in under 80 milliseconds. Features integrated dual-antenna coil and internal 8-hour rechargeable battery.',
+      desc: 'High contrast display reads the blocks in seconds and displays the questions. Charged with USB-C',
       meta: 'Sub-80ms Tag Latency'
     },
     {
       icon: <PhoneOff size={24} />,
       title: '100% Phone-Free During Play',
-      desc: 'No apps open during your party. Jeemu acts as an autonomous digital game master so your friends stay fully immersed in physical tabletop chaos.',
-      meta: 'Zero Screen Distractions'
+      desc: 'No apps during the gameplay. Stay fuller immersed in the tabletop chaos.',
+      meta: 'Endless Questions'
     }
   ];
 
@@ -42,9 +42,6 @@ export default function SpotlightPillars() {
           <span>Physical Meets Digital</span>
         </div>
         <h2 className="section-title">The Three Pillars of Jeemu</h2>
-        <p className="section-desc">
-          We rebuilt tabletop tumbling from the molecular level. Zero fragile mechanisms, zero phone distraction, infinite game possibilities.
-        </p>
       </div>
 
       <div className="pillars-grid">
@@ -62,7 +59,6 @@ export default function SpotlightPillars() {
             <p className="pillar-desc">{pillar.desc}</p>
             <div className="pillar-meta-tag">
               <span>{pillar.meta}</span>
-              <ArrowUpRight size={14} />
             </div>
           </div>
         ))}

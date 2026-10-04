@@ -16,7 +16,7 @@ import { router } from './router.js';
 
 class SubdomainManager {
   constructor() {
-    this.subdomains = ['launch', 'feed', 'chaos', 'journey', 'login', 'admin', 'dashboard'];
+    this.subdomains = ['launch', 'feed', 'chaos', 'journey', 'login', 'admin', 'dashboard', 'connect'];
     this.currentSubdomain = this._detectSubdomain();
     this.sseSource = null;
     window.subdomainManager = this;
@@ -145,14 +145,20 @@ class SubdomainManager {
       journey: 'Hardware Evolution Timeline | journey.jeemu.fun',
       login: 'Team Authentication Gateway | login.jeemu.fun',
       admin: 'Backer & Content Management Console | admin.jeemu.fun',
-      dashboard: 'Real-Time Telemetry & Click Heatmap | dashboard.jeemu.fun'
+      dashboard: 'Real-Time Telemetry & Click Heatmap | dashboard.jeemu.fun',
+      connect: 'JEEMU Tower // Mobile Companion & Remote Tap | connect.jeemu.fun'
     };
     document.title = titles[subdomain] || 'Jeemu — Smart Jenga';
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Handle specific subdomain logic
-    if (subdomain === 'feed') {
+    if (subdomain === 'connect') {
+      if (window.location.pathname !== '/connect.html' && window.location.pathname !== '/connect') {
+        window.location.href = '/connect.html';
+        return;
+      }
+    } else if (subdomain === 'feed') {
       router?.renderFeed();
     } else if (subdomain === 'chaos') {
       router?.renderChaos();

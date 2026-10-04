@@ -272,7 +272,6 @@ export default function HardwareSimulator() {
         <div className="section-head" style={{ position: 'relative' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
             <div>
-              <span className="section-tag">Interactive Hardware Prototype</span>
               <h2 className="section-title">Tap a Block on the Reader</h2>
               <p className="section-desc">
                 Experience the tactile physical-to-digital interface. Choose a game category, then click any wooden block or press keys <kbd className="manus-kbd">1</kbd>–<kbd className="manus-kbd">5</kbd> to position it on the Jeemu smart dock.
@@ -280,16 +279,6 @@ export default function HardwareSimulator() {
             </div>
 
             <div style={{ marginTop: '8px' }}>
-              <button
-                id="sim-sound-toggle-btn"
-                onClick={toggleSound}
-                className={`sim-sound-toggle ${soundEnabled ? 'sound-active' : ''}`}
-                title="Toggle tactile wood tap & NFC sound FX"
-                aria-label="Toggle simulator sound effects"
-              >
-                <span className="sound-icon">{soundEnabled ? '🔊' : '🔇'}</span>
-                <span>Sound: {soundEnabled ? 'ON' : 'OFF'}</span>
-              </button>
             </div>
           </div>
         </div>

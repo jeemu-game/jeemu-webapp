@@ -25,15 +25,12 @@ export default function TeamSection() {
               <div className="team-member-meta">
                 <h3 className="team-member-name">{member.name}</h3>
                 <span className="team-member-role">{member.role}</span>
+                {member.tagline && <span className="team-member-tagline">{member.tagline}</span>}
               </div>
             </div>
 
             <p className="team-member-bio">{member.bio}</p>
 
-            <div className="team-badge-row">
-              <Award size={13} color="#00d97e" />
-              <span>Core Founding Team</span>
-            </div>
           </div>
         ))}
       </div>

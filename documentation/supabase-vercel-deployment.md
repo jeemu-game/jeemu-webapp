@@ -125,8 +125,9 @@ npx vercel --prod
 
 ## Part 4: Custom Domain & Subdomains Setup
 
-Jeemu supports 7 distinct functional views:
+Jeemu supports 8 distinct functional views & companion tools:
 - `launch.jeemu.fun` (Kickstarter Pre-launch Funnel)
+- `connect.jeemu.fun` (Mobile Companion & Web Bluetooth Remote Tap)
 - `feed.jeemu.fun` (Engineering Updates & Devlogs)
 - `chaos.jeemu.fun` (Community Shitposting & Tower Fails)
 - `journey.jeemu.fun` (Hardware Prototype Timeline)
@@ -137,12 +138,12 @@ Jeemu supports 7 distinct functional views:
 ### Configuring Subdomains in Vercel:
 1. In your Vercel Project Dashboard, navigate to **Settings** -> **Domains**.
 2. Add your primary domain: `jeemu.fun` (or `launch.jeemu.fun`).
-3. Add a wildcard domain: `*.jeemu.fun` pointing to your Vercel project.
+3. Add `connect.jeemu.fun` (or a wildcard domain: `*.jeemu.fun`) pointing to your Vercel project.
 4. In your DNS registrar (e.g. Cloudflare, Namecheap, GoDaddy):
-   - Add a `CNAME` record with Name `*` pointing to `cname.vercel-dns.com`.
-5. Jeemu's router will automatically read the hostname (e.g. `dashboard.jeemu.fun`) and render the appropriate view!
+   - Add a `CNAME` record with Name `*` (or `connect`) pointing to `cname.vercel-dns.com`.
+5. Jeemu's router will automatically route `connect.jeemu.fun` to the Web Bluetooth companion app (`/connect.html`) and other views based on hostname!
 
-*(Even without custom DNS, you can always navigate using query parameters: `https://your-project.vercel.app?subdomain=dashboard`).*
+*(Even without custom DNS, you can always navigate using paths or query parameters: `https://your-project.vercel.app/connect` or `?subdomain=connect`).*
 
 ---
 

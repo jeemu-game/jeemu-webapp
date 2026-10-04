@@ -1553,6 +1553,13 @@ img, video {
   font-weight: 600;
 }
 
+.team-member-tagline {
+  font-size: 0.78rem;
+  font-style: italic;
+  color: #f59e0b;
+  letter-spacing: 0.02em;
+}
+
 .team-member-bio {
   font-size: 0.9rem;
   color: var(--text-muted);

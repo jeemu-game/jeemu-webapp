@@ -48,7 +48,7 @@ export default function AiStudioPreview() {
             Generate Custom Games in 8 Seconds.
           </h2>
           <p className="section-desc" style={{ textAlign: 'left', marginBottom: '24px' }}>
-            Traditional board games gather dust because you memorize the cards. With the Jeemu mobile companion, type any theme to create 45 custom block challenges, sync once via Bluetooth, and put your phone away.
+            With the Jeemu mobile companion, type any theme to create 45 custom block challenges, sync once via Bluetooth, and put your phone away.
           </p>
 
           <div>
@@ -110,10 +110,6 @@ export default function AiStudioPreview() {
             ))}
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-faint)', marginTop: '8px' }}>
-            <CheckCircle2 size={14} color="#10b981" />
-            <span>NFC transponders configured. Phone can now be locked.</span>
-          </div>
         </div>
       </div>
     </section>

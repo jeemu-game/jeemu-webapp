@@ -14,11 +14,11 @@ export default function JourneyTimeline() {
     <section className="section-container" id="journey">
       <div className="section-header">
         <div className="glow-pill">
-          <span>Our Story & Hardware Evolution</span>
+          <span>Our Story</span>
         </div>
-        <h2 className="section-title">From Garage Hack to Smart Console</h2>
+        <h2 className="section-title">Built in Shanghai, one September at a time.</h2>
         <p className="section-desc">
-          How an evening of taped index cards and fried microcontrollers turned into the world's first physical-digital tumbling tower.
+          We're a team of business students from around the world who landed in Shanghai with one assignment: build a real product and bring it to life. Our love for games gave us a starting point. A frustration gave us a mission.
         </p>
       </div>
 
@@ -54,6 +54,13 @@ export default function JourneyTimeline() {
             </div>
           ))}
         </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
+        <button className="btn-primary" style={{ padding: '12px 24px', fontSize: '1rem' }}>
+          <span>Join the Journey</span>
+          <span style={{ marginLeft: '8px' }}>→</span>
+        </button>
       </div>
     </section>
   );
