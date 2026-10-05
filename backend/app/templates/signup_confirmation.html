@@ -1,77 +1,210 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="color-scheme" content="dark light">
+  <meta name="supported-color-schemes" content="dark light">
   <title>Batch 01 Spot Reserved — Jeemu</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
   <style>
-    body, table, td, p, a { -webkit-text-size-adjust: 100%; margin: 0; padding: 0; }
-    body { background-color: #0c0e12; color: #e5e7eb; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; }
-    .card { background-color: #131720; border: 1px solid #242a38; border-radius: 12px; padding: 32px 24px; }
-    .badge { display: inline-block; background-color: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35); color: #f59e0b; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
-    .code-box { background-color: #1a1f2c; border: 2px dashed #f59e0b; border-radius: 8px; padding: 14px 18px; text-align: center; margin: 20px 0; }
-    .code-text { font-family: monospace; font-size: 22px; font-weight: 800; color: #f59e0b; letter-spacing: 2px; }
-    .btn { display: inline-block; background-color: #f59e0b; color: #0c0e12; font-weight: 700; padding: 14px 28px; border-radius: 8px; text-decoration: none; margin-top: 16px; }
-    .milestone-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-    .milestone-table td { padding: 10px 12px; border-bottom: 1px solid #242a38; font-size: 14px; }
-    .footer { font-size: 12px; color: #6b7280; text-align: center; margin-top: 32px; }
-    .footer a { color: #9ca3af; text-decoration: underline; }
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      height: 100% !important;
+      width: 100% !important;
+      background-color: #0c100e;
+    }
+    * {
+      -ms-text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
+    table, td {
+      mso-table-lspace: 0pt !important;
+      mso-table-rspace: 0pt !important;
+      border-collapse: collapse !important;
+    }
+    img {
+      -ms-interpolation-mode: bicubic;
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+      display: block;
+    }
+    a {
+      text-decoration: none;
+      color: #00d97e;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Space+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #e2ede5;
+      background-color: #0c100e;
+      line-height: 1.6;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .email-container {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .card-inner {
+        padding: 24px 18px !important;
+      }
+      .code-display {
+        font-size: 20px !important;
+        letter-spacing: 2px !important;
+      }
+      .headline {
+        font-size: 22px !important;
+      }
+    }
   </style>
 </head>
-<body style="background-color: #0c0e12; padding: 24px 12px;">
-  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto;">
+
+<body style="background-color: #0c100e; margin: 0; padding: 24px 12px; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #e2ede5;">
+  <!-- Preheader text -->
+  <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+    Your Early Access spot is confirmed. Your personal referral code and link are inside.
+  </div>
+
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #0c100e;">
     <tr>
-      <td align="center" style="padding-bottom: 24px;">
-        <div style="font-size: 28px; font-weight: 900; letter-spacing: 2px; color: #ffffff;">JEE<span style="color: #f59e0b;">MU</span></div>
-        <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #10b981; text-transform: uppercase; margin-top: 4px;">✦ SMART WOODEN TOWER CONSOLE ✦</div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <div class="card">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <span class="badge">BATCH 01 RESERVATION CONFIRMED</span>
-          </div>
-          <h1 style="font-size: 22px; font-weight: 800; color: #ffffff; margin-bottom: 12px; text-align: center;">Welcome to the Inner Circle, {{ subscriber.name }}!</h1>
-          <p style="color: #9ca3af; margin-bottom: 16px;">Your spot for <strong>Batch 01 Early Access</strong> is officially reserved. When we launch on Kickstarter, your reservation guarantees a <strong>45% discount ($89 vs $159 retail)</strong>.</p>
+      <td align="center" style="padding: 12px 0 32px 0;">
+        <!-- Container (600px max) -->
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="email-container" style="max-width: 560px; margin: 0 auto;">
           
-          <div class="code-box">
-            <div style="font-size: 12px; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px;">Your Personal Referral Code</div>
-            <div class="code-text">{{ subscriber.referralCode }}</div>
-            <div style="font-size: 13px; color: #d1d5db; margin-top: 8px;">Share link: <a href="{{ site_url }}/?ref={{ subscriber.referralCode }}" style="color: #f59e0b; word-break: break-all;">{{ site_url }}/?ref={{ subscriber.referralCode }}</a></div>
-          </div>
+          <!-- BRAND HEADER -->
+          <tr>
+            <td align="center" style="padding-bottom: 24px;">
+              <a href="{{ site_url }}" target="_blank" style="display: inline-block; text-decoration: none;">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td align="center">
+                      <img src="{{ site_url }}/brand/logos/jeemu-logo-horizontal.png" alt="JEEMU" width="190" style="width: 190px; max-width: 190px; height: auto; display: block; border: 0;" />
+                    </td>
+                  </tr>
+                </table>
+              </a>
+              <div style="font-family: 'Space Mono', 'Courier New', monospace; font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #00d97e; text-transform: uppercase; margin-top: 10px;">
+                One tower. Endless games.
+              </div>
+            </td>
+          </tr>
 
-          <h3 style="font-size: 16px; color: #ffffff; margin-top: 24px; margin-bottom: 8px;">🎁 Unlock Milestone Referral Rewards</h3>
-          <p style="font-size: 14px; color: #9ca3af;">Share your link with board game friends. When they lock in their $1 VIP reservation, you both unlock:</p>
-          
-          <table class="milestone-table">
-            <tr>
-              <td style="color: #f59e0b; font-weight: bold; width: 80px;">1 Friend</td>
-              <td><strong>24-Hour VIP Early Access</strong> before public launch</td>
-            </tr>
-            <tr>
-              <td style="color: #f59e0b; font-weight: bold;">3 Friends</td>
-              <td><strong>Free Physical Expansion Game Pack</strong> ($29 Value) added to pledge</td>
-            </tr>
-            <tr>
-              <td style="color: #f59e0b; font-weight: bold;">5 Friends</td>
-              <td><strong>Gold-Stamped Founder Block #01</strong> with custom laser-engraved serial</td>
-            </tr>
-          </table>
+          <!-- MAIN CARD -->
+          <tr>
+            <td>
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #111613; border: 1px solid #1e2b23; border-radius: 16px; overflow: hidden;">
+                
+                <!-- CARD CONTENT -->
+                <tr>
+                  <td class="card-inner" style="padding: 36px 28px; text-align: center;">
 
-          <div style="text-align: center; margin-top: 24px;">
-            <a href="{{ site_url }}/#rewards" class="btn">View Kickstarter Backer Tiers</a>
-          </div>
-        </div>
+                    <!-- Mascot -->
+                    <img src="{{ site_url }}/brand/mascot/jeemu-frog-kaboom.png" alt="The Jeemu frog celebrating with a jade flame" width="132" style="width: 132px; max-width: 132px; height: auto; display: block; border: 0; margin: 0 auto 14px auto;" />
 
-        <div class="footer">
-          <p>© 2026 Jeemu Tabletop Systems. All rights reserved.</p>
-          <p style="margin-top: 8px;">You received this email because you signed up for the Jeemu launch waitlist.</p>
-          <p style="margin-top: 6px;"><a href="{{ unsubscribe_url }}">Unsubscribe with 1-click</a></p>
-        </div>
+                    <!-- Status Badge -->
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 0 auto 18px auto;">
+                      <tr>
+                        <td style="background-color: rgba(0, 217, 126, 0.12); border: 1px solid rgba(0, 217, 126, 0.35); border-radius: 20px; padding: 5px 14px;">
+                          <span style="font-family: 'Space Mono', 'Courier New', monospace; font-size: 11px; font-weight: 700; color: #00d97e; letter-spacing: 1px; text-transform: uppercase;">
+                            ● SPOT RESERVED
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Headline -->
+                    <h1 class="headline" style="font-family: 'Bagel Fat One', 'Arial Rounded MT Bold', 'Trebuchet MS', Arial, sans-serif; font-size: 28px; font-weight: 400; color: #ffffff; margin: 0 0 12px 0; line-height: 1.2;">
+                      You're in, <span style="color: #00d97e;">{{ subscriber.name or 'Backer' }}</span>.
+                    </h1>
+
+                    <!-- Body text with low commitments -->
+                    <p style="font-size: 15px; color: #8ea89a; margin: 0 0 24px 0; line-height: 1.6;">
+                      Your early access spot is reserved. You'll hear from us first when Jeemu goes live, along with the best launch perks.
+                    </p>
+
+                    <!-- HARDWARE PREVIEW IMAGE -->
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 0 0 24px 0;">
+                      <tr>
+                        <td style="border-radius: 10px; overflow: hidden; border: 1px solid #1e2b23; background-color: #0c100e;">
+                          <a href="{{ site_url }}" target="_blank" style="display: block;">
+                            <img src="{{ site_url }}/brand/jeemu-prototype-angled.jpg" alt="Jeemu Hardware Preview" width="504" style="width: 100%; max-width: 504px; height: auto; display: block; border: 0;" />
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- BRAND TAGLINE -->
+                    <p style="font-family: 'Bagel Fat One', 'Arial Rounded MT Bold', 'Trebuchet MS', Arial, sans-serif; font-size: 16px; color: #e2ede5; margin: 0 0 24px 0; line-height: 1.3;">
+                      The tabletop game that rewrites its own rules.
+                    </p>
+
+                    <!-- REFERRAL BOX -->
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #080c0a; border: 1px dashed #00d97e; border-radius: 12px; margin: 0 0 24px 0;">
+                      <tr>
+                        <td style="padding: 20px 16px; text-align: center;">
+                          <div style="font-family: 'Space Mono', 'Courier New', monospace; font-size: 11px; font-weight: 700; color: #8ea89a; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px;">
+                            Your Referral Code
+                          </div>
+                          <div class="code-display" style="font-family: 'Space Mono', 'Courier New', monospace; font-size: 24px; font-weight: 700; color: #00d97e; letter-spacing: 2.5px; margin-bottom: 8px;">
+                            {{ subscriber.referralCode or 'JEEMU-VIP' }}
+                          </div>
+                          <div style="font-size: 13px; color: #8ea89a; margin-bottom: 14px;">
+                            Share link: <a href="{{ site_url }}/?ref={{ subscriber.referralCode }}" style="color: #00d97e; text-decoration: underline; word-break: break-all;">{{ site_url }}/?ref={{ subscriber.referralCode }}</a>
+                          </div>
+                          <a href="{{ site_url }}/?ref={{ subscriber.referralCode }}" target="_blank" style="display: inline-block; background-color: #00d97e; color: #060a08; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 22px; border-radius: 6px; text-decoration: none;">
+                            Share Your Link
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- REWARD NOTE (Minimal & flexible) -->
+                    <p style="font-size: 13px; color: #8ea89a; margin: 0; line-height: 1.6;">
+                      Every friend who joins through your link moves you up the list and unlocks launch-day surprises.
+                    </p>
+
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td align="center" style="padding: 28px 16px 12px 16px; text-align: center;">
+              <p style="font-size: 12px; color: #546b62; margin: 0 0 6px 0;">
+                &copy; 2026 Jeemu Tabletop. All rights reserved.
+              </p>
+              <p style="font-size: 12px; color: #546b62; margin: 0 0 8px 0;">
+                You received this email because you reserved early access for Jeemu.
+              </p>
+              <p style="font-size: 11px; margin: 0;">
+                <a href="{{ unsubscribe_url }}" style="color: #8ea89a; text-decoration: underline;">Unsubscribe with 1-click</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
       </td>
     </tr>
   </table>
 </body>
+
 </html>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
 /* ==========================================================================
    JEEMU DESIGN SYSTEM — AUTHENTIC FOREST CHARCOAL, BONE-SAGE & ELECTRIC JADE
@@ -8,6 +8,10 @@
    ========================================================================== */
 
 :root {
+  --font-display: 'Bagel Fat One', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+  --font-serif: var(--font-display);
+  --font-label: 'Space Mono', 'JetBrains Mono', monospace;
+
   --bg-base: #0c100e;
   --bg-black: #060a08;
   --bg-surface: #111613;
@@ -38,7 +42,7 @@
   --radius-xl: 28px;
   --radius-full: 9999px;
 
-  --font-serif: Georgia, 'Times New Roman', 'DejaVu Serif', serif;
+  --font-serif: var(--font-display);
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
@@ -329,6 +333,12 @@ img, video {
   font-size: 1.5rem;
   letter-spacing: -0.04em;
   color: #fff;
+}
+
+.brand-logo {
+  display: block;
+  width: auto;
+  height: 36px;
 }
 
 .brand-icon {

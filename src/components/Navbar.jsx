@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Flame, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function Navbar({ onCtaClick }) {
   const [backerCount, setBackerCount] = useState(1848);
@@ -29,10 +29,7 @@ export default function Navbar({ onCtaClick }) {
     <header className="site-navbar">
       <div className="navbar-container">
         <a href="#" className="nav-brand" aria-label="Jeemu Home">
-          <div className="brand-icon">
-            <Flame size={18} color="#060a08" />
-          </div>
-          <span>JEEMU</span>
+          <img src="/brand/logos/jeemu-logo-horizontal.svg" alt="Jeemu" className="brand-logo" height="36" />
         </a>
 
         {/* Navigation links matching jeemu.fun */}

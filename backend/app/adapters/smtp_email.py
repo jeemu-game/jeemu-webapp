@@ -161,9 +161,9 @@ class SmtpEmailAdapter:
             site_url=settings.SITE_URL,
             unsubscribe_url=unsub_url,
         )
-        text = f"""Welcome to Jeemu Batch 01, {subscriber.get('name', 'Backer')}!
+        text = f"""Welcome to Jeemu Early Access, {subscriber.get('name', 'Backer')}!
 
-Your reservation is confirmed at a 45% discount ($89 vs $159).
+Your early access spot is confirmed. You will be among the first to know when we go live.
 Your referral code: {subscriber.get('referralCode')}
 Share link: {settings.SITE_URL}/?ref={subscriber.get('referralCode')}
 

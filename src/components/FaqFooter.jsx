@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, Flame } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 export default function FaqFooter() {
   const [openIdx, setOpenIdx] = useState(0);
@@ -74,11 +74,8 @@ export default function FaqFooter() {
       {/* Clean Footer */}
       <footer className="site-footer">
         <div className="footer-container">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 800, fontSize: '1.15rem' }}>
-            <div className="brand-icon" style={{ width: '28px', height: '28px' }}>
-              <Flame size={15} color="#060a08" />
-            </div>
-            <span>JEEMU</span>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/brand/logos/jeemu-logo-horizontal.svg" alt="Jeemu" className="brand-logo" height="32" />
           </div>
 
           <p className="footer-legal">
