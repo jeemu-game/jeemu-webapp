@@ -1,65 +1,50 @@
-import React, { useRef } from 'react';
-import { Layers, Cpu, PhoneOff, ArrowUpRight } from 'lucide-react';
+import React from 'react';
+import { Sparkles, HeartHandshake, Eye, Flame } from 'lucide-react';
 
 export default function SpotlightPillars() {
-  const cardsRef = useRef([]);
-
-  const handleMouseMove = (e, index) => {
-    const card = cardsRef.current[index];
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    card.style.setProperty('--mouse-x', `${x}px`);
-    card.style.setProperty('--mouse-y', `${y}px`);
-  };
-
-  const pillars = [
+  const storyPillars = [
     {
-      icon: <Layers size={24} />,
-      title: 'Wood + NFC',
-      desc: '45 wood blocks, each with embedded NFC technology. Polished for a buttery slide.',
-      meta: '45 Unique Block IDs'
+      icon: <Flame size={24} />,
+      badge: 'Tactile Soul',
+      title: 'The Weight of Every Breath',
+      desc: 'There is no substitute for real physical tension. The satisfying friction of solid wood sliding between trembling fingers, the collective hush falling over the room, and the explosive roar of relief when the tower teeters—and somehow survives.'
     },
     {
-      icon: <Cpu size={24} />,
-      title: 'Panoramic IPS Smart Dock',
-      desc: 'High contrast display reads the blocks in seconds and displays the questions. Charged with USB-C',
-      meta: 'Sub-80ms Tag Latency'
+      icon: <Sparkles size={24} />,
+      badge: 'Unscripted Chaos',
+      title: 'A Spark That Catches Fire',
+      desc: 'You do not just pull a block to stack it—you pull it to unlock the room. Every placement wakes the table with an unexpected prompt, confession, or dare that catches everyone off guard. No two rounds ever repeat.'
     },
     {
-      icon: <PhoneOff size={24} />,
-      title: '100% Phone-Free During Play',
-      desc: 'No apps during the gameplay. Stay fuller immersed in the tabletop chaos.',
-      meta: 'Endless Questions'
+      icon: <Eye size={24} />,
+      badge: 'Pure Presence',
+      title: 'Phones Put Away. The Room Comes Alive.',
+      desc: 'We built Jeemu to reclaim the lost magic of getting completely lost in the moment. No glowing phone screens, no notifications stealing your friends away. Just a circle of people holding their breath and laughing until it hurts.'
     }
   ];
 
   return (
-    <section className="section-container" id="hardware">
+    <section className="section-container" id="story-pillars">
       <div className="section-header">
         <div className="glow-pill">
-          <span>Physical Meets Digital</span>
+          <Sparkles size={14} />
+          <span>The Experience</span>
         </div>
-        <h2 className="section-title">The Three Pillars of Jeemu</h2>
+        <h2 className="section-title">A Living Game at the Center of the Table</h2>
+        <p className="section-desc">
+          We did not build another gadget. We built a reason for people to gather, forget about their phones, and say things they will remember for years.
+        </p>
       </div>
 
       <div className="pillars-grid">
-        {pillars.map((pillar, idx) => (
-          <div
-            key={idx}
-            ref={(el) => (cardsRef.current[idx] = el)}
-            onMouseMove={(e) => handleMouseMove(e, idx)}
-            className="spotlight-card pillar-card"
-          >
+        {storyPillars.map((pillar, idx) => (
+          <div key={idx} className="spotlight-card pillar-card story-pillar-card">
             <div className="pillar-icon-box">
               {pillar.icon}
             </div>
+            <span className="step-badge">{pillar.badge}</span>
             <h3 className="pillar-title">{pillar.title}</h3>
             <p className="pillar-desc">{pillar.desc}</p>
-            <div className="pillar-meta-tag">
-              <span>{pillar.meta}</span>
-            </div>
           </div>
         ))}
       </div>

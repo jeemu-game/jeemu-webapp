@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, ShieldCheck, ArrowRight, Sparkles } from 'lucide-react';
+import { Check, ShieldCheck, ArrowRight, Sparkles, Tag, Users, PackageCheck } from 'lucide-react';
 
 export default function PricingTier({ onReserveClick }) {
   const scrollToReserve = () => {
@@ -15,97 +15,37 @@ export default function PricingTier({ onReserveClick }) {
     <section className="section-container" id="pricing">
       <div className="section-header">
         <div className="glow-pill">
-          <span>Kickstarter Early Bird Access</span>
+          <Sparkles size={14} />
+          <span>VIP Backer Perks</span>
         </div>
-        <h2 className="section-title">Transparent Launch Pricing</h2>
+        <h2 className="section-title">Lock in the Lowest Price Before We Launch</h2>
         <p className="section-desc">
-          Lock in your 45% discount today with a 100% refundable $1 reservation. No hidden fees, cancel anytime before shipping.
+          We are finalizing our manufacturing tooling and Kickstarter campaign goals. Reserving your VIP spot with a 100% refundable $1 deposit locks in our steepest early-bird pricing and priority Batch 01 delivery.
         </p>
       </div>
 
       <div className="pricing-grid">
-        {/* Tier 1: Retail Future */}
+        {/* Perk 1: Maximum Early Bird Discount */}
         <div className="spotlight-card pricing-card">
-          <div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', marginBottom: '4px' }}>Retail Launch</h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-faint)' }}>Post-Kickstarter MSRP</p>
-          </div>
-
-          <div className="pricing-price-wrap">
-            <span className="price-val">$159</span>
-            <span className="price-sub">USD</span>
-          </div>
-
-          <ul className="pricing-features-list">
-            <li><Check size={16} /> 45 Beechwood NFC Blocks</li>
-            <li><Check size={16} /> Panoramic IPS Smart Dock</li>
-            <li><Check size={16} /> Standard Packaging</li>
-            <li style={{ opacity: 0.5 }}>✕ Batch 01 Priority</li>
-            <li style={{ opacity: 0.5 }}>✕ Gold Founder's Block</li>
-          </ul>
-
-          <button 
-            disabled 
-            className="btn-secondary" 
-            style={{ width: '100%', marginTop: 'auto', opacity: 0.5, cursor: 'not-allowed' }}
-          >
-            Available 2027
-          </button>
-        </div>
-
-        {/* Tier 2: VIP Early Bird (Featured) */}
-        <div className="spotlight-card pricing-card featured">
-          <div className="pricing-badge-top">
-            ★ Most Popular • Save 45%
+          <div className="pillar-icon-box">
+            <Tag size={22} />
           </div>
 
           <div>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', marginBottom: '4px' }}>VIP Backer Tier</h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--jade-primary)' }}>$1 Refundable Deposit</p>
-          </div>
-
-          <div className="pricing-price-wrap">
-            <span className="price-val" style={{ color: 'var(--jade-primary)' }}>$89</span>
-            <span className="price-sub" style={{ textDecoration: 'line-through', color: 'var(--text-faint)' }}>$159</span>
-          </div>
-
-          <ul className="pricing-features-list">
-            <li><Check size={16} /> <strong>45 Beechwood NFC Blocks</strong></li>
-            <li><Check size={16} /> <strong>Panoramic IPS Smart Dock</strong></li>
-            <li><Check size={16} /> <strong>Guaranteed Batch 01 Shipping</strong></li>
-            <li><Check size={16} /> <strong>Gold-Stamped Founder Block #01</strong></li>
-            <li><Check size={16} /> Lifetime Free Game Pack Access</li>
-            <li><Check size={16} /> Velvet Travel Storage Pouch</li>
-          </ul>
-
-          <button 
-            onClick={scrollToReserve} 
-            className="btn-primary" 
-            style={{ width: '100%', marginTop: 'auto', padding: '16px' }}
-          >
-            <span>Reserve for $1 Deposit</span>
-            <ArrowRight size={18} />
-          </button>
-        </div>
-
-        {/* Tier 3: Kickstarter Standard */}
-        <div className="spotlight-card pricing-card">
-          <div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', marginBottom: '4px' }}>Kickstarter Public</h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-faint)' }}>Without $1 VIP reservation</p>
-          </div>
-
-          <div className="pricing-price-wrap">
-            <span className="price-val">$99</span>
-            <span className="price-sub" style={{ textDecoration: 'line-through', color: 'var(--text-faint)' }}>$159</span>
+            <span className="step-badge">VIP Exclusive</span>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#fff', marginTop: '8px' }}>
+              Steepest Launch Discount
+            </h3>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '6px' }}>
+              When the Kickstarter drop goes live, VIP holders unlock our lowest pledge tier before public backers.
+            </p>
           </div>
 
           <ul className="pricing-features-list">
-            <li><Check size={16} /> 45 Beechwood NFC Blocks</li>
-            <li><Check size={16} /> Panoramic IPS Smart Dock</li>
-            <li><Check size={16} /> Batch 02 Fulfillment</li>
-            <li style={{ opacity: 0.5 }}>✕ Gold Founder's Block</li>
-            <li><Check size={16} /> Standard Packaging</li>
+            <li><Check size={16} color="#00d97e" /> <strong>Guaranteed lowest price tier</strong></li>
+            <li><Check size={16} color="#00d97e" /> Secret early-bird access link</li>
+            <li><Check size={16} color="#00d97e" /> 100% refundable $1 deposit anytime</li>
+            <li><Check size={16} color="#00d97e" /> Zero obligations if you change your mind</li>
           </ul>
 
           <button 
@@ -113,7 +53,80 @@ export default function PricingTier({ onReserveClick }) {
             className="btn-secondary" 
             style={{ width: '100%', marginTop: 'auto' }}
           >
-            Wait for Campaign
+            <span>Lock In Discount</span>
+            <ArrowRight size={16} />
+          </button>
+        </div>
+
+        {/* Perk 2: Featured Batch 01 Allocation */}
+        <div className="spotlight-card pricing-card featured">
+          <div className="pricing-badge-top">
+            Priority Founder Allocation
+          </div>
+
+          <div className="pillar-icon-box" style={{ background: 'rgba(0, 217, 126, 0.25)' }}>
+            <PackageCheck size={24} color="#00d97e" />
+          </div>
+
+          <div>
+            <span className="step-badge" style={{ background: 'rgba(0, 217, 126, 0.2)', color: '#00d97e' }}>
+              Guaranteed Batch 01
+            </span>
+            <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#fff', marginTop: '8px' }}>
+              Batch 01 Priority Delivery
+            </h3>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '6px' }}>
+              Factory run #1 is strictly quantity-capped. VIP backers are allocated to the first production line.
+            </p>
+          </div>
+
+          <ul className="pricing-features-list">
+            <li><Check size={16} color="#00d97e" /> <strong>Guaranteed Batch 01 shipping</strong></li>
+            <li><Check size={16} color="#00d97e" /> <strong>Gold-Stamped Founder Block included</strong></li>
+            <li><Check size={16} color="#00d97e" /> Velvet protective travel storage pouch</li>
+            <li><Check size={16} color="#00d97e" /> Lifetime free game expansion pack access</li>
+          </ul>
+
+          <button 
+            onClick={scrollToReserve} 
+            className="btn-primary" 
+            style={{ width: '100%', marginTop: 'auto', padding: '14px' }}
+          >
+            <span>Reserve Batch 01 for $1</span>
+            <ArrowRight size={18} />
+          </button>
+        </div>
+
+        {/* Perk 3: Founding Community Circle */}
+        <div className="spotlight-card pricing-card">
+          <div className="pillar-icon-box">
+            <Users size={22} />
+          </div>
+
+          <div>
+            <span className="step-badge">Co-Creator Access</span>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#fff', marginTop: '8px' }}>
+              Founding Community Circle
+            </h3>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '6px' }}>
+              Help shape the game packs and features before manufacturing tooling is finalized.
+            </p>
+          </div>
+
+          <ul className="pricing-features-list">
+            <li><Check size={16} color="#00d97e" /> Vote on launch prompt packs</li>
+            <li><Check size={16} color="#00d97e" /> Early playtest access for AI companion</li>
+            <li><Check size={16} color="#00d97e" /> Direct channel with the engineering team</li>
+            <li><Check size={16} color="#00d97e" /> Founder badge in the digital community</li>
+          </ul>
+
+          <button 
+            onClick={scrollToReserve} 
+            className="btn-secondary" 
+            style={{ width: '100%', marginTop: 'auto' }}
+          >
+            <span>Join Founders</span>
+            <ArrowRight size={16} />
           </button>
         </div>
       </div>

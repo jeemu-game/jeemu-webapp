@@ -28,19 +28,19 @@
 2. **6 Plastic NFC Tarot/Role Cards**, enabling physical mode/modifier selection without picking up a smartphone.
 3. **An Autonomous Smart Pedestal Console**, housing a $45^\circ$ reclined 2.8" IPS TFT display, custom ST25R3916 NFC reader, dual-core ESP32-S3 microcontroller, I2S Class-D acoustic voice synthesizer, dual-zone dynamic RGB lighting, and rechargeable Lithium-Polymer power delivery.
 
-The console is **100% phone-free during live play**. Players build the physical tower directly on top of the console deck. As blocks are extracted, players tap the block against the NFC reading zone. The console reads the block UID, displays the active challenge, dynamic timer, and instability stage on the front screen, and **audibly announces the question through its integrated acoustic chamber speaker using embedded offline Speech Synthesis (ESP-SR)**.
+The console is **100% phone-free during live play**. Players build the physical tower directly on top of the console deck. As blocks are extracted, players tap the block against the **dedicated Side NFC Tap Target on the right sloped flank (+X Face)**. Moving the NFC reader to the side completely decouples the RF reading zone from the resting tower on the top platform, eliminating multi-tag RF collisions and preventing any accidental jarring of the standing tower during play. The console instantly reads the block UID, displays the active challenge, dynamic timer, and instability stage on the front screen, and **audibly announces the question through its integrated acoustic chamber speaker using embedded offline Speech Synthesis (ESP-SR)**.
 
 ```
                               [ 54-BLOCK HARDWOOD TOWER ]
                               ┌─────────────────────────┐
                               │  3 Blocks / Tier × 18   │  ~1.0 kg Total Weight
                               └─────────────────────────┘
-                              ╔═════════════════════════╗  <- 85 × 85 mm Solid Deck
+                              ╔═════════════════════════╗  <- 85 × 85 mm Solid Deck (Zero RF)
                            ┌──╨─────────────────────────╨──┐
-                          /     [INTEGRATED NFC ANTENNA]    \ <- 13.56 MHz Coil beneath top deck
-                         /    ┌───────────────────────────┐  \
-                        /     │ 2.8" IPS TFT (320 × 240)  │   \ <- 45° Sloped Front Console
-                       /      │ [BLOCK #14]  CHALLENGE    │    \   Anti-Scratch Acrylic Lens
+                          /                                 \   [SIDE NFC TAP TARGET (+X)]
+                         /    ┌───────────────────────────┐  \  <- Debossed 46×44mm Target
+                        /     │ 2.8" IPS TFT (320 × 240)  │   \    1.2mm High-Sensitivity RF Wall
+                       /      │ [BLOCK #14]  CHALLENGE    │    \   Isolated from Standing Tower!
                       /       │  "TAKE 2 SIPS OR SING"    │     \
                      /        └───────────────────────────┘      \
                     /    (•) LIGHT PIPE    [SPEAKER ACOUSTIC]     \ <- 1W Voice Synthesizer
@@ -81,12 +81,12 @@ Each individual consumer retail package contains the following 6 core deliverabl
 The console enclosure consists of two primary injection-molded parts: the **Top Pyramid Frustum Shell** and the **Bottom Base Plate Tray**.
 
 ```
-       85.0 mm Top Deck
+       85.0 mm Top Deck (100% Solid Structural Ceiling - Zero RF)
         +---------------+
-       /|   NFC COIL    |\
-      / |               | \
-     /  +---------------+  \   42.0 mm
-    /   45° Sloped Face     \  Total Height
+       /                |\
+      /                 | \  Right Sloped Face (+X):
+     /  +---------------+  \ [SIDE NFC TAP TARGET 46×44mm]
+    /   45° Sloped Face     \ 1.2mm High-Sensitivity RF Wall
    /    [ 2.8" DISPLAY ]     \
   /                           \
  +-----------------------------+
@@ -99,10 +99,12 @@ The console enclosure consists of two primary injection-molded parts: the **Top 
 | **Face Recline Angle** | Exactly **$45.0^\circ$** on all four faces (Front, Rear, Left, Right) | $\pm 0.2^\circ$ |
 | **Housing Material** | **PC-ABS Blend** (SABIC Cycoloy C6600 or Covestro Bayblend T65) | Flame class UL94-V0, High impact strength (Izod > 45 kJ/m²) |
 | **Nominal Wall Thickness** | **2.40 mm** uniform across shell walls; internal ribs: $1.20\text{ mm}$ (50% rule) | Zero sink marks on exterior surfaces |
+| **Side NFC Tap Target (+X)**| Debossed **$46.0\text{ mm} \times 44.0\text{ mm}$** tactile target on Right Sloped Wall with **$1.20\text{ mm}$** RF window | Inductive field optimization ($\ge 1.7\text{ A/m}$) |
+| **NFC Mounting Bosses** | 4× interior M2.5/M3 bosses ($35.0 \times 35.0\text{ mm}$ pitch, $\varnothing 7.0\text{ mm}$ outer, $2.6\text{ mm}$ standoff depth) on +X interior wall | Mates planar antenna flush to RF window |
 | **Draft Angle** | Minimum **$1.5^\circ$** internal pull, **$3.0^\circ$** on textured faces | Seamless ejection without drag lines |
 | **Color Specification** | **Forest Charcoal** (Color match: Pantone Black 7C / Hex `#0C100E`) | Consistent Delta-E ($\Delta E < 0.8$) across all batches |
 | **Surface Finish** | **Mold-Tech MT-11010 / SPI-B2** fine EDM spark texture (velvety matte, anti-fingerprint) | Uniform low-glare appearance |
-| **Top Deck Load Rating** | Must withstand **$\ge 15.0\text{ kg}$ static vertical load** without cracking or deflecting $> 0.2\text{ mm}$ | Reinforced by 4 internal radial gusset ribs |
+| **Top Deck Load Rating** | Must withstand **$\ge 15.0\text{ kg}$ static vertical load** without cracking or deflecting $> 0.2\text{ mm}$ (Zero RF cutouts) | Reinforced by 4 internal radial gusset ribs |
 | **Display Viewport** | $70.5\text{ mm} \times 50.5\text{ mm}$ rectangular cutout on $45^\circ$ front face with $1.2\text{ mm}$ stepped retaining bezel | Flush seating for acrylic lens |
 | **Fastening System** | 4× internal M3 brass heat-set threaded inserts heat-staked into shell bosses ($78.0 \times 42.0\text{ mm}$ pattern) | Pull-out retention force $> 350\text{ N}$ |
 | **Base Plate Retention** | Tool-less interlocking $45^\circ$ tapered slip collar ($4.0\text{ mm}$ height, $0.25\text{ mm}$ interference slip fit) + 4× M3 flat socket machine screws | Rigid locking under vibration |
@@ -174,17 +176,10 @@ The console enclosure consists of two primary injection-molded parts: the **Top 
  |               | SPI Bus           | I2S Audio Bus     | 4-Wire SPI                      |
  |               v                   v                   v                                 |
  |   +--------------------+  +--------------------+  +--------------------+                |
- |   | NFC TRANSCEIVER    |  | I2S AUDIO DAC/AMP  |  | 2.8" IPS TFT LCD   |                |
- |   | STMicro ST25R3916  |  | Maxim MAX98357A    |  | 320 × 240 RGB      |                |
- |   | 13.56 MHz, 1.7W DPO|  | Mono Class-D, 3.2W |  | ILI9341V / ST7789V |                |
- |   +---------+----------+  +---------+----------+  +---------+----------+                |
- |             |                       |                       |                           |
- |             v RF Feed               v Audio Out             v Direct Backlight          |
- |   +--------------------+  +--------------------+  +--------------------+                |
- |   | 65×65mm Etched PCB |  | 8Ω 1.5W Sealed     |  | SGM3732 Step-Up    |                |
- |   | Planar Coil Antenna|  | Acoustic Chamber   |  | LED Driver (PWM)   |                |
- |   +--------------------+  | (ESP-SR TTS Voice) |  +--------------------+                |
- |                           +--------------------+                                        |
+ |   | Side Planar 45mm   |  | 8Ω 1.5W Sealed     |  | SGM3732 Step-Up    |                |
+ |   | RF Coil Antenna    |  | Acoustic Chamber   |  | LED Driver (PWM)   |                |
+ |   | (Right +X Sloped)  |  | (ESP-SR TTS Voice) |  +--------------------+                |
+ |   +--------------------+  +--------------------+                                        |
  |                                                                                         |
  |   +---------------------------------------------------------------------------------+   |
  |   | LIGHTING SUBSYSTEM (Single-Wire RMT Control)                                    |   |
@@ -201,13 +196,15 @@ The console enclosure consists of two primary injection-molded parts: the **Top 
 - **Embedded PSRAM:** 8 MB Octal SPI PSRAM (essential for allocating double-buffered TFT framebuffers and running real-time neural TTS speech synthesis models).
 - **Wireless Interfaces:** Bluetooth 5.0 LE (with LE Coded PHY for long-range synchronization) + 2.4 GHz 802.11 b/g/n Wi-Fi.
 
-### 5.3 NFC Transceiver & RF Coil Antenna
+### 5.3 NFC Transceiver & Side-Mounted RF Coil Antenna (+X Face)
 - **Transceiver IC:** **STMicroelectronics ST25R3916-AQFT** (32-pin QFN).
 - **Protocol:** ISO/IEC 14443 Type A, NFC Forum Type 2 transponders (NXP NTAG213 / NTAG215 / NTAG216).
 - **Output Power:** Up to 1.7 W with Dynamic Power Output (DPO).
 - **Low-Power Sniffing:** Inductive and capacitive field wake-up consuming $< 18\text{ }\mu\text{A}$ in standby, waking the MCU within $15\text{ ms}$ of a block entering the near field.
-- **Integrated Antenna:** 2-layer planar PCB loop coil ($65.0\text{ mm} \times 65.0\text{ mm}$, 4 turns, trace width $0.60\text{ mm}$, trace spacing $0.40\text{ mm}$), tuned to $13.56\text{ MHz} \pm 100\text{ kHz}$ with matching network capacitors (Q-factor: $22 \pm 3$).
-- **Read Range:** Reliable tag coupling at $0\text{ mm}$ (flush against top deck) up to **$28\text{ mm}$** through the $2.4\text{ mm}$ plastic deck and wood grain.
+- **Side Antenna Placement (Right Sloped Wall +X Face):** Dedicated side-mounted 2-layer planar PCB/FPC loop coil ($45.0\text{ mm} \times 40.0\text{ mm}$, 4 turns, trace width $0.50\text{ mm}$, trace spacing $0.35\text{ mm}$), mounted flush against the interior bosses of the right sloped wall directly behind the exterior debossed $46\times44\text{ mm}$ tap target.
+- **RF Decoupling & Anti-Collision Advantage:** Physical separation of $> 65\text{ mm}$ from the top stacking platform ensures **complete zero RF interference and zero multi-tag collisions** with the 54 wooden blocks resting in the active tower. Players tap extracted blocks or cards safely against the right flank without touching or jarring the standing tower.
+- **Antenna Tuning & Matching:** Tuned to $13.56\text{ MHz} \pm 100\text{ kHz}$ with surface-mount NPO/C0G matching capacitors (Q-factor: $20 \pm 2$).
+- **Read Range:** Instant, reliable tag detection at $0\text{ mm}$ (tapping against right wall target) up to **$30\text{ mm}$** through the precision $1.20\text{ mm}$ RF window.
 
 ### 5.4 Front Display Subsystem (2.8" IPS TFT)
 - **Display Panel:** 2.8-inch Full-Color IPS TFT LCD Module.
@@ -273,7 +270,7 @@ To satisfy the mandatory requirement to **audibly announce the question**, the s
 | 2.1 | NFC Controller IC | STMicro ST25R3916-AQFT | QFN-32, 13.56MHz, 1.7W DPO | 1 | $2.85 | $2.85 | $1.95 | STMicro / Mouser |
 | 2.2 | 27.12MHz RF Crystal | NDK NX3225SA-27.120M | SMD 3225, 8pF, 15ppm | 1 | $0.18 | $0.18 | $0.11 | LCSC |
 | 2.3 | RF Matching Inductors/Caps | Murata LQH32CN2R2M33L + C0G caps | 1210 / 0603 passive network | 4 | $0.22 | $0.22 | $0.12 | Murata / LCSC |
-| 2.4 | Planar 65×65mm Coil Antenna | 2-Layer Etched Copper Coil | Integrated into Main PCBA | 1 | Inc. in PCB | Inc. in PCB | Inc. in PCB | PCBA Fabricator |
+| 2.4 | Side Planar 45×40mm Coil Antenna | 2-Layer Etched Copper Coil PCB/FPC | Mounted on Right Sloped Wall (+X) | 1 | Inc. in PCB | Inc. in PCB | Inc. in PCB | PCBA Fabricator |
 | **3.0** | **DISPLAY & OPTICS** | | | | | | | |
 | 3.1 | 2.8" IPS TFT Display Module | Sunton / BuyDisplay ER-TFT028-4 | $320 \times 240$, IPS, ST7789V, 450nit | 1 | $3.90 | $3.90 | $2.95 | Display Factory Direct |
 | 3.2 | FPC ZIF Connector | Hirose FH12-18S-0.5SH(55) | 18-pin 0.5mm pitch SMD | 1 | $0.18 | $0.18 | $0.10 | LCSC |
@@ -350,8 +347,9 @@ The tooling cost is treated as a separate one-time capital expenditure (CapEx) t
           └──────────────────────────┼──────────────────────────┘
                                      v
                         [FINAL INTEGRATION LINE]
-                         1. Install Speaker & Gasket into Shell
-                         2. Mate FPC Display into PCBA ZIF
+                         1. Mount Side NFC Antenna to 4x Bosses on Right Wall (+X)
+                         2. Install Speaker & Gasket into Shell
+                         3. Mate FPC Display into PCBA ZIF
                          3. Affix Lens Window with 3M Gasket
                          4. Secure PCBA to 4x Standoffs (0.45 Nm)
                          5. Connect LiPo Battery & Mount in Tray

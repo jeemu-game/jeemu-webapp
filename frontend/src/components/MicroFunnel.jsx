@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, User, ShieldCheck, ArrowRight, CheckCircle2, Copy, Sparkles, ExternalLink, Loader2 } from 'lucide-react';
+import { Mail, ShieldCheck, ArrowRight, CheckCircle2, Copy, Sparkles, ExternalLink, Loader2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function MicroFunnel() {
@@ -53,11 +53,11 @@ export default function MicroFunnel() {
       setSubscriberData(data.subscriber);
       setStep(2);
 
-      // Trigger celebratory confetti
+      // Celebratory confetti in brand colors
       try {
         confetti({
-          particleCount: 65,
-          spread: 70,
+          particleCount: 50,
+          spread: 60,
           origin: { y: 0.7 },
           colors: ['#00d97e', '#1ae88d', '#e2ede5', '#8ea89a']
         });
@@ -105,37 +105,26 @@ export default function MicroFunnel() {
   };
 
   return (
-    <div className="hero-reservation-card spotlight-card border-beam-container" id="reserve-funnel">
-      {/* Magic UI Border Beam - Shiny rotating overlay light */}
-      <div className="border-beam" aria-hidden="true" />
-
-      {/* Decorative neon corner slash matching Jeemu.fun */}
-      <div className="corner-neon-line" aria-hidden="true">
-        <svg viewBox="0 0 80 80" fill="none">
-          <line x1="0" y1="80" x2="80" y2="0" stroke="#00d97e" strokeWidth="2.5" />
-        </svg>
-      </div>
-
+    <div className="hero-reservation-card spotlight-card" id="reserve-funnel">
       {step === 1 ? (
         <>
-          {/* Top Status Bar matching Screenshot 2 */}
           <div className="hero-card-status-bar">
             <span className="status-os">
               <span className="pulse-indicator-dot" />
-              <span>JEEMU OS v2.4</span>
+              <span>Kickstarter Launching Soon</span>
             </span>
-            <span className="status-crypto">NFC // 13.56MHz CRYPTO</span>
+            <span className="status-crypto">VIP EARLY ACCESS</span>
           </div>
 
-          {/* Offer Banner matching Screenshot 2 */}
-          <div className="hero-offer-banner">
-            <span className="offer-highlight">🔥 Guaranteed 45% Off ($89 vs $159)</span>
-            <span className="offer-perk">+ Free Gold-Stamped Founder’s Block</span>
+          <div className="funnel-headline-group">
+            <h3 className="funnel-title">Reserve Your Spot in Batch 01</h3>
+            <p className="funnel-subtitle">
+              Join the founding waitlist to unlock our lowest launch price, secret backer updates, and guaranteed priority delivery when our Kickstarter drops.
+            </p>
           </div>
 
-          {/* Form matching Screenshot 2 */}
+          {/* Clean email capture form */}
           <form onSubmit={handleSubmit} className="hero-capture-form">
-            {/* Invisible bot honeypot shield */}
             <input 
               type="text" 
               name="hp_jeemu_check" 
@@ -151,13 +140,13 @@ export default function MicroFunnel() {
                 id="subscriber-email"
                 type="email" 
                 required
-                placeholder="Enter your email to reserve early access"
+                placeholder="Enter your email for early access"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
                 autoComplete="email"
               />
-              <button type="submit" className="btn-shimmer-primary funnel-submit-btn" disabled={loading}>
+              <button type="submit" className="funnel-submit-btn" disabled={loading}>
                 {loading ? (
                   <>
                     <Loader2 size={16} className="animate-spin" />
@@ -165,35 +154,35 @@ export default function MicroFunnel() {
                   </>
                 ) : (
                   <>
-                    <span>Reserve Batch 01</span>
-                    <span aria-hidden="true" style={{ fontSize: '1.1em', marginLeft: '4px' }}>→</span>
+                    <span>Get Early Access</span>
+                    <ArrowRight size={15} />
                   </>
                 )}
               </button>
             </div>
 
             {errorMsg && (
-              <div style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 600, marginTop: '8px' }}>
+              <div className="form-error-text">
                 {errorMsg}
               </div>
             )}
           </form>
 
-          {/* Subtext Perks matching Screenshot 2 */}
+          {/* Reassurance points */}
           <div className="hero-reservation-meta">
-            <span>✓ 100% Refundable $1 VIP Deposit Option</span>
-            <span>✓ Priority Batch 01 Delivery</span>
-            <span>✓ No pledge required today</span>
+            <span>• 100% Refundable $1 VIP Deposit Option</span>
+            <span>• Priority Batch 01 Delivery</span>
+            <span>• No pledge required today</span>
           </div>
         </>
       ) : (
         <div className="step2-card">
           <div className="step2-success-banner">
-            <CheckCircle2 size={20} color="#10b981" style={{ flexShrink: 0, marginTop: '2px' }} />
+            <CheckCircle2 size={20} color="#00d97e" style={{ flexShrink: 0, marginTop: '2px' }} />
             <div>
               <div><strong>Spot Confirmed!</strong> Welcome to the Jeemu Founding Waitlist.</div>
-              <div style={{ fontSize: '0.85rem', color: '#d1d5db', marginTop: '4px', fontWeight: 400 }}>
-                We've sent your reservation confirmation & personal referral link to <strong style={{ color: '#f59e0b' }}>{subscriberData?.email}</strong>.
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                We've sent your confirmation and secret access pass to <strong style={{ color: '#fff' }}>{subscriberData?.email}</strong>.
               </div>
             </div>
           </div>
@@ -216,12 +205,11 @@ export default function MicroFunnel() {
               </button>
             </div>
 
-            {/* 1-Click Social Share Links (WhatsApp, X, Facebook) */}
             <div className="social-share-row">
-              <span className="social-share-label">1-Click Share:</span>
+              <span className="social-share-label">Share:</span>
               <div className="social-share-btns">
                 <a
-                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out Jeemu — smart beechwood tumbling tower with embedded NFC tags & standalone IPS display! Reserve Batch 01: ${window.location.origin}/?ref=${subscriberData?.referralCode || 'JEEMU'}`)}`}
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out Jeemu — smart wooden tumbling tower with embedded NFC & standalone dock! Reserve Batch 01: ${window.location.origin}/?ref=${subscriberData?.referralCode || 'JEEMU'}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="social-share-btn share-wa"
@@ -231,7 +219,7 @@ export default function MicroFunnel() {
                   WhatsApp
                 </a>
                 <a
-                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just backed @JeemuGame — the world's first smart beechwood tumbling tower with embedded NFC! Join early:`)}&url=${encodeURIComponent(`${window.location.origin}/?ref=${subscriberData?.referralCode || 'JEEMU'}`)}`}
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just backed @JeemuGame — the world's first smart wooden tumbling tower with embedded NFC! Join early:`)}&url=${encodeURIComponent(`${window.location.origin}/?ref=${subscriberData?.referralCode || 'JEEMU'}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="social-share-btn share-x"
@@ -240,31 +228,21 @@ export default function MicroFunnel() {
                 >
                   X / Twitter
                 </a>
-                <a
-                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${window.location.origin}/?ref=${subscriberData?.referralCode || 'JEEMU'}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-share-btn share-fb"
-                  id="share-fb-btn"
-                  title="Share on Facebook"
-                >
-                  Facebook
-                </a>
               </div>
             </div>
           </div>
 
-          {/* VIP Upgrade Box */}
+          {/* Optional VIP Deposit Upgrade */}
           <div className="vip-upgrade-prompt">
             <div className="vip-upgrade-badge">
               <Sparkles size={14} />
-              <span>STEP 2: OPTIONAL VIP UPGRADE</span>
+              <span>OPTIONAL VIP GUARANTEE</span>
             </div>
             <div className="vip-upgrade-title">
-              Lock in your 45% discount for a $1 refundable deposit.
+              Lock in the lowest launch price for a $1 refundable deposit.
             </div>
             <p className="vip-upgrade-desc">
-              VIP Backers get guaranteed $89 Kickstarter pricing (Retail: $159), exclusive Gold-Stamped Founder Block #01, and priority air-shipping.
+              VIP Backers get guaranteed lowest Kickstarter launch pricing, exclusive Gold-Stamped Founder Block #01, and priority factory allocation.
             </p>
             <button 
               onClick={handleStripeCheckout} 
