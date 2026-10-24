@@ -40,11 +40,29 @@
       "destination": "/connect.html"
     },
     {
-      "source": "/((?!api|assets|images|frames-smooth|frames.js|favicon.ico|connect|jeemu_controller).*)",
+      "source": "/((?!api|assets|images|story|brand|frames-smooth|frames.js|favicon|apple-touch-icon|og-image|connect|jeemu_controller).*)",
       "destination": "/index.html"
     }
   ],
   "headers": [
+    {
+      "source": "/story/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/brand/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
     {
       "source": "/frames-smooth/(.*)",
       "headers": [

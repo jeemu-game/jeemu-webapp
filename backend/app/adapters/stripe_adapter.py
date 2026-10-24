@@ -22,12 +22,14 @@ class StripeAdapter:
         referral_code: Optional[str] = None,
         email: Optional[str] = None,
     ) -> Dict[str, Any]:
+        if not settings.DEPOSIT_ENABLED:
+            return {"mode": "disabled", "error": "Deposits are not open yet."}
+
         if not self.is_configured():
-            return {
-                "mode": "redirect",
-                "url": self.payment_link,
-                "message": "Using configured Stripe Early Bird payment link",
-            }
+            # Only fall back to a payment link if one was explicitly configured for THIS account.
+            if self.payment_link:
+                return {"mode": "redirect", "url": self.payment_link}
+            return {"mode": "unavailable", "error": "Payments are not configured."}
 
         try:
             base_url = settings.SITE_URL.rstrip("/")
@@ -38,14 +40,10 @@ class StripeAdapter:
                     {
                         "price_data": {
                             "currency": "usd",
-                            "unit_amount": 100,  # $1.00 deposit
+                            "unit_amount": settings.DEPOSIT_AMOUNT_CENTS,
                             "product_data": {
-                                "name": "Jeemu Early Bird VIP Deposit",
-                                "description": (
-                                    "100% refundable $1 deposit. Guarantees 45% Kickstarter discount "
-                                    "($89 vs $159) + Free Gold-Stamped Founder Block."
-                                ),
-                                "images": [f"{base_url}/images/jeemu-hero.jpg"],
+                                "name": settings.DEPOSIT_PRODUCT_NAME,
+                                "description": settings.DEPOSIT_DESCRIPTION,
                             },
                         },
                         "quantity": 1,
@@ -54,10 +52,10 @@ class StripeAdapter:
                 "metadata": {
                     "subscriber_id": (subscriber_id or "")[:50],
                     "referral_code": (referral_code or "")[:20],
-                    "source": "jeemu_redesign_funnel",
+                    "source": "jeemu_deposit_step",
                 },
-                "success_url": f"{base_url}/?vip_success=1&ref={referral_code or ''}#pricing",
-                "cancel_url": f"{base_url}/?vip_cancelled=1#pricing",
+                "success_url": f"{base_url}/?deposit=success#waitlist",
+                "cancel_url": f"{base_url}/?deposit=cancelled#waitlist",
             }
             if email:
                 session_params["customer_email"] = email.strip()[:120]
@@ -65,8 +63,10 @@ class StripeAdapter:
             session = stripe.checkout.Session.create(**session_params)
             return {"mode": "checkout", "url": session.url, "sessionId": session.id}
         except Exception as e:
-            print(f"⚠️ Stripe session creation fallback to payment link: {e}")
-            return {"mode": "redirect", "url": self.payment_link}
+            print(f"Stripe session creation failed: {e}")
+            if self.payment_link:
+                return {"mode": "redirect", "url": self.payment_link}
+            return {"mode": "unavailable", "error": "Could not start checkout. Please try again."}
 
     def construct_event(self, payload: bytes, sig_header: str) -> Any:
         if not self.webhook_secret:

@@ -6,6 +6,7 @@ from fastapi import APIRouter, Header, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from app.adapters.stripe_adapter import StripeAdapter
+from app.config import settings
 from app.modules.vip_deposit import VipDepositService
 
 router = APIRouter(tags=["stripe"])
@@ -25,6 +26,8 @@ async def create_session(payload: CreateSessionRequest):
         referral_code=payload.referralCode,
         email=payload.email,
     )
+    if res.get("mode") in ("disabled", "unavailable"):
+        return JSONResponse(status_code=503, content=res)
     return res
 
 
@@ -37,18 +40,24 @@ async def stripe_webhook(
     adapter = StripeAdapter()
     event_data = None
 
-    if adapter.is_configured() and adapter.webhook_secret and stripe_signature:
+    if adapter.is_configured() and adapter.webhook_secret:
+        # Real deployments: the event MUST carry a valid Stripe signature.
+        if not stripe_signature:
+            raise HTTPException(status_code=400, detail="Missing Stripe signature")
         try:
-            event = adapter.construct_event(raw_body, stripe_signature)
-            event_data = event
+            event_data = adapter.construct_event(raw_body, stripe_signature)
         except Exception as e:
-            print(f"⚠️ Stripe webhook signature verification failed: {e}")
-            raise HTTPException(status_code=400, detail=f"Webhook Error: {e}")
-    else:
+            print(f"Stripe webhook signature verification failed: {e}")
+            raise HTTPException(status_code=400, detail="Invalid Stripe signature")
+    elif settings.ENV in ("test", "development"):
+        # Local/dev/test only: accept unsigned JSON so the flow can be exercised without Stripe.
         try:
             event_data = json.loads(raw_body.decode("utf-8"))
         except Exception:
             event_data = {}
+    else:
+        # Production without a webhook secret: refuse, never trust unsigned payment events.
+        raise HTTPException(status_code=503, detail="Webhook not configured")
 
     event_type = event_data.get("type") if isinstance(event_data, dict) else getattr(event_data, "type", None)
     if event_type == "checkout.session.completed":
@@ -68,6 +77,8 @@ async def stripe_webhook(
             else getattr(session, "payment_intent", None)
         )
         session_id = session.get("id") if isinstance(session, dict) else getattr(session, "id", None)
+        total_cents = session.get("amount_total") if isinstance(session, dict) else getattr(session, "amount_total", None)
+        amount_charged = (total_cents / 100.0) if total_cents else settings.DEPOSIT_AMOUNT_CENTS / 100.0
 
         vip_service = VipDepositService()
         try:
@@ -75,7 +86,7 @@ async def stripe_webhook(
                 subscriber_id=subscriber_id,
                 referral_code=referral_code,
                 email=customer_email,
-                amount=1.0,
+                amount=amount_charged,
                 stripe_session_id=session_id,
                 stripe_payment_intent=payment_intent_id,
             )

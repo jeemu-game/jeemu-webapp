@@ -161,17 +161,18 @@ class SmtpEmailAdapter:
             site_url=settings.SITE_URL,
             unsubscribe_url=unsub_url,
         )
-        text = f"""Welcome to Jeemu Early Access, {subscriber.get('name', 'Backer')}!
+        text = f"""You're on the Jeemu waitlist{', ' + subscriber['name'] if subscriber.get('name') else ''}.
 
-Your early access spot is confirmed. You will be among the first to know when we go live.
-Your referral code: {subscriber.get('referralCode')}
-Share link: {settings.SITE_URL}/?ref={subscriber.get('referralCode')}
+Jeemu launches on Kickstarter in November. Early-bird price: $89.99 USD. Early-bird backers also get a premium Jeemu bag.
+We'll email you before the campaign opens.
+
+Share your link: {settings.SITE_URL}/?ref={subscriber.get('referralCode')}
 
 Unsubscribe: {unsub_url}
 """
         return self.dispatch_mail(
             to=email_addr,
-            subject=f"✦ Batch 01 Spot Reserved — Welcome to Jeemu, {subscriber.get('name', 'Backer')}!",
+            subject="You're on the Jeemu waitlist",
             html_content=html,
             text_content=text,
             unsubscribe_url=unsub_url,
@@ -197,17 +198,15 @@ Unsubscribe: {unsub_url}
             site_url=settings.SITE_URL,
             unsubscribe_url=unsub_url,
         )
-        text = f"""Referral Progress Update — Jeemu
-
-Your friend {new_backer_name or 'A friend'} joined using your referral link!
-Total verified referrals: {new_count}
+        text = f"""{new_backer_name or 'A friend'} joined through your Jeemu link.
+Friends who have joined so far: {new_count}
 
 Share link: {settings.SITE_URL}/?ref={referrer.get('referralCode')}
 Unsubscribe: {unsub_url}
 """
         return self.dispatch_mail(
             to=email_addr,
-            subject=f"🎉 Referral Update: {new_backer_name or 'A friend'} joined via your link! ({new_count} friend{'s' if new_count != 1 else ''})",
+            subject="A friend joined via your Jeemu link",
             html_content=html,
             text_content=text,
             unsubscribe_url=unsub_url,
@@ -229,18 +228,18 @@ Unsubscribe: {unsub_url}
             site_url=settings.SITE_URL,
             unsubscribe_url=unsub_url,
         )
-        text = f"""Official VIP Founder Deposit Receipt — Jeemu
+        text = f"""Your Jeemu deposit receipt
 
-Thank you, {subscriber.get('name', 'Backer')}!
-Amount: ${amount:.2f} USD (100% Refundable)
-Ref ID: {charge_id}
-Bonus: Gold-Stamped Founder Block #01
+Thank you{', ' + subscriber['name'] if subscriber.get('name') else ''}.
+Amount: ${amount:.2f} USD
+Reference: {charge_id}
+We launch on Kickstarter in November. Questions about your deposit? Just reply to this email.
 
 Unsubscribe: {unsub_url}
 """
         return self.dispatch_mail(
             to=email_addr,
-            subject=f"🧾 VIP Founder Deposit Receipt ($1.00 USD) — Jeemu Tabletop Console",
+            subject=f"Your Jeemu deposit receipt (${amount:.2f} USD)",
             html_content=html,
             text_content=text,
             unsubscribe_url=unsub_url,

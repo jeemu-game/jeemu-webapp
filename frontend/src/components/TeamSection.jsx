@@ -6,12 +6,10 @@ export default function TeamSection() {
   return (
     <section className="section-container" id="team">
       <div className="section-header">
-        <div className="glow-pill">
-          <span>The Creators</span>
-        </div>
-        <h2 className="section-title">Built by Tabletop Obsessives</h2>
+        <div className="px-label">THE TEAM</div>
+        <h2 className="section-title">Six of us.</h2>
         <p className="section-desc">
-          Meet the industrial designers, firmware architects, and game theorists bringing Jeemu to life.
+          Here is who does what.
         </p>
       </div>
 

@@ -1,70 +1,35 @@
 import React, { useEffect } from 'react';
 import Navbar from './components/Navbar';
-import HeroSection from './components/HeroSection';
-import ProblemSteps from './components/ProblemSteps';
-import SpotlightPillars from './components/SpotlightPillars';
-import HardwareSimulator from './components/HardwareSimulator';
-import AiStudioPreview from './components/AiStudioPreview';
+import StoryPlayer from './components/story/StoryPlayer';
+import HowItWorks from './components/HowItWorks';
+import Waitlist from './components/Waitlist';
 import JourneyTimeline from './components/JourneyTimeline';
 import TeamSection from './components/TeamSection';
-import PricingTier from './components/PricingTier';
 import FaqFooter from './components/FaqFooter';
+import { track } from './analytics';
 
 export default function App() {
   useEffect(() => {
     const host = window.location.hostname;
     const params = new URLSearchParams(window.location.search);
-    const sub = params.get('subdomain');
-    const path = window.location.pathname;
-
-    if (host.startsWith('connect.') || sub === 'connect' || path === '/connect') {
+    if (host.startsWith('connect.') || params.get('subdomain') === 'connect' || window.location.pathname === '/connect') {
       window.location.replace('/connect.html');
     }
   }, []);
 
-  const scrollToReserve = () => {
-    const el = document.getElementById('reserve-funnel');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      const input = document.getElementById('subscriber-email');
-      if (input) input.focus();
-    }
-  };
+  useEffect(() => { track('page_view', { w: window.innerWidth, h: window.innerHeight }, { once: true }); }, []);
+
+  const toWaitlist = (where = 'unknown') => { track('cta_click', { where }); document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' }); };
 
   return (
     <div className="jeemu-app">
-      {/* Subtle organic texture */}
-      <div className="noise-overlay" aria-hidden="true" />
-
-      {/* 1. Responsive Sticky Navbar */}
-      <Navbar onCtaClick={scrollToReserve} />
-
+      <Navbar onCtaClick={() => toWaitlist('nav')} />
       <main>
-        {/* 2. Hero: Split-Screen Asymmetric Layout */}
-        <HeroSection />
-
-        {/* 3. The Problem & How It Works (3 Steps to Endless Play) */}
-        <ProblemSteps />
-
-        {/* 4. Three Pillars of Hardware Craft */}
-        <SpotlightPillars />
-
-        {/* 5. Streamlined Mobile-First Interactive Dock Demo */}
-        <HardwareSimulator />
-
-        {/* 6. AI-Assisted Game Studio Companion */}
-        <AiStudioPreview />
-
-        {/* 7. Hardware Story & Evolution Timeline */}
+        <StoryPlayer onCta={() => toWaitlist('story')} />
+        <HowItWorks />
+        <Waitlist />
         <JourneyTimeline />
-
-        {/* 8. The Creators & Founding Team */}
         <TeamSection />
-
-        {/* 9. Transparent Kickstarter Pricing & VIP Guarantee */}
-        <PricingTier onReserveClick={scrollToReserve} />
-
-        {/* 10. FAQ & Clean Footer */}
         <FaqFooter />
       </main>
     </div>

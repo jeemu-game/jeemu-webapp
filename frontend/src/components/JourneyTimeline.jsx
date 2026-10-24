@@ -11,14 +11,12 @@ const ICONS = {
 
 export default function JourneyTimeline() {
   return (
-    <section className="section-container" id="story">
+    <section className="section-container" id="journey">
       <div className="section-header">
-        <div className="glow-pill">
-          <span>Our Story</span>
-        </div>
-        <h2 className="section-title">We Got Sick of Boring Game Nights.</h2>
+        <div className="px-label">HOW IT STARTED</div>
+        <h2 className="section-title">Six students in Shanghai.</h2>
         <p className="section-desc">
-          Every traditional question tower dies by game three when everyone memorizes block 14. We set out to kill the repetition forever—combining raw tactile physics with infinite digital game modes.
+          We came from all over the world to study business in Shanghai. The assignment was to make a real product. We like games, and we were annoyed at one in particular.
         </p>
       </div>
 
@@ -56,19 +54,6 @@ export default function JourneyTimeline() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
-        <button 
-          onClick={() => {
-            const el = document.getElementById('reserve-funnel');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }} 
-          className="btn-primary" 
-          style={{ padding: '12px 24px', fontSize: '1rem' }}
-        >
-          <span>Join the Journey</span>
-          <span style={{ marginLeft: '8px' }}>→</span>
-        </button>
-      </div>
     </section>
   );
 }

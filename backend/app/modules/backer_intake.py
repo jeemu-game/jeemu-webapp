@@ -86,7 +86,7 @@ class BackerIntakeService:
                 "success": True,
                 "subscriber": existing,
                 "isNew": False,
-                "message": "Welcome back! We have sent your Batch 01 reservation details and referral link to your email.",
+                "message": "Welcome back! You are already on the list. We have re-sent your details and referral link to your email.",
             }
 
         # 5. Create new subscriber

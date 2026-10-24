@@ -3,69 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Referral Milestone Update — Jeemu</title>
-  <style>
-    body { background-color: #0c0e12; color: #e5e7eb; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; }
-    .card { background-color: #131720; border: 1px solid #242a38; border-radius: 12px; padding: 32px 24px; }
-    .badge { display: inline-block; background-color: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #10b981; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
-    .count-box { background-color: #1a1f2c; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }
-    .count-number { font-size: 40px; font-weight: 900; color: #f59e0b; }
-    .footer { font-size: 12px; color: #6b7280; text-align: center; margin-top: 32px; }
-    .footer a { color: #9ca3af; text-decoration: underline; }
-  </style>
+  <meta name="color-scheme" content="dark light">
+  <title>A friend joined via your link</title>
 </head>
-<body style="background-color: #0c0e12; padding: 24px 12px;">
-  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto;">
-    <tr>
-      <td align="center" style="padding-bottom: 24px;">
-        <div style="font-size: 28px; font-weight: 900; letter-spacing: 2px; color: #ffffff;">JEE<span style="color: #f59e0b;">MU</span></div>
-        <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #10b981; text-transform: uppercase; margin-top: 4px;">✦ SMART WOODEN TOWER CONSOLE ✦</div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <div class="card">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <span class="badge">REFERRAL PROGRESS UPDATE</span>
-          </div>
-          <h1 style="font-size: 22px; font-weight: 800; color: #ffffff; text-align: center; margin-bottom: 12px;">Great news, {{ referrer.name }}!</h1>
-          <p style="color: #9ca3af; text-align: center; margin-bottom: 16px;">Your friend <strong>{{ new_backer_name }}</strong> just joined the Jeemu inner circle using your link!</p>
-          
-          <div class="count-box">
-            <div class="count-number">{{ new_count }}</div>
-            <div style="font-size: 14px; color: #d1d5db; text-transform: uppercase; letter-spacing: 1px;">Verified Backer Referral{{ 's' if new_count != 1 else '' }}</div>
-          </div>
-
-          <div style="margin-top: 24px;">
-            {% if new_count >= 5 %}
-              <div style="background-color: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-                <h4 style="color: #f59e0b; margin: 0 0 6px 0;">🏆 Milestone 3 Unlocked: Gold-Stamped Founder Block!</h4>
-                <p style="font-size: 13px; color: #d1d5db; margin: 0;">You have unlocked the highest tier reward! A custom laser-engraved Founder Block will be packaged with your unit.</p>
-              </div>
-            {% elif new_count >= 3 %}
-              <div style="background-color: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-                <h4 style="color: #10b981; margin: 0 0 6px 0;">🎉 Milestone 2 Unlocked: Free Expansion Game Pack Added!</h4>
-                <p style="font-size: 13px; color: #d1d5db; margin: 0;">A $29 physical expansion pack has been automatically credited to your Kickstarter pledge.</p>
-              </div>
-            {% elif new_count >= 1 %}
-              <div style="background-color: rgba(59, 130, 246, 0.15); border: 1px solid #3b82f6; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-                <h4 style="color: #60a5fa; margin: 0 0 6px 0;">✨ Milestone 1 Unlocked: 24-Hour VIP Early Access!</h4>
-                <p style="font-size: 13px; color: #d1d5db; margin: 0;">You will receive your secret Kickstarter pledge link 24 hours before the general public to secure Super Early Bird pricing.</p>
-              </div>
-            {% endif %}
-          </div>
-
-          <div style="text-align: center; margin-top: 24px;">
-            <p style="font-size: 14px; color: #9ca3af;">Keep sharing your link: <strong style="color: #f59e0b;">{{ site_url }}/?ref={{ referrer.referralCode }}</strong></p>
-          </div>
-        </div>
-
-        <div class="footer">
-          <p>© 2026 Jeemu Tabletop Systems. All rights reserved.</p>
-          <p style="margin-top: 6px;"><a href="{{ unsubscribe_url }}">Unsubscribe from referral alerts</a></p>
-        </div>
-      </td>
-    </tr>
+<body style="margin:0;padding:24px 12px;background-color:#0c100e;color:#e2ede5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.6;">
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;margin:0 auto;">
+    <tr><td align="center" style="padding-bottom:24px;">
+      <div style="font-size:26px;font-weight:900;letter-spacing:6px;color:#ffffff;">JEE<span style="color:#00d97e;">MU</span></div>
+    </td></tr>
+    <tr><td>
+      <div style="background-color:#111613;border:1px solid #243029;border-radius:12px;padding:32px 24px;">
+        <h1 style="font-size:22px;font-weight:800;color:#ffffff;margin:0 0 12px;text-align:center;">{{ new_backer_name }} joined through your link.</h1>
+        <p style="color:#a9bfb2;margin:0 0 16px;text-align:center;">{{ new_count }} friend{% if new_count != 1 %}s have{% else %} has{% endif %} joined using your link so far. Thanks for spreading the word.</p>
+        <p style="font-size:14px;margin:0;text-align:center;"><a href="{{ site_url }}/?ref={{ referrer.referralCode }}" style="color:#00d97e;word-break:break-all;">{{ site_url }}/?ref={{ referrer.referralCode }}</a></p>
+<div style="text-align:center;margin-top:24px;"><a href="{{ site_url }}" style="display:inline-block;background-color:#00d97e;color:#04100a;font-weight:700;padding:14px 28px;border-radius:8px;text-decoration:none;">Visit jeemu</a></div>
+      </div>
+      <div style="font-size:12px;color:#6b7f74;text-align:center;margin-top:28px;">
+        <p style="margin:0;">&copy; Jeemu</p>
+        <p style="margin:8px 0 0;">You received this email because you joined the Jeemu waitlist.</p>
+        <p style="margin:6px 0 0;"><a href="{{ unsubscribe_url }}" style="color:#8ea89a;text-decoration:underline;">Unsubscribe</a></p>
+      </div>
+    </td></tr>
   </table>
 </body>
 </html>

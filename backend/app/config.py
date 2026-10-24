@@ -30,7 +30,14 @@ class Settings(BaseSettings):
     # Stripe
     STRIPE_SECRET_KEY: Optional[str] = None
     STRIPE_WEBHOOK_SECRET: Optional[str] = None
-    STRIPE_PAYMENT_LINK: str = "https://buy.stripe.com/00wbJ0ahV5htgzrgxLbAs0k"
+    # No default payment link: the old default pointed at a different Stripe account.
+    STRIPE_PAYMENT_LINK: Optional[str] = None
+
+    # Early-bird deposit step. OFF until you set DEPOSIT_ENABLED=true and confirm the terms below.
+    DEPOSIT_ENABLED: bool = False
+    DEPOSIT_AMOUNT_CENTS: int = 100
+    DEPOSIT_PRODUCT_NAME: str = "Jeemu early-bird deposit"
+    DEPOSIT_DESCRIPTION: str = "Reserves your place for the Jeemu Kickstarter early bird."
 
     # Hostinger SMTP
     SMTP_HOST: str = "smtp.hostinger.com"
