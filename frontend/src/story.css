@@ -139,7 +139,8 @@
 .footer-container { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
 
 /* position: sticky needs the viewport (not <body>) to be the scroll container */
-html, body { overflow-x: clip; overscroll-behavior-y: none; }
+html, body { overflow-x: clip; }
+@media (pointer: coarse) { html, body { overscroll-behavior-y: none; } }   /* touch only: no pull-to-refresh bounce over the story */
 
 
 .wl-offer small { grid-column: 1 / -1; }
