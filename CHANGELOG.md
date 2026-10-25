@@ -78,4 +78,4 @@ The incoming PR's front-facing story player and interactive website have been ad
 - Initial release of the Jeemu smart wooden tower console web platform.
 - FastAPI backend with Supabase waitlist integration.
 - Responsive React landing page with Vite bundler configuration.
-- Docker compose and Vercel cloud deployment setup.
+- Docker Compose and Vercel cloud deployment setup.
