@@ -180,10 +180,9 @@ export default function StoryPlayer({ onCta }) {
       unlocked = true;
       if (pending) { const d = pending; pending = 0; act(d); }
       [video.current, vrev.current].forEach((v) => { if (v && v.paused) { const p = v.play(); if (p && p.then) p.then(() => { if (!st.playing) v.pause(); }).catch(() => {}); } });
-      window.removeEventListener('touchend', unlock); window.removeEventListener('pointerup', unlock);
+      window.removeEventListener('touchend', unlock);
     };
     window.addEventListener('touchend', unlock, { passive: true });
-    window.addEventListener('pointerup', unlock, { passive: true });
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('touchstart', onTs, { passive: true });
     window.addEventListener('touchmove', onTm, { passive: false });
@@ -191,7 +190,7 @@ export default function StoryPlayer({ onCta }) {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('wheel', onWheel); window.removeEventListener('touchstart', onTs);
-      window.removeEventListener('touchmove', onTm); window.removeEventListener('touchend', unlock); window.removeEventListener('pointerup', unlock); window.removeEventListener('keydown', onKey); window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('touchmove', onTm); window.removeEventListener('touchend', unlock); window.removeEventListener('keydown', onKey); window.removeEventListener('scroll', onScroll);
     };
   }, [play, cut]);
 
