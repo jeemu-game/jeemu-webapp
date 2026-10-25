@@ -156,14 +156,18 @@ export default function StoryPlayer({ onCta }) {
     };
     const onScroll = () => { if (window.scrollY > 2) st.awayAt = performance.now(); };
     const onWheel = (e) => { if (Math.abs(e.deltaY) > 3) act(Math.sign(e.deltaY), e); };
-    let y0 = 0, fired = false;
+    let y0 = 0, fired = false, unlocked = false, pending = 0;
     const onTs = (e) => { y0 = e.touches[0].clientY; fired = false; };
     const onTm = (e) => {
       const dy = y0 - e.touches[0].clientY;
       if (!st.tl || window.scrollY > 2 || Math.abs(dy) < 4) return;
       const d = Math.sign(dy);
       if (fired) { if (e.cancelable && !(d > 0 && st.stage === st.tl.rests.length - 1 && !st.playing)) e.preventDefault(); return; }
-      if (Math.abs(dy) > 28) { if (act(d, e)) fired = true; }
+      if (Math.abs(dy) > 28) {
+        // before the first real tap the browser may refuse play(): hold the first swipe until the finger lifts, which counts as a gesture
+        if (!unlocked && !(d > 0 && st.stage === st.tl.rests.length - 1 && !st.playing)) { pending = d; fired = true; if (e.cancelable) e.preventDefault(); }
+        else if (act(d, e)) fired = true;
+      }
       else if (e.cancelable && !(d > 0 && st.stage === st.tl.rests.length - 1 && !st.playing)) e.preventDefault();
     };
     const onKey = (e) => {
@@ -173,6 +177,8 @@ export default function StoryPlayer({ onCta }) {
     };
     // iOS / low-power mode only allow play() after a real gesture, and a touchmove isn't one: prime both videos on the first tap
     const unlock = () => {
+      unlocked = true;
+      if (pending) { const d = pending; pending = 0; act(d); }
       [video.current, vrev.current].forEach((v) => { if (v && v.paused) { const p = v.play(); if (p && p.then) p.then(() => { if (!st.playing) v.pause(); }).catch(() => {}); } });
       window.removeEventListener('touchend', unlock); window.removeEventListener('pointerup', unlock);
     };
