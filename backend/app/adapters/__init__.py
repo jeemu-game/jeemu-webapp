@@ -24,13 +24,19 @@ def get_adapter() -> DatabaseAdapter:
         _active_adapter = JsonFileAdapter()
     else:  # "auto"
         # 1. Prefer Supabase REST API if SUPABASE_URL and key are configured
-        if settings.SUPABASE_URL and (
+        supabase_url = settings.SUPABASE_URL or settings.VITE_SUPABASE_URL
+        supabase_key = (
             settings.SUPABASE_SECRET_KEY
             or settings.SUPABASE_SERVICE_ROLE_KEY
             or settings.SUPABASE_PUBLISHABLE_KEY
-        ):
+            or settings.SUPABASE_ANON_KEY
+            or settings.VITE_SUPABASE_PUBLISHABLE_KEY
+        )
+        if supabase_url and supabase_key:
             print("[DB] Connected to Supabase REST API (quhpizadgfhhrdfompnm.supabase.co)")
-            _active_adapter = SupabaseRestAdapter()
+            _active_adapter = SupabaseRestAdapter(
+                supabase_url=supabase_url, supabase_key=supabase_key
+            )
 
         # 2. Or Postgres connection string if configured
         elif settings.effective_database_url:

@@ -39,7 +39,7 @@ export default function Waitlist() {
     setLoading(true);
     track('waitlist_submit');
     try {
-      const res = await fetch('/api/subscribers', {
+      const res = await fetch('/api/v1/subscribers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim(), name: name.trim(), ref: refCode || undefined, hp_jeemu_check: honeypot || undefined })

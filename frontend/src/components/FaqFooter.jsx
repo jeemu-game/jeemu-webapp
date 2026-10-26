@@ -33,7 +33,12 @@ export default function FaqFooter() {
         <div className="footer-container">
           <div className="nb-brand"><img src={`${import.meta.env.BASE_URL}story/frog-pixel.png`} alt="" className="px-frog" /><span>JEEMU</span></div>
           <nav className="footer-links" aria-label="Footer">
-            <a href="#how">How it plays</a><a href="#waitlist">Waitlist</a><a href="#journey">Our story</a><a href="#team">Team</a><a href="#faq">FAQ</a>
+            <a href="#how">How it plays</a>
+            <a href="#waitlist">Waitlist</a>
+            <a href="#journey">Our story</a>
+            <a href="#team">Team</a>
+            <a href="#faq">FAQ</a>
+            <a href="/admin" style={{ opacity: 0.6, fontSize: '0.85em' }}>Team Portal</a>
           </nav>
           <p className="footer-legal">
             © {new Date().getFullYear()} Jeemu. Made in Shanghai. Jeemu is an independent game and is not affiliated with Kickstarter. Launch date and pricing may change before the campaign goes live.

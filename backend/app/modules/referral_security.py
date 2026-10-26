@@ -3,6 +3,17 @@
 from collections.abc import Callable
 from typing import Any
 
+from app.utils.referral import CROCKFORD_BASE32, generate_secure_referral_code
+
+__all__ = [
+    "CROCKFORD_BASE32",
+    "generate_secure_referral_code",
+    "canonicalize_email",
+    "is_self_referral",
+    "sanitize_referral_on_signup",
+    "process_vip_referral_credit",
+]
+
 
 def canonicalize_email(email: str) -> str:
     """Normalizes an email address for anti-abuse and self-referral checking.

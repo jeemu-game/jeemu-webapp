@@ -4,6 +4,7 @@ import pytest
 
 from app.modules.referral_security import (
     canonicalize_email,
+    generate_secure_referral_code,
     is_self_referral,
     process_vip_referral_credit,
     sanitize_referral_on_signup,
@@ -173,3 +174,18 @@ async def test_vip_referral_credit_and_guards():
         increment_referral_count_fn=mock_increment,
     )
     assert self_res is None
+
+
+def test_generate_secure_referral_code_uniqueness_and_format():
+    # 1. Format check: JEEMU- + 8 characters
+    code = generate_secure_referral_code("test.player@jeemu.fun")
+    assert code.startswith("JEEMU-")
+    assert len(code) == 14  # 'JEEMU-' (6) + 8 chars = 14
+    # Crockford Base32 check: must not contain visually confusing I, L, O, U
+    suffix = code.split("-")[1]
+    for disallowed in ("I", "L", "O", "U"):
+        assert disallowed not in suffix
+
+    # 2. High-volume uniqueness check (1000 generated in tight loop have 0 collisions)
+    generated = {generate_secure_referral_code("backer@example.com") for _ in range(1000)}
+    assert len(generated) == 1000

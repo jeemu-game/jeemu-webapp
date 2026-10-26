@@ -2,18 +2,13 @@
 
 import json
 import random
-import string
 import string as py_string
 import time
 from pathlib import Path
 from typing import Any
 
 from app.config import settings
-
-
-def _generate_referral_code() -> str:
-    suffix = "".join(random.choices(string.ascii_uppercase + string.digits, k=4))
-    return f"JEEMU-{suffix}"
+from app.utils.referral import generate_secure_referral_code
 
 
 class JsonFileAdapter:
@@ -165,10 +160,15 @@ class JsonFileAdapter:
     async def create_subscriber(
         self, email: str, name: str = "Backer", ref: str | None = None
     ) -> dict[str, Any]:
-        referral_code = _generate_referral_code()
-        # Ensure referral code uniqueness
-        while any(s.get("referralCode") == referral_code for s in self.data.get("subscribers", [])):
-            referral_code = _generate_referral_code()
+        clean_email = email.lower().strip()
+        referral_code = generate_secure_referral_code(clean_email)
+        # Collision defense (probabilistically near-zero with 1.1T space, capped at 3 retries)
+        retries = 0
+        while retries < 3 and any(
+            s.get("referralCode") == referral_code for s in self.data.get("subscribers", [])
+        ):
+            referral_code = generate_secure_referral_code(clean_email)
+            retries += 1
 
         now = int(time.time() * 1000)
         sub = {
@@ -265,7 +265,7 @@ class JsonFileAdapter:
             "id": f"sub_unsub_{now}",
             "email": clean_email,
             "name": "Unsubscribed Backer",
-            "referralCode": _generate_referral_code(),
+            "referralCode": generate_secure_referral_code(clean_email),
             "timestamp": now,
             "isVip": False,
             "depositAmount": 0.0,

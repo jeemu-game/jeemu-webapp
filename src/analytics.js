@@ -15,7 +15,7 @@ export function track(type, data = {}, { once = false } = {}) {
   if (key) { if (sent.has(key)) return; sent.add(key); }
   const body = JSON.stringify({ type, visitorId, sessionId, url: window.location.pathname, utm, data, dwellSeconds: Math.round(performance.now() / 1000) });
   try {
-    if (navigator.sendBeacon && navigator.sendBeacon('/api/telemetry/event', new Blob([body], { type: 'application/json' }))) return;
-    fetch('/api/telemetry/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {});
+    if (navigator.sendBeacon && navigator.sendBeacon('/api/v1/telemetry/event', new Blob([body], { type: 'application/json' }))) return;
+    fetch('/api/v1/telemetry/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {});
   } catch (e) { /* analytics must never break the page */ }
 }
