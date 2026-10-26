@@ -1,13 +1,13 @@
 """Local JSON File Storage Adapter for offline & dev mode."""
 
 import json
-import os
 import random
 import string
 import string as py_string
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from app.config import settings
 
 
@@ -17,11 +17,11 @@ def _generate_referral_code() -> str:
 
 
 class JsonFileAdapter:
-    def __init__(self, file_path: Optional[Path] = None):
+    def __init__(self, file_path: Path | None = None):
         self.file_path = file_path or settings.DB_FILE
         self._ensure_loaded()
 
-    def _default_state(self) -> Dict[str, Any]:
+    def _default_state(self) -> dict[str, Any]:
         return {
             "events": [],
             "subscribers": [
@@ -112,7 +112,7 @@ class JsonFileAdapter:
     def _ensure_loaded(self):
         if self.file_path.exists():
             try:
-                with open(self.file_path, "r", encoding="utf-8") as f:
+                with open(self.file_path, encoding="utf-8") as f:
                     self.data = json.load(f)
                     if "events" not in self.data:
                         self.data["events"] = []
@@ -139,12 +139,12 @@ class JsonFileAdapter:
     async def get_subscriber_count(self) -> int:
         return len(self.data.get("subscribers", []))
 
-    async def get_subscribers(self) -> List[Dict[str, Any]]:
+    async def get_subscribers(self) -> list[dict[str, Any]]:
         # Return sorted by timestamp desc
         subs = self.data.get("subscribers", [])
         return sorted(subs, key=lambda s: s.get("timestamp", 0), reverse=True)
 
-    async def find_by_email(self, email: str) -> Optional[Dict[str, Any]]:
+    async def find_by_email(self, email: str) -> dict[str, Any] | None:
         if not email:
             return None
         clean_email = email.lower().strip()
@@ -153,7 +153,7 @@ class JsonFileAdapter:
                 return s
         return None
 
-    async def find_by_referral_code(self, code: str) -> Optional[Dict[str, Any]]:
+    async def find_by_referral_code(self, code: str) -> dict[str, Any] | None:
         if not code:
             return None
         clean_code = code.upper().strip()
@@ -163,13 +163,11 @@ class JsonFileAdapter:
         return None
 
     async def create_subscriber(
-        self, email: str, name: str = "Backer", ref: Optional[str] = None
-    ) -> Dict[str, Any]:
+        self, email: str, name: str = "Backer", ref: str | None = None
+    ) -> dict[str, Any]:
         referral_code = _generate_referral_code()
         # Ensure referral code uniqueness
-        while any(
-            s.get("referralCode") == referral_code for s in self.data.get("subscribers", [])
-        ):
+        while any(s.get("referralCode") == referral_code for s in self.data.get("subscribers", [])):
             referral_code = _generate_referral_code()
 
         now = int(time.time() * 1000)
@@ -195,15 +193,17 @@ class JsonFileAdapter:
 
     async def mark_subscriber_vip(
         self,
-        subscriber_id: Optional[str] = None,
-        referral_code: Optional[str] = None,
-        email: Optional[str] = None,
+        subscriber_id: str | None = None,
+        referral_code: str | None = None,
+        email: str | None = None,
         amount: float = 1.0,
-        stripe_session_id: Optional[str] = None,
-        stripe_payment_intent: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        stripe_session_id: str | None = None,
+        stripe_payment_intent: str | None = None,
+    ) -> dict[str, Any]:
         charge_id = stripe_payment_intent or (
-            "ch_3M" + "".join(random.choices(py_string.ascii_letters + py_string.digits, k=9)) + "StripeJeemu"
+            "ch_3M"
+            + "".join(random.choices(py_string.ascii_letters + py_string.digits, k=9))
+            + "StripeJeemu"
         )
         now = int(time.time() * 1000)
         target = None
@@ -238,7 +238,7 @@ class JsonFileAdapter:
             "wasAlreadyVip": was_already_vip,
         }
 
-    async def increment_referral_count(self, referral_code: str) -> Optional[Dict[str, Any]]:
+    async def increment_referral_count(self, referral_code: str) -> dict[str, Any] | None:
         if not referral_code:
             return None
         clean_code = referral_code.upper().strip()
@@ -249,7 +249,7 @@ class JsonFileAdapter:
                 return s
         return None
 
-    async def unsubscribe_user(self, email: str) -> Optional[Dict[str, Any]]:
+    async def unsubscribe_user(self, email: str) -> dict[str, Any] | None:
         if not email:
             return None
         clean_email = email.lower().strip()
@@ -277,7 +277,7 @@ class JsonFileAdapter:
         self._save()
         return stub
 
-    async def resubscribe_user(self, email: str) -> Optional[Dict[str, Any]]:
+    async def resubscribe_user(self, email: str) -> dict[str, Any] | None:
         if not email:
             return None
         clean_email = email.lower().strip()
@@ -291,10 +291,11 @@ class JsonFileAdapter:
 
     # ==================== TELEMETRY REPOSITORY ====================
 
-    async def log_event(self, event_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def log_event(self, event_data: dict[str, Any]) -> dict[str, Any]:
         now = int(time.time() * 1000)
         event = {
-            "id": f"ev_{now}_" + "".join(random.choices(py_string.ascii_lowercase + py_string.digits, k=6)),
+            "id": f"ev_{now}_"
+            + "".join(random.choices(py_string.ascii_lowercase + py_string.digits, k=6)),
             "timestamp": now,
             "isoTime": time.strftime("%H:%M:%S", time.localtime()),
             **event_data,
@@ -307,7 +308,7 @@ class JsonFileAdapter:
         self._save()
         return event
 
-    async def get_metrics(self) -> Dict[str, Any]:
+    async def get_metrics(self) -> dict[str, Any]:
         events = self.data.get("events", [])
         subscribers = self.data.get("subscribers", [])
 
@@ -325,17 +326,23 @@ class JsonFileAdapter:
             "landed": unique_visitors,
             "simulator": len([e for e in events if e.get("type") == "simulator_block_tap"]),
             "email": email_signups,
-            "vipViewed": len([
-                e for e in events
-                if e.get("type") == "view_vip_modal"
-                or (e.get("data") and e.get("data", {}).get("id") == "btn-open-vip-nav")
-            ]) + (1 if vip_deposits > 0 else 0),
+            "vipViewed": len(
+                [
+                    e
+                    for e in events
+                    if e.get("type") == "view_vip_modal"
+                    or (e.get("data") and e.get("data", {}).get("id") == "btn-open-vip-nav")
+                ]
+            )
+            + (1 if vip_deposits > 0 else 0),
             "vipReserved": vip_deposits,
-            "shared": len([e for e in events if e.get("type") in ("referral_link_copied", "share_click")]),
+            "shared": len(
+                [e for e in events if e.get("type") in ("referral_link_copied", "share_click")]
+            ),
         }
 
         # Top Clicks
-        click_counts: Dict[str, int] = {}
+        click_counts: dict[str, int] = {}
         for c in clicks:
             c_data = c.get("data") or {}
             key = (c_data.get("label") or c_data.get("id") or c_data.get("tag") or "element")[:32]
@@ -369,16 +376,16 @@ class JsonFileAdapter:
             "recentEvents": list(reversed(events))[:30],
         }
 
-    async def get_recent_events(self, limit: int = 50) -> List[Dict[str, Any]]:
+    async def get_recent_events(self, limit: int = 50) -> list[dict[str, Any]]:
         events = self.data.get("events", [])
         return list(reversed(events))[:limit]
 
     # ==================== POSTS REPOSITORY ====================
 
-    async def get_posts(self) -> Dict[str, List[Dict[str, Any]]]:
+    async def get_posts(self) -> dict[str, list[dict[str, Any]]]:
         return self.data.get("posts", {"feed": [], "chaos": [], "journey": []})
 
-    async def create_post(self, category: str, post_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def create_post(self, category: str, post_data: dict[str, Any]) -> dict[str, Any]:
         now = int(time.time() * 1000)
         post = {
             "id": f"{category}_{now}",
@@ -401,7 +408,7 @@ class JsonFileAdapter:
 
     async def react_to_post(
         self, category: str, post_id: str, reaction_type: str
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         posts_map = self.data.get("posts", {})
         post_list = posts_map.get(category, [])
         for p in post_list:

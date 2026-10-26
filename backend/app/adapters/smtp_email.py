@@ -3,15 +3,16 @@
 import email.utils
 import hashlib
 import hmac
-import os
 import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 from urllib.parse import quote
+
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+
 from app.config import settings
 
 TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
@@ -21,7 +22,7 @@ jinja_env = Environment(
 )
 
 
-def generate_unsubscribe_token(email: str, secret: Optional[str] = None) -> str:
+def generate_unsubscribe_token(email: str, secret: str | None = None) -> str:
     if not email:
         return ""
     sec = (secret or settings.effective_unsubscribe_secret).encode("utf-8")
@@ -29,14 +30,14 @@ def generate_unsubscribe_token(email: str, secret: Optional[str] = None) -> str:
     return hmac.new(sec, clean, hashlib.sha256).hexdigest()[:32]
 
 
-def verify_unsubscribe_token(email: str, token: str, secret: Optional[str] = None) -> bool:
+def verify_unsubscribe_token(email: str, token: str, secret: str | None = None) -> bool:
     if not email or not token:
         return False
     expected = generate_unsubscribe_token(email, secret)
     return hmac.compare_digest(token, expected)
 
 
-def get_unsubscribe_url(email: str, site_url: Optional[str] = None) -> str:
+def get_unsubscribe_url(email: str, site_url: str | None = None) -> str:
     base = (site_url or settings.SITE_URL).rstrip("/")
     token = generate_unsubscribe_token(email)
     return f"{base}/api/unsubscribe?email={quote(email)}&token={token}"
@@ -54,7 +55,7 @@ class SmtpEmailAdapter:
     def is_configured(self) -> bool:
         return bool(self.password)
 
-    def verify_connection(self) -> Dict[str, Any]:
+    def verify_connection(self) -> dict[str, Any]:
         if not self.is_configured():
             return {
                 "connected": False,
@@ -90,13 +91,18 @@ class SmtpEmailAdapter:
             }
 
     def dispatch_mail(
-        self, to: str, subject: str, html_content: str, text_content: str, unsubscribe_url: Optional[str] = None
-    ) -> Dict[str, Any]:
+        self,
+        to: str,
+        subject: str,
+        html_content: str,
+        text_content: str,
+        unsubscribe_url: str | None = None,
+    ) -> dict[str, Any]:
         clean_to = to.lower().strip()
 
-        # Check simulation mode
-        if not self.is_configured():
-            print(f"\n📧 [EMAIL SIMULATION — Add SMTP_PASS to .env]")
+        # Check simulation mode (always simulate during automated test runs)
+        if not self.is_configured() or settings.ENV == "test":
+            print("\n📧 [EMAIL SIMULATION — Add SMTP_PASS to .env]")
             print(f"   To: {clean_to}")
             print(f"   From: {self.from_email}")
             print(f"   Subject: {subject}")
@@ -145,7 +151,7 @@ class SmtpEmailAdapter:
             print(f"❌ [EMAIL ERROR] Failed to send to {clean_to}: {e}")
             return {"success": False, "error": str(e)}
 
-    async def send_signup_confirmation_email(self, subscriber: Dict[str, Any]) -> Dict[str, Any]:
+    async def send_signup_confirmation_email(self, subscriber: dict[str, Any]) -> dict[str, Any]:
         if not subscriber or not subscriber.get("email"):
             return {"success": False, "error": "Missing subscriber email"}
 
@@ -161,12 +167,12 @@ class SmtpEmailAdapter:
             site_url=settings.SITE_URL,
             unsubscribe_url=unsub_url,
         )
-        text = f"""You're on the Jeemu waitlist{', ' + subscriber['name'] if subscriber.get('name') else ''}.
+        text = f"""You're on the Jeemu waitlist{", " + subscriber["name"] if subscriber.get("name") else ""}.
 
 Jeemu launches on Kickstarter in November. Early-bird price: $89.99 USD. Early-bird backers also get a premium Jeemu bag.
 We'll email you before the campaign opens.
 
-Share your link: {settings.SITE_URL}/?ref={subscriber.get('referralCode')}
+Share your link: {settings.SITE_URL}/?ref={subscriber.get("referralCode")}
 
 Unsubscribe: {unsub_url}
 """
@@ -179,8 +185,8 @@ Unsubscribe: {unsub_url}
         )
 
     async def send_referral_milestone_email(
-        self, referrer: Dict[str, Any], new_backer_name: str, new_count: int
-    ) -> Dict[str, Any]:
+        self, referrer: dict[str, Any], new_backer_name: str, new_count: int
+    ) -> dict[str, Any]:
         if not referrer or not referrer.get("email"):
             return {"success": False, "error": "Missing referrer email"}
 
@@ -198,10 +204,10 @@ Unsubscribe: {unsub_url}
             site_url=settings.SITE_URL,
             unsubscribe_url=unsub_url,
         )
-        text = f"""{new_backer_name or 'A friend'} joined through your Jeemu link.
+        text = f"""{new_backer_name or "A friend"} joined through your Jeemu link.
 Friends who have joined so far: {new_count}
 
-Share link: {settings.SITE_URL}/?ref={referrer.get('referralCode')}
+Share link: {settings.SITE_URL}/?ref={referrer.get("referralCode")}
 Unsubscribe: {unsub_url}
 """
         return self.dispatch_mail(
@@ -213,8 +219,8 @@ Unsubscribe: {unsub_url}
         )
 
     async def send_vip_deposit_receipt_email(
-        self, subscriber: Dict[str, Any], amount: float = 1.0, charge_id: str = ""
-    ) -> Dict[str, Any]:
+        self, subscriber: dict[str, Any], amount: float = 1.0, charge_id: str = ""
+    ) -> dict[str, Any]:
         if not subscriber or not subscriber.get("email"):
             return {"success": False, "error": "Missing subscriber email"}
 
@@ -230,7 +236,7 @@ Unsubscribe: {unsub_url}
         )
         text = f"""Your Jeemu deposit receipt
 
-Thank you{', ' + subscriber['name'] if subscriber.get('name') else ''}.
+Thank you{", " + subscriber["name"] if subscriber.get("name") else ""}.
 Amount: ${amount:.2f} USD
 Reference: {charge_id}
 We launch on Kickstarter in November. Questions about your deposit? Just reply to this email.
@@ -245,7 +251,7 @@ Unsubscribe: {unsub_url}
             unsubscribe_url=unsub_url,
         )
 
-    async def send_test_email(self, target_email: str) -> Dict[str, Any]:
+    async def send_test_email(self, target_email: str) -> dict[str, Any]:
         test_sub = {
             "name": "Jeemu Explorer",
             "email": target_email,

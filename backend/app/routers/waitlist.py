@@ -1,6 +1,7 @@
 """Waitlist count router."""
 
 from fastapi import APIRouter
+
 from app.adapters import get_adapter
 
 router = APIRouter(tags=["waitlist"])
@@ -10,9 +11,9 @@ router = APIRouter(tags=["waitlist"])
 async def get_waitlist_count():
     adapter = get_adapter()
     try:
-        raw_count = await adapter.get_subscriber_count()
-        display_count = max(raw_count or 0, 1848)
-        return {"count": display_count, "rawCount": raw_count}
+        count = await adapter.get_subscriber_count()
+        real_count = int(count or 0)
+        return {"count": real_count, "rawCount": real_count}
     except Exception as e:
         print(f"Waitlist count error: {e}")
-        return {"count": 1848, "rawCount": 0}
+        return {"count": 0, "rawCount": 0, "error": "Unable to fetch waitlist count."}

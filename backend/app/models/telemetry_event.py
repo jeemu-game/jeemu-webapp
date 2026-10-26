@@ -1,10 +1,12 @@
 """Telemetry Event SQLAlchemy & Pydantic models."""
 
 import time
-from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from datetime import UTC, datetime
+from typing import Any
+
 from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import BigInteger, Column, DateTime, Integer, JSON, String
+from sqlalchemy import JSON, BigInteger, Column, DateTime, Integer, String
+
 from app.models.subscriber import Base
 
 
@@ -13,7 +15,9 @@ class TelemetryEventModel(Base):
 
     id = Column(String, primary_key=True)
     type = Column(String, nullable=False, index=True)
-    timestamp = Column(BigInteger, default=lambda: int(time.time() * 1000), nullable=False, index=True)
+    timestamp = Column(
+        BigInteger, default=lambda: int(time.time() * 1000), nullable=False, index=True
+    )
     iso_time = Column(String, nullable=True)
     visitor_id = Column(String, nullable=True, index=True)
     session_id = Column(String, nullable=True)
@@ -21,7 +25,7 @@ class TelemetryEventModel(Base):
     utm = Column(JSON, default=dict)
     dwell_seconds = Column(Integer, default=0)
     data = Column(JSON, default=dict)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
 
     def to_dict(self):
         return {
@@ -40,12 +44,12 @@ class TelemetryEventModel(Base):
 
 class TelemetryEventCreate(BaseModel):
     type: str = "unknown"
-    visitorId: Optional[str] = None
-    sessionId: Optional[str] = None
-    url: Optional[str] = None
-    utm: Optional[Dict[str, Any]] = None
-    dwellSeconds: Optional[int] = 0
-    data: Optional[Dict[str, Any]] = None
+    visitorId: str | None = None
+    sessionId: str | None = None
+    url: str | None = None
+    utm: dict[str, Any] | None = None
+    dwellSeconds: int | None = 0
+    data: dict[str, Any] | None = None
 
     model_config = ConfigDict(extra="allow")
 
@@ -54,12 +58,12 @@ class TelemetryEventOut(BaseModel):
     id: str
     type: str
     timestamp: int
-    isoTime: Optional[str] = None
-    visitorId: Optional[str] = None
-    sessionId: Optional[str] = None
-    url: Optional[str] = None
-    utm: Dict[str, Any] = Field(default_factory=dict)
+    isoTime: str | None = None
+    visitorId: str | None = None
+    sessionId: str | None = None
+    url: str | None = None
+    utm: dict[str, Any] = Field(default_factory=dict)
     dwellSeconds: int = 0
-    data: Dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict)
 
     model_config = ConfigDict(populate_by_name=True, from_attributes=True)

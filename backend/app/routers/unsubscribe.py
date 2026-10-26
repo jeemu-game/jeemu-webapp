@@ -1,11 +1,13 @@
 """Unsubscribe & Resubscribe Router."""
 
+import contextlib
 from pathlib import Path
-from typing import Optional
 from urllib.parse import unquote
-from fastapi import APIRouter, Form, Request, status
+
+from fastapi import APIRouter, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+
 from app.adapters import get_adapter
 from app.adapters.google_sheets import GoogleSheetsAdapter
 from app.adapters.smtp_email import verify_unsubscribe_token
@@ -31,7 +33,7 @@ def render_page(email: str, success: bool, message: str) -> str:
 
 
 @router.get("/unsubscribe", response_class=HTMLResponse)
-async def unsubscribe(email: Optional[str] = None, token: Optional[str] = None):
+async def unsubscribe(email: str | None = None, token: str | None = None):
     if not email:
         return HTMLResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -60,10 +62,8 @@ async def unsubscribe(email: Optional[str] = None, token: Optional[str] = None):
     try:
         updated = await adapter.unsubscribe_user(clean_email)
         if updated:
-            try:
+            with contextlib.suppress(Exception):
                 await sheets.sync_subscriber(updated, "unsubscribe")
-            except Exception:
-                pass
 
         return HTMLResponse(
             status_code=status.HTTP_200_OK,
@@ -73,7 +73,7 @@ async def unsubscribe(email: Optional[str] = None, token: Optional[str] = None):
                 message="You have been successfully unsubscribed. You will no longer receive launch announcements or referral updates.",
             ),
         )
-    except Exception as e:
+    except Exception:
         return HTMLResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content=render_page(
@@ -85,7 +85,7 @@ async def unsubscribe(email: Optional[str] = None, token: Optional[str] = None):
 
 
 @router.post("/resubscribe")
-async def resubscribe(request: Request, email: Optional[str] = None):
+async def resubscribe(request: Request, email: str | None = None):
     target_email = email
     if not target_email:
         try:
@@ -110,10 +110,8 @@ async def resubscribe(request: Request, email: Optional[str] = None):
     try:
         updated = await adapter.resubscribe_user(clean_email)
         if updated:
-            try:
+            with contextlib.suppress(Exception):
                 await sheets.sync_subscriber(updated, "resubscribe")
-            except Exception:
-                pass
         return RedirectResponse(url="/?resubscribed=1", status_code=status.HTTP_303_SEE_OTHER)
     except Exception:
         return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)

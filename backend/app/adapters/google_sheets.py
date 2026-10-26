@@ -1,21 +1,24 @@
 """Google Sheets Webhook Sync & CSV Export Adapter."""
 
-import io
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+from typing import Any
+
 import httpx
+
 from app.config import settings
 
 
-def format_subscriber_for_sheet(subscriber: Dict[str, Any], event: str = "update") -> Dict[str, Any]:
+def format_subscriber_for_sheet(
+    subscriber: dict[str, Any], event: str = "update"
+) -> dict[str, Any]:
     ts = subscriber.get("timestamp")
     if ts:
         try:
-            iso_time = datetime.fromtimestamp(float(ts) / 1000.0, tz=timezone.utc).isoformat()
+            iso_time = datetime.fromtimestamp(float(ts) / 1000.0, tz=UTC).isoformat()
         except Exception:
-            iso_time = datetime.now(timezone.utc).isoformat()
+            iso_time = datetime.now(UTC).isoformat()
     else:
-        iso_time = datetime.now(timezone.utc).isoformat()
+        iso_time = datetime.now(UTC).isoformat()
 
     return {
         "event": event,
@@ -30,7 +33,7 @@ def format_subscriber_for_sheet(subscriber: Dict[str, Any], event: str = "update
         "stripeChargeId": subscriber.get("stripeChargeId") or "N/A",
         "unsubscribed": "YES" if subscriber.get("unsubscribed") else "NO",
         "timestamp": iso_time,
-        "syncedAt": datetime.now(timezone.utc).isoformat(),
+        "syncedAt": datetime.now(UTC).isoformat(),
     }
 
 
@@ -41,13 +44,16 @@ class GoogleSheetsAdapter:
     def is_configured(self) -> bool:
         return bool(self.webhook_url)
 
-    async def sync_subscriber(self, subscriber: Dict[str, Any], event: str = "signup") -> Dict[str, Any]:
-        if not self.is_configured():
-            if settings.ENV != "test":
-                print("ℹ️ [Google Sheets] Sync skipped (GOOGLE_SHEET_WEBHOOK_URL not configured).")
-            return {"success": False, "reason": "unconfigured"}
+    async def sync_subscriber(
+        self, subscriber: dict[str, Any], event: str = "signup"
+    ) -> dict[str, Any]:
+        if not self.is_configured() or settings.ENV == "test":
+            return {"success": True, "simulated": True}
 
         payload = format_subscriber_for_sheet(subscriber, event)
+        sec = settings.UNSUBSCRIBE_SECRET or settings.ADMIN_PASSWORD
+        if sec:
+            payload["secret"] = sec
         try:
             async with httpx.AsyncClient(timeout=8.0) as client:
                 res = await client.post(self.webhook_url, json=payload)
@@ -61,7 +67,7 @@ class GoogleSheetsAdapter:
             return {"success": False, "error": str(e)}
 
     @staticmethod
-    def generate_subscribers_csv(subscribers: List[Dict[str, Any]]) -> str:
+    def generate_subscribers_csv(subscribers: list[dict[str, Any]]) -> str:
         headers = [
             "Timestamp (ISO)",
             "Full Name",
@@ -86,7 +92,7 @@ class GoogleSheetsAdapter:
             ts = s.get("timestamp")
             if ts:
                 try:
-                    time_str = datetime.fromtimestamp(float(ts) / 1000.0, tz=timezone.utc).isoformat()
+                    time_str = datetime.fromtimestamp(float(ts) / 1000.0, tz=UTC).isoformat()
                 except Exception:
                     time_str = ""
             else:
@@ -107,4 +113,4 @@ class GoogleSheetsAdapter:
             rows.append(",".join(row))
 
         # Include UTF-8 BOM for Excel/Google Sheets auto-encoding
-        return "\uFEFF" + "\r\n".join([",".join(headers)] + rows)
+        return "\ufeff" + "\r\n".join([",".join(headers)] + rows)

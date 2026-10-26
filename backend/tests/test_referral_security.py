@@ -1,6 +1,7 @@
 """Referral security and anti-cheat unit tests."""
 
 import pytest
+
 from app.modules.referral_security import (
     canonicalize_email,
     is_self_referral,
@@ -19,36 +20,48 @@ def test_email_canonicalization():
 
 def test_anti_self_referral_detection():
     # Same code
-    assert is_self_referral(
-        referrer_email="shiva@gmail.com",
-        referrer_ref_code="JEEMU-SHIV",
-        referee_email="other@gmail.com",
-        referee_ref_code="JEEMU-SHIV",
-    ) is True
+    assert (
+        is_self_referral(
+            referrer_email="shiva@gmail.com",
+            referrer_ref_code="JEEMU-SHIV",
+            referee_email="other@gmail.com",
+            referee_ref_code="JEEMU-SHIV",
+        )
+        is True
+    )
 
     # Exact email match
-    assert is_self_referral(
-        referrer_email="shiva@gmail.com",
-        referrer_ref_code="JEEMU-SHIV",
-        referee_email="shiva@gmail.com",
-        referee_ref_code=None,
-    ) is True
+    assert (
+        is_self_referral(
+            referrer_email="shiva@gmail.com",
+            referrer_ref_code="JEEMU-SHIV",
+            referee_email="shiva@gmail.com",
+            referee_ref_code=None,
+        )
+        is True
+    )
 
     # Gmail alias match
-    assert is_self_referral(
-        referrer_email="shiva@gmail.com",
-        referrer_ref_code="JEEMU-SHIV",
-        referee_email="s.h.i.v.a+backer2@gmail.com",
-        referee_ref_code=None,
-    ) is True
+    assert (
+        is_self_referral(
+            referrer_email="shiva@gmail.com",
+            referrer_ref_code="JEEMU-SHIV",
+            referee_email="s.h.i.v.a+backer2@gmail.com",
+            referee_ref_code=None,
+        )
+        is True
+    )
 
     # Legitimate different user
-    assert is_self_referral(
-        referrer_email="shiva@gmail.com",
-        referrer_ref_code="JEEMU-SHIV",
-        referee_email="alex.friend@gmail.com",
-        referee_ref_code="JEEMU-ALEX",
-    ) is False
+    assert (
+        is_self_referral(
+            referrer_email="shiva@gmail.com",
+            referrer_ref_code="JEEMU-SHIV",
+            referee_email="alex.friend@gmail.com",
+            referee_ref_code="JEEMU-ALEX",
+        )
+        is False
+    )
 
 
 @pytest.mark.asyncio

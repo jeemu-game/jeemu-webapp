@@ -1,10 +1,11 @@
 """Stripe Checkout & Webhook router."""
 
 import json
-from typing import Optional
-from fastapi import APIRouter, Header, HTTPException, Request, Response
+
+from fastapi import APIRouter, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+
 from app.adapters.stripe_adapter import StripeAdapter
 from app.config import settings
 from app.modules.vip_deposit import VipDepositService
@@ -13,9 +14,9 @@ router = APIRouter(tags=["stripe"])
 
 
 class CreateSessionRequest(BaseModel):
-    subscriberId: Optional[str] = None
-    referralCode: Optional[str] = None
-    email: Optional[str] = None
+    subscriberId: str | None = None
+    referralCode: str | None = None
+    email: str | None = None
 
 
 @router.post("/stripe/create-session")
@@ -34,7 +35,7 @@ async def create_session(payload: CreateSessionRequest):
 @router.post("/stripe/webhook")
 async def stripe_webhook(
     request: Request,
-    stripe_signature: Optional[str] = Header(None, alias="stripe-signature"),
+    stripe_signature: str | None = Header(None, alias="stripe-signature"),
 ):
     raw_body = await request.body()
     adapter = StripeAdapter()
@@ -48,9 +49,9 @@ async def stripe_webhook(
             event_data = adapter.construct_event(raw_body, stripe_signature)
         except Exception as e:
             print(f"Stripe webhook signature verification failed: {e}")
-            raise HTTPException(status_code=400, detail="Invalid Stripe signature")
-    elif settings.ENV in ("test", "development"):
-        # Local/dev/test only: accept unsigned JSON so the flow can be exercised without Stripe.
+            raise HTTPException(status_code=400, detail="Invalid Stripe signature") from e
+    elif settings.ENV == "test":
+        # Strictly test harness only: accept unsigned JSON so tests can exercise flow with mocks.
         try:
             event_data = json.loads(raw_body.decode("utf-8"))
         except Exception:
@@ -59,15 +60,26 @@ async def stripe_webhook(
         # Production without a webhook secret: refuse, never trust unsigned payment events.
         raise HTTPException(status_code=503, detail="Webhook not configured")
 
-    event_type = event_data.get("type") if isinstance(event_data, dict) else getattr(event_data, "type", None)
+    event_type = (
+        event_data.get("type")
+        if isinstance(event_data, dict)
+        else getattr(event_data, "type", None)
+    )
     if event_type == "checkout.session.completed":
-        session = event_data.get("data", {}).get("object", {}) if isinstance(event_data, dict) else event_data.data.object
-        metadata = session.get("metadata", {}) if isinstance(session, dict) else getattr(session, "metadata", {}) or {}
+        session = (
+            event_data.get("data", {}).get("object", {})
+            if isinstance(event_data, dict)
+            else event_data.data.object
+        )
+        metadata = (
+            session.get("metadata", {})
+            if isinstance(session, dict)
+            else getattr(session, "metadata", {}) or {}
+        )
         subscriber_id = metadata.get("subscriber_id")
         referral_code = metadata.get("referral_code")
         customer_email = (
-            session.get("customer_email")
-            or (session.get("customer_details") or {}).get("email")
+            session.get("customer_email") or (session.get("customer_details") or {}).get("email")
             if isinstance(session, dict)
             else getattr(session, "customer_email", None)
         )
@@ -76,9 +88,17 @@ async def stripe_webhook(
             if isinstance(session, dict)
             else getattr(session, "payment_intent", None)
         )
-        session_id = session.get("id") if isinstance(session, dict) else getattr(session, "id", None)
-        total_cents = session.get("amount_total") if isinstance(session, dict) else getattr(session, "amount_total", None)
-        amount_charged = (total_cents / 100.0) if total_cents else settings.DEPOSIT_AMOUNT_CENTS / 100.0
+        session_id = (
+            session.get("id") if isinstance(session, dict) else getattr(session, "id", None)
+        )
+        total_cents = (
+            session.get("amount_total")
+            if isinstance(session, dict)
+            else getattr(session, "amount_total", None)
+        )
+        amount_charged = (
+            (total_cents / 100.0) if total_cents else settings.DEPOSIT_AMOUNT_CENTS / 100.0
+        )
 
         vip_service = VipDepositService()
         try:

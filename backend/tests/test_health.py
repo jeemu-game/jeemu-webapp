@@ -1,5 +1,6 @@
 """Health and waitlist count endpoint tests."""
 
+
 def test_health_check(client):
     res = client.get("/api/health")
     assert res.status_code == 200
@@ -19,7 +20,7 @@ def test_waitlist_count(client):
     assert res.status_code == 200
     data = res.json()
     assert "count" in data
-    assert data["count"] >= 1848
+    assert isinstance(data["count"], int)
     assert "rawCount" in data
     assert "RateLimit-Limit" in res.headers
     assert "RateLimit-Remaining" in res.headers

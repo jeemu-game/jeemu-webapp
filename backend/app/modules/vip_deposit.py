@@ -2,7 +2,8 @@
 Consolidates duplicated logic from VIP registration endpoint & Stripe webhook.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any
+
 from app.adapters import get_adapter
 from app.adapters.google_sheets import GoogleSheetsAdapter
 from app.adapters.smtp_email import SmtpEmailAdapter
@@ -13,8 +14,8 @@ class VipDepositService:
     def __init__(
         self,
         repository=None,
-        email_adapter: Optional[SmtpEmailAdapter] = None,
-        sheets_adapter: Optional[GoogleSheetsAdapter] = None,
+        email_adapter: SmtpEmailAdapter | None = None,
+        sheets_adapter: GoogleSheetsAdapter | None = None,
     ):
         self.repo = repository or get_adapter()
         self.email = email_adapter or SmtpEmailAdapter()
@@ -22,13 +23,13 @@ class VipDepositService:
 
     async def handle_vip_deposit(
         self,
-        subscriber_id: Optional[str] = None,
-        referral_code: Optional[str] = None,
-        email: Optional[str] = None,
+        subscriber_id: str | None = None,
+        referral_code: str | None = None,
+        email: str | None = None,
         amount: float = 1.0,
-        stripe_session_id: Optional[str] = None,
-        stripe_payment_intent: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        stripe_session_id: str | None = None,
+        stripe_payment_intent: str | None = None,
+    ) -> dict[str, Any]:
         """Processes a VIP upgrade, sends receipt, syncs sheet, and credits referrer."""
         result = await self.repo.mark_subscriber_vip(
             subscriber_id=subscriber_id,

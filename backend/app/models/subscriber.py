@@ -1,9 +1,9 @@
 """Subscriber SQLAlchemy & Pydantic models."""
 
 import time
-from datetime import datetime, timezone
-from typing import Optional
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from datetime import UTC, datetime
+
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, Numeric, String
 from sqlalchemy.orm import declarative_base
 
@@ -27,7 +27,7 @@ class SubscriberModel(Base):
     vip_timestamp = Column(BigInteger, nullable=True)
     unsubscribed = Column(Boolean, default=False)
     unsubscribed_at = Column(BigInteger, nullable=True)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
 
     def to_dict(self):
         return {
@@ -50,11 +50,12 @@ class SubscriberModel(Base):
 
 # Pydantic Schemas
 
+
 class SubscriberCreateRequest(BaseModel):
-    email: str
-    name: Optional[str] = "Backer"
-    ref: Optional[str] = None
-    hp_jeemu_check: Optional[str] = None
+    email: str = Field(..., max_length=120)
+    name: str | None = Field("Backer", max_length=100)
+    ref: str | None = Field(None, max_length=50)
+    hp_jeemu_check: str | None = Field(None, max_length=200)
 
     model_config = ConfigDict(extra="ignore")
 
@@ -64,28 +65,28 @@ class SubscriberOut(BaseModel):
     email: str
     name: str = "Backer"
     referralCode: str = Field(..., serialization_alias="referralCode")
-    referredBy: Optional[str] = None
+    referredBy: str | None = None
     timestamp: int
     isVip: bool = False
     depositAmount: float = 0.0
     friendsReferred: int = 0
-    stripeChargeId: Optional[str] = None
-    stripeSessionId: Optional[str] = None
-    vipTimestamp: Optional[int] = None
+    stripeChargeId: str | None = None
+    stripeSessionId: str | None = None
+    vipTimestamp: int | None = None
     unsubscribed: bool = False
-    unsubscribedAt: Optional[int] = None
+    unsubscribedAt: int | None = None
 
     model_config = ConfigDict(populate_by_name=True, from_attributes=True)
 
 
 class VipUpgradeRequest(BaseModel):
-    subscriberId: Optional[str] = None
-    referralCode: Optional[str] = None
-    email: Optional[str] = None
+    subscriberId: str | None = None
+    referralCode: str | None = None
+    email: str | None = None
     amount: float = 1.0
 
 
 class VipUpgradeResponse(BaseModel):
     success: bool
-    subscriber: Optional[SubscriberOut] = None
-    stripeChargeId: Optional[str] = None
+    subscriber: SubscriberOut | None = None
+    stripeChargeId: str | None = None

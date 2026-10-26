@@ -1,10 +1,13 @@
 """Telemetry & Realtime Analytics Router."""
 
-from typing import Any, Dict
-from fastapi import APIRouter, Request
-from fastapi.responses import JSONResponse, StreamingResponse
+from typing import Any
+
+from fastapi import APIRouter, Depends
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+
 from app.adapters import get_adapter
+from app.auth import require_supabase_auth
 from app.models.telemetry_event import TelemetryEventCreate
 from app.modules.telemetry import TelemetryService
 
@@ -21,14 +24,14 @@ async def record_telemetry_event(payload: TelemetryEventCreate):
 
 @router.get("/telemetry/metrics")
 @router.get("/metrics")
-async def get_metrics():
+async def get_metrics(_admin: dict[str, Any] = Depends(require_supabase_auth)):
     service = TelemetryService()
     metrics = await service.get_metrics()
     return metrics
 
 
 @router.get("/telemetry/stream")
-async def telemetry_stream():
+async def telemetry_stream(_admin: dict[str, Any] = Depends(require_supabase_auth)):
     service = TelemetryService()
     return StreamingResponse(
         service.sse_event_stream(),
@@ -43,6 +46,7 @@ async def telemetry_stream():
 
 # Community Posts & Reactions (for frontend dashboard & social feed)
 
+
 class ReactRequest(BaseModel):
     reactionType: str = "rip"
 
@@ -54,7 +58,11 @@ async def get_posts():
 
 
 @router.post("/posts/{category}")
-async def create_post(category: str, post_data: Dict[str, Any]):
+async def create_post(
+    category: str,
+    post_data: dict[str, Any],
+    _admin: dict[str, Any] = Depends(require_supabase_auth),
+):
     adapter = get_adapter()
     return await adapter.create_post(category, post_data)
 

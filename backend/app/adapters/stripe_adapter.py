@@ -1,7 +1,8 @@
-"""Stripe SDK Wrapper Adapter."""
+import asyncio
+from typing import Any
 
-from typing import Any, Dict, Optional
 import stripe
+
 from app.config import settings
 
 
@@ -18,10 +19,10 @@ class StripeAdapter:
 
     async def create_checkout_session(
         self,
-        subscriber_id: Optional[str] = None,
-        referral_code: Optional[str] = None,
-        email: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        subscriber_id: str | None = None,
+        referral_code: str | None = None,
+        email: str | None = None,
+    ) -> dict[str, Any]:
         if not settings.DEPOSIT_ENABLED:
             return {"mode": "disabled", "error": "Deposits are not open yet."}
 
@@ -33,7 +34,7 @@ class StripeAdapter:
 
         try:
             base_url = settings.SITE_URL.rstrip("/")
-            session_params: Dict[str, Any] = {
+            session_params: dict[str, Any] = {
                 "payment_method_types": ["card"],
                 "mode": "payment",
                 "line_items": [
@@ -60,7 +61,7 @@ class StripeAdapter:
             if email:
                 session_params["customer_email"] = email.strip()[:120]
 
-            session = stripe.checkout.Session.create(**session_params)
+            session = await asyncio.to_thread(stripe.checkout.Session.create, **session_params)
             return {"mode": "checkout", "url": session.url, "sessionId": session.id}
         except Exception as e:
             print(f"Stripe session creation failed: {e}")

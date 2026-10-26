@@ -1,16 +1,18 @@
 """Admin routes: CSV Export, SMTP Diagnostics, Test Email, Batch Sync."""
 
 import time
-from typing import Optional
-from fastapi import APIRouter, Response
+
+from fastapi import APIRouter, Depends, Response
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+
 from app.adapters import get_adapter
 from app.adapters.google_sheets import GoogleSheetsAdapter
 from app.adapters.smtp_email import SmtpEmailAdapter
+from app.auth import require_supabase_auth
 from app.config import settings
 
-router = APIRouter(tags=["admin"])
+router = APIRouter(tags=["admin"], dependencies=[Depends(require_supabase_auth)])
 
 
 class TestEmailRequest(BaseModel):
@@ -30,7 +32,8 @@ async def export_subscribers_csv():
             headers={"Content-Disposition": f'attachment; filename="{filename}"'},
         )
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": f"Failed to generate CSV: {e}"})
+        print(f"Admin CSV export error: {e}")
+        return JSONResponse(status_code=500, content={"error": "Failed to generate CSV export."})
 
 
 @router.get("/admin/smtp-status")
@@ -45,13 +48,18 @@ async def get_smtp_status():
             "diagnostics": status,
         }
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        print(f"Admin SMTP status error: {e}")
+        return JSONResponse(
+            status_code=500, content={"error": "Failed to retrieve SMTP diagnostics."}
+        )
 
 
 @router.post("/admin/test-email")
 async def send_test_email(payload: TestEmailRequest):
     if not payload.targetEmail or "@" not in payload.targetEmail:
-        return JSONResponse(status_code=400, content={"error": "Please provide a valid targetEmail."})
+        return JSONResponse(
+            status_code=400, content={"error": "Please provide a valid targetEmail."}
+        )
 
     email_adapter = SmtpEmailAdapter()
     try:
@@ -61,7 +69,8 @@ async def send_test_email(payload: TestEmailRequest):
             "details": result,
         }
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        print(f"Admin test email error: {e}")
+        return JSONResponse(status_code=500, content={"error": "Failed to send test email."})
 
 
 @router.post("/admin/sync-google-sheet")
@@ -76,4 +85,7 @@ async def batch_sync_google_sheet():
             synced += 1
         return {"success": True, "count": synced}
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        print(f"Admin Google Sheet sync error: {e}")
+        return JSONResponse(
+            status_code=500, content={"error": "Failed to sync subscribers to Google Sheet."}
+        )

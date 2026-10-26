@@ -1,10 +1,11 @@
 """Post SQLAlchemy & Pydantic models."""
 
 import time
-from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from datetime import UTC, datetime
+
 from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import BigInteger, Column, DateTime, Integer, JSON, String
+from sqlalchemy import JSON, BigInteger, Column, DateTime, Integer, String
+
 from app.models.subscriber import Base
 
 
@@ -28,7 +29,7 @@ class PostModel(Base):
     description = Column(String, nullable=True)
     badge = Column(String, nullable=True)
     timestamp = Column(BigInteger, default=lambda: int(time.time() * 1000), nullable=True)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
 
     def to_dict(self):
         return {
@@ -54,20 +55,20 @@ class PostModel(Base):
 
 class PostCreate(BaseModel):
     category: str
-    author: Optional[str] = "Anonymous"
-    role: Optional[str] = None
-    authorInitials: Optional[str] = None
-    date: Optional[str] = None
-    title: Optional[str] = None
-    content: Optional[str] = None
-    image: Optional[str] = None
-    likes: Optional[int] = 0
-    comments: Optional[int] = 0
-    tag: Optional[str] = None
-    reactions: Optional[Dict[str, int]] = None
-    milestone: Optional[str] = None
-    description: Optional[str] = None
-    badge: Optional[str] = None
+    author: str | None = "Anonymous"
+    role: str | None = None
+    authorInitials: str | None = None
+    date: str | None = None
+    title: str | None = None
+    content: str | None = None
+    image: str | None = None
+    likes: int | None = 0
+    comments: int | None = 0
+    tag: str | None = None
+    reactions: dict[str, int] | None = None
+    milestone: str | None = None
+    description: str | None = None
+    badge: str | None = None
 
     model_config = ConfigDict(extra="allow")
 
@@ -76,19 +77,19 @@ class PostOut(BaseModel):
     id: str
     category: str
     author: str
-    role: Optional[str] = None
-    authorInitials: Optional[str] = None
-    date: Optional[str] = None
-    title: Optional[str] = None
-    content: Optional[str] = None
-    image: Optional[str] = None
+    role: str | None = None
+    authorInitials: str | None = None
+    date: str | None = None
+    title: str | None = None
+    content: str | None = None
+    image: str | None = None
     likes: int = 0
     comments: int = 0
-    tag: Optional[str] = None
-    reactions: Dict[str, int] = Field(default_factory=lambda: {"rip": 0, "chaos": 0, "sip": 0})
-    milestone: Optional[str] = None
-    description: Optional[str] = None
-    badge: Optional[str] = None
-    timestamp: Optional[int] = None
+    tag: str | None = None
+    reactions: dict[str, int] = Field(default_factory=lambda: {"rip": 0, "chaos": 0, "sip": 0})
+    milestone: str | None = None
+    description: str | None = None
+    badge: str | None = None
+    timestamp: int | None = None
 
     model_config = ConfigDict(populate_by_name=True, from_attributes=True)
