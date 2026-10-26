@@ -14,12 +14,15 @@ class Settings(BaseSettings):
     # Database
     DATA_ADAPTER: str = "auto"  # "postgres", "json", "auto"
     DATABASE_URL: str | None = None
-    SUPABASE_URL: str | None = None
+    POSTGRES_URL: str | None = None
+    SUPABASE_URL: str = "https://quhpizadgfhhrdfompnm.supabase.co"
     SUPABASE_DB_URL: str | None = None
     SUPABASE_SECRET_KEY: str | None = None
     SUPABASE_SERVICE_ROLE_KEY: str | None = None
     SUPABASE_PUBLISHABLE_KEY: str | None = None
     SUPABASE_ANON_KEY: str | None = None
+    VITE_SUPABASE_URL: str | None = None
+    VITE_SUPABASE_PUBLISHABLE_KEY: str | None = None
 
     # Paths
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
@@ -55,8 +58,8 @@ class Settings(BaseSettings):
     GOOGLE_SHEET_WEBHOOK_URL: str | None = None
 
     # Unsubscribe & Security
-    UNSUBSCRIBE_SECRET: str | None = None
-    ADMIN_PASSWORD: str | None = None
+    UNSUBSCRIBE_SECRET: str = "jeemu-secret-unsubscribe-salt-2026"
+    ADMIN_PASSWORD: str = "jeemu2026"
     ADMIN_EMAILS: str | None = None  # Comma-separated admin emails (e.g. info@jeemu.fun)
     # CORS & Trusted Origins
     ALLOWED_ORIGINS: str | None = None

@@ -6,7 +6,6 @@ and serverless environments.
 """
 
 import random
-import string
 import string as py_string
 import time
 from typing import Any
@@ -14,11 +13,7 @@ from typing import Any
 import httpx
 
 from app.config import settings
-
-
-def _generate_referral_code() -> str:
-    suffix = "".join(random.choices(string.ascii_uppercase + string.digits, k=4))
-    return f"JEEMU-{suffix}"
+from app.utils.referral import generate_secure_referral_code
 
 
 def _sub_row_to_dict(row: dict[str, Any]) -> dict[str, Any]:
@@ -83,17 +78,19 @@ class SupabaseRestAdapter:
         supabase_url: str | None = None,
         supabase_key: str | None = None,
     ):
-        raw_url = supabase_url or settings.SUPABASE_URL
+        raw_url = supabase_url or settings.SUPABASE_URL or settings.VITE_SUPABASE_URL
         raw_key = (
             supabase_key
             or settings.SUPABASE_SECRET_KEY
             or settings.SUPABASE_SERVICE_ROLE_KEY
             or settings.SUPABASE_PUBLISHABLE_KEY
+            or settings.SUPABASE_ANON_KEY
+            or settings.VITE_SUPABASE_PUBLISHABLE_KEY
         )
 
         if not raw_url or not raw_key:
             raise ValueError(
-                "SupabaseRestAdapter requires SUPABASE_URL and SUPABASE_SECRET_KEY to be set in environment variables."
+                "SupabaseRestAdapter requires SUPABASE_URL and a Supabase key (SECRET or PUBLISHABLE) to be set."
             )
 
         self.base_url = raw_url.rstrip("/")
@@ -155,14 +152,15 @@ class SupabaseRestAdapter:
     async def create_subscriber(
         self, email: str, name: str = "Backer", ref: str | None = None
     ) -> dict[str, Any]:
-        referral_code = _generate_referral_code()
+        clean_email = email.lower().strip()
+        referral_code = generate_secure_referral_code(clean_email)
         now = int(time.time() * 1000)
 
-        # Ensure referral code uniqueness
-        existing_ref = await self.find_by_referral_code(referral_code)
-        while existing_ref:
-            referral_code = _generate_referral_code()
-            existing_ref = await self.find_by_referral_code(referral_code)
+        # Defensive collision check (1.1T space, max 3 attempts)
+        retries = 0
+        while retries < 3 and await self.find_by_referral_code(referral_code):
+            referral_code = generate_secure_referral_code(clean_email)
+            retries += 1
 
         payload = {
             "id": f"sub_{now}",

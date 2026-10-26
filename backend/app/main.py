@@ -50,7 +50,11 @@ class RateLimiterMiddleware(BaseHTTPMiddleware):
         is_test = settings.ENV == "test"
 
         # Determine limits based on route
-        if method == "POST" and ("subscribers" in path):
+        if "admin" in path:
+            bucket = "admin_auth"
+            window = 60.0  # 1 min
+            limit = 100 if is_test else 10
+        elif method == "POST" and ("subscribers" in path):
             bucket = "waitlist_write"
             window = 300.0  # 5 min
             limit = 100 if is_test else 50

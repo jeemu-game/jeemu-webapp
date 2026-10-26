@@ -30,16 +30,21 @@ CACHE_TTL_SECONDS = 60.0
 
 async def require_supabase_auth(
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+    x_admin_key: str | None = Header(None, alias="X-Admin-Key"),
 ) -> dict[str, Any]:
-    """FastAPI Dependency: Requires a valid Supabase OAuth2 / Auth Bearer token."""
-    if not credentials or not credentials.credentials:
+    """FastAPI Dependency: Requires a valid Supabase OAuth2 / Auth Bearer token or Admin Key."""
+    token = None
+    if credentials and credentials.credentials:
+        token = credentials.credentials.strip()
+    elif x_admin_key:
+        token = x_admin_key.strip()
+
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication required: Missing Supabase OAuth2 Bearer token.",
+            detail="Authentication required: Missing Supabase OAuth2 Bearer token or Admin Key.",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
-    token = credentials.credentials.strip()
 
     # 1. Test environment mock handling for pytest isolation
     if settings.ENV == "test":
@@ -50,11 +55,27 @@ async def require_supabase_auth(
                 "role": "authenticated",
                 "app_metadata": {"role": "admin"},
             }
+        if settings.ADMIN_PASSWORD and hmac.compare_digest(token, settings.ADMIN_PASSWORD):
+            return {
+                "id": "admin_key_user",
+                "email": "admin@jeemu.fun",
+                "role": "admin",
+                "app_metadata": {"role": "admin"},
+            }
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired Supabase OAuth2 authentication session.",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+    # 1.5. Accept constant-time verified ADMIN_PASSWORD
+    if settings.ADMIN_PASSWORD and hmac.compare_digest(token, settings.ADMIN_PASSWORD):
+        return {
+            "id": "admin_key_user",
+            "email": "admin@jeemu.fun",
+            "role": "admin",
+            "app_metadata": {"role": "admin"},
+        }
 
     # 2. Check local in-memory cache
     now = time.time()

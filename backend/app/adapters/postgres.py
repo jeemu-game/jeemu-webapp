@@ -1,7 +1,6 @@
 """SQLAlchemy PostgreSQL Repository Adapter."""
 
 import random
-import string
 import string as py_string
 import time
 from typing import Any
@@ -13,11 +12,7 @@ from app.config import settings
 from app.models.post import PostModel
 from app.models.subscriber import Base, SubscriberModel
 from app.models.telemetry_event import TelemetryEventModel
-
-
-def _generate_referral_code() -> str:
-    suffix = "".join(random.choices(string.ascii_uppercase + string.digits, k=4))
-    return f"JEEMU-{suffix}"
+from app.utils.referral import generate_secure_referral_code
 
 
 class PostgresAdapter:
@@ -69,12 +64,18 @@ class PostgresAdapter:
     async def create_subscriber(
         self, email: str, name: str = "Backer", ref: str | None = None
     ) -> dict[str, Any]:
-        referral_code = _generate_referral_code()
+        clean_email = email.lower().strip()
+        referral_code = generate_secure_referral_code(clean_email)
         now = int(time.time() * 1000)
         with self.SessionLocal() as session:
-            # Check unique referral code
-            while session.query(SubscriberModel).filter_by(referral_code=referral_code).first():
-                referral_code = _generate_referral_code()
+            # Defensive collision check (1.1T space, capped at 3 retries)
+            retries = 0
+            while (
+                retries < 3
+                and session.query(SubscriberModel).filter_by(referral_code=referral_code).first()
+            ):
+                referral_code = generate_secure_referral_code(clean_email)
+                retries += 1
 
             sub = SubscriberModel(
                 id=f"sub_{now}",
@@ -183,7 +184,7 @@ class PostgresAdapter:
                 id=f"sub_unsub_{now}",
                 email=clean_email,
                 name="Unsubscribed Backer",
-                referral_code=_generate_referral_code(),
+                referral_code=generate_secure_referral_code(clean_email),
                 timestamp=now,
                 is_vip=False,
                 deposit_amount=0.0,
