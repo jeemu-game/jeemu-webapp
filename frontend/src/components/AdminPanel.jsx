@@ -27,17 +27,26 @@ export default function AdminPanel({ onBackToSite }) {
   }, []);
 
   const verifyAndLoad = async (keyToTest) => {
+    const cleanKey = (keyToTest || '').trim();
+    if (!cleanKey) {
+      setError('Please enter the Admin Key.');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
       const [subsRes, metricsRes] = await Promise.all([
         fetch('/api/v1/subscribers', {
-          headers: { 'X-Admin-Key': keyToTest, 'Authorization': `Bearer ${keyToTest}` }
+          headers: { 'X-Admin-Key': cleanKey, 'Authorization': `Bearer ${cleanKey}` }
         }),
         fetch('/api/v1/telemetry/metrics', {
-          headers: { 'X-Admin-Key': keyToTest, 'Authorization': `Bearer ${keyToTest}` }
+          headers: { 'X-Admin-Key': cleanKey, 'Authorization': `Bearer ${cleanKey}` }
         })
       ]);
+
+      if (subsRes.status === 429 || metricsRes.status === 429) {
+        throw new Error('Too many attempts. Rate limit active, please wait 60 seconds.');
+      }
 
       if (subsRes.status === 401 || subsRes.status === 403 || metricsRes.status === 401 || metricsRes.status === 403) {
         throw new Error('Invalid Admin Key. Access denied.');
@@ -50,8 +59,8 @@ export default function AdminPanel({ onBackToSite }) {
       const subsData = await subsRes.json();
       const metricsData = metricsRes.ok ? await metricsRes.json() : null;
 
-      sessionStorage.setItem('jeemu_admin_key', keyToTest);
-      setAdminKey(keyToTest);
+      sessionStorage.setItem('jeemu_admin_key', cleanKey);
+      setAdminKey(cleanKey);
       setIsAuthenticated(true);
       setSubscribers(subsData.subscribers || []);
       setMetrics(metricsData);
