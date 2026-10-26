@@ -50,11 +50,27 @@ async def require_supabase_auth(
                 "role": "authenticated",
                 "app_metadata": {"role": "admin"},
             }
+        if settings.ADMIN_PASSWORD and hmac.compare_digest(token, settings.ADMIN_PASSWORD):
+            return {
+                "id": "admin_key_user",
+                "email": "admin@jeemu.fun",
+                "role": "admin",
+                "app_metadata": {"role": "admin"},
+            }
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired Supabase OAuth2 authentication session.",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+    # 1.5. Accept constant-time verified ADMIN_PASSWORD
+    if settings.ADMIN_PASSWORD and hmac.compare_digest(token, settings.ADMIN_PASSWORD):
+        return {
+            "id": "admin_key_user",
+            "email": "admin@jeemu.fun",
+            "role": "admin",
+            "app_metadata": {"role": "admin"},
+        }
 
     # 2. Check local in-memory cache
     now = time.time()
