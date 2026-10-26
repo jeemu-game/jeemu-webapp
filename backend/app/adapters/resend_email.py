@@ -1,7 +1,9 @@
 """Resend Email API Adapter fallback."""
 
-from typing import Any, Dict, Optional
+from typing import Any
+
 import httpx
+
 from app.config import settings
 
 
@@ -19,8 +21,8 @@ class ResendEmailAdapter:
         subject: str,
         html_content: str,
         text_content: str,
-        unsubscribe_url: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        unsubscribe_url: str | None = None,
+    ) -> dict[str, Any]:
         if not self.is_configured():
             return {"success": False, "error": "RESEND_API_KEY not configured"}
 
@@ -29,7 +31,7 @@ class ResendEmailAdapter:
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "from": self.from_email,
             "to": [clean_to],
             "subject": subject,

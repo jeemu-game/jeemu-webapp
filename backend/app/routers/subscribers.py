@@ -1,9 +1,12 @@
 """Subscribers router."""
 
-from typing import Optional
-from fastapi import APIRouter, Response, status
+from typing import Any
+
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
+
 from app.adapters import get_adapter
+from app.auth import require_supabase_auth
 from app.models.subscriber import (
     SubscriberCreateRequest,
     VipUpgradeRequest,
@@ -27,13 +30,14 @@ async def create_subscriber(payload: SubscriberCreateRequest):
 
 
 @router.get("/subscribers")
-async def list_subscribers():
+async def list_subscribers(_admin: dict[str, Any] = Depends(require_supabase_auth)):
     adapter = get_adapter()
     try:
         subscribers = await adapter.get_subscribers()
         return {"success": True, "subscribers": subscribers, "count": len(subscribers)}
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        print(f"Subscribers listing error: {e}")
+        return JSONResponse(status_code=500, content={"error": "Failed to retrieve subscribers."})
 
 
 @router.patch("/subscribers/{referral_code}/refer")
@@ -47,7 +51,10 @@ async def refer_subscriber(referral_code: str):
 
 
 @router.post("/subscribers/vip")
-async def upgrade_subscriber_vip(payload: VipUpgradeRequest):
+async def upgrade_subscriber_vip(
+    payload: VipUpgradeRequest,
+    _admin: dict[str, Any] = Depends(require_supabase_auth),
+):
     service = VipDepositService()
     try:
         res = await service.handle_vip_deposit(
@@ -58,4 +65,5 @@ async def upgrade_subscriber_vip(payload: VipUpgradeRequest):
         )
         return res
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        print(f"VIP upgrade error: {e}")
+        return JSONResponse(status_code=500, content={"error": "Failed to process VIP upgrade."})

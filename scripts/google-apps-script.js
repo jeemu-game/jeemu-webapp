@@ -29,6 +29,13 @@ function doPost(e) {
     }
 
     var data = JSON.parse(contents);
+    
+    // Optional secret verification: configure SHEETS_WEBHOOK_SECRET in Project Settings > Script Properties
+    var expectedSecret = PropertiesService.getScriptProperties().getProperty("SHEETS_WEBHOOK_SECRET");
+    if (expectedSecret && (!data.secret || data.secret !== expectedSecret)) {
+      return ContentService.createTextOutput(JSON.stringify({ error: "Unauthorized: Invalid webhook secret token" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
 
     // Initialize headers if sheet is empty
     ensureHeaders(sheet);

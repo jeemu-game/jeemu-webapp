@@ -1,6 +1,7 @@
 """Email service, templates, and Google Sheets tests."""
 
 import pytest
+
 from app.adapters.google_sheets import GoogleSheetsAdapter, format_subscriber_for_sheet
 from app.adapters.smtp_email import (
     SmtpEmailAdapter,
@@ -39,7 +40,9 @@ async def test_email_simulation_dispatch():
     assert res1["success"] is True
 
     # Milestone update
-    res2 = await adapter.send_referral_milestone_email(referrer=sub, new_backer_name="John Connor", new_count=1)
+    res2 = await adapter.send_referral_milestone_email(
+        referrer=sub, new_backer_name="John Connor", new_count=1
+    )
     assert res2["success"] is True
 
     # VIP deposit receipt
@@ -74,7 +77,7 @@ def test_google_sheets_payload_and_csv():
     assert sheet_payload["unsubscribed"] == "NO"
 
     csv_data = GoogleSheetsAdapter.generate_subscribers_csv([sub])
-    assert csv_data.startswith("\uFEFF")
+    assert csv_data.startswith("\ufeff")
     assert '"Marcus Wright"' in csv_data
     assert '"marcus@resistance.org"' in csv_data
     assert '"YES"' in csv_data

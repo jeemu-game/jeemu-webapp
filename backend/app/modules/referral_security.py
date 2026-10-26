@@ -1,7 +1,7 @@
 """Jeemu Anti-Cheat & VIP Referral Security Service."""
 
-import re
-from typing import Any, Callable, Dict, Optional
+from collections.abc import Callable
+from typing import Any
 
 
 def canonicalize_email(email: str) -> str:
@@ -25,16 +25,19 @@ def canonicalize_email(email: str) -> str:
 
 
 def is_self_referral(
-    referrer_email: Optional[str] = None,
-    referrer_ref_code: Optional[str] = None,
-    referee_email: Optional[str] = None,
-    referee_ref_code: Optional[str] = None,
+    referrer_email: str | None = None,
+    referrer_ref_code: str | None = None,
+    referee_email: str | None = None,
+    referee_ref_code: str | None = None,
 ) -> bool:
     """Determines whether a referral relationship is a self-referral attempt."""
     # 1. Matching referral codes
-    if referrer_ref_code and referee_ref_code:
-        if referrer_ref_code.upper().strip() == referee_ref_code.upper().strip():
-            return True
+    if (
+        referrer_ref_code
+        and referee_ref_code
+        and referrer_ref_code.upper().strip() == referee_ref_code.upper().strip()
+    ):
+        return True
 
     # 2. Direct or canonical email match
     if referrer_email and referee_email:
@@ -49,10 +52,10 @@ def is_self_referral(
 
 
 async def sanitize_referral_on_signup(
-    ref_code: Optional[str],
+    ref_code: str | None,
     candidate_email: str,
     find_by_referral_code_fn: Callable,
-) -> Optional[Dict[str, Any]]:
+) -> dict[str, Any] | None:
     """Validates a referral code during signup.
     Returns the valid referrer dict if legitimate, or None if invalid or self-referral.
     """
@@ -73,7 +76,9 @@ async def sanitize_referral_on_signup(
             referee_email=candidate_email,
             referee_ref_code=None,
         ):
-            print(f"🛡️ [Self-Referral Blocked on Signup] {candidate_email} attempted to use own referral code {clean_ref}.")
+            print(
+                f"🛡️ [Self-Referral Blocked on Signup] {candidate_email} attempted to use own referral code {clean_ref}."
+            )
             return None
 
         return referrer
@@ -83,13 +88,13 @@ async def sanitize_referral_on_signup(
 
 
 async def process_vip_referral_credit(
-    paying_subscriber: Dict[str, Any],
+    paying_subscriber: dict[str, Any],
     was_already_vip: bool = False,
-    find_by_referral_code_fn: Optional[Callable] = None,
-    increment_referral_count_fn: Optional[Callable] = None,
-    send_milestone_email_fn: Optional[Callable] = None,
-    sync_sheet_fn: Optional[Callable] = None,
-) -> Optional[Dict[str, Any]]:
+    find_by_referral_code_fn: Callable | None = None,
+    increment_referral_count_fn: Callable | None = None,
+    send_milestone_email_fn: Callable | None = None,
+    sync_sheet_fn: Callable | None = None,
+) -> dict[str, Any] | None:
     """Credits a referral ONLY after a $1 VIP deposit is verified."""
     if not paying_subscriber:
         return None
@@ -107,7 +112,9 @@ async def process_vip_referral_credit(
     # 3. Guard: Deposit amount must be at least $1.00
     amount = float(paying_subscriber.get("depositAmount") or 0.0)
     if amount < 1.0:
-        print(f"⚠️ [VIP Referral Skipped] Deposit amount for {paying_subscriber.get('email')} is ${amount:.2f} (< $1.00).")
+        print(
+            f"⚠️ [VIP Referral Skipped] Deposit amount for {paying_subscriber.get('email')} is ${amount:.2f} (< $1.00)."
+        )
         return None
 
     if not find_by_referral_code_fn or not increment_referral_count_fn:
@@ -126,7 +133,9 @@ async def process_vip_referral_credit(
             referee_email=paying_subscriber.get("email"),
             referee_ref_code=paying_subscriber.get("referralCode"),
         ):
-            print(f"🛡️ [Self-Referral Blocked at Payment] {paying_subscriber.get('email')} attempted to credit own code.")
+            print(
+                f"🛡️ [Self-Referral Blocked at Payment] {paying_subscriber.get('email')} attempted to credit own code."
+            )
             return None
 
         # 5. Verified Paid VIP Referral: Increment count
@@ -137,8 +146,12 @@ async def process_vip_referral_credit(
             else int(referrer.get("friendsReferred") or 0) + 1
         )
 
-        print(f"🎉 [VIP Referral Credited!] {paying_subscriber.get('email')} paid ${amount:.2f} deposit!")
-        print(f"   👉 Referrer {referrer.get('email')} unlocked Milestone progress: {new_count} paid friend(s).")
+        print(
+            f"🎉 [VIP Referral Credited!] {paying_subscriber.get('email')} paid ${amount:.2f} deposit!"
+        )
+        print(
+            f"   👉 Referrer {referrer.get('email')} unlocked Milestone progress: {new_count} paid friend(s)."
+        )
 
         # 6. Dispatch Milestone Update Email
         if send_milestone_email_fn:
@@ -156,7 +169,9 @@ async def process_vip_referral_credit(
             try:
                 await sync_sheet_fn(updated_referrer or referrer, "milestone")
             except Exception as sheet_err:
-                print(f"⚠️ [Sheet Sync Error] Failed to sync updated referrer milestone: {sheet_err}")
+                print(
+                    f"⚠️ [Sheet Sync Error] Failed to sync updated referrer milestone: {sheet_err}"
+                )
 
         return {
             "credited": True,

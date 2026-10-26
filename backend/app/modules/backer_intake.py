@@ -1,7 +1,9 @@
 """Backer Intake & Signup Orchestrator."""
 
+import contextlib
 import re
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
+
 from app.adapters import get_adapter
 from app.adapters.google_sheets import GoogleSheetsAdapter
 from app.adapters.smtp_email import SmtpEmailAdapter
@@ -10,7 +12,7 @@ from app.modules.referral_security import sanitize_referral_on_signup
 EMAIL_REGEX = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
 
-def sanitize_string(val: Optional[str], max_len: int = 100) -> str:
+def sanitize_string(val: str | None, max_len: int = 100) -> str:
     if not val or not isinstance(val, str):
         return ""
     # Strip HTML tags
@@ -22,8 +24,8 @@ class BackerIntakeService:
     def __init__(
         self,
         repository=None,
-        email_adapter: Optional[SmtpEmailAdapter] = None,
-        sheets_adapter: Optional[GoogleSheetsAdapter] = None,
+        email_adapter: SmtpEmailAdapter | None = None,
+        sheets_adapter: GoogleSheetsAdapter | None = None,
     ):
         self.repo = repository or get_adapter()
         self.email = email_adapter or SmtpEmailAdapter()
@@ -32,10 +34,10 @@ class BackerIntakeService:
     async def intake_backer(
         self,
         email: str,
-        name: Optional[str] = "Backer",
-        ref: Optional[str] = None,
-        hp_jeemu_check: Optional[str] = None,
-    ) -> Tuple[int, Dict[str, Any]]:
+        name: str | None = "Backer",
+        ref: str | None = None,
+        hp_jeemu_check: str | None = None,
+    ) -> tuple[int, dict[str, Any]]:
         """Handles backer waitlist registration with bot defense, dedup, and async email/sheet sync.
         Returns (status_code, response_dict).
         """
@@ -77,10 +79,8 @@ class BackerIntakeService:
             except Exception as e:
                 print(f"Error resending confirmation to existing backer: {e}")
 
-            try:
+            with contextlib.suppress(Exception):
                 await self.sheets.sync_subscriber(existing, "resend")
-            except Exception:
-                pass
 
             return 200, {
                 "success": True,

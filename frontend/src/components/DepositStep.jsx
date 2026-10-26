@@ -19,7 +19,7 @@ export default function DepositStep({ subscriber }) {
   const start = async () => {
     setError(''); setLoading(true);
     try {
-      const res = await fetch('/api/stripe/create-session', {
+      const res = await fetch('/api/v1/stripe/create-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subscriberId: subscriber?.id, referralCode: subscriber?.referralCode, email: subscriber?.email })

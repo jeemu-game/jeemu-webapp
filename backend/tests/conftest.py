@@ -1,18 +1,15 @@
 """Pytest fixtures for FastAPI TestClient and isolated repository state."""
 
-import json
-import os
-import tempfile
-from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
 from app.config import settings
+
 settings.ENV = "test"
 
-from app.adapters import set_adapter
-from app.adapters.json_file import JsonFileAdapter
-from app.main import app
+from app.adapters import set_adapter  # noqa: E402
+from app.adapters.json_file import JsonFileAdapter  # noqa: E402
+from app.main import app  # noqa: E402
 
 
 @pytest.fixture(autouse=True)

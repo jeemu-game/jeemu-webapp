@@ -74,9 +74,17 @@ def test_friend_signup_with_referral_code(client):
 
 
 def test_list_subscribers(client):
-    res = client.get("/api/subscribers")
-    assert res.status_code == 200
-    data = res.json()
+    # Without token -> 401 Unauthorized
+    unauth_res = client.get("/api/subscribers")
+    assert unauth_res.status_code == 401
+
+    # With valid Supabase OAuth token -> 200 OK
+    auth_res = client.get(
+        "/api/subscribers",
+        headers={"Authorization": "Bearer test-supabase-admin-token"},
+    )
+    assert auth_res.status_code == 200
+    data = auth_res.json()
     assert data["success"] is True
     assert isinstance(data["subscribers"], list)
     assert data["count"] == len(data["subscribers"])
