@@ -30,8 +30,10 @@ def test_unsubscribe_and_resubscribe_flow(client):
     assert sub is not None
     assert sub["unsubscribed"] is True
 
-    # Now resubscribe
-    res_resub = client.post("/api/resubscribe", data={"email": test_email}, follow_redirects=False)
+    # Now resubscribe (requires the same signed token)
+    res_resub = client.post(
+        "/api/resubscribe", data={"email": test_email, "token": token}, follow_redirects=False
+    )
     assert res_resub.status_code == 303
     assert "resubscribed=1" in res_resub.headers["location"]
 

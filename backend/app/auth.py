@@ -28,6 +28,14 @@ _verified_cache: dict[str, tuple[dict[str, Any], float]] = {}
 CACHE_TTL_SECONDS = 60.0
 
 
+def _matches_admin_password(token: str) -> bool:
+    """Constant-time check against ADMIN_PASSWORD. Unset password never matches."""
+    admin_pass = settings.ADMIN_PASSWORD
+    if not admin_pass or not token:
+        return False
+    return hmac.compare_digest(token.encode("utf-8"), admin_pass.encode("utf-8"))
+
+
 async def require_supabase_auth(
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
     x_admin_key: str | None = Header(None, alias="X-Admin-Key"),
@@ -55,7 +63,7 @@ async def require_supabase_auth(
                 "role": "authenticated",
                 "app_metadata": {"role": "admin"},
             }
-        if settings.ADMIN_PASSWORD and hmac.compare_digest(token, settings.ADMIN_PASSWORD):
+        if settings.ADMIN_PASSWORD and _matches_admin_password(token):
             return {
                 "id": "admin_key_user",
                 "email": "admin@jeemu.fun",
@@ -69,7 +77,7 @@ async def require_supabase_auth(
         )
 
     # 1.5. Accept constant-time verified ADMIN_PASSWORD
-    if settings.ADMIN_PASSWORD and hmac.compare_digest(token, settings.ADMIN_PASSWORD):
+    if settings.ADMIN_PASSWORD and _matches_admin_password(token):
         return {
             "id": "admin_key_user",
             "email": "admin@jeemu.fun",
@@ -123,16 +131,22 @@ async def require_supabase_auth(
         )
 
     user_data = resp.json()
+    if not isinstance(user_data, dict):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired Supabase OAuth2 authentication session.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
-    # 4. Enforce optional ADMIN_EMAILS allowlist
+    # 4. Enforce the ADMIN_EMAILS allowlist. Any Supabase user can obtain a valid token if sign-ups
+    #    are open, so with no allowlist configured nobody is admitted through this path.
     allowed_emails = settings.allowed_admin_emails
-    if allowed_emails:
-        user_email = (user_data.get("email") or "").lower().strip()
-        if user_email not in allowed_emails:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Forbidden: Account {user_email} is not authorized for administrative access.",
-            )
+    user_email = (user_data.get("email") or "").lower().strip()
+    if not allowed_emails or user_email not in allowed_emails:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Forbidden: this account is not authorized for administrative access.",
+        )
 
     # 5. Cache verified user
     _verified_cache[token] = (user_data, now + CACHE_TTL_SECONDS)
@@ -167,7 +181,7 @@ def verify_admin_auth(
     elif x_admin_key:
         token = x_admin_key.strip()
 
-    if not token or not hmac.compare_digest(token, admin_pass):
+    if not token or not _matches_admin_password(token):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unauthorized: Admin access required.",

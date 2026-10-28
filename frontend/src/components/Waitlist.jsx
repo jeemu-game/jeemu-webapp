@@ -44,7 +44,7 @@ export default function Waitlist() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim(), name: name.trim(), ref: refCode || undefined, hp_jeemu_check: honeypot || undefined })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));   // a crashed server can reply with plain text
       if (!res.ok || data.error) throw new Error(data.error || 'Could not join the waitlist. Please try again.');
       setDone(data.subscriber || {});
       track('waitlist_joined');

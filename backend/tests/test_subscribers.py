@@ -51,9 +51,10 @@ def test_subscriber_insert_and_deduplication(client):
     data2 = res2.json()
     assert data2["success"] is True
     assert data2["isNew"] is False
-    sub2 = data2["subscriber"]
-    assert sub2["referralCode"] == ref_code
-    assert "Welcome back" in data2["message"]
+    # An existing subscriber's record is never disclosed to whoever typed the address.
+    assert data2["subscriber"] == {"email": test_email.lower()}
+    assert "referralCode" not in data2["subscriber"]
+    assert "already on the list" in data2["message"]
 
 
 def test_friend_signup_with_referral_code(client):

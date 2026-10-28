@@ -33,7 +33,7 @@ def get_adapter() -> DatabaseAdapter:
             or settings.VITE_SUPABASE_PUBLISHABLE_KEY
         )
         if supabase_url and supabase_key:
-            print("[DB] Connected to Supabase REST API (quhpizadgfhhrdfompnm.supabase.co)")
+            print(f"[DB] Using Supabase REST API at {supabase_url.rstrip('/')}")
             _active_adapter = SupabaseRestAdapter(
                 supabase_url=supabase_url, supabase_key=supabase_key
             )
