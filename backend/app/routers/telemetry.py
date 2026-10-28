@@ -1,6 +1,6 @@
 """Telemetry & Realtime Analytics Router."""
 
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
@@ -48,7 +48,7 @@ async def telemetry_stream(_admin: dict[str, Any] = Depends(require_supabase_aut
 
 
 class ReactRequest(BaseModel):
-    reactionType: str = "rip"
+    reactionType: Literal["rip", "chaos", "sip"] = "rip"
 
 
 @router.get("/posts")

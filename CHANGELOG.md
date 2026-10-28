@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased] - Production hardening
+
+### Security
+- No more default secrets: `ADMIN_PASSWORD`, `UNSUBSCRIBE_SECRET` and `SUPABASE_URL` have no built-in values (the old defaults were public in the repo). Unset means disabled, never guessable.
+- Admin routes accept a Supabase login only for emails listed in `ADMIN_EMAILS` (empty list admits nobody); admin password comparison no longer crashes on non-ASCII input.
+- Signup no longer discloses an existing subscriber's record (referral code, Stripe IDs); re-sent confirmation emails are throttled per address; new-signup responses omit internal fields.
+- Supabase lookups use exact matches with encoded parameters. The previous `ilike` filters treated `%` and `_` as wildcards, which let an address like `%@gmail.com` match other subscribers.
+- Unsubscribe and resubscribe always require the signed token (the development-mode bypass is removed); resubscribe previously accepted any email.
+- Analytics events are size- and shape-limited; post reactions are restricted to the three known types; oversized request bodies get a 413; the public waitlist count no longer returns raw error text.
+
+### Reliability
+- Environment values are trimmed of stray whitespace, line breaks and wrapping quotes (a pasted trailing newline on a Vercel variable used to crash every database call).
+- Any Vercel deployment defaults to `ENV=production`, so a forgotten `ENV` can no longer expose `/docs` or skip security checks.
+- Unhandled errors return a JSON message with a request ID (and are logged with the traceback) instead of a bare text 500; the signup form shows a friendly message if the server ever replies with non-JSON.
+- Email is sent from a worker thread (SMTP no longer blocks the server) and falls back to Resend when Hostinger SMTP refuses; welcome email and Google Sheets sync run in parallel.
+- The startup log now shows the real Supabase host instead of a hardcoded label.
+
+### Database
+- `supabase/schema.sql` rewritten: adds the missing `unsubscribed`, `unsubscribed_at` and `stripe_session_id` columns, removes the public read/update policies on `subscribers`, and grants access to the server role only.
+
+---
+
 ## [Unreleased] - Merged PR #4 & Main Integration
 
 ### Overview

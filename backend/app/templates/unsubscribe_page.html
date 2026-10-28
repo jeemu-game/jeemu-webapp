@@ -94,6 +94,7 @@
     {% if success and email %}
       <form action="/api/resubscribe" method="POST" style="margin-top: 18px;">
         <input type="hidden" name="email" value="{{ email }}" />
+        <input type="hidden" name="token" value="{{ token }}" />
         <button type="submit" style="background: none; border: none; color: #6b7280; font-size: 13px; text-decoration: underline; cursor: pointer;">
           Unsubscribed by mistake? Click here to re-subscribe.
         </button>
