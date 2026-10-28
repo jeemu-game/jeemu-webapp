@@ -1,6 +1,8 @@
 """FastAPI Main Application for Jeemu Tabletop Console."""
 
+import logging
 import time
+import uuid
 from collections import defaultdict
 from contextlib import asynccontextmanager
 
@@ -20,6 +22,9 @@ from app.routers import (
     waitlist_router,
 )
 
+# Request timestamps per (client_ip, bucket). Module-level so tests can reset it between cases.
+rate_limit_history: dict[tuple[str, str], list[float]] = defaultdict(list)
+
 
 class RateLimiterMiddleware(BaseHTTPMiddleware):
     """Enforces rate limiting with real proxy IP extraction and automatic memory pruning."""
@@ -27,7 +32,7 @@ class RateLimiterMiddleware(BaseHTTPMiddleware):
     def __init__(self, app):
         super().__init__(app)
         # (client_ip, bucket) -> list of timestamps
-        self.history: dict[tuple[str, str], list[float]] = defaultdict(list)
+        self.history = rate_limit_history
         self.last_cleanup: float = time.time()
 
     async def dispatch(self, request: Request, call_next):
@@ -107,6 +112,24 @@ class RateLimiterMiddleware(BaseHTTPMiddleware):
         return response
 
 
+MAX_BODY_BYTES = 256 * 1024  # every legitimate request body here is a few KB at most
+
+logger = logging.getLogger("jeemu")
+
+
+class BodyLimitMiddleware(BaseHTTPMiddleware):
+    """Rejects requests that declare an oversized body before any route reads it."""
+
+    async def dispatch(self, request: Request, call_next):
+        declared = request.headers.get("content-length", "")
+        if declared.isdigit() and int(declared) > MAX_BODY_BYTES:
+            return JSONResponse(
+                status_code=413,
+                content={"error": "Request body too large."},
+            )
+        return await call_next(request)
+
+
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """Injects defensive HTTP security headers into all responses."""
 
@@ -142,6 +165,26 @@ app = FastAPI(
     openapi_url="/openapi.json" if is_dev else None,
     lifespan=lifespan,
 )
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    """Any crash becomes a JSON error (never a bare text 500) and is logged with its traceback."""
+    request_id = uuid.uuid4().hex[:12]
+    logger.error(
+        "Unhandled error %s on %s %s", request_id, request.method, request.url.path, exc_info=exc
+    )
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "error": "Something went wrong on our side. Please try again.",
+            "requestId": request_id,
+        },
+    )
+
+
+# Oversized request bodies are refused first (innermost; later middleware wraps it)
+app.add_middleware(BodyLimitMiddleware)
 
 # Defensive Security Headers
 app.add_middleware(SecurityHeadersMiddleware)
