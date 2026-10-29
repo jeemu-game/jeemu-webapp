@@ -55,12 +55,16 @@ export default function StoryPlayer({ onCta }) {
       if (!el || !v) return;
       const cw = el.clientWidth, ch = el.clientHeight;
       setNarrow(cw / ch < 1.1 || cw < 760);
-      const sc = Math.max(cw / tl.width, ch / tl.height);   // the video always fills the window, so things enter and leave at the window's own edges
+      const isNarrow = cw / ch < 1.1 || cw < 760;
+      // landscape: cover, so things enter and leave at the window's own edges. Phones: cover is too tight (the screen
+      // close-up fills the whole width and the tower is cut off), so fit the whole frame (with a little air) and let the dark backdrop fill the rest.
+      const sc = isNarrow ? Math.min(cw / tl.width, ch / tl.height) * 0.92 : Math.max(cw / tl.width, ch / tl.height);
       v.style.transform = `translate(-50%, -50%) scale(${sc})`;
     };
     fit();
     window.addEventListener('resize', fit);
-    return () => window.removeEventListener('resize', fit);
+    window.addEventListener('orientationchange', fit);
+    return () => { window.removeEventListener('resize', fit); window.removeEventListener('orientationchange', fit); };
   }, [tl]);
 
   const paint = useCallback((frame) => {
@@ -152,14 +156,18 @@ export default function StoryPlayer({ onCta }) {
     };
     const onScroll = () => { if (window.scrollY > 2) st.awayAt = performance.now(); };
     const onWheel = (e) => { if (Math.abs(e.deltaY) > 3) act(Math.sign(e.deltaY), e); };
-    let y0 = 0, fired = false;
+    let y0 = 0, fired = false, unlocked = false, pending = 0;
     const onTs = (e) => { y0 = e.touches[0].clientY; fired = false; };
     const onTm = (e) => {
       const dy = y0 - e.touches[0].clientY;
       if (!st.tl || window.scrollY > 2 || Math.abs(dy) < 4) return;
       const d = Math.sign(dy);
       if (fired) { if (e.cancelable && !(d > 0 && st.stage === st.tl.rests.length - 1 && !st.playing)) e.preventDefault(); return; }
-      if (Math.abs(dy) > 28) { if (act(d, e)) fired = true; }
+      if (Math.abs(dy) > 28) {
+        // before the first real tap the browser may refuse play(): hold the first swipe until the finger lifts, which counts as a gesture
+        if (!unlocked && !(d > 0 && st.stage === st.tl.rests.length - 1 && !st.playing)) { pending = d; fired = true; if (e.cancelable) e.preventDefault(); }
+        else if (act(d, e)) fired = true;
+      }
       else if (e.cancelable && !(d > 0 && st.stage === st.tl.rests.length - 1 && !st.playing)) e.preventDefault();
     };
     const onKey = (e) => {
@@ -167,6 +175,14 @@ export default function StoryPlayer({ onCta }) {
       if (['ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) act(1, e);
       else if (['ArrowUp', 'PageUp'].includes(e.key)) act(-1, e);
     };
+    // iOS / low-power mode only allow play() after a real gesture, and a touchmove isn't one: prime both videos on the first tap
+    const unlock = () => {
+      unlocked = true;
+      if (pending) { const d = pending; pending = 0; act(d); }
+      [video.current, vrev.current].forEach((v) => { if (v && v.paused) { const p = v.play(); if (p && p.then) p.then(() => { if (!st.playing) v.pause(); }).catch(() => {}); } });
+      window.removeEventListener('touchend', unlock);
+    };
+    window.addEventListener('touchend', unlock, { passive: true });
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('touchstart', onTs, { passive: true });
     window.addEventListener('touchmove', onTm, { passive: false });
@@ -174,7 +190,7 @@ export default function StoryPlayer({ onCta }) {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('wheel', onWheel); window.removeEventListener('touchstart', onTs);
-      window.removeEventListener('touchmove', onTm); window.removeEventListener('keydown', onKey); window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('touchmove', onTm); window.removeEventListener('touchend', unlock); window.removeEventListener('keydown', onKey); window.removeEventListener('scroll', onScroll);
     };
   }, [play, cut]);
 
@@ -190,16 +206,16 @@ export default function StoryPlayer({ onCta }) {
   const shown = ui.playing ? -2 : ui.stage;
 
   return (
-    <section className={`story ${narrow ? 'is-narrow' : ''}`} id="story" ref={root} aria-label="How Jeemu plays">
+    <section className={`story ${narrow ? 'is-narrow' : ''} ${ui.stage >= last && !ui.playing ? 'is-done' : ''}`} id="story" ref={root} aria-label="How Jeemu plays">
       <div className="story-view" ref={view} style={tl ? { width: tl.width, height: tl.height } : undefined}>
         <div className="story-videos">
         {src && (
           <video
             ref={video} className={`story-video ${act === 'f' ? '' : 'hide'}`} src={src} poster={`${dir}poster.jpg`} muted playsInline preload="auto" aria-hidden="true"
-            onLoadedData={() => { setReady(true); s.current.revLoader && s.current.revLoader(); }} onSeeked={(e) => paint(e.currentTarget.currentTime * (s.current.tl?.fps || 30))}
+            onPlaying={() => setNeedTap(false)} onLoadedData={() => { setReady(true); s.current.revLoader && s.current.revLoader(); }} onSeeked={(e) => paint(e.currentTarget.currentTime * (s.current.tl?.fps || 30))}
           />
         )}
-        {srcRev && <video ref={vrev} className={`story-video ${act === 'r' ? '' : 'hide'}`} src={srcRev} muted playsInline preload="auto" aria-hidden="true" />}
+        {srcRev && <video ref={vrev} onPlaying={() => setNeedTap(false)} className={`story-video ${act === 'r' ? '' : 'hide'}`} src={srcRev} muted playsInline preload="auto" aria-hidden="true" />}
         </div>
         <div className={`story-screen ${mode !== 'off' ? 'on' : ''}`} ref={screenEl} aria-hidden="true">
           <GameScreen card={mode === 'intro' ? INTRO_CARD : SCREEN_CARDS[cardIdx]} onCta={onCta} />
