@@ -15,10 +15,6 @@ async def get_waitlist_count():
         real_count = int(count or 0)
         return {"count": real_count, "rawCount": real_count}
     except Exception as e:
-        print(f"Waitlist count error: {e}")
-        return {
-            "count": 0,
-            "rawCount": 0,
-            "error": "Unable to fetch waitlist count.",
-            "detail": f"{type(e).__name__}: {e}",
-        }
+        # The reason goes to the server logs only; the public response never carries exception text.
+        print(f"Waitlist count error: {type(e).__name__}: {e}")
+        return {"count": 0, "rawCount": 0, "error": "Unable to fetch waitlist count."}

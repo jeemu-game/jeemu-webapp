@@ -1,10 +1,11 @@
 """Telemetry Event SQLAlchemy & Pydantic models."""
 
+import json
 import time
 from datetime import UTC, datetime
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import JSON, BigInteger, Column, DateTime, Integer, String
 
 from app.models.subscriber import Base
@@ -42,16 +43,40 @@ class TelemetryEventModel(Base):
         }
 
 
+# The analytics endpoint is public (browsers post to it), so every field is bounded.
+MAX_EVENT_DATA_CHARS = 2048
+MAX_UTM_KEYS = 20
+
+
 class TelemetryEventCreate(BaseModel):
-    type: str = "unknown"
-    visitorId: str | None = None
-    sessionId: str | None = None
+    type: str = Field(default="unknown", pattern=r"^[A-Za-z0-9_.:-]{1,64}$")
+    visitorId: str | None = Field(default=None, max_length=128)
+    sessionId: str | None = Field(default=None, max_length=128)
     url: str | None = None
     utm: dict[str, Any] | None = None
-    dwellSeconds: int | None = 0
+    dwellSeconds: int | None = Field(default=0, ge=0, le=60 * 60 * 24 * 30)
     data: dict[str, Any] | None = None
 
-    model_config = ConfigDict(extra="allow")
+    model_config = ConfigDict(extra="ignore")
+
+    @field_validator("url")
+    @classmethod
+    def _trim_url(cls, value: str | None) -> str | None:
+        return value[:300] if value else value
+
+    @field_validator("utm")
+    @classmethod
+    def _bound_utm(cls, value: dict[str, Any] | None) -> dict[str, Any] | None:
+        if not value:
+            return value
+        return {str(k)[:64]: str(v)[:200] for k, v in list(value.items())[:MAX_UTM_KEYS]}
+
+    @field_validator("data")
+    @classmethod
+    def _bound_data(cls, value: dict[str, Any] | None) -> dict[str, Any] | None:
+        if value and len(json.dumps(value, default=str)) > MAX_EVENT_DATA_CHARS:
+            raise ValueError(f"data must be at most {MAX_EVENT_DATA_CHARS} characters of JSON")
+        return value
 
 
 class TelemetryEventOut(BaseModel):

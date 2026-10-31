@@ -1,12 +1,24 @@
 """Application Configuration via Pydantic Settings."""
 
+import os
 from pathlib import Path
+from typing import Any
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+def _default_env() -> str:
+    """Anything running on Vercel is production unless ENV says otherwise.
+
+    Production turns off the API docs and enforces every security check, so a forgotten ENV
+    variable must never leave a live deployment in development mode.
+    """
+    return "production" if os.environ.get("VERCEL") else "development"
+
+
 class Settings(BaseSettings):
-    ENV: str = "development"
+    ENV: str = _default_env()
     PORT: int = 8000
     HOST: str = "0.0.0.0"
     SITE_URL: str = "https://jeemu.fun"
@@ -15,7 +27,8 @@ class Settings(BaseSettings):
     DATA_ADAPTER: str = "auto"  # "postgres", "json", "auto"
     DATABASE_URL: str | None = None
     POSTGRES_URL: str | None = None
-    SUPABASE_URL: str = "https://quhpizadgfhhrdfompnm.supabase.co"
+    # No default: a missing URL must fail loudly rather than silently talk to another project.
+    SUPABASE_URL: str | None = None
     SUPABASE_DB_URL: str | None = None
     SUPABASE_SECRET_KEY: str | None = None
     SUPABASE_SERVICE_ROLE_KEY: str | None = None
@@ -58,15 +71,28 @@ class Settings(BaseSettings):
     GOOGLE_SHEET_WEBHOOK_URL: str | None = None
 
     # Unsubscribe & Security
-    UNSUBSCRIBE_SECRET: str = "jeemu-secret-unsubscribe-salt-2026"
-    ADMIN_PASSWORD: str = "jeemu2026"
-    ADMIN_EMAILS: str | None = None  # Comma-separated admin emails (e.g. info@jeemu.fun)
+    # No defaults: both must be set explicitly (see .env.example). Unset means disabled, never "guessable".
+    UNSUBSCRIBE_SECRET: str | None = None
+    ADMIN_PASSWORD: str | None = None
+    # Comma-separated emails allowed to use a Supabase login on admin routes. Empty = nobody.
+    ADMIN_EMAILS: str | None = None
     # CORS & Trusted Origins
     ALLOWED_ORIGINS: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=(".env", "../.env"), env_file_encoding="utf-8", extra="ignore"
     )
+
+    @field_validator("*", mode="before")
+    @classmethod
+    def _clean_env_strings(cls, value: Any) -> Any:
+        """Trim stray whitespace/newlines and wrapping quotes that sneak in when pasting env values."""
+        if not isinstance(value, str):
+            return value
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
+            value = value[1:-1].strip()
+        return value
 
     @property
     def effective_smtp_pass(self) -> str | None:
