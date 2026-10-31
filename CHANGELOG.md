@@ -24,6 +24,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Email is sent from a worker thread (SMTP no longer blocks the server) and falls back to Resend when Hostinger SMTP refuses; welcome email and Google Sheets sync run in parallel.
 - The startup log now shows the real Supabase host instead of a hardcoded label.
 
+### Front end (story, mobile, accessibility)
+- Story no longer sits on LOADING forever: it starts as soon as the video's metadata arrives (Safari does not fire the later `loadeddata`/`canplay` events when it declines to preload), and after 8 s without a usable video it falls back to a plain page (first frame, tagline, Join button) that scrolls normally.
+- The pixel screen is only drawn once the video really shows the matching frame. Previously a reload that restored the scroll position jumped to the last stop and drew its screen over a video that was still seeking, so the text was not mapped to the picture.
+- Removed the TAP TO PLAY button (the story lands on the next stop if the browser refuses to play); phone videos re-encoded from ~4.8 MB to ~1.7 MB; the reverse copy loads lazily; poster-first loading.
+- Accessible mobile hamburger menu; Lighthouse accessibility 100 on phone and desktop (contrast, focus styles, skip link, h1, reduced motion).
+
 ### Database
 - `supabase/schema.sql` rewritten: adds the missing `unsubscribed`, `unsubscribed_at` and `stripe_session_id` columns, removes the public read/update policies on `subscribers`, and grants access to the server role only.
 

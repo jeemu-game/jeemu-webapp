@@ -9,6 +9,18 @@ const PREVIEW = import.meta.env.VITE_PREVIEW === 'true';
 const SCREEN_W = 320, SCREEN_H = 240;
 const CARD_MS = 3600;   // the question is up for about as long as the zoom-in takes, then the waitlist card
 const mq = (q) => typeof matchMedia !== 'undefined' && matchMedia(q).matches;
+const GIVE_UP_MS = 8000;   // no usable video after this long: show the plain page instead of an endless LOADING screen
+const SYNC_TIMEOUT_MS = 8000;   // never keep the pixel screen hidden longer than this while the video catches up
+// calls cb once the video has finished seeking and can show a frame (or after ms, so the screen is never hidden for good)
+const whenShowing = (v, cb, ms) => {
+  let done = false;
+  const events = ['seeked', 'loadeddata', 'canplay'];
+  const finish = () => { if (done) return; done = true; clearTimeout(timer); events.forEach((e) => v.removeEventListener(e, check)); cb(); };
+  const check = (e) => { if (!v.seeking && (v.readyState >= 2 || (e && e.type === 'seeked'))) finish(); };
+  const timer = setTimeout(finish, ms);
+  events.forEach((e) => v.addEventListener(e, check));
+  check();
+};
 // true when the video already holds every second from a to b, so playing that span cannot freeze or flash empty
 const hasBuffered = (v, a, b) => { for (let i = 0; i < v.buffered.length; i++) if (v.buffered.start(i) <= a + 0.05 && v.buffered.end(i) >= b - 0.05) return true; return false; };
 
@@ -25,6 +37,8 @@ export default function StoryPlayer({ onCta }) {
   const [srcRev, setSrcRev] = useState('');
   const [act, setAct] = useState('f');   // which of the two videos is on show: forward or the reversed copy
   const [ready, setReady] = useState(false);
+  const [stuck, setStuck] = useState(false);     // the video never became usable (see GIVE_UP_MS)
+  const [synced, setSynced] = useState(false);   // the video is really showing the frame the pixel screen is drawn for
   const [ui, setUi] = useState({ stage: -1, playing: false });
   const [mode, setMode] = useState('intro');   // what the pixel screen shows: the tagline, nothing (the render's own logo), or the question cards
   const [cardIdx, setCardIdx] = useState(0);
@@ -144,11 +158,22 @@ export default function StoryPlayer({ onCta }) {
     st.toCta = k === st.tl.rests.length - 1;
     st.stage = k; st.cooldown = performance.now() + 500;
     setUi({ stage: k, playing: false });
+    // A jump can mean a long seek (the far end of a video that is still downloading). Until the video really shows
+    // this frame the pixel screen stays hidden, otherwise its text sits on top of the wrong picture.
+    const id = (st.cutId = (st.cutId || 0) + 1);
+    setSynced(false);
+    whenShowing(v, () => { if (st.cutId === id) { paint(st.tl.rests[k]); setSynced(true); } }, SYNC_TIMEOUT_MS);
   }, [paint]);
   cutRef.current = cut;
 
   // first load: rest on the opening stop (or the last one if the page was restored part way down)
   const booted = ready && !!tl;
+  const staticMode = stuck && !booted;   // no working video: poster + tagline + button, and the page scrolls normally
+  useEffect(() => { s.current.static = staticMode; }, [staticMode]);
+  useEffect(() => {
+    const id = setTimeout(() => setStuck(true), GIVE_UP_MS);
+    return () => clearTimeout(id);
+  }, []);
   useEffect(() => {
     if (!booted || s.current.stage !== -1) return;
     cut(window.scrollY > 80 ? s.current.tl.rests.length - 1 : 0);
@@ -165,6 +190,8 @@ export default function StoryPlayer({ onCta }) {
     const st = s.current;
     const act = (d, e) => {
       if (document.documentElement.classList.contains('menu-open')) return true;   // the mobile menu is open: it owns the screen
+      if (st.static) return false;   // no video: leave scrolling to the page
+      if (st.stage < 0) { e && e.cancelable && e.preventDefault(); return true; }   // still loading: input does nothing
       if (!st.tl || window.scrollY > 2) return false;
       if (performance.now() - st.awayAt < 600) { e && e.cancelable && e.preventDefault(); return true; }
       const last = st.tl.rests.length - 1;
@@ -182,6 +209,8 @@ export default function StoryPlayer({ onCta }) {
     let y0 = 0, fired = false, unlocked = false, pending = 0;
     const onTs = (e) => { y0 = e.touches[0].clientY; fired = false; };
     const onTm = (e) => {
+      if (st.static) return;
+      if (st.stage < 0) { if (e.cancelable) e.preventDefault(); return; }
       const dy = y0 - e.touches[0].clientY;
       if (!st.tl || window.scrollY > 2 || Math.abs(dy) < 4) return;
       const d = Math.sign(dy);
@@ -229,7 +258,7 @@ export default function StoryPlayer({ onCta }) {
   const shown = ui.playing ? -2 : ui.stage;
 
   return (
-    <section className={`story ${narrow ? 'is-narrow' : ''} ${ui.stage >= last && !ui.playing ? 'is-done' : ''}`} id="story" ref={root} aria-label="How Jeemu plays">
+    <section className={`story ${narrow ? 'is-narrow' : ''} ${ui.stage >= last && !ui.playing ? 'is-done' : ''} ${staticMode ? 'is-static' : ''}`} id="story" ref={root} aria-label="How Jeemu plays">
       {/* everything the pixel screen says is drawn, so say it in text too */}
       <h1 className="sr-only">Jeemu, a tower game that starts the conversation</h1>
       <p className="sr-only">{INTRO_CARD.text} Pull a block from the tower, tap it on the base, and the screen asks you a question. {SCREEN_CARDS.map((c) => c.text).join(' ')}</p>
@@ -240,22 +269,29 @@ export default function StoryPlayer({ onCta }) {
         {src && (
           <video
             ref={video} className={`story-video ${act === 'f' ? '' : 'hide'}`} src={src} poster={`${dir}poster.jpg`} muted playsInline preload="auto" aria-hidden="true"
-            onLoadedData={() => setReady(true)} onProgress={onForwardProgress} onSeeked={(e) => paint(e.currentTarget.currentTime * (s.current.tl?.fps || 30))}
+            onLoadedMetadata={() => setReady(true)} onLoadedData={() => setReady(true)} onCanPlay={() => setReady(true)} onError={() => setStuck(true)} onProgress={onForwardProgress} onSeeked={(e) => paint(e.currentTarget.currentTime * (s.current.tl?.fps || 30))}
           />
         )}
         {srcRev && <video ref={vrev} className={`story-video ${act === 'r' ? '' : 'hide'}`} src={srcRev} muted playsInline preload="auto" aria-hidden="true" />}
         </div>
-        <div className={`story-screen ${mode !== 'off' && booted ? 'on' : ''}`} ref={screenEl} aria-hidden="true">
+        <div className={`story-screen ${mode !== 'off' && booted && synced ? 'on' : ''}`} ref={screenEl} aria-hidden="true">
           <GameScreen card={mode === 'intro' ? INTRO_CARD : SCREEN_CARDS[cardIdx]} onCta={onCta} />
         </div>
       </div>
       <div className="story-fx" aria-hidden="true" />
 
-      {!booted && (
+      {!booted && !staticMode && (
         <div className="story-loading" role="status">
           <img src={`${BASE}story/frog-pixel.png`} alt="" className="px-frog" />
           <div className="px-label">LOADING</div>
           <div className="px-bar"><span /></div>
+        </div>
+      )}
+
+      {staticMode && (
+        <div className="story-static">
+          <p>{INTRO_CARD.text}</p>
+          <button type="button" className="btn-pixel" onClick={onCta}>JOIN THE WAITLIST</button>
         </div>
       )}
 
@@ -267,8 +303,8 @@ export default function StoryPlayer({ onCta }) {
         ) : null))}
       </nav>
 
-      <div className={`story-hint ${!ui.playing && booted ? 'show' : ''}`} aria-hidden="true">
-        <span>{ui.stage >= last ? 'MORE BELOW' : ui.stage === 0 ? 'SCROLL TO PLAY' : 'SCROLL'}</span><i />
+      <div className={`story-hint ${(!ui.playing && booted) || staticMode ? 'show' : ''}`} aria-hidden="true">
+        <span>{staticMode || ui.stage >= last ? 'MORE BELOW' : ui.stage === 0 ? 'SCROLL TO PLAY' : 'SCROLL'}</span><i />
       </div>
     </section>
   );
