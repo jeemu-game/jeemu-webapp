@@ -238,3 +238,43 @@ html, body { overflow-x: clip; }
 .wl-field input:focus-visible, .wl-share input:focus-visible { outline: 3px solid var(--jade-primary); outline-offset: 2px; }
 .skip-link { position: fixed; left: 12px; top: -80px; z-index: 100; padding: 12px 16px; background: var(--jade-primary); color: #04100a; font-family: var(--px-font); font-size: 0.8rem; letter-spacing: 0.1em; text-decoration: none; transition: top 120ms; }
 .skip-link:focus { top: 12px; outline: 3px solid #fff; outline-offset: 2px; }
+
+/* ------------------------------ mobile menu (hamburger) ------------------------------ */
+.nb-burger, .nb-close { display: none; }
+.nb-drawer { display: none; }
+.nb-burger, .nb-close { flex: none; width: 44px; height: 44px; padding: 0; place-items: center; background: rgba(6, 10, 8, 0.7); border: 2px solid rgba(175, 215, 185, 0.28); cursor: pointer; transition: border-color 120ms; }
+.nb-burger:hover, .nb-close:hover { border-color: var(--jade-primary); }
+/* three stepped bars (8-bit hamburger) */
+.nb-burger-bars, .nb-burger-bars::before, .nb-burger-bars::after { display: block; width: 20px; height: 3px; background: var(--text-main); }
+.nb-burger-bars { position: relative; }
+.nb-burger-bars::before, .nb-burger-bars::after { content: ''; position: absolute; left: 0; }
+.nb-burger-bars::before { top: -7px; }
+.nb-burger-bars::after { top: 7px; }
+.nb-burger:hover .nb-burger-bars, .nb-burger:hover .nb-burger-bars::before, .nb-burger:hover .nb-burger-bars::after { background: var(--jade-primary); }
+/* close: an X from two bars */
+.nb-close-x { position: relative; display: block; width: 20px; height: 20px; }
+.nb-close-x::before, .nb-close-x::after { content: ''; position: absolute; left: 0; top: 8.5px; width: 20px; height: 3px; background: var(--text-main); }
+.nb-close-x::before { transform: rotate(45deg); }
+.nb-close-x::after { transform: rotate(-45deg); }
+.nb-close:hover .nb-close-x::before, .nb-close:hover .nb-close-x::after { background: var(--jade-primary); }
+
+@media (max-width: 760px) {
+  .nb-burger, .nb-close { display: grid; }
+  .nb-drawer { display: block; position: fixed; inset: 0; z-index: 200; visibility: hidden; pointer-events: none; transition: visibility 0s linear 240ms; }
+  .nb-drawer.is-open { visibility: visible; pointer-events: auto; transition-delay: 0s; }
+  .nb-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.66); opacity: 0; transition: opacity 240ms; touch-action: none; }
+  .nb-drawer.is-open .nb-backdrop { opacity: 1; }
+  .nb-panel { position: absolute; left: 0; top: 0; bottom: 0; width: min(84vw, 340px); display: flex; flex-direction: column; padding: 12px 20px 24px; background: #070b09; border-right: 2px solid rgba(0, 217, 126, 0.4); transform: translateX(-100%); transition: transform 240ms steps(6); overflow-y: auto; overscroll-behavior: contain; }
+  .nb-drawer.is-open .nb-panel { transform: none; }
+  .nb-close { align-self: flex-start; }
+  .nb-panel nav { display: flex; flex-direction: column; margin: 14px 0 22px; }
+  .nb-panel nav a { font-family: var(--px-font); font-size: 1rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-main); text-decoration: none; padding: 17px 4px; border-bottom: 2px dashed rgba(0, 217, 126, 0.2); }
+  .nb-panel nav a:hover, .nb-panel nav a:focus-visible { color: var(--jade-primary); }
+  .nb-panel .btn-pixel { width: 100%; }
+  .nb .navbar-container { gap: 12px; }
+}
+/* narrow phones: the hamburger, logo and Join button need more room than 320-420px has, so the logo shows just the frog */
+@media (max-width: 420px) { .nb-brand span { display: none; } }
+/* page behind the open menu does not scroll */
+html.menu-open { overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .nb-drawer, .nb-backdrop, .nb-panel { transition: none; } }

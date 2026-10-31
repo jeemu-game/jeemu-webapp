@@ -164,6 +164,7 @@ export default function StoryPlayer({ onCta }) {
   useEffect(() => {
     const st = s.current;
     const act = (d, e) => {
+      if (document.documentElement.classList.contains('menu-open')) return true;   // the mobile menu is open: it owns the screen
       if (!st.tl || window.scrollY > 2) return false;
       if (performance.now() - st.awayAt < 600) { e && e.cancelable && e.preventDefault(); return true; }
       const last = st.tl.rests.length - 1;
