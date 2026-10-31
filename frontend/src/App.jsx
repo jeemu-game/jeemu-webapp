@@ -58,6 +58,7 @@ export default function App() {
 
   return (
     <div className="jeemu-app">
+      <a className="skip-link" href="#how">Skip to content</a>
       <Navbar onCtaClick={() => toWaitlist('nav')} />
       <main>
         <StoryPlayer onCta={() => toWaitlist('story')} />
