@@ -35,10 +35,12 @@
 
 /* ------------------------------ story ------------------------------ */
 .story { position: relative; height: 100vh; height: 100svh; overflow: hidden; background: #0a0e0c; touch-action: none; }
+.story.is-done { touch-action: pan-y; }   /* last stop: hand the swipe back to the page so it can scroll on */
 .story-view { position: absolute; left: 50%; top: 50%; transform-origin: center; will-change: transform; }
 .story-videos { position: absolute; inset: 0; }
 .story-video { position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; background: #0a0e0c; }
 .story-video.hide { opacity: 0; pointer-events: none; }
+.story-poster { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
 .story-fx {
   position: absolute; inset: 0; pointer-events: none;
   background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.10) 0 1px, transparent 1px 3px), radial-gradient(ellipse at 50% 45%, transparent 60%, rgba(0, 0, 0, 0.45) 100%);
@@ -63,12 +65,11 @@
 .gs-scan { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px); }
 @keyframes gsblink { 50% { opacity: 0.25; } }
 
-.story-loading { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: center; background: #0a0e0c; z-index: 4; }
+.story-loading { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: flex-end; padding-bottom: max(14svh, 72px); background: transparent; z-index: 4; pointer-events: none; }
 .story-loading .px-frog { height: 64px; animation: frogbob 1s steps(2) infinite; }
 .story-loading .px-bar span { width: 100%; animation: pxload 1.2s steps(8) infinite; }
 @keyframes frogbob { 50% { transform: translateY(-6px); } }
 @keyframes pxload { 0% { width: 0; } 100% { width: 100%; } }
-.story-tap { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 6; }
 
 /* stage cards: left and vertically centred on desktop, bottom on phones */
 .beats { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
@@ -139,6 +140,7 @@
 
 /* position: sticky needs the viewport (not <body>) to be the scroll container */
 html, body { overflow-x: clip; }
+@media (pointer: coarse) { html, body { overscroll-behavior-y: none; } }   /* touch only: no pull-to-refresh bounce over the story */
 
 
 .wl-offer small { grid-column: 1 / -1; }
@@ -222,3 +224,57 @@ html, body { overflow-x: clip; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
 .footer-links a { font-family: var(--px-font); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; }
 .footer-links a:hover { color: var(--jade-primary); }
+
+/* phones fit the whole frame, so feather its edges into the page backdrop instead of showing a hard border */
+.story.is-narrow .story-videos {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(180deg, transparent, #000 5%, #000 95%, transparent);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(180deg, transparent, #000 5%, #000 95%, transparent); mask-composite: intersect;
+}
+
+/* ------------------------------ keyboard focus + skip link ------------------------------ */
+:focus-visible { outline: 3px solid var(--jade-primary); outline-offset: 3px; }
+/* the notched pixel buttons clip anything drawn outside their box, so focus is shown inside it */
+.btn-pixel:focus-visible, .gs-cta:focus-visible { outline: none; background: #fff; box-shadow: inset 0 0 0 4px var(--jade-primary); }
+.wl-field input:focus-visible, .wl-share input:focus-visible { outline: 3px solid var(--jade-primary); outline-offset: 2px; }
+.skip-link { position: fixed; left: 12px; top: -80px; z-index: 100; padding: 12px 16px; background: var(--jade-primary); color: #04100a; font-family: var(--px-font); font-size: 0.8rem; letter-spacing: 0.1em; text-decoration: none; transition: top 120ms; }
+.skip-link:focus { top: 12px; outline: 3px solid #fff; outline-offset: 2px; }
+
+/* ------------------------------ mobile menu (hamburger) ------------------------------ */
+.nb-burger, .nb-close { display: none; }
+.nb-drawer { display: none; }
+.nb-burger, .nb-close { flex: none; width: 44px; height: 44px; padding: 0; place-items: center; background: rgba(6, 10, 8, 0.7); border: 2px solid rgba(175, 215, 185, 0.28); cursor: pointer; transition: border-color 120ms; }
+.nb-burger:hover, .nb-close:hover { border-color: var(--jade-primary); }
+/* three stepped bars (8-bit hamburger) */
+.nb-burger-bars, .nb-burger-bars::before, .nb-burger-bars::after { display: block; width: 20px; height: 3px; background: var(--text-main); }
+.nb-burger-bars { position: relative; }
+.nb-burger-bars::before, .nb-burger-bars::after { content: ''; position: absolute; left: 0; }
+.nb-burger-bars::before { top: -7px; }
+.nb-burger-bars::after { top: 7px; }
+.nb-burger:hover .nb-burger-bars, .nb-burger:hover .nb-burger-bars::before, .nb-burger:hover .nb-burger-bars::after { background: var(--jade-primary); }
+/* close: an X from two bars */
+.nb-close-x { position: relative; display: block; width: 20px; height: 20px; }
+.nb-close-x::before, .nb-close-x::after { content: ''; position: absolute; left: 0; top: 8.5px; width: 20px; height: 3px; background: var(--text-main); }
+.nb-close-x::before { transform: rotate(45deg); }
+.nb-close-x::after { transform: rotate(-45deg); }
+.nb-close:hover .nb-close-x::before, .nb-close:hover .nb-close-x::after { background: var(--jade-primary); }
+
+@media (max-width: 760px) {
+  .nb-burger, .nb-close { display: grid; }
+  .nb-drawer { display: block; position: fixed; inset: 0; z-index: 200; visibility: hidden; pointer-events: none; transition: visibility 0s linear 240ms; }
+  .nb-drawer.is-open { visibility: visible; pointer-events: auto; transition-delay: 0s; }
+  .nb-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.66); opacity: 0; transition: opacity 240ms; touch-action: none; }
+  .nb-drawer.is-open .nb-backdrop { opacity: 1; }
+  .nb-panel { position: absolute; left: 0; top: 0; bottom: 0; width: min(84vw, 340px); display: flex; flex-direction: column; padding: 12px 20px 24px; background: #070b09; border-right: 2px solid rgba(0, 217, 126, 0.4); transform: translateX(-100%); transition: transform 240ms steps(6); overflow-y: auto; overscroll-behavior: contain; }
+  .nb-drawer.is-open .nb-panel { transform: none; }
+  .nb-close { align-self: flex-start; }
+  .nb-panel nav { display: flex; flex-direction: column; margin: 14px 0 22px; }
+  .nb-panel nav a { font-family: var(--px-font); font-size: 1rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-main); text-decoration: none; padding: 17px 4px; border-bottom: 2px dashed rgba(0, 217, 126, 0.2); }
+  .nb-panel nav a:hover, .nb-panel nav a:focus-visible { color: var(--jade-primary); }
+  .nb-panel .btn-pixel { width: 100%; }
+  .nb .navbar-container { gap: 12px; }
+}
+/* narrow phones: the hamburger, logo and Join button need more room than 320-420px has, so the logo shows just the frog */
+@media (max-width: 420px) { .nb-brand span { display: none; } }
+/* page behind the open menu does not scroll */
+html.menu-open { overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .nb-drawer, .nb-backdrop, .nb-panel { transition: none; } }

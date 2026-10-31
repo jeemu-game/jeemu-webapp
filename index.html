@@ -19,9 +19,21 @@
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
 
+  <!-- Fonts: a <link> (not a CSS @import) so the browser fetches them in parallel with the app instead of after its CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Pixelify+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap">
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="/story/frog-pixel.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Start fetching the first frame and the timeline before the app's JavaScript has run. Same phone / desktop
+       rule as StoryPlayer (portrait window = phone render). -->
+  <link rel="preload" as="image" href="/story/mobile/poster.jpg" media="(max-aspect-ratio: 749/1000)" fetchpriority="high">
+  <link rel="preload" as="fetch" href="/story/mobile/timeline.json" crossorigin media="(max-aspect-ratio: 749/1000)">
+  <link rel="preload" as="image" href="/story/poster.jpg" media="(min-aspect-ratio: 750/1000)" fetchpriority="high">
+  <link rel="preload" as="fetch" href="/story/timeline.json" crossorigin media="(min-aspect-ratio: 750/1000)">
 </head>
 <body>
   <div id="root"></div>

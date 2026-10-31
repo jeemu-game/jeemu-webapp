@@ -9,6 +9,8 @@ const PREVIEW = import.meta.env.VITE_PREVIEW === 'true';
 const SCREEN_W = 320, SCREEN_H = 240;
 const CARD_MS = 3600;   // the question is up for about as long as the zoom-in takes, then the waitlist card
 const mq = (q) => typeof matchMedia !== 'undefined' && matchMedia(q).matches;
+// true when the video already holds every second from a to b, so playing that span cannot freeze or flash empty
+const hasBuffered = (v, a, b) => { for (let i = 0; i < v.buffered.length; i++) if (v.buffered.start(i) <= a + 0.05 && v.buffered.end(i) >= b - 0.05) return true; return false; };
 
 // One video, four stops. Scroll / swipe / key at a stop plays the next piece at normal speed and lands
 // on the next stop. It never sits half way. Going back is a straight cut to the previous stop.
@@ -23,29 +25,39 @@ export default function StoryPlayer({ onCta }) {
   const [srcRev, setSrcRev] = useState('');
   const [act, setAct] = useState('f');   // which of the two videos is on show: forward or the reversed copy
   const [ready, setReady] = useState(false);
-  const [needTap, setNeedTap] = useState(false);
   const [ui, setUi] = useState({ stage: -1, playing: false });
   const [mode, setMode] = useState('intro');   // what the pixel screen shows: the tagline, nothing (the render's own logo), or the question cards
   const [cardIdx, setCardIdx] = useState(0);
 
-  // timeline + the video file this browser can actually decode
+  // The reversed copy is only needed when someone scrolls back up, so it stays off the network until the forward
+  // video is fully downloaded (or the first scroll-up asks for it). It must never compete with the video being played.
+  const startRev = useCallback(() => {
+    const st = s.current;
+    st.wantRev = true;
+    if (st.revLoader && !st.revStarted) { st.revStarted = true; st.revLoader(); }
+  }, []);
+
+  // the video file this browser can decode starts downloading straight away; the timeline arrives alongside it
   useEffect(() => {
     let dead = false;
+    const t = document.createElement('video');
+    const ext = t.canPlayType('video/mp4; codecs="avc1.640028"') ? 'mp4' : 'webm';
+    const get = (name, set) => {
+      if (PREVIEW) fetch(dir + name).then((r) => r.blob()).then((b) => { if (!dead) set(URL.createObjectURL(b)); });   // the preview host can't serve byte ranges
+      else set(dir + name);
+    };
+    get(`story.${ext}`, setSrc);
     fetch(`${dir}timeline.json`).then((r) => r.json()).then((j) => {
       if (dead) return;
       j.rests = STOPS.filter((f) => f < j.frames);
       s.current.tl = j; setTl(j);
-      const t = document.createElement('video');
-      const ext = t.canPlayType('video/mp4; codecs="avc1.640028"') ? 'mp4' : 'webm';
-      const get = (name, set) => {
-        if (PREVIEW) fetch(dir + name).then((r) => r.blob()).then((b) => { if (!dead) set(URL.createObjectURL(b)); });   // the preview host can't serve byte ranges
-        else set(dir + name);
-      };
-      get(`story.${ext}`, setSrc);
-      if (j.reverse) s.current.revLoader = () => get(`story-rev.${ext}`, setSrcRev);
+      if (j.reverse) {
+        s.current.revLoader = () => get(`story-rev.${ext}`, setSrcRev);
+        if (s.current.wantRev) startRev();
+      }
     }).catch(() => {});
     return () => { dead = true; };
-  }, [dir]);
+  }, [dir, startRev]);
 
   // fit the video box to the viewport: height-fit on landscape sets, cover on portrait
   useEffect(() => {
@@ -55,12 +67,16 @@ export default function StoryPlayer({ onCta }) {
       if (!el || !v) return;
       const cw = el.clientWidth, ch = el.clientHeight;
       setNarrow(cw / ch < 1.1 || cw < 760);
-      const sc = Math.max(cw / tl.width, ch / tl.height);   // the video always fills the window, so things enter and leave at the window's own edges
+      const isNarrow = cw / ch < 1.1 || cw < 760;
+      // landscape: cover, so things enter and leave at the window's own edges. Phones: cover is too tight (the screen
+      // close-up fills the whole width and the tower is cut off), so fit the whole frame (with a little air) and let the dark backdrop fill the rest.
+      const sc = isNarrow ? Math.min(cw / tl.width, ch / tl.height) * 0.92 : Math.max(cw / tl.width, ch / tl.height);
       v.style.transform = `translate(-50%, -50%) scale(${sc})`;
     };
     fit();
     window.addEventListener('resize', fit);
-    return () => window.removeEventListener('resize', fit);
+    window.addEventListener('orientationchange', fit);
+    return () => { window.removeEventListener('resize', fit); window.removeEventListener('orientationchange', fit); };
   }, [tl]);
 
   const paint = useCallback((frame) => {
@@ -85,8 +101,10 @@ export default function StoryPlayer({ onCta }) {
     const st = s.current, vf = video.current, vr = vrev.current;
     if (!vf || !st.tl || st.playing) return;
     const { fps, rests, frames: N } = st.tl;
-    const rev = d < 0 && st.tl.reverse && vr && vr.readyState >= 2;
-    if (d < 0 && !rev) { cutRef.current(k); return; }
+    if (mq('(prefers-reduced-motion: reduce)')) { cutRef.current(k); return; }   // no animated playback for people who asked for less motion
+    // the reversed copy is fetched lazily: only play it once the part this step needs has arrived, otherwise cut straight there
+    const rev = d < 0 && st.tl.reverse && vr && hasBuffered(vr, (N - 1 - rests[k + 1]) / fps, (N - 1 - rests[k]) / fps);
+    if (d < 0 && !rev) { startRev(); cutRef.current(k); return; }
     const v = rev ? vr : vf, other = rev ? vf : vr;
     const from = d > 0 ? rests[k - 1] : rests[k + 1], to = rests[k];
     const tOf = (f) => (rev ? N - 1 - f : f) / fps;           // logical frame -> time in whichever video plays
@@ -95,7 +113,8 @@ export default function StoryPlayer({ onCta }) {
     setUi({ stage: st.stage, playing: true });
     if (Math.abs(v.currentTime - tOf(from)) * fps > 0.5) v.currentTime = tOf(from);
     const p = v.play();
-    if (p && p.catch) p.catch(() => { st.playing = false; setNeedTap(true); });
+    // if the browser refuses to play (no gesture yet, data saver), land on the stop anyway rather than asking for a tap
+    if (p && p.catch) p.catch((err) => { if (err && err.name !== 'AbortError' && st.playing && st.target === k) cutRef.current(k); });
     setAct(rev ? 'r' : 'f');
     const done = () => {
       v.pause(); v.currentTime = tOf(to); paint(to);
@@ -111,7 +130,7 @@ export default function StoryPlayer({ onCta }) {
     };
     const queue = () => { st.raf = requestAnimationFrame(() => step()); };   // polled every display frame; frame callbacks don't fire for a video that is not showing
     queue();
-  }, [arrive, paint]);
+  }, [arrive, paint, startRev]);
 
   const cutRef = useRef(() => {});
   const cut = useCallback((k) => {
@@ -129,15 +148,23 @@ export default function StoryPlayer({ onCta }) {
   cutRef.current = cut;
 
   // first load: rest on the opening stop (or the last one if the page was restored part way down)
+  const booted = ready && !!tl;
   useEffect(() => {
-    if (!ready || s.current.stage !== -1) return;
+    if (!booted || s.current.stage !== -1) return;
     cut(window.scrollY > 80 ? s.current.tl.rests.length - 1 : 0);
-  }, [ready, cut]);
+  }, [booted, cut]);
+
+  // once the forward video is fully buffered, fetch the reverse copy in the background
+  const onForwardProgress = (e) => {
+    const v = e.currentTarget, b = v.buffered;
+    if (v.duration && b.length && b.end(b.length - 1) >= v.duration - 0.3) startRev();
+  };
 
   // input: wheel, touch and keys drive the story while the page is at the top
   useEffect(() => {
     const st = s.current;
     const act = (d, e) => {
+      if (document.documentElement.classList.contains('menu-open')) return true;   // the mobile menu is open: it owns the screen
       if (!st.tl || window.scrollY > 2) return false;
       if (performance.now() - st.awayAt < 600) { e && e.cancelable && e.preventDefault(); return true; }
       const last = st.tl.rests.length - 1;
@@ -152,14 +179,18 @@ export default function StoryPlayer({ onCta }) {
     };
     const onScroll = () => { if (window.scrollY > 2) st.awayAt = performance.now(); };
     const onWheel = (e) => { if (Math.abs(e.deltaY) > 3) act(Math.sign(e.deltaY), e); };
-    let y0 = 0, fired = false;
+    let y0 = 0, fired = false, unlocked = false, pending = 0;
     const onTs = (e) => { y0 = e.touches[0].clientY; fired = false; };
     const onTm = (e) => {
       const dy = y0 - e.touches[0].clientY;
       if (!st.tl || window.scrollY > 2 || Math.abs(dy) < 4) return;
       const d = Math.sign(dy);
       if (fired) { if (e.cancelable && !(d > 0 && st.stage === st.tl.rests.length - 1 && !st.playing)) e.preventDefault(); return; }
-      if (Math.abs(dy) > 28) { if (act(d, e)) fired = true; }
+      if (Math.abs(dy) > 28) {
+        // before the first real tap the browser may refuse play(): hold the first swipe until the finger lifts, which counts as a gesture
+        if (!unlocked && !(d > 0 && st.stage === st.tl.rests.length - 1 && !st.playing)) { pending = d; fired = true; if (e.cancelable) e.preventDefault(); }
+        else if (act(d, e)) fired = true;
+      }
       else if (e.cancelable && !(d > 0 && st.stage === st.tl.rests.length - 1 && !st.playing)) e.preventDefault();
     };
     const onKey = (e) => {
@@ -167,6 +198,14 @@ export default function StoryPlayer({ onCta }) {
       if (['ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) act(1, e);
       else if (['ArrowUp', 'PageUp'].includes(e.key)) act(-1, e);
     };
+    // iOS / low-power mode only allow play() after a real gesture, and a touchmove isn't one: prime both videos on the first tap
+    const unlock = () => {
+      unlocked = true;
+      if (pending) { const d = pending; pending = 0; act(d); }
+      [video.current, vrev.current].forEach((v) => { if (v && v.paused) { const p = v.play(); if (p && p.then) p.then(() => { if (!st.playing) v.pause(); }).catch(() => {}); } });
+      window.removeEventListener('touchend', unlock);
+    };
+    window.addEventListener('touchend', unlock, { passive: true });
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('touchstart', onTs, { passive: true });
     window.addEventListener('touchmove', onTm, { passive: false });
@@ -174,7 +213,7 @@ export default function StoryPlayer({ onCta }) {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('wheel', onWheel); window.removeEventListener('touchstart', onTs);
-      window.removeEventListener('touchmove', onTm); window.removeEventListener('keydown', onKey); window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('touchmove', onTm); window.removeEventListener('touchend', unlock); window.removeEventListener('keydown', onKey); window.removeEventListener('scroll', onScroll);
     };
   }, [play, cut]);
 
@@ -190,32 +229,34 @@ export default function StoryPlayer({ onCta }) {
   const shown = ui.playing ? -2 : ui.stage;
 
   return (
-    <section className={`story ${narrow ? 'is-narrow' : ''}`} id="story" ref={root} aria-label="How Jeemu plays">
+    <section className={`story ${narrow ? 'is-narrow' : ''} ${ui.stage >= last && !ui.playing ? 'is-done' : ''}`} id="story" ref={root} aria-label="How Jeemu plays">
+      {/* everything the pixel screen says is drawn, so say it in text too */}
+      <h1 className="sr-only">Jeemu, a tower game that starts the conversation</h1>
+      <p className="sr-only">{INTRO_CARD.text} Pull a block from the tower, tap it on the base, and the screen asks you a question. {SCREEN_CARDS.map((c) => c.text).join(' ')}</p>
       <div className="story-view" ref={view} style={tl ? { width: tl.width, height: tl.height } : undefined}>
         <div className="story-videos">
+        {/* the first frame is on screen as soon as the page is, while the video downloads behind it */}
+        {tl && <img className="story-poster" src={`${dir}poster.jpg`} alt="" aria-hidden="true" />}
         {src && (
           <video
             ref={video} className={`story-video ${act === 'f' ? '' : 'hide'}`} src={src} poster={`${dir}poster.jpg`} muted playsInline preload="auto" aria-hidden="true"
-            onLoadedData={() => { setReady(true); s.current.revLoader && s.current.revLoader(); }} onSeeked={(e) => paint(e.currentTarget.currentTime * (s.current.tl?.fps || 30))}
+            onLoadedData={() => setReady(true)} onProgress={onForwardProgress} onSeeked={(e) => paint(e.currentTarget.currentTime * (s.current.tl?.fps || 30))}
           />
         )}
         {srcRev && <video ref={vrev} className={`story-video ${act === 'r' ? '' : 'hide'}`} src={srcRev} muted playsInline preload="auto" aria-hidden="true" />}
         </div>
-        <div className={`story-screen ${mode !== 'off' ? 'on' : ''}`} ref={screenEl} aria-hidden="true">
+        <div className={`story-screen ${mode !== 'off' && booted ? 'on' : ''}`} ref={screenEl} aria-hidden="true">
           <GameScreen card={mode === 'intro' ? INTRO_CARD : SCREEN_CARDS[cardIdx]} onCta={onCta} />
         </div>
       </div>
       <div className="story-fx" aria-hidden="true" />
 
-      {!ready && (
+      {!booted && (
         <div className="story-loading" role="status">
           <img src={`${BASE}story/frog-pixel.png`} alt="" className="px-frog" />
           <div className="px-label">LOADING</div>
           <div className="px-bar"><span /></div>
         </div>
-      )}
-      {needTap && (
-        <button className="story-tap btn-pixel" onClick={() => { setNeedTap(false); s.current.playing = false; play(s.current.stage + 1 < 0 ? 0 : s.current.stage + 1); }}>TAP TO PLAY</button>
       )}
 
       {ui.stage >= last && !ui.playing && <button className="sr-only" onClick={onCta}>Join the waitlist</button>}
@@ -226,7 +267,7 @@ export default function StoryPlayer({ onCta }) {
         ) : null))}
       </nav>
 
-      <div className={`story-hint ${!ui.playing && ready ? 'show' : ''}`} aria-hidden="true">
+      <div className={`story-hint ${!ui.playing && booted ? 'show' : ''}`} aria-hidden="true">
         <span>{ui.stage >= last ? 'MORE BELOW' : ui.stage === 0 ? 'SCROLL TO PLAY' : 'SCROLL'}</span><i />
       </div>
     </section>
