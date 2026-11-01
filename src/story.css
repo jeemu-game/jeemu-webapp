@@ -35,6 +35,7 @@
 
 /* ------------------------------ story ------------------------------ */
 .story { position: relative; height: 100vh; height: 100svh; overflow: hidden; background: #0a0e0c; touch-action: none; }
+.story.is-done { touch-action: pan-y; }   /* last stop: hand the swipe back to the page so it can scroll on */
 .story-view { position: absolute; left: 50%; top: 50%; transform-origin: center; will-change: transform; }
 .story-videos { position: absolute; inset: 0; }
 .story-video { position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; background: #0a0e0c; }
@@ -139,6 +140,7 @@
 
 /* position: sticky needs the viewport (not <body>) to be the scroll container */
 html, body { overflow-x: clip; }
+@media (pointer: coarse) { html, body { overscroll-behavior-y: none; } }   /* touch only: no pull-to-refresh bounce over the story */
 
 
 .wl-offer small { grid-column: 1 / -1; }
@@ -222,3 +224,9 @@ html, body { overflow-x: clip; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
 .footer-links a { font-family: var(--px-font); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; }
 .footer-links a:hover { color: var(--jade-primary); }
+
+/* phones fit the whole frame, so feather its edges into the page backdrop instead of showing a hard border */
+.story.is-narrow .story-videos {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(180deg, transparent, #000 5%, #000 95%, transparent);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(180deg, transparent, #000 5%, #000 95%, transparent); mask-composite: intersect;
+}
