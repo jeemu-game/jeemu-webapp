@@ -30,6 +30,7 @@ export default function StoryPlayer({ onCta }) {
   // windows that are taller than they are wide (phones, narrow panes) get the portrait render
   const dir = useRef(window.innerWidth / window.innerHeight < 0.75 ? `${BASE}story/mobile/` : `${BASE}story/`).current;
   const [narrow, setNarrow] = useState(() => window.innerWidth / window.innerHeight < 1.1 || window.innerWidth < 760);
+  const [feather, setFeather] = useState(false);   // the video does not fill the window, so its edges fade into the page backdrop
   const root = useRef(null), view = useRef(null), video = useRef(null), vrev = useRef(null), screenEl = useRef(null);
   const s = useRef({ tl: null, stage: -1, playing: false, queued: false, cooldown: 0, awayAt: 0, mode: 'intro', raf: 0, toCta: false });
   const [tl, setTl] = useState(null);
@@ -81,10 +82,14 @@ export default function StoryPlayer({ onCta }) {
       if (!el || !v) return;
       const cw = el.clientWidth, ch = el.clientHeight;
       setNarrow(cw / ch < 1.1 || cw < 760);
-      const isNarrow = cw / ch < 1.1 || cw < 760;
-      // landscape: cover, so things enter and leave at the window's own edges. Phones: cover is too tight (the screen
-      // close-up fills the whole width and the tower is cut off), so fit the whole frame (with a little air) and let the dark backdrop fill the rest.
-      const sc = isNarrow ? Math.min(cw / tl.width, ch / tl.height) * 0.92 : Math.max(cw / tl.width, ch / tl.height);
+      // Wide render: cover the window, so things enter and leave at the window's own edges. In a narrow window (half-screen
+      // browser, tablet, small laptop pane) cover zooms in so far that the screen close-up is cut off at the sides, so zoom only
+      // as far as keeps the whole screen visible; the dark backdrop fills any gap. Portrait (phone) render: show the whole frame
+      // with a little air. (Applying the phone rule to every narrow window once shrank the wide render into a small band.)
+      const cover = Math.max(cw / tl.width, ch / tl.height), contain = Math.min(cw / tl.width, ch / tl.height);
+      const screenW = (tl.screen[0][1][0] - tl.screen[0][0][0]) * 1.08;   // the close-up screen's width in the render, plus a margin
+      const sc = tl.height > tl.width ? contain * 0.92 : Math.max(contain, Math.min(cover, cw / screenW));
+      setFeather(sc * tl.width < cw - 1 || sc * tl.height < ch - 1);
       v.style.transform = `translate(-50%, -50%) scale(${sc})`;
     };
     fit();
@@ -258,7 +263,7 @@ export default function StoryPlayer({ onCta }) {
   const shown = ui.playing ? -2 : ui.stage;
 
   return (
-    <section className={`story ${narrow ? 'is-narrow' : ''} ${ui.stage >= last && !ui.playing ? 'is-done' : ''} ${staticMode ? 'is-static' : ''}`} id="story" ref={root} aria-label="How Jeemu plays">
+    <section className={`story ${narrow ? 'is-narrow' : ''} ${ui.stage >= last && !ui.playing ? 'is-done' : ''} ${staticMode ? 'is-static' : ''} ${feather ? 'is-feather' : ''}`} id="story" ref={root} aria-label="How Jeemu plays">
       {/* everything the pixel screen says is drawn, so say it in text too */}
       <h1 className="sr-only">Jeemu, a tower game that starts the conversation</h1>
       <p className="sr-only">{INTRO_CARD.text} Pull a block from the tower, tap it on the base, and the screen asks you a question. {SCREEN_CARDS.map((c) => c.text).join(' ')}</p>

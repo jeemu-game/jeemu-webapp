@@ -226,7 +226,7 @@ html, body { overflow-x: clip; }
 .footer-links a:hover { color: var(--jade-primary); }
 
 /* phones fit the whole frame, so feather its edges into the page backdrop instead of showing a hard border */
-.story.is-narrow .story-videos {
+.story.is-feather .story-videos {
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(180deg, transparent, #000 5%, #000 95%, transparent);
   -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(180deg, transparent, #000 5%, #000 95%, transparent); mask-composite: intersect;
 }
