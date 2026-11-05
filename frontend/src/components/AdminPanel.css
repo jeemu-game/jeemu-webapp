@@ -178,7 +178,7 @@
 
 .admin-input:focus {
   border-color: var(--jade-primary, #00d97e);
-  box-shadow: 0 0 0 2px rgba(0, 217, 126, 0.2);
+  box-shadow: 0 0 0 2px rgba(var(--accent-blush-rgb), 0.2);
 }
 
 .admin-error-box {

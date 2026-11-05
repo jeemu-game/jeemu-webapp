@@ -3,7 +3,7 @@ REM Final render on a Windows GPU PC. Resumable: Ctrl+C, then run the same comma
 REM   1. Blender 4.2+ (tested on 5.2) and Python with:  pip install pillow numpy imageio-ffmpeg
 REM   2. If blender is not on PATH:  set BLENDER=C:\Program Files\Blender Foundation\Blender 5.2\blender.exe   (no quotes)
 REM   3. Run:  scripts\blender\render_sequence.bat C:\path\to\jeemu-designs [out_dir] [width] [samples]
-REM      Renders EVERY frame (396 desktop + 396 phone), then encodes the story videos into public\story.
+REM      Renders EVERY frame (396 desktop + 396 phone), then encodes the story videos into frontend\public\story.
 REM      Use a NEW out_dir each time the camera/timeline changes (old frames are not re-rendered).
 setlocal
 if "%~1"=="" (echo usage: render_sequence.bat ^<path to jeemu-designs^> [out_dir] [width] [samples] & exit /b 1)
@@ -25,6 +25,6 @@ echo === desktop (%W%x%H%, %SAMPLES% samples, all frames) ===
 "%BLENDER%" -b -P "%~dp0build_scene.py" -- --designs "%DESIGNS%" --frames all --out "%OUT%" --width %W% --height %H% --samples %SAMPLES% --gpu --screen-png "%OUT%\screen.png" || exit /b 1
 echo === phone (1080x1920) ===
 "%BLENDER%" -b -P "%~dp0build_scene.py" -- --designs "%DESIGNS%" --portrait --frames all --out "%OUT%\portrait" --width 1080 --height 1920 --samples %SAMPLES% --gpu --screen-png "%OUT%\screen.png" || exit /b 1
-python "%~dp0encode_story_video.py" "%OUT%" "%~dp0..\..\public\story" --width 1920 || exit /b 1
-python "%~dp0encode_story_video.py" "%OUT%\portrait" "%~dp0..\..\public\story\mobile" --width 1080 || exit /b 1
-echo Done. Copy public\story to frontend\public\story (npm run sync:frontend), commit and push.
+python "%~dp0encode_story_video.py" "%OUT%" "%~dp0..\..\frontend\public\story" --width 1920 || exit /b 1
+python "%~dp0encode_story_video.py" "%OUT%\portrait" "%~dp0..\..\frontend\public\story\mobile" --width 1080 || exit /b 1
+echo Done. Output is in frontend\public\story; commit and push.

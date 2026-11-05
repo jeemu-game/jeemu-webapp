@@ -15,8 +15,7 @@
     "test:api": "uv run pytest backend/tests -v",
     "test:e2e": "node tests/e2e.test.js",
     "test:emails": "node tests/email_and_sheets.test.js && node tests/api_integration.test.js",
-    "test": "npm run test:api",
-    "sync:frontend": "node scripts/sync-frontend.mjs"
+    "test": "npm run test:api"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.1",

@@ -21,14 +21,14 @@ Defaults: 1920 px wide, 64 samples, every 3rd frame -> 140 desktop + 140 phone (
 The run is resumable: stop it with Ctrl+C and run the same command again; finished frames are skipped. Use a fresh out folder if you change the width.
 Use Blender 4.2+ (tested on 5.2). The log prints `Rendering on OPTIX/CUDA/HIP...`; if it says it fell back to CPU, the GPU drivers are not visible to Blender.
 Smoother scrub: render more frames into the SAME out folder (`... out 1920 64 1` renders all 420; finished frames are skipped). The web export keeps an even spread of at most 210 frames per set (`--max-frames`) so downloads stay reasonable (~25 MB desktop, ~13 MB phone, streamed coarse-to-fine).
-Output: transparent WebP frames + `manifest.json` in `public/story/` and `public/story/mobile/`. The page picks the phone set automatically on tall screens.
+Output: transparent WebP frames + `manifest.json` in `frontend/public/story/` and `frontend/public/story/mobile/`. The page picks the phone set automatically on tall screens.
 
 ## Stacking
 The tower is deliberately imperfect (twist per layer, slight lean, uneven gaps, blocks shifted along their length, the odd one left sticking out). `--sloppiness 0` gives a machine-perfect tower, `1` (default) a careful human, `2` a rushed one. Every block carries "Jeemu" on both long sides.
 
 ## Timeline
 fall 0-3.7s -> hero -5.4s -> pull -8s -> carry to the +X wall badge -9.3s -> tap + jade glow -10s -> dolly into the screen -12.6s -> hold -14s.
-Beat copy and progress ranges live in `src/components/story/storyBeats.js` (progress = seconds / 14).
+Beat copy and progress ranges live in `frontend/src/components/story/storyBeats.js` (progress = seconds / 14).
 
 ## Materials
 - Wood: solid 3D beech (growth rings from a virtual log, fibres, per-block hue and mineral streaks, edge wear, scratches, dings).
