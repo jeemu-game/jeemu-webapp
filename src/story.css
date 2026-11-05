@@ -51,7 +51,7 @@
 }
 .story-screen.on { visibility: visible; }
 .story-screen::after { content: ''; position: absolute; inset: 0; mix-blend-mode: screen; background: linear-gradient(115deg, rgba(255, 255, 255, 0.10) 0%, transparent 38%, transparent 70%, rgba(255, 255, 255, 0.04) 100%); }
-.gs { position: relative; width: 320px; height: 240px; font-family: var(--px-font); color: var(--text-main); image-rendering: pixelated; }
+.gs { position: relative; width: 320px; height: 240px; font-family: var(--screen-font); color: var(--text-main); image-rendering: pixelated; }
 .gs-bar { display: flex; justify-content: space-between; height: 24px; align-items: center; padding: 0 10px; background: #04080a; font-size: 10px; letter-spacing: 0.12em; }
 .gs-jade { color: var(--jade-primary); }
 .gs-body { position: absolute; left: 16px; right: 16px; top: 36px; bottom: 40px; display: flex; align-items: center; }
@@ -152,7 +152,11 @@ html, body { overflow-x: clip; }
 
 
 /* ------------------------------ retro pass over the rest of the page ------------------------------ */
-:root { --font-display: 'Pixelify Sans', 'Silkscreen', monospace; --font-serif: var(--font-display); }
+/* Fonts: Bagel Fat One for headings (from the brand guide; self-hosted, a 22 KB Latin subset of the brand file), Pixelify Sans
+   for text drawn on the Jeemu screen. The pixel UI font (--px-font, Silkscreen) stays on buttons, labels and navigation.
+   To change the heading or screen font, change these two variables. */
+@font-face { font-family: 'Bagel Fat One'; src: url('/brand/BagelFatOne-Latin.woff2') format('woff2'); font-weight: 100 900; font-style: normal; font-display: swap; }
+:root { --font-display: 'Bagel Fat One', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif; --font-serif: var(--font-display); --screen-font: 'Pixelify Sans', 'Silkscreen', monospace; }
 .nb { position: fixed; left: 0; right: 0; top: 0; }
 .section-title, .wl-copy h2, .timeline-title, .team-member-name, .faq-trigger span { font-family: var(--font-display); font-weight: 600; letter-spacing: 0; }
 .section-title, .wl-copy h2 { font-size: clamp(2rem, 4.2vw, 3.3rem); line-height: 1.05; }
@@ -202,7 +206,7 @@ html, body { overflow-x: clip; }
 @media (max-width: 520px) { .hiw-steps, .hiw-facts { grid-template-columns: 1fr; } }
 
 /* ------------------------------ waitlist confirmation: the base's screen ------------------------------ */
-.wl-screen { background: #060a08; border: 2px solid rgba(0, 217, 126, 0.4); text-align: left; font-family: var(--px-font); padding: 0 0 14px; margin-bottom: 4px; }
+.wl-screen { background: #060a08; border: 2px solid rgba(0, 217, 126, 0.4); text-align: left; font-family: var(--screen-font); padding: 0 0 14px; margin-bottom: 4px; }
 .wl-screen .gs-bar { display: flex; justify-content: space-between; align-items: center; height: 30px; padding: 0 12px; background: #04080a; font-size: 0.66rem; letter-spacing: 0.12em; }
 .wl-screen .px-frog { height: 18px; margin: 0; }
 .wl-screen p { margin: 14px 14px 0; font-size: 0.95rem; letter-spacing: 0.06em; color: var(--text-main); overflow: hidden; white-space: nowrap; width: 0; animation: wltype 1s steps(26) forwards; }
