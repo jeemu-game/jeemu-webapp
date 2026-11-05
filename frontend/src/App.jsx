@@ -43,7 +43,20 @@ export default function App() {
 
   useEffect(() => { track('page_view', { w: window.innerWidth, h: window.innerHeight }, { once: true }); }, []);
 
-  const toWaitlist = (where = 'unknown') => { track('cta_click', { where }); document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' }); };
+  const toWaitlist = (where = 'unknown') => {
+    track('cta_click', { where });
+    document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
+    window.history.replaceState(null, '', '#waitlist');   // like the footer link: the address shows where you are
+  };
+
+  // the team page is not for search engines
+  useEffect(() => {
+    if (!isAdminView) return undefined;
+    const meta = document.createElement('meta');
+    meta.name = 'robots'; meta.content = 'noindex, nofollow';
+    document.head.appendChild(meta);
+    return () => meta.remove();
+  }, [isAdminView]);
 
   if (isAdminView) {
     return (

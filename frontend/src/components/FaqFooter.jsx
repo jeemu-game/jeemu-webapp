@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { SOCIAL_LINKS } from '../data/socials';
 
 const FAQS = [
   { q: 'What is Jeemu?', a: 'A tower game where every wooden block carries a hidden NFC chip. Pull a block, tap it on the base, and the screen shows the prompt for that block in the game you picked.' },
@@ -38,8 +39,12 @@ export default function FaqFooter() {
             <a href="#journey">Our story</a>
             <a href="#team">Team</a>
             <a href="#faq">FAQ</a>
-            <a href="/admin" style={{ fontSize: '0.85em' }}>Team Portal</a>
           </nav>
+          {SOCIAL_LINKS.length > 0 && (
+            <nav className="footer-links" aria-label="Social media">
+              {SOCIAL_LINKS.map((s) => <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>)}
+            </nav>
+          )}
           <p className="footer-legal">
             © {new Date().getFullYear()} Jeemu. Made in Shanghai. Jeemu is an independent game and is not affiliated with Kickstarter. Launch date and pricing may change before the campaign goes live.
           </p>
