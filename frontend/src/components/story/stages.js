@@ -18,5 +18,5 @@ export const INTRO_CARD = { tag: 'JEEMU', text: 'We help people achieve deeper c
 // Shown one after another from the moment the block taps the base. The last one stays.
 export const SCREEN_CARDS = [
   { tag: 'QUESTION 07', text: "What's the worst way you've ever started a conversation?", foot: 'TAP THE NEXT BLOCK' },
-  { tag: 'KICKSTARTER / NOVEMBER', text: 'Early bird $89.99 USD.', cta: 'JOIN THE WAITLIST' }
+  { tag: 'KICKSTARTER / 24 NOV', text: 'Early bird $89.99 USD.', cta: 'JOIN THE WAITLIST' }
 ];

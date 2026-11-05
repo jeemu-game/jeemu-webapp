@@ -25,7 +25,7 @@ bg.paste(frog, (60, 56), frog); d.text((60 + frog.width + 18, 74), 'JEEMU', font
 lines = ['We help people achieve', 'deeper connections without', 'the awkwardness of starting', 'the conversation.']
 for n, line in enumerate(lines):
     d.text((60, 190 + n * 56), line, font=font(40), fill=(255, 255, 255))
-d.text((60, 470), 'Launching on Kickstarter in November', font=font(26, False), fill=(142, 168, 154))
+d.text((60, 470), 'Launching on Kickstarter 24 November', font=font(26, False), fill=(142, 168, 154))
 d.text((60, 512), 'Early bird $89.99 USD', font=font(26), fill=(0, 217, 126))
 bg.save(os.path.join(root, 'public/og-image.jpg'), quality=90)
 print('wrote public/og-image.jpg from frame', hero)

@@ -189,7 +189,7 @@ class SmtpEmailAdapter:
         )
         text = f"""You're on the Jeemu waitlist{", " + subscriber["name"] if subscriber.get("name") else ""}.
 
-Jeemu launches on Kickstarter in November. Early-bird price: $89.99 USD. Early-bird backers also get a premium Jeemu bag.
+Jeemu launches on Kickstarter on 24 November. Early-bird price: $89.99 USD. Early-bird backers also get a premium Jeemu bag.
 We'll email you before the campaign opens.
 
 Share your link: {settings.SITE_URL}/?ref={subscriber.get("referralCode")}
@@ -259,7 +259,7 @@ Unsubscribe: {unsub_url}
 Thank you{", " + subscriber["name"] if subscriber.get("name") else ""}.
 Amount: ${amount:.2f} USD
 Reference: {charge_id}
-We launch on Kickstarter in November. Questions about your deposit? Just reply to this email.
+We launch on Kickstarter on 24 November. Questions about your deposit? Just reply to this email.
 
 Unsubscribe: {unsub_url}
 """

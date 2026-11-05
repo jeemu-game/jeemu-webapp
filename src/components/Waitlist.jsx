@@ -64,7 +64,7 @@ export default function Waitlist() {
       <div className="wl-inner">
         <div className="wl-copy">
           <div className="px-label">WAITLIST</div>
-          <h2>Launching on Kickstarter in November.</h2>
+          <h2>Launching on Kickstarter on 24 November.</h2>
           <p>Join the waitlist and you will hear first, before the campaign opens to everyone.</p>
           <ul className="wl-offer">
             <li><span className="px-label">EARLY BIRD</span><strong>$89.99</strong><small>USD</small></li>
