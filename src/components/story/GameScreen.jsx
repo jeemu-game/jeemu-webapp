@@ -20,7 +20,7 @@ export default function GameScreen({ card, onCta }) {
   return (
     <div className="gs">
       <div className="gs-bar">
-        <span className="gs-jade">{card?.tag}</span>
+        <span className="gs-accent">{card?.tag}</span>
         <span>JEEMU</span>
       </div>
       <div className="gs-body">

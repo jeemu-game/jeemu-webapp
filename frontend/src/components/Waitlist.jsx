@@ -48,7 +48,7 @@ export default function Waitlist() {
       if (!res.ok || data.error) throw new Error(data.error || 'Could not join the waitlist. Please try again.');
       setDone(data.subscriber || {});
       track('waitlist_joined');
-      try { confetti({ particleCount: 70, spread: 70, origin: { y: 0.75 }, shapes: ['square'], scalar: 0.8, colors: ['#00d97e', '#e2ede5', '#1ae88d', '#8ea89a'] }); } catch (_) {}
+      try { confetti({ particleCount: 70, spread: 70, origin: { y: 0.75 }, shapes: ['square'], scalar: 0.8, colors: ['#f4a6bd', '#e2ede5', '#ffc2d4', '#8ea89a'] }); } catch (_) {}
     } catch (err) {
       setError(err.message || 'Network error. Please try again.');
     } finally {
@@ -78,7 +78,7 @@ export default function Waitlist() {
           {done ? (
             <div className="wl-done" role="status">
               <div className="wl-screen">
-                <div className="gs-bar"><span className="gs-jade">BLOCK READ</span><img src={`${import.meta.env.BASE_URL}story/frog-pixel.png`} alt="" className="px-frog" /></div>
+                <div className="gs-bar"><span className="gs-accent">BLOCK READ</span><img src={`${import.meta.env.BASE_URL}story/frog-pixel.png`} alt="" className="px-frog" /></div>
                 <p className="l1">YOU'RE ON THE LIST.</p>
                 <p className="l2">WE'LL EMAIL YOU BEFORE LAUNCH.</p>
                 <p className="l3">PASS IT ON:</p>

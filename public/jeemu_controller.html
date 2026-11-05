@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="canonical" href="https://connect.jeemu.fun/">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2300e599'/%3E%3Cpath d='M32 14c-4 5.5-3 9.5-6 12.5-2.5 2.5-5 5.5-5 9.5 0 6.08 4.92 11 11 11s11-4.92 11-11c0-4-3-7.5-6-10.5-0-3.5-2-7-5-11.5z' fill='%230b0e0d'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f4a6bd'/%3E%3Cpath d='M32 14c-4 5.5-3 9.5-6 12.5-2.5 2.5-5 5.5-5 9.5 0 6.08 4.92 11 11 11s11-4.92 11-11c0-4-3-7.5-6-10.5-0-3.5-2-7-5-11.5z' fill='%230b0e0d'/%3E%3C/svg%3E">
   <meta property="og:type" content="website">
   <meta property="og:title" content="JEEMU Companion // connect.jeemu.fun">
   <meta property="og:description" content="Connect to your JEEMU Tower over Web Bluetooth. Remote tap, live game telemetry, and custom preset builder.">
@@ -20,8 +20,8 @@
       --bg-surface: #141A17;
       --bg-card: #1C2420;
       --border-subtle: #2A3630;
-      --border-focus: #00E599;
-      --accent-jade: #00E599;
+      --border-focus: #f4a6bd;
+      --accent: #f4a6bd;
       --accent-cyan: #00D8F6;
       --accent-amber: #FFB300;
       --accent-red: #FF3B30;
@@ -73,7 +73,7 @@
     .brand-logo {
       width: 28px;
       height: 28px;
-      background: var(--accent-jade);
+      background: var(--accent);
       border-radius: 6px;
       display: flex;
       align-items: center;
@@ -93,7 +93,7 @@
 
     .brand-subtitle {
       font-size: 10px;
-      color: var(--accent-jade);
+      color: var(--accent);
       letter-spacing: 1.5px;
       text-transform: uppercase;
       font-weight: 700;
@@ -115,9 +115,9 @@
     }
 
     .ble-btn.connected {
-      border-color: var(--accent-jade);
+      border-color: var(--accent);
       background: rgba(0, 229, 153, 0.12);
-      color: var(--accent-jade);
+      color: var(--accent);
     }
 
     .status-dot {
@@ -128,8 +128,8 @@
     }
 
     .status-dot.active {
-      background: var(--accent-jade);
-      box-shadow: 0 0 8px var(--accent-jade);
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
     }
 
     /* Tabs Navigation */
@@ -155,8 +155,8 @@
     }
 
     .tab-btn.active {
-      color: var(--accent-jade);
-      border-bottom-color: var(--accent-jade);
+      color: var(--accent);
+      border-bottom-color: var(--accent);
     }
 
     /* Main Container */
@@ -256,7 +256,7 @@
       font-weight: 800;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      background: var(--accent-jade);
+      background: var(--accent);
       color: var(--bg-base);
     }
 
@@ -295,7 +295,7 @@
 
     .timer-fill {
       height: 100%;
-      background: var(--accent-jade);
+      background: var(--accent);
       width: 100%;
       transition: width 0.3s linear, background-color 0.3s ease;
     }
@@ -329,8 +329,8 @@
     }
 
     .sk-btn.primary {
-      border-color: var(--accent-jade);
-      color: var(--accent-jade);
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     .sk-btn.danger {
@@ -365,7 +365,7 @@
     }
 
     input:focus, select:focus, textarea:focus {
-      border-color: var(--accent-jade);
+      border-color: var(--accent);
     }
 
     .btn {
@@ -383,7 +383,7 @@
     }
 
     .btn-primary {
-      background: var(--accent-jade);
+      background: var(--accent);
       color: var(--bg-base);
     }
 
@@ -464,7 +464,7 @@
 
     .preset-badge.custom {
       background: rgba(0, 229, 153, 0.15);
-      color: var(--accent-jade);
+      color: var(--accent);
     }
 
     /* Progress Overlay */
@@ -505,7 +505,7 @@
     .alert-banner.success {
       display: flex;
       background: rgba(0, 229, 153, 0.15);
-      border: 1px solid #00E599;
+      border: 1px solid #f4a6bd;
       color: #9CFFDA;
     }
     .scan-settings {
@@ -609,7 +609,7 @@
     <!-- TAB 2: PRESET CREATOR -->
     <div id="customTab" class="tab-content">
       <div class="card-display">
-        <h3 style="color: var(--accent-jade);">Create Custom Game Preset</h3>
+        <h3 style="color: var(--accent);">Create Custom Game Preset</h3>
         <p style="font-size: 13px; color: var(--text-muted);">
           Create a personalized game mode with custom questions, rules, and collapse forfeits.
         </p>
@@ -993,7 +993,7 @@
         div.className = "challenge-item";
         div.innerHTML = `
           <div class="challenge-item-header">
-            <span style="font-size: 12px; font-weight: 700; color: var(--accent-jade);">#${idx + 1}</span>
+            <span style="font-size: 12px; font-weight: 700; color: var(--accent);">#${idx + 1}</span>
             <button class="remove-btn" onclick="removeChallengeItem(${idx})">✕</button>
           </div>
           <input type="text" placeholder="Challenge text" value="${item.text}" onchange="customChallenges[${idx}].text = this.value">

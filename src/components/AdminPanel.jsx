@@ -457,7 +457,7 @@ export default function AdminPanel({ onBackToSite }) {
                         <td style={{ color: 'var(--text-white)' }}>{s.name || 'Backer'}</td>
                         <td>{s.email}</td>
                         <td>
-                          <span style={{ color: 'var(--jade-primary)', fontWeight: 600 }}>
+                          <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>
                             {s.referralCode || '—'}
                           </span>
                         </td>
