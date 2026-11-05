@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 root = os.path.join(os.path.dirname(__file__), '..')
 tl = json.load(open(os.path.join(root, 'public/story/timeline.json')))
 hero = 132 if len(tl['rests']) < 3 else tl['rests'][0]
-src = os.path.join(root, 'public/story/story.webm')
+src = os.path.join(root, 'public/story/story-v2.webm')
 tmp = os.path.join(tempfile.mkdtemp(), 'f.png')
 subprocess.check_call(['ffmpeg', '-loglevel', 'error', '-i', src, '-vf', f'select=eq(n\\,{hero})', '-frames:v', '1', tmp])
 fr = Image.open(tmp).convert('RGB')

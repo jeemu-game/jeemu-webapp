@@ -131,6 +131,7 @@
 .wl-done h3 { font-size: 1.7rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
 .wl-done p { color: var(--text-muted); line-height: 1.55; }
 .wl-share { display: flex; gap: 10px; margin-top: 18px; }
+.wl-share .btn-pixel { width: auto; flex: none; }
 .wl-share input { flex: 1; min-width: 0; padding: 10px 12px; background: #060a08; border: 2px solid rgba(175, 215, 185, 0.22); color: var(--text-main); font-family: var(--font-mono); font-size: 0.78rem; }
 @media (max-width: 860px) { .wl-inner { grid-template-columns: 1fr; } }
 
@@ -152,11 +153,9 @@ html, body { overflow-x: clip; }
 
 
 /* ------------------------------ retro pass over the rest of the page ------------------------------ */
-/* Fonts: Bagel Fat One for headings (from the brand guide; self-hosted, a 22 KB Latin subset of the brand file), Pixelify Sans
-   for text drawn on the Jeemu screen. The pixel UI font (--px-font, Silkscreen) stays on buttons, labels and navigation.
-   To change the heading or screen font, change these two variables. */
-@font-face { font-family: 'Bagel Fat One'; src: url('/brand/BagelFatOne-Latin.woff2') format('woff2'); font-weight: 100 900; font-style: normal; font-display: swap; }
-:root { --font-display: 'Bagel Fat One', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif; --font-serif: var(--font-display); --screen-font: 'Pixelify Sans', 'Silkscreen', monospace; }
+/* Fonts: Outfit for headings (marketing's choice, loaded from Google Fonts in index.html), Pixelify Sans for text drawn on the Jeemu screen. Nav, buttons and labels keep Silkscreen.
+   Change the two variables below to swap fonts. */
+:root { --font-display: 'Outfit', 'Plus Jakarta Sans', 'Trebuchet MS', sans-serif; --font-serif: var(--font-display); --screen-font: 'Pixelify Sans', 'Silkscreen', monospace; }
 .nb { position: fixed; left: 0; right: 0; top: 0; }
 .section-title, .wl-copy h2, .timeline-title, .team-member-name, .faq-trigger span { font-family: var(--font-display); font-weight: 600; letter-spacing: 0; }
 .section-title, .wl-copy h2 { font-size: clamp(2rem, 4.2vw, 3.3rem); line-height: 1.05; }

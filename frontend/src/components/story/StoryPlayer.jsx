@@ -5,6 +5,8 @@ import { STAGES, STOPS, SCREEN_CARDS, INTRO_CARD, INTRO_UNTIL } from './stages';
 import { track } from '../../analytics';
 
 const BASE = import.meta.env.BASE_URL;
+// /story/* is cached for a year (immutable). Bump this and rename the video files whenever they are re-encoded.
+const V = '-v2';
 const PREVIEW = import.meta.env.VITE_PREVIEW === 'true';
 const SCREEN_W = 320, SCREEN_H = 240;
 const CARD_MS = 3600;   // the question is up for about as long as the zoom-in takes, then the waitlist card
@@ -61,13 +63,13 @@ export default function StoryPlayer({ onCta }) {
       if (PREVIEW) fetch(dir + name).then((r) => r.blob()).then((b) => { if (!dead) set(URL.createObjectURL(b)); });   // the preview host can't serve byte ranges
       else set(dir + name);
     };
-    get(`story.${ext}`, setSrc);
+    get(`story${V}.${ext}`, setSrc);
     fetch(`${dir}timeline.json`).then((r) => r.json()).then((j) => {
       if (dead) return;
       j.rests = STOPS.filter((f) => f < j.frames);
       s.current.tl = j; setTl(j);
       if (j.reverse) {
-        s.current.revLoader = () => get(`story-rev.${ext}`, setSrcRev);
+        s.current.revLoader = () => get(`story-rev${V}.${ext}`, setSrcRev);
         if (s.current.wantRev) startRev();
       }
     }).catch(() => {});
