@@ -14,7 +14,8 @@ from PIL import Image
 ap = argparse.ArgumentParser()
 ap.add_argument('src'); ap.add_argument('out')
 ap.add_argument('--width', type=int, default=0, help='video width (default: render width)')
-ap.add_argument('--crf', type=int, default=20)
+ap.add_argument('--crf', type=int, default=27)   # 27 keeps each video near 2 MB; 20 gave ~5 MB with no visible gain on a phone
+ap.add_argument('--tag', default='', help="suffix for every output name, e.g. -v3 -> story-v3.mp4. /story/* is cached for a year, so use a new tag whenever the videos change (and bump V in StoryPlayer.jsx)")
 ap.add_argument('--no-webm', action='store_true')
 ap.add_argument('--no-reverse', action='store_true', help='skip the reversed copy the page plays when you scroll back up')
 a = ap.parse_args()
@@ -56,11 +57,11 @@ common = [ffmpeg_exe(), '-y', '-loglevel', 'error', '-stats', '-loop', '1', '-fr
           '-filter_complex', fc, '-force_key_frames', keys, '-an']
 print('encoding story.mp4 ...')
 subprocess.check_call(common + ['-c:v', 'libx264', '-preset', 'slow', '-crf', str(a.crf), '-g', '30', '-movflags', '+faststart',
-                                os.path.join(a.out, 'story.mp4')])
+                                os.path.join(a.out, f'story{a.tag}.mp4')])
 if not a.no_webm:
     print('encoding story.webm ...')
-    subprocess.check_call(common + ['-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '32', '-row-mt', '1', '-g', '30',
-                                    os.path.join(a.out, 'story.webm')])
+    subprocess.check_call(common + ['-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '34', '-row-mt', '1', '-g', '30',
+                                    os.path.join(a.out, f'story{a.tag}.webm')])
 if not a.no_reverse:
     # the same frames in reverse order (a concat list, so nothing is buffered); keyframes land on the same stops
     lst = os.path.join(a.out, 'rev.txt')
@@ -74,18 +75,18 @@ if not a.no_reverse:
                '-f', 'concat', '-safe', '0', '-i', lst, '-frames:v', str(n), '-filter_complex', rfc, '-force_key_frames', rkeys, '-an']
     print('encoding story-rev.mp4 ...')
     subprocess.check_call(rcommon + ['-c:v', 'libx264', '-preset', 'slow', '-crf', str(a.crf), '-g', '30', '-movflags', '+faststart',
-                                     os.path.join(a.out, 'story-rev.mp4')])
+                                     os.path.join(a.out, f'story-rev{a.tag}.mp4')])
     if not a.no_webm:
         print('encoding story-rev.webm ...')
-        subprocess.check_call(rcommon + ['-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '32', '-row-mt', '1', '-g', '30',
-                                         os.path.join(a.out, 'story-rev.webm')])
+        subprocess.check_call(rcommon + ['-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '34', '-row-mt', '1', '-g', '30',
+                                         os.path.join(a.out, f'story-rev{a.tag}.webm')])
     os.remove(lst)
 poster = Image.alpha_composite(Image.open(bg).convert('RGBA'), Image.open(os.path.join(a.src, '0000.png')).convert('RGBA').resize((W, H), Image.LANCZOS))
-poster.convert('RGB').save(os.path.join(a.out, 'poster.jpg'), quality=82)
+poster.convert('RGB').save(os.path.join(a.out, f'poster{a.tag}.jpg'), quality=82)
 k = W / W0
 json.dump(dict(fps=fps, width=W, height=H, frames=n, rests=rests, reverse=not a.no_reverse, tapFrame=info['tapFrame'],
                screen=[[[round(x * k, 2), round(y * k, 2)] for x, y in meta[f]] for f in range(n)]),
-          open(os.path.join(a.out, 'timeline.json'), 'w'))
+          open(os.path.join(a.out, f'timeline{a.tag}.json'), 'w'))
 os.remove(bg)
 mb = sum(os.path.getsize(os.path.join(a.out, f)) for f in os.listdir(a.out)) / 1e6
 print(f'done: {n} frames @ {fps} fps, {W}x{H}, rests {rests}, tap frame {info["tapFrame"]}, {mb:.1f} MB in {a.out}')

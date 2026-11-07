@@ -6,7 +6,7 @@ import { track } from '../../analytics';
 
 const BASE = import.meta.env.BASE_URL;
 // /story/* is cached for a year (immutable). Bump this and rename the video files whenever they are re-encoded.
-const V = '-v2';
+const V = '-v3';
 const PREVIEW = import.meta.env.VITE_PREVIEW === 'true';
 const SCREEN_W = 320, SCREEN_H = 240;
 const CARD_MS = 3600;   // the question is up for about as long as the zoom-in takes, then the waitlist card
@@ -65,7 +65,7 @@ export default function StoryPlayer({ onCta }) {
       else set(dir + name);
     };
     get(`story${V}.${ext}`, setSrc);
-    fetch(`${dir}timeline.json`).then((r) => r.json()).then((j) => {
+    fetch(`${dir}timeline${V}.json`).then((r) => r.json()).then((j) => {
       if (dead) return;
       j.rests = STOPS.filter((f) => f < j.frames);
       s.current.tl = j; setTl(j);
@@ -294,10 +294,10 @@ export default function StoryPlayer({ onCta }) {
       <div className="story-view" ref={view} style={tl ? { width: tl.width, height: tl.height } : undefined}>
         <div className="story-videos">
         {/* the first frame is on screen as soon as the page is, while the video downloads behind it */}
-        {tl && <img className="story-poster" src={`${dir}poster.jpg`} alt="" aria-hidden="true" />}
+        {tl && <img className="story-poster" src={`${dir}poster${V}.jpg`} alt="" aria-hidden="true" />}
         {src && (
           <video
-            ref={video} className={`story-video ${act === 'f' ? '' : 'hide'}`} src={src} poster={`${dir}poster.jpg`} muted playsInline preload="auto" aria-hidden="true"
+            ref={video} className={`story-video ${act === 'f' ? '' : 'hide'}`} src={src} poster={`${dir}poster${V}.jpg`} muted playsInline preload="auto" aria-hidden="true"
             onLoadedMetadata={() => setReady(true)} onLoadedData={() => setReady(true)} onCanPlay={() => setReady(true)} onError={() => setStuck(true)} onProgress={onForwardProgress} onSeeked={(e) => paint(e.currentTarget.currentTime * (s.current.tl?.fps || 30))}
           />
         )}

@@ -28,6 +28,12 @@ ap.add_argument('--portrait', action='store_true', help='9:16 phone framing: pas
 ap.add_argument('--sloppiness', type=float, default=1.0, help='0 = machine-perfect tower, 1 = stacked by a careful human, 2 = rushed')
 ap.add_argument('--save-blend', default='')
 ap.add_argument('--screen-png', default='')
+ap.add_argument('--forest', action='store_true', help='forest look: the console stands on a mossy stump (3D), cool moon + warm lantern light, the camera pulls back further at the wide stop. Render RGBA; composite_story.py puts it over the photo plate')
+ap.add_argument('--pull', type=float, default=1.5, help='--forest: how much further back the camera sits at the wide stop (1 = as before; the tower shrinks to ~1/pull)')
+ap.add_argument('--stump-h', type=float, default=0.15, help='--forest: stump height in metres (its top is where the console stands)')
+ap.add_argument('--bark', default='', help='--forest: optional seamless bark image for the stump (procedural bark if omitted)')
+ap.add_argument('--moss', default='', help='--forest: optional seamless moss image (procedural moss if omitted)')
+ap.add_argument('--numbers', action='store_true', help='engrave block numbers 1..54 on both short ends of every block')
 
 A = ap.parse_args(argv)
 
@@ -229,6 +235,114 @@ table = bpy.context.active_object; table.name = 'Table'
 table.is_shadow_catcher = True
 table.data.materials.append(mat('Table', (0.007, 0.010, 0.009), rough=0.95, coat=0.0))
 
+def build_stump(height, bark_png='', moss_png=''):
+    """A mossy tree stump whose cut top is at z = 0 (where the console stands). Procedural: no image needed."""
+    import bmesh
+    from mathutils import noise
+    R_TOP, R_BOT, SEG, RINGS = 0.165, 0.195, 112, 44
+    bm = bmesh.new(); grid = []
+    for i in range(RINGS + 1):
+        t = i / RINGS                                  # 0 = top rim, 1 = ground
+        z = -0.0008 - height * t
+        flare = 1 + 0.10 * max(0.0, t - 0.85) ** 2 / 0.0225          # roots flare out a touch at the foot
+        row = []
+        for j in range(SEG):
+            a = j / SEG * math.tau
+            nx, ny = math.cos(a) * 3.0, math.sin(a) * 3.0
+            wob = 1 + 0.04 * noise.noise(Vector((nx * 0.7, ny * 0.7, 11.0))) + 0.012 * noise.noise(Vector((nx * 2.3, ny * 2.3, 5.0 + t * 2)))
+            ridge = 0.0042 * math.sin(a * 23 + 3 * noise.noise(Vector((nx, ny, t * 4)))) + 0.0025 * noise.noise(Vector((nx * 6, ny * 6, t * 14)))
+            r = (R_TOP + (R_BOT - R_TOP) * t ** 1.4) * wob * flare + ridge
+            row.append(bm.verts.new((math.cos(a) * r, math.sin(a) * r, z)))
+        grid.append(row)
+    for i in range(RINGS):
+        for j in range(SEG):
+            bm.faces.new((grid[i][j], grid[i][(j + 1) % SEG], grid[i + 1][(j + 1) % SEG], grid[i + 1][j]))
+    # cut top: concentric rings of verts collapsing to the centre, slightly dished like a real saw cut
+    prev = grid[0]
+    for k in range(1, 7):
+        f = 1 - k / 7
+        ring = []
+        for j in range(SEG):
+            a = j / SEG * math.tau
+            rr = math.hypot(grid[0][j].co.x, grid[0][j].co.y) * f
+            ring.append(bm.verts.new((math.cos(a) * rr, math.sin(a) * rr, -0.0008 - 0.0012 * (1 - f) ** 2 + 0.0015 * noise.noise(Vector((math.cos(a) * rr * 40, math.sin(a) * rr * 40, 2.0))))))
+        for j in range(SEG): bm.faces.new((prev[j], prev[(j + 1) % SEG], ring[(j + 1) % SEG], ring[j]))
+        prev = ring
+    bm.faces.new(list(reversed(prev)))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    me = bpy.data.meshes.new('StumpMesh'); bm.to_mesh(me); bm.free()
+    ob = bpy.data.objects.new('Stump', me); sc.collection.objects.link(ob)
+    for p_ in me.polygons: p_.use_smooth = True
+    # ---- material
+    m = bpy.data.materials.new('StumpMat'); m.use_nodes = True
+    nt = m.node_tree; nt.nodes.clear(); N = nt.nodes.new; L = nt.links.new
+    def math_(op, a=None, b_=None, clamp=False):
+        n_ = N('ShaderNodeMath'); n_.operation = op; n_.use_clamp = clamp
+        for k, v in ((0, a), (1, b_)):
+            if v is None: continue
+            if isinstance(v, (int, float)): n_.inputs[k].default_value = v
+            else: L(v, n_.inputs[k])
+        return n_.outputs[0]
+    tc = N('ShaderNodeTexCoord'); geo = N('ShaderNodeNewGeometry')
+    sep = N('ShaderNodeSeparateXYZ'); L(tc.outputs['Object'], sep.inputs['Vector']); X, Y, Z = sep.outputs
+    def noise_tex(scale, detail, vec=None, rough=0.55):
+        n_ = N('ShaderNodeTexNoise'); n_.inputs['Scale'].default_value = scale; n_.inputs['Detail'].default_value = detail; n_.inputs['Roughness'].default_value = rough
+        L(vec if vec is not None else tc.outputs['Object'], n_.inputs['Vector']); return n_.outputs['Fac']
+    streak_v = N('ShaderNodeCombineXYZ'); L(math_('MULTIPLY', X, 140), streak_v.inputs['X']); L(math_('MULTIPLY', Y, 140), streak_v.inputs['Y']); L(math_('MULTIPLY', Z, 9), streak_v.inputs['Z'])
+    streak = noise_tex(1.0, 6, streak_v.outputs[0])
+    bark_ramp = N('ShaderNodeValToRGB'); L(streak, bark_ramp.inputs['Fac'])
+    bark_ramp.color_ramp.elements[0].position = 0.38; bark_ramp.color_ramp.elements[1].position = 0.68
+    bark_ramp.color_ramp.elements[0].color = (0.020, 0.013, 0.010, 1); bark_ramp.color_ramp.elements[1].color = (0.13, 0.085, 0.052, 1)
+    bark_col = bark_ramp.outputs['Color']
+    if bark_png and os.path.exists(bark_png):
+        bi = N('ShaderNodeTexImage'); bi.image = bpy.data.images.load(bark_png)
+        mp = N('ShaderNodeMapping'); mp.inputs['Scale'].default_value = (5, 5, 5); L(tc.outputs['Object'], mp.inputs['Vector'])
+        # cylindrical-ish mapping: angle round the trunk, height along it
+        ang = math_('DIVIDE', math_('ARCTAN2', Y, X), math.tau); uv = N('ShaderNodeCombineXYZ'); L(math_('MULTIPLY', ang, 3), uv.inputs['X']); L(math_('MULTIPLY', Z, -9), uv.inputs['Y']); L(uv.outputs[0], bi.inputs['Vector'])
+        bark_col = bi.outputs['Color']
+    # cut top: growth rings
+    rad = math_('SQRT', math_('ADD', math_('MULTIPLY', X, X), math_('MULTIPLY', Y, Y)))
+    warp = noise_tex(18, 3)
+    rings = math_('FRACT', math_('ADD', math_('MULTIPLY', rad, 150), math_('MULTIPLY', warp, 1.6)))
+    wood_ramp = N('ShaderNodeValToRGB'); L(math_('POWER', rings, 2.2), wood_ramp.inputs['Fac'])
+    wood_ramp.color_ramp.elements[0].color = (0.30, 0.20, 0.11, 1); wood_ramp.color_ramp.elements[1].color = (0.17, 0.105, 0.055, 1)
+    nsep = N('ShaderNodeSeparateXYZ'); L(geo.outputs['Normal'], nsep.inputs['Vector'])
+    # the cut top is the upward-facing surface near z = 0 (not the flared foot)
+    top_mask = math_('MULTIPLY', math_('GREATER_THAN', nsep.outputs['Z'], 0.82), math_('GREATER_THAN', Z, -0.01))
+    # moss: patchy on the trunk, thick near the ground, and a ring creeping in from the cut rim
+    patch = noise_tex(16, 5)
+    foot = math_('MULTIPLY', math_('ABSOLUTE', Z), 1 / max(height, 0.01))            # 0 at the top rim, 1 at the foot
+    trunk_moss = math_('MULTIPLY', math_('SUBTRACT', math_('ADD', math_('MULTIPLY', patch, 1.6), math_('MULTIPLY', math_('POWER', foot, 2.0), 0.9)), 1.2), 3.0, True)
+    rim_moss = math_('MULTIPLY', math_('SUBTRACT', rad, 0.118), 22.0, True)
+    rim_moss = math_('MULTIPLY', rim_moss, math_('MULTIPLY', math_('ADD', patch, 0.45), 1.0), True)
+    moss_ramp = N('ShaderNodeValToRGB'); L(noise_tex(60, 6), moss_ramp.inputs['Fac'])
+    moss_ramp.color_ramp.elements[0].color = (0.010, 0.040, 0.010, 1); moss_ramp.color_ramp.elements[1].color = (0.060, 0.17, 0.035, 1)
+    moss_col = moss_ramp.outputs['Color']
+    if moss_png and os.path.exists(moss_png):
+        mi = N('ShaderNodeTexImage'); mi.image = bpy.data.images.load(moss_png)
+        uv2 = N('ShaderNodeCombineXYZ'); L(math_('MULTIPLY', X, 9), uv2.inputs['X']); L(math_('MULTIPLY', Y, 9), uv2.inputs['Y']); L(uv2.outputs[0], mi.inputs['Vector'])
+        moss_col = mi.outputs['Color']
+    moss_amt = math_('ADD', math_('MULTIPLY', trunk_moss, math_('SUBTRACT', 1.0, top_mask)), math_('MULTIPLY', rim_moss, top_mask), True)
+    mix1 = N('ShaderNodeMix'); mix1.data_type = 'RGBA'; L(top_mask, mix1.inputs['Factor']); L(bark_col, mix1.inputs[6]); L(wood_ramp.outputs['Color'], mix1.inputs[7])
+    mix2 = N('ShaderNodeMix'); mix2.data_type = 'RGBA'; L(moss_amt, mix2.inputs['Factor']); L(mix1.outputs[2], mix2.inputs[6]); L(moss_col, mix2.inputs[7])
+    # a dark contact line where the foot meets the ground, so it sits in the forest floor instead of on top of it
+    ao = math_('SUBTRACT', 1.0, math_('MULTIPLY', math_('MULTIPLY', math_('SUBTRACT', foot, 0.86), 6.0, True), 0.62))
+    dark = N('ShaderNodeMix'); dark.data_type = 'RGBA'; dark.blend_type = 'MULTIPLY'; dark.inputs['Factor'].default_value = 1.0
+    ao_c = N('ShaderNodeCombineColor'); [L(ao, ao_c.inputs[i_]) for i_ in range(3)]
+    L(mix2.outputs[2], dark.inputs[6]); L(ao_c.outputs[0], dark.inputs[7])
+    pb = N('ShaderNodeBsdfPrincipled'); L(dark.outputs[2], pb.inputs['Base Color'])
+    pb.inputs['Roughness'].default_value = 0.88; pb.inputs['Specular IOR Level'].default_value = 0.25
+    bump = N('ShaderNodeBump'); bump.inputs['Strength'].default_value = 0.7; bump.inputs['Distance'].default_value = 0.004
+    L(math_('ADD', streak, math_('MULTIPLY', moss_amt, noise_tex(140, 3))), bump.inputs['Height']); L(bump.outputs['Normal'], pb.inputs['Normal'])
+    o_ = N('ShaderNodeOutputMaterial'); L(pb.outputs['BSDF'], o_.inputs['Surface'])
+    me.materials.append(m)
+    return ob
+
+STUMP = None
+if A.forest:
+    table.location.z = -A.stump_h - 0.002          # the forest floor the stump stands on (shadow catcher: only shadows are rendered)
+    STUMP = build_stump(A.stump_h, A.bark, A.moss)
+
 # ---- wood block (shared mesh) + engraved wordmark
 def wood_material():
     """Solid (3D) beech: growth rings from a virtual log, so every face -- incl. end grain --
@@ -348,6 +462,20 @@ bpy.ops.object.convert(target='MESH')
 word_mesh = tx.data; bpy.data.objects.remove(tx)
 word_mesh.materials.append(mat('Brand', (0.012, 0.014, 0.013), rough=0.3, coat=0.5))
 
+# block numbers on both short ends, engraved like the wordmark. One text mesh per number, shared by the two ends.
+number_meshes = {}
+def number_mesh(n):
+    if n not in number_meshes:
+        bpy.ops.object.text_add()
+        t = bpy.context.active_object; t.data.body = str(n); t.data.font = font
+        t.data.size = 0.0066; t.data.align_x = 'CENTER'; t.data.align_y = 'CENTER'
+        t.data.extrude = 0.00009
+        bpy.ops.object.convert(target='MESH')
+        m_ = t.data; bpy.data.objects.remove(t)
+        m_.materials.append(word_mesh.materials[0])
+        number_meshes[n] = m_
+    return number_meshes[n]
+
 blocks = []
 rnd = random.Random(SEED)
 S = A.sloppiness
@@ -368,6 +496,10 @@ for L in range(LAYERS):
         for sgn, rot in ((-1, (math.pi / 2, 0, 0)), (1, (math.pi / 2, 0, math.pi))):   # "Jeemu" on both long sides
             wd = bpy.data.objects.new(f'Word{k:02d}{"ab"[sgn > 0]}', word_mesh); sc.collection.objects.link(wd)
             wd.parent = ob; wd.location = (tr(0.0008), sgn * (BW / 2 - 0.00004), tr(0.0003)); wd.rotation_euler = rot
+        if A.numbers:
+            for sgn_x, rot_x in ((1, (math.pi / 2, 0, math.pi / 2)), (-1, (math.pi / 2, 0, -math.pi / 2))):   # number on each short end, facing outwards
+                nd = bpy.data.objects.new(f'Num{k:02d}{"ab"[sgn_x > 0]}', number_mesh(k + 1)); sc.collection.objects.link(nd)
+                nd.parent = ob; nd.location = (sgn_x * (BL / 2 - 0.00004), tr(0.0003), tr(0.0003)); nd.rotation_euler = rot_x
         cross = (-(BW + gl), tr(0.0003 * S), (BW + gr))[j]
         along = tr(0.0016 * S)                                              # shifted along its length
         if rnd.random() < 0.16 * min(S, 1.5):                               # the odd block is left sticking out
@@ -486,6 +618,11 @@ if A.portrait:
     pull_in = [1.0, 0.42, 0.45, 0.65, 0.85, 1.0, 1.0, 1.0, 1.0, 1.0]
     lift = [0, 0.05, 0.04, 0.02, 0, 0, 0, 0, 0, 0]
     KEYS = [(t_, tg + (p_ - tg) * f_ + V((0, 0, l_)), tg + V((0, 0, l_)), fl_, fs_, st_) for (t_, p_, tg, fl_, fs_, st_), f_, l_ in zip(KEYS, pull_in, lift)]
+if A.forest:
+    for i_ in (1, 2):       # the two keys around the wide stop (fully pulled back, tower built)
+        t_, p_, tg_, fl_, fs_, st_ = KEYS[i_]
+        tg2 = tg_ - V((0, 0, A.stump_h * 0.55))
+        KEYS[i_] = (t_, tg2 + (p_ - tg_) * A.pull * (1.35 if A.portrait else 1.0) + V((0, 0, A.stump_h * 0.1)), tg2, fl_, fs_, st_)   # the phone's tall frame is already pulled in, so pull further to show the whole stump
 def _tangent(i, comp):
     """Catmull-Rom style velocity at key i (per second); zero at rests so the camera settles there."""
     zero = KEYS[i][comp] * 0.0
@@ -513,6 +650,17 @@ rim = bpy.data.lights.new('Rim', 'AREA'); rim.shape = 'RECTANGLE'; rim.size = 0.
 ro = bpy.data.objects.new('Rim', rim); sc.collection.objects.link(ro); ro.location = (0.55, 0.45, 0.55)
 fill = bpy.data.lights.new('Fill', 'AREA'); fill.size = 1.0; fill.size_y = 0.5; fill.energy = 5; fill.color = (0.9, 0.95, 1.0)
 fo = bpy.data.objects.new('Fill', fill); sc.collection.objects.link(fo); fo.location = (0.7, -0.6, 0.35)
+if A.forest:
+    key.energy = 16; key.color = (1.0, 0.80, 0.55)            # warm lantern from the front left, softer than the studio key
+    ko.location = (-0.75, -0.55, 0.28)
+    rim.energy = 34; rim.color = (0.55, 0.85, 1.0); ro.location = (0.65, 0.55, 0.85)   # cool moonlight skimming the back right edge
+    fill.energy = 4; fill.color = (0.45, 0.8, 0.7)            # teal bounce from the forest
+    moon = bpy.data.lights.new('Moon', 'AREA'); moon.shape = 'RECTANGLE'; moon.size = 1.6; moon.size_y = 1.6; moon.energy = 9; moon.color = (0.6, 0.85, 1.0)
+    mo = bpy.data.objects.new('Moon', moon); sc.collection.objects.link(mo); mo.location = (-0.2, 0.3, 1.5)
+    c_ = mo.constraints.new('TRACK_TO'); c_.target = focus; c_.track_axis = 'TRACK_NEGATIVE_Z'; c_.up_axis = 'UP_Y'
+    tint = nt.nodes.new('ShaderNodeMix')                      # the studio reflections take on the forest's teal
+    tint.data_type = 'RGBA'; tint.blend_type = 'MULTIPLY'; tint.inputs['Factor'].default_value = 1.0; tint.inputs[7].default_value = (0.55, 0.85, 0.78, 1)
+    nt.links.new(env.outputs['Color'], tint.inputs[6]); nt.links.new(tint.outputs[2], bg.inputs['Color'])
 tap_l = bpy.data.lights.new('TapGlow', 'POINT'); tap_l.color = (0.0, 1.0, 0.55); tap_l.energy = 0; tap_l.shadow_soft_size = 0.02
 tlo = bpy.data.objects.new('TapGlow', tap_l); sc.collection.objects.link(tlo); tlo.location = badge_c + wn * 0.02
 for ob_, tgt in ((ko, V((0, 0, .15))), (ro, V((0, 0, .15))), (fo, V((0, 0, .1)))):
@@ -522,6 +670,7 @@ focus_lookup = {}
 
 os.makedirs(A.out, exist_ok=True)
 manifest = {}
+view = {}
 def set_time(f):
     t = f / FPS
     pose_blocks(t)
@@ -538,11 +687,12 @@ for n_, f in enumerate(frames):
     sc.render.filepath = os.path.join(A.out, f'{f:04d}.png')
     cs = [world_to_camera_view(sc, cam, c) for c in sc_corners]
     manifest[f] = [[round(c.x * A.width, 2), round((1 - c.y) * A.height, 2)] for c in cs]
+    view[f] = round((cam.location - focus.location).length, 4)
     if os.path.exists(sc.render.filepath) and os.path.getsize(sc.render.filepath) > 0:
         print(f'skip {f} (already rendered)  [{n_ + 1}/{len(frames)}]', flush=True); continue   # lets an interrupted run resume
     bpy.ops.render.render(write_still=True)
     print(f'rendered {f}  [{n_ + 1}/{len(frames)}]', flush=True)
-json.dump(dict(fps=FPS, total=TOTAL, width=A.width, height=A.height, screen=manifest, timeline=T,
+json.dump(dict(fps=FPS, total=TOTAL, width=A.width, height=A.height, screen=manifest, camDist=view, timeline=T,
                rests=[min(TOTAL - 1, round(r * FPS)) for r in RESTS], tapFrame=round(TAP_TIME * FPS)),
           open(os.path.join(A.out, 'screen_%s.json' % frames[0]), 'w'))
 if A.save_blend:
