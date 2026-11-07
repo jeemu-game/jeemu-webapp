@@ -24,7 +24,7 @@
 .btn-pixel.btn-small { padding: 10px 14px; font-size: 0.72rem; }
 
 /* ------------------------------ navbar ------------------------------ */
-.nb { background: transparent; border-bottom: 1px solid transparent; transition: background 240ms, border-color 240ms, backdrop-filter 240ms; }
+.nb { background: linear-gradient(180deg, rgba(6, 10, 8, 0.94), rgba(6, 10, 8, 0.55)); border-bottom: 1px solid transparent; transition: background 240ms, border-color 240ms, backdrop-filter 240ms; }
 .nb.is-solid { background: rgba(8, 12, 10, 0.78); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom-color: rgba(175, 215, 185, 0.12); }
 .nb .navbar-container { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .nb-brand { display: inline-flex; align-items: center; gap: 12px; font-family: var(--px-font); font-weight: 700; letter-spacing: 0.22em; color: #fff; text-decoration: none; }

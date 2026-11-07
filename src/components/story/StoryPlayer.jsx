@@ -293,10 +293,10 @@ export default function StoryPlayer({ onCta }) {
       <div className="story-view" ref={view} style={tl ? { width: tl.width, height: tl.height } : undefined}>
         <div className="story-videos">
         {/* the first frame is on screen as soon as the page is, while the video downloads behind it */}
-        {tl && <img className="story-poster" src={`${dir}poster.jpg`} alt="" aria-hidden="true" />}
+        {tl && <img className="story-poster" src={`${dir}poster${V}.jpg`} alt="" aria-hidden="true" />}
         {src && (
           <video
-            ref={video} className={`story-video ${act === 'f' ? '' : 'hide'}`} src={src} poster={`${dir}poster.jpg`} muted playsInline preload="auto" aria-hidden="true" disablePictureInPicture disableRemotePlayback controlsList="nodownload nofullscreen noremoteplayback" x-webkit-airplay="deny" tabIndex={-1}
+            ref={video} className={`story-video ${act === 'f' ? '' : 'hide'}`} src={src} poster={`${dir}poster${V}.jpg`} muted playsInline preload="auto" aria-hidden="true" disablePictureInPicture disableRemotePlayback controlsList="nodownload nofullscreen noremoteplayback" x-webkit-airplay="deny" tabIndex={-1}
             onLoadedMetadata={() => setReady(true)} onLoadedData={() => setReady(true)} onCanPlay={() => setReady(true)} onError={() => setStuck(true)} onProgress={onForwardProgress} onSeeked={(e) => paint(e.currentTarget.currentTime * (s.current.tl?.fps || 30))}
           />
         )}

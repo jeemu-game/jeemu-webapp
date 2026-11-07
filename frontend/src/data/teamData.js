@@ -18,7 +18,7 @@ export const TEAM_MEMBERS = [
   },
   {
     name: 'Jack Kelliher',
-    role: 'The website tech wizard',
+    role: 'Tech wizard',
     initials: 'JK',
     bio: 'A tech geek who has lived all over the world and now calls a New Zealand farm home. Jack makes the blocks talk to the base. The sheep remain unimpressed.'
   },
