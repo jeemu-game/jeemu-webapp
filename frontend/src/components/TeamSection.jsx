@@ -9,7 +9,7 @@ export default function TeamSection() {
         <div className="px-label">THE TEAM</div>
         <h2 className="section-title">Six of us.</h2>
         <p className="section-desc">
-          Here is who does what.
+          Meet the people behind the tower.
         </p>
       </div>
 
@@ -23,7 +23,6 @@ export default function TeamSection() {
               <div className="team-member-meta">
                 <h3 className="team-member-name">{member.name}</h3>
                 <span className="team-member-role">{member.role}</span>
-                {member.tagline && <span className="team-member-tagline">{member.tagline}</span>}
               </div>
             </div>
 

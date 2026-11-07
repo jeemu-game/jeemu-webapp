@@ -1,3 +1,5 @@
-// Social links shown in the footer. Add entries like { label: 'Instagram', href: 'https://instagram.com/…' };
-// while the list is empty the footer shows nothing.
-export const SOCIAL_LINKS = [];
+// Social links shown in the footer: { label, href }.
+export const SOCIAL_LINKS = [
+  { label: 'Instagram', href: 'https://www.instagram.com/jeemu.fun/' },
+  { label: 'Kickstarter', href: 'https://www.kickstarter.com/projects/jeemu/jeemu' }
+];

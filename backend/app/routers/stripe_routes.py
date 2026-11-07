@@ -41,8 +41,8 @@ async def stripe_webhook(
     adapter = StripeAdapter()
     event_data = None
 
-    if adapter.is_configured() and adapter.webhook_secret:
-        # Real deployments: the event MUST carry a valid Stripe signature.
+    if adapter.webhook_secret:
+        # Real deployments: the event MUST carry a valid Stripe signature (only the webhook secret is needed to check it).
         if not stripe_signature:
             raise HTTPException(status_code=400, detail="Missing Stripe signature")
         try:
@@ -77,7 +77,13 @@ async def stripe_webhook(
             else getattr(session, "metadata", {}) or {}
         )
         subscriber_id = metadata.get("subscriber_id")
-        referral_code = metadata.get("referral_code")
+        # Payment Links (the $1 VIP button on the site) carry the buyer's referral code as client_reference_id
+        client_ref = (
+            session.get("client_reference_id")
+            if isinstance(session, dict)
+            else getattr(session, "client_reference_id", None)
+        )
+        referral_code = metadata.get("referral_code") or client_ref
         customer_email = (
             session.get("customer_email") or (session.get("customer_details") or {}).get("email")
             if isinstance(session, dict)

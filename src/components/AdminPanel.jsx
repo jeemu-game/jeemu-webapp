@@ -438,7 +438,7 @@ export default function AdminPanel({ onBackToSite }) {
                   <th>Referral Code</th>
                   <th>Referred By</th>
                   <th>Status</th>
-                  <th>Invited</th>
+                  <th>Referrals / rewards due</th>
                 </tr>
               </thead>
               <tbody>
@@ -475,6 +475,9 @@ export default function AdminPanel({ onBackToSite }) {
                         </td>
                         <td style={{ fontWeight: 600 }}>
                           {s.friendsReferred || 0}
+                          {Number(s.friendsReferred) >= 20 ? <span className="vip-pill" style={{ marginLeft: 8 }}>FREE JEEMU</span>
+                            : Number(s.friendsReferred) >= 5 ? <span className="vip-pill" style={{ marginLeft: 8 }}>CARD DECK</span> : null}
+                          {(s.isVip || s.depositAmount > 0) && <span style={{ marginLeft: 8, color: 'var(--text-muted)', fontWeight: 400 }}>+ bag</span>}
                         </td>
                       </tr>
                     );

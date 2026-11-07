@@ -1,6 +1,6 @@
 import React from 'react';
 import { Sparkles, Hammer, Cpu, Rocket, Calendar } from 'lucide-react';
-import { JOURNEY_MILESTONES } from '../data/teamData';
+import { JOURNEY_MILESTONES, WHY_WE_CARE } from '../data/teamData';
 
 const ICONS = {
   Sparkles: <Sparkles size={18} />,
@@ -16,7 +16,7 @@ export default function JourneyTimeline() {
         <div className="px-label">HOW IT STARTED</div>
         <h2 className="section-title">Six students in Shanghai.</h2>
         <p className="section-desc">
-          We came from all over the world to study business in Shanghai. The assignment was to make a real product. We like games, and we were annoyed at one in particular.
+          We came from all over the world to study business in Shanghai. Our assignment was to build a real product. We love games, and our childhood favourite game lost its spark as we grew up.
         </p>
       </div>
 
@@ -61,6 +61,10 @@ export default function JourneyTimeline() {
         </div>
       </div>
 
+      <aside className="why-care">
+        <div className="px-label">WHY WE CARE</div>
+        <p>{WHY_WE_CARE}</p>
+      </aside>
     </section>
   );
 }

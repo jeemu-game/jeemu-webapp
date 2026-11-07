@@ -210,12 +210,12 @@ class JsonFileAdapter:
 
         if email:
             target = await self.find_by_email(email)
-        elif subscriber_id:
+        if not target and subscriber_id:
             for s in self.data["subscribers"]:
                 if s.get("id") == subscriber_id:
                     target = s
                     break
-        elif referral_code:
+        if not target and referral_code:
             target = await self.find_by_referral_code(referral_code)
 
         if not target and self.data["subscribers"]:

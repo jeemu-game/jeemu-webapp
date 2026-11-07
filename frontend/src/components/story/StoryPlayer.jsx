@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import GameScreen from './GameScreen';
 import { quadToMatrix3d } from './quad';
-import { STAGES, STOPS, SCREEN_CARDS, INTRO_CARD, INTRO_UNTIL } from './stages';
+import { STAGES, STOPS, SCREEN_CARDS, INTRO_CARD, INTRO_UNTIL, TOWER_CAPTION } from './stages';
 import { track } from '../../analytics';
 
 const BASE = import.meta.env.BASE_URL;
@@ -290,7 +290,7 @@ export default function StoryPlayer({ onCta }) {
     <section className={`story ${narrow ? 'is-narrow' : ''} ${ui.stage >= last && !ui.playing ? 'is-done' : ''} ${staticMode ? 'is-static' : ''} ${feather ? 'is-feather' : ''}`} id="story" ref={root} aria-label="How Jeemu plays">
       {/* everything the pixel screen says is drawn, so say it in text too */}
       <h1 className="sr-only">Jeemu, a tower game that starts the conversation</h1>
-      <p className="sr-only">{INTRO_CARD.text} Pull a block from the tower, tap it on the base, and the screen asks you a question. {SCREEN_CARDS.map((c) => c.text).join(' ')}</p>
+      <p className="sr-only">{INTRO_CARD.text} {TOWER_CAPTION} {SCREEN_CARDS.map((c) => c.text).join(' ')}</p>
       <div className="story-view" ref={view} style={tl ? { width: tl.width, height: tl.height } : undefined}>
         <div className="story-videos">
         {/* the first frame is on screen as soon as the page is, while the video downloads behind it */}
@@ -316,6 +316,8 @@ export default function StoryPlayer({ onCta }) {
           <div className="px-bar"><span /></div>
         </div>
       )}
+
+      {ui.stage === 1 && !ui.playing && booted && !staticMode && <p className="story-cap" aria-hidden="true">{TOWER_CAPTION}</p>}
 
       {blocked && <button type="button" className="story-tap btn-pixel" onClick={retry}>TAP TO PLAY</button>}
 
