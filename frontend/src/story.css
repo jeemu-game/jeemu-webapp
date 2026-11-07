@@ -326,3 +326,14 @@ html.menu-open { overflow: hidden; }
 @keyframes cap-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .story-cap { animation: none; } }
 @media (max-width: 520px) { .wl-rewards li { grid-template-columns: 1fr; gap: 2px; } }
+
+/* The videos are pictures, never players: hide every native control Safari/Chrome might draw over them (the play badge it shows when it
+   blocks autoplay, picture-in-picture, AirPlay/Cast buttons) and stop them taking hover or clicks. */
+.story-video { pointer-events: none; }
+.story-video::-webkit-media-controls,
+.story-video::-webkit-media-controls-enclosure,
+.story-video::-webkit-media-controls-panel,
+.story-video::-webkit-media-controls-overlay-play-button,
+.story-video::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none; opacity: 0; pointer-events: none; }
+/* a solid chip behind the 01/02/03 steps so nothing from the picture shows through the gaps */
+.story-rail { padding: 6px; background: rgba(6, 10, 8, 0.88); border: 2px solid rgba(175, 215, 185, 0.16); }
