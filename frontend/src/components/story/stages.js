@@ -1,9 +1,8 @@
 // The story has three stops (frame numbers in the 30 fps render). Scrolling plays on to the next one.
-//   14  close-up of the screen on its base (a few frames into the pull-back, so the base's edges, top logo and side wordmark are already in
-//       view and the screen reads as part of the console, not a screen floating in the dark), the tagline on it
+//   0   close-up of the screen, the tagline on it
 //   132 pulled back, tower built, the whole product in view
 //   395 close-up of the screen again after the tap: the question, then the call to action
-export const STOPS = [14, 132, 395];
+export const STOPS = [0, 132, 395];
 
 // No text boxes: every word lives on the pixel screen. These are just the rail labels.
 export const STAGES = [

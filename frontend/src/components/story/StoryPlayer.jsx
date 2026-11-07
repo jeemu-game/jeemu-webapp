@@ -135,9 +135,18 @@ export default function StoryPlayer({ onCta }) {
     if (Math.abs(v.currentTime - tOf(from)) * fps > 0.5) v.currentTime = tOf(from);
     st.cur = v;
     // If the browser refuses to play (autoplay blocked, Low Power Mode, data saver) the same piece is stepped through by seeking instead:
-    // still animated, no button, no tap. Any later tap or key press tries real playback again (see `prime`), so it recovers on its own.
-    let manual = false, mt0 = 0;
-    const goManual = () => { if (manual || !st.playing || st.target !== k) return; manual = true; mt0 = performance.now(); st.soft = true; v.pause(); };
+    // still animated, no button, no tap. Some browsers do not paint a seeked frame of a video that never played, so stepping only goes on
+    // while frames are really being presented (requestVideoFrameCallback); otherwise the step is a plain cut to the next stop.
+    // Any later tap or key press tries real playback again (see `prime`), so it recovers on its own.
+    let manual = false, mt0 = 0, shown = -1;
+    const goManual = () => {
+      if (manual || !st.playing || st.target !== k) return;
+      st.soft = true; v.pause();
+      if (typeof v.requestVideoFrameCallback !== 'function') { cutRef.current(k); return; }
+      manual = true; mt0 = performance.now();
+      const onFrame = (_, meta) => { shown = meta.mediaTime; if (manual) v.requestVideoFrameCallback(onFrame); };
+      v.requestVideoFrameCallback(onFrame);
+    };
     const p = v.play();
     if (p && p.catch) p.catch((err) => { if (err && err.name !== 'AbortError') goManual(); });
     setTimeout(() => { if (v.paused) goManual(); }, 500);   // play() resolved but something paused the video again
@@ -152,9 +161,11 @@ export default function StoryPlayer({ onCta }) {
       let frame;
       if (manual) {
         const want = from + d * ((performance.now() - mt0) / 1000) * fps;     // where the clock says we should be
-        if ((d > 0 ? want >= to - 0.5 : want <= to + 0.5)) { done(); return; }
+        if ((d > 0 ? want >= to - 0.5 : want <= to + 0.5)) { manual = false; cutRef.current(k); return; }
+        if (shown < 0 && performance.now() - mt0 > 450) { manual = false; cutRef.current(k); return; }   // nothing is being painted: just land on the stop
         if (!v.seeking) v.currentTime = tOf(Math.round(want));
-        frame = logical(v.currentTime);                                        // the pixel screen follows the picture actually shown
+        if (shown < 0) { queue(); return; }
+        frame = logical(shown);                                                // the pixel screen follows the picture actually shown
       } else frame = logical(v.currentTime);
       paint(frame);
       if (!manual && ((d > 0 ? frame >= to - 0.5 : frame <= to + 0.5) || v.ended)) { done(); return; }
@@ -293,10 +304,10 @@ export default function StoryPlayer({ onCta }) {
       <div className="story-view" ref={view} style={tl ? { width: tl.width, height: tl.height } : undefined}>
         <div className="story-videos">
         {/* the first frame is on screen as soon as the page is, while the video downloads behind it */}
-        {tl && <img className="story-poster" src={`${dir}poster${V}.jpg`} alt="" aria-hidden="true" />}
+        {tl && <img className="story-poster" src={`${dir}poster.jpg`} alt="" aria-hidden="true" />}
         {src && (
           <video
-            ref={video} className={`story-video ${act === 'f' ? '' : 'hide'}`} src={src} poster={`${dir}poster${V}.jpg`} muted playsInline preload="auto" aria-hidden="true" disablePictureInPicture disableRemotePlayback controlsList="nodownload nofullscreen noremoteplayback" x-webkit-airplay="deny" tabIndex={-1}
+            ref={video} className={`story-video ${act === 'f' ? '' : 'hide'}`} src={src} poster={`${dir}poster.jpg`} muted playsInline preload="auto" aria-hidden="true" disablePictureInPicture disableRemotePlayback controlsList="nodownload nofullscreen noremoteplayback" x-webkit-airplay="deny" tabIndex={-1}
             onLoadedMetadata={() => setReady(true)} onLoadedData={() => setReady(true)} onCanPlay={() => setReady(true)} onError={() => setStuck(true)} onProgress={onForwardProgress} onSeeked={(e) => paint(e.currentTarget.currentTime * (s.current.tl?.fps || 30))}
           />
         )}
