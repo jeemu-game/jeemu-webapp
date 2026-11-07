@@ -133,9 +133,13 @@ export default function StoryPlayer({ onCta }) {
     st.playing = true; st.target = k;
     setUi({ stage: st.stage, playing: true });
     if (Math.abs(v.currentTime - tOf(from)) * fps > 0.5) v.currentTime = tOf(from);
+    // If the browser refuses to play (autoplay blocked, data saver, battery saver) the same piece is stepped through by seeking
+    // instead: choppier than playback, but it still animates, needs no tap and works wherever seeking does.
+    let manual = false, mt0 = 0;
+    const goManual = () => { if (manual || !st.playing || st.target !== k) return; manual = true; mt0 = performance.now(); v.pause(); };
     const p = v.play();
-    // if the browser refuses to play (no gesture yet, data saver), land on the stop anyway rather than asking for a tap
-    if (p && p.catch) p.catch((err) => { if (err && err.name !== 'AbortError' && st.playing && st.target === k) cutRef.current(k); });
+    if (p && p.catch) p.catch((err) => { if (err && err.name !== 'AbortError') goManual(); });
+    setTimeout(() => { if (v.paused) goManual(); }, 500);   // play() resolved but something paused the video again
     setAct(rev ? 'r' : 'f');
     const done = () => {
       v.pause(); v.currentTime = tOf(to); paint(to);
@@ -144,7 +148,11 @@ export default function StoryPlayer({ onCta }) {
     };
     const step = (_, meta) => {
       if (!st.playing || st.target !== k) return;
-      const frame = logical(v.currentTime);
+      let frame;
+      if (manual) {
+        frame = from + d * ((performance.now() - mt0) / 1000) * fps;
+        if (!v.seeking) v.currentTime = tOf(Math.round(Math.min(Math.max(frame, Math.min(from, to)), Math.max(from, to))));
+      } else frame = logical(v.currentTime);
       paint(frame);
       if ((d > 0 ? frame >= to - 0.5 : frame <= to + 0.5) || v.ended) { done(); return; }
       queue();
