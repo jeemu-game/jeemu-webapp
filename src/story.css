@@ -337,3 +337,7 @@ html.menu-open { overflow: hidden; }
 .story-video::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none; opacity: 0; pointer-events: none; }
 /* a solid chip behind the 01/02/03 steps so nothing from the picture shows through the gaps */
 .story-rail { padding: 6px; background: rgba(6, 10, 8, 0.88); border: 2px solid rgba(175, 215, 185, 0.16); }
+
+/* the frame deck: stills drawn on a canvas when the browser will not play video; sits exactly where the videos sit */
+.story-deck { position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; pointer-events: none; }
+.story-deck.hide { opacity: 0; }
