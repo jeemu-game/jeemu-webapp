@@ -9,7 +9,14 @@ settings.ENV = "test"
 
 from app.adapters import set_adapter  # noqa: E402
 from app.adapters.json_file import JsonFileAdapter  # noqa: E402
-from app.main import app  # noqa: E402
+from app.main import app, rate_limit_history  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def fresh_rate_limits():
+    """Every test starts with empty rate-limit counters, so test volume never causes a 429."""
+    rate_limit_history.clear()
+    yield
 
 
 @pytest.fixture(autouse=True)

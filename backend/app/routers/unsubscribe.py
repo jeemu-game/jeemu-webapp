@@ -22,14 +22,25 @@ jinja_env = Environment(
 )
 
 
-def render_page(email: str, success: bool, message: str) -> str:
+def render_page(email: str, success: bool, message: str, token: str = "") -> str:
     template = jinja_env.get_template("unsubscribe_page.html")
     return template.render(
         email=email,
         success=success,
         message=message,
+        token=token,
         site_url=settings.SITE_URL,
     )
+
+
+def token_is_valid(email: str, token: str | None) -> bool:
+    """Signed-link check. If no signing secret is configured nothing is valid (links are disabled)."""
+    if not token:
+        return False
+    try:
+        return verify_unsubscribe_token(email, token)
+    except RuntimeError:
+        return False
 
 
 @router.get("/unsubscribe", response_class=HTMLResponse)
@@ -45,9 +56,8 @@ async def unsubscribe(email: str | None = None, token: str | None = None):
         )
 
     clean_email = unquote(email).lower().strip()
-    is_valid = bool(token and verify_unsubscribe_token(clean_email, token))
 
-    if not is_valid and settings.ENV not in ("test", "development"):
+    if not token_is_valid(clean_email, token):
         return HTMLResponse(
             status_code=status.HTTP_403_FORBIDDEN,
             content=render_page(
@@ -71,6 +81,7 @@ async def unsubscribe(email: str | None = None, token: str | None = None):
                 email=clean_email,
                 success=True,
                 message="You have been successfully unsubscribed. You will no longer receive launch announcements or referral updates.",
+                token=token or "",
             ),
         )
     except Exception:
@@ -85,26 +96,33 @@ async def unsubscribe(email: str | None = None, token: str | None = None):
 
 
 @router.post("/resubscribe")
-async def resubscribe(request: Request, email: str | None = None):
+async def resubscribe(request: Request, email: str | None = None, token: str | None = None):
     target_email = email
-    if not target_email:
+    target_token = token
+    if not target_email or not target_token:
         try:
             form_data = await request.form()
-            target_email = form_data.get("email")
+            target_email = target_email or form_data.get("email")
+            target_token = target_token or form_data.get("token")
         except Exception:
             pass
 
-    if not target_email:
+    if not target_email or not target_token:
         try:
             body = await request.json()
-            target_email = body.get("email")
+            target_email = target_email or body.get("email")
+            target_token = target_token or body.get("token")
         except Exception:
             pass
 
-    if not target_email:
+    if not target_email or not target_token:
         return RedirectResponse(url="/?resubscribed=0", status_code=status.HTTP_303_SEE_OTHER)
 
-    clean_email = target_email.lower().strip()
+    clean_email = str(target_email).lower().strip()
+    # Same signed token as the unsubscribe link: nobody can re-subscribe an address they don't own.
+    if not token_is_valid(clean_email, str(target_token)):
+        return RedirectResponse(url="/?resubscribed=0", status_code=status.HTTP_303_SEE_OTHER)
+
     adapter = get_adapter()
     sheets = GoogleSheetsAdapter()
     try:

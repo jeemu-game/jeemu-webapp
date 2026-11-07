@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { SOCIAL_LINKS } from '../data/socials';
 
 const FAQS = [
   { q: 'What is Jeemu?', a: 'A tower game where every wooden block carries a hidden NFC chip. Pull a block, tap it on the base, and the screen shows the prompt for that block in the game you picked.' },
   { q: 'Do I need my phone while playing?', a: 'No. You use the companion app to choose or edit a game and send it to the base. Once it is loaded, the base runs the game on its own. The app is still in development.' },
   { q: 'Can I make my own games?', a: 'That is the plan. In the app you will be able to write your own prompts, start from presets, and share games with other players. This is still being built.' },
-  { q: 'When does it launch, and what does it cost?', a: 'We launch on Kickstarter in November. The early bird price is $89.99 USD.' },
+  { q: 'When does it launch, and what does it cost?', a: 'We launch on Kickstarter on 24 November. The early bird price is $89.99 USD.' },
+  { q: 'Do you ship worldwide?', a: 'Yes, we ship worldwide.' },
   { q: 'What do early-bird backers get?', a: 'The $89.99 early-bird price and a premium Jeemu bag that your set fits in. Joining the waitlist gets you first word when the campaign opens.' },
   { q: 'What are the blocks like?', a: 'Standard-size wooden blocks, each branded with the Jeemu name.' }
 ];
@@ -38,8 +40,12 @@ export default function FaqFooter() {
             <a href="#journey">Our story</a>
             <a href="#team">Team</a>
             <a href="#faq">FAQ</a>
-            <a href="/admin" style={{ opacity: 0.6, fontSize: '0.85em' }}>Team Portal</a>
           </nav>
+          {SOCIAL_LINKS.length > 0 && (
+            <nav className="footer-links" aria-label="Social media">
+              {SOCIAL_LINKS.map((s) => <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>)}
+            </nav>
+          )}
           <p className="footer-legal">
             © {new Date().getFullYear()} Jeemu. Made in Shanghai. Jeemu is an independent game and is not affiliated with Kickstarter. Launch date and pricing may change before the campaign goes live.
           </p>

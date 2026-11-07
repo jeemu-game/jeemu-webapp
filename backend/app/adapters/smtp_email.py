@@ -1,5 +1,6 @@
 """Hostinger SMTP Email Adapter using smtplib & Jinja2 templates."""
 
+import asyncio
 import email.utils
 import hashlib
 import hmac
@@ -13,6 +14,7 @@ from urllib.parse import quote
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from app.adapters.resend_email import ResendEmailAdapter
 from app.config import settings
 
 TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
@@ -151,6 +153,24 @@ class SmtpEmailAdapter:
             print(f"❌ [EMAIL ERROR] Failed to send to {clean_to}: {e}")
             return {"success": False, "error": str(e)}
 
+    async def _deliver(self, **mail: Any) -> dict[str, Any]:
+        """Send via Hostinger SMTP and fall back to Resend if SMTP is unavailable or refuses.
+
+        SMTP is blocking, so it runs in a worker thread and never stalls the request loop.
+        """
+        resend = ResendEmailAdapter()
+        smtp_ready = self.is_configured() or settings.ENV == "test"
+        if not smtp_ready and resend.is_configured():
+            return await resend.send_mail(**mail)
+
+        result = await asyncio.to_thread(self.dispatch_mail, **mail)
+        if not result.get("success") and resend.is_configured():
+            print("↪️ [EMAIL] SMTP failed, trying Resend fallback.")
+            fallback = await resend.send_mail(**mail)
+            if fallback.get("success"):
+                return fallback
+        return result
+
     async def send_signup_confirmation_email(self, subscriber: dict[str, Any]) -> dict[str, Any]:
         if not subscriber or not subscriber.get("email"):
             return {"success": False, "error": "Missing subscriber email"}
@@ -169,14 +189,14 @@ class SmtpEmailAdapter:
         )
         text = f"""You're on the Jeemu waitlist{", " + subscriber["name"] if subscriber.get("name") else ""}.
 
-Jeemu launches on Kickstarter in November. Early-bird price: $89.99 USD. Early-bird backers also get a premium Jeemu bag.
+Jeemu launches on Kickstarter on 24 November. Early-bird price: $89.99 USD. Early-bird backers also get a premium Jeemu bag.
 We'll email you before the campaign opens.
 
 Share your link: {settings.SITE_URL}/?ref={subscriber.get("referralCode")}
 
 Unsubscribe: {unsub_url}
 """
-        return self.dispatch_mail(
+        return await self._deliver(
             to=email_addr,
             subject="You're on the Jeemu waitlist",
             html_content=html,
@@ -210,7 +230,7 @@ Friends who have joined so far: {new_count}
 Share link: {settings.SITE_URL}/?ref={referrer.get("referralCode")}
 Unsubscribe: {unsub_url}
 """
-        return self.dispatch_mail(
+        return await self._deliver(
             to=email_addr,
             subject="A friend joined via your Jeemu link",
             html_content=html,
@@ -239,11 +259,11 @@ Unsubscribe: {unsub_url}
 Thank you{", " + subscriber["name"] if subscriber.get("name") else ""}.
 Amount: ${amount:.2f} USD
 Reference: {charge_id}
-We launch on Kickstarter in November. Questions about your deposit? Just reply to this email.
+We launch on Kickstarter on 24 November. Questions about your deposit? Just reply to this email.
 
 Unsubscribe: {unsub_url}
 """
-        return self.dispatch_mail(
+        return await self._deliver(
             to=email_addr,
             subject=f"Your Jeemu deposit receipt (${amount:.2f} USD)",
             html_content=html,

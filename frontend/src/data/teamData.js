@@ -61,7 +61,7 @@ export const JOURNEY_MILESTONES = [
     phase: 'September 2026',
     date: 'September 2026',
     title: 'Asking the Players',
-    desc: 'We interviewed dozens of players, and the same complaint kept coming up. People loved the idea.',
+    desc: 'We interviewed dozens of players, and the same complaint kept coming up: games got boring and repetitive.',
     badge: 'Asking the Players',
     icon: 'Hammer'
   },

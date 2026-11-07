@@ -24,7 +24,11 @@ export default function JourneyTimeline() {
         <div className="timeline-spine" />
 
         <div className="timeline-items-list">
-          {JOURNEY_MILESTONES.map((item, idx) => (
+          {JOURNEY_MILESTONES.map((item, idx) => {
+            // the data has a phase label and a date, and a badge: show each only if it says something the others don't
+            const showDate = item.date && item.date !== item.phase;
+            const showBadge = item.badge && item.badge !== item.title && item.badge !== item.phase;
+            return (
             <div key={idx} className="timeline-item-row">
               {/* Milestone Icon Node */}
               <div className="timeline-node">
@@ -38,19 +42,22 @@ export default function JourneyTimeline() {
                 <div className="timeline-card-header">
                   <div className="timeline-phase-wrap">
                     <span className="timeline-phase-tag">{item.phase}</span>
-                    <span className="timeline-badge-pill">{item.badge}</span>
+                    {showBadge && <span className="timeline-badge-pill">{item.badge}</span>}
                   </div>
-                  <div className="timeline-date-tag">
-                    <Calendar size={13} />
-                    <span>{item.date}</span>
-                  </div>
+                  {showDate && (
+                    <div className="timeline-date-tag">
+                      <Calendar size={13} />
+                      <span>{item.date}</span>
+                    </div>
+                  )}
                 </div>
 
                 <h3 className="timeline-title">{item.title}</h3>
                 <p className="timeline-desc">{item.desc}</p>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

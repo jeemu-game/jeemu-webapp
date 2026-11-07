@@ -131,9 +131,9 @@ class SupabaseRestAdapter:
         if not email:
             return None
         clean_email = email.lower().strip()
-        url = f"{self.rest_url}/subscribers?email=ilike.{clean_email}&select=*"
+        url = f"{self.rest_url}/subscribers"
         async with self._client() as client:
-            resp = await client.get(url)
+            resp = await client.get(url, params={"email": f"eq.{clean_email}", "select": "*"})
             resp.raise_for_status()
             rows = resp.json()
             return _sub_row_to_dict(rows[0]) if rows else None
@@ -142,9 +142,11 @@ class SupabaseRestAdapter:
         if not code:
             return None
         clean_code = code.upper().strip()
-        url = f"{self.rest_url}/subscribers?referral_code=ilike.{clean_code}&select=*"
+        url = f"{self.rest_url}/subscribers"
         async with self._client() as client:
-            resp = await client.get(url)
+            resp = await client.get(
+                url, params={"referral_code": f"eq.{clean_code}", "select": "*"}
+            )
             resp.raise_for_status()
             rows = resp.json()
             return _sub_row_to_dict(rows[0]) if rows else None
@@ -203,9 +205,9 @@ class SupabaseRestAdapter:
         if email:
             target = await self.find_by_email(email)
         elif subscriber_id:
-            url = f"{self.rest_url}/subscribers?id=eq.{subscriber_id}&select=*"
+            url = f"{self.rest_url}/subscribers"
             async with self._client() as client:
-                r = await client.get(url)
+                r = await client.get(url, params={"id": f"eq.{subscriber_id}", "select": "*"})
                 rows = r.json() if r.status_code == 200 else []
                 if rows:
                     target = _sub_row_to_dict(rows[0])
@@ -468,9 +470,10 @@ class SupabaseRestAdapter:
         self, category: str, post_id: str, reaction_type: str
     ) -> dict[str, Any] | None:
         # Fetch current post
-        url = f"{self.rest_url}/posts?id=eq.{post_id}&select=*"
+        url = f"{self.rest_url}/posts"
+        id_filter = {"id": f"eq.{post_id}"}
         async with self._client() as client:
-            r = await client.get(url)
+            r = await client.get(url, params={**id_filter, "select": "*"})
             rows = r.json() if r.status_code == 200 else []
             if not rows:
                 return None
@@ -485,7 +488,7 @@ class SupabaseRestAdapter:
                 patch_data["reactions"] = reactions
 
             headers = {**self.headers, "Prefer": "return=representation"}
-            patch_resp = await client.patch(url, headers=headers, json=patch_data)
+            patch_resp = await client.patch(url, headers=headers, params=id_filter, json=patch_data)
             patch_resp.raise_for_status()
             updated_rows = patch_resp.json()
             return _post_row_to_dict(updated_rows[0]) if updated_rows else None
