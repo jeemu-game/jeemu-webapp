@@ -43,6 +43,7 @@ export default function StoryPlayer({ onCta }) {
   const [stuck, setStuck] = useState(false);     // the video never became usable (see GIVE_UP_MS)
   const [synced, setSynced] = useState(false);   // the video is really showing the frame the pixel screen is drawn for
   const [ui, setUi] = useState({ stage: -1, playing: false });
+  const [blocked, setBlocked] = useState(false);   // the browser refused to play the video: show TAP TO PLAY (only then)
   const [mode, setMode] = useState('intro');   // what the pixel screen shows: the tagline, nothing (the render's own logo), or the question cards
   const [cardIdx, setCardIdx] = useState(0);
 
@@ -133,13 +134,16 @@ export default function StoryPlayer({ onCta }) {
     st.playing = true; st.target = k;
     setUi({ stage: st.stage, playing: true });
     if (Math.abs(v.currentTime - tOf(from)) * fps > 0.5) v.currentTime = tOf(from);
-    // If the browser refuses to play (autoplay blocked, data saver, battery saver) the same piece is stepped through by seeking
-    // instead: choppier than playback, but it still animates, needs no tap and works wherever seeking does.
-    let manual = false, mt0 = 0;
-    const goManual = () => { if (manual || !st.playing || st.target !== k) return; manual = true; mt0 = performance.now(); v.pause(); };
+    // If the browser refuses to play (autoplay blocked, data saver, battery saver), stop here and ask for one tap. A tap is a
+    // gesture, so the video then plays smoothly. Browsers that allow autoplay never get here, so they never see the button.
+    const block = () => {
+      if (!st.playing || st.target !== k) return;
+      v.pause(); st.playing = false; st.target = -1; st.blocked = { k, d };
+      setUi({ stage: st.stage, playing: false }); setBlocked(true);
+    };
     const p = v.play();
-    if (p && p.catch) p.catch((err) => { if (err && err.name !== 'AbortError') goManual(); });
-    setTimeout(() => { if (v.paused) goManual(); }, 500);   // play() resolved but something paused the video again
+    if (p && p.catch) p.catch((err) => { if (err && err.name !== 'AbortError') block(); });
+    setTimeout(() => { if (v.paused) block(); }, 500);   // play() resolved but something paused the video again
     setAct(rev ? 'r' : 'f');
     const done = () => {
       v.pause(); v.currentTime = tOf(to); paint(to);
@@ -148,11 +152,7 @@ export default function StoryPlayer({ onCta }) {
     };
     const step = (_, meta) => {
       if (!st.playing || st.target !== k) return;
-      let frame;
-      if (manual) {
-        frame = from + d * ((performance.now() - mt0) / 1000) * fps;
-        if (!v.seeking) v.currentTime = tOf(Math.round(Math.min(Math.max(frame, Math.min(from, to)), Math.max(from, to))));
-      } else frame = logical(v.currentTime);
+      const frame = logical(v.currentTime);
       paint(frame);
       if ((d > 0 ? frame >= to - 0.5 : frame <= to + 0.5) || v.ended) { done(); return; }
       queue();
@@ -165,7 +165,7 @@ export default function StoryPlayer({ onCta }) {
   const cut = useCallback((k) => {
     const st = s.current, v = video.current, vr = vrev.current;
     if (!v || !st.tl) return;
-    st.playing = false; st.target = -1; v.pause(); if (vr) vr.pause();
+    st.playing = false; st.target = -1; st.blocked = null; setBlocked(false); v.pause(); if (vr) vr.pause();
     v.currentTime = st.tl.rests[k] / st.tl.fps;
     if (vr && st.tl.reverse) vr.currentTime = (st.tl.frames - 1 - st.tl.rests[k]) / st.tl.fps;
     setAct('f');
@@ -180,6 +180,15 @@ export default function StoryPlayer({ onCta }) {
     whenShowing(v, () => { if (st.cutId === id) { paint(st.tl.rests[k]); setSynced(true); } }, SYNC_TIMEOUT_MS);
   }, [paint]);
   cutRef.current = cut;
+
+  // the tap (or key press) that answers TAP TO PLAY: play the step that was refused, inside the gesture
+  const retry = useCallback(() => {
+    const st = s.current, b = st.blocked;
+    if (!b) return;
+    st.blocked = null; setBlocked(false);
+    play(b.k, b.d);
+    [video.current, vrev.current].forEach((v) => { if (v && v.paused) { const p = v.play(); if (p && p.then) p.then(() => v.pause()).catch(() => {}); } });
+  }, [play]);
 
   // first load: rest on the opening stop (or the last one if the page was restored part way down)
   const booted = ready && !!tl;
@@ -206,6 +215,7 @@ export default function StoryPlayer({ onCta }) {
     const act = (d, e) => {
       if (document.documentElement.classList.contains('menu-open')) return true;   // the mobile menu is open: it owns the screen
       if (st.static) return false;   // no video: leave scrolling to the page
+      if (st.blocked) { e && e.cancelable && e.preventDefault(); return true; }   // waiting for the tap (see retry)
       if (st.stage < 0) { e && e.cancelable && e.preventDefault(); return true; }   // still loading: input does nothing
       if (!st.tl || window.scrollY > 2) return false;
       if (performance.now() - st.awayAt < 600) { e && e.cancelable && e.preventDefault(); return true; }
@@ -238,6 +248,7 @@ export default function StoryPlayer({ onCta }) {
       else if (e.cancelable && !(d > 0 && st.stage === st.tl.rests.length - 1 && !st.playing)) e.preventDefault();
     };
     const onKey = (e) => {
+      if (st.blocked && !(e.target.closest && e.target.closest('.story-tap')) && ['ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); retry(); return; }
       if (/^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(e.target.tagName) || e.metaKey || e.ctrlKey || e.altKey) return;
       if (['ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) act(1, e);
       else if (['ArrowUp', 'PageUp'].includes(e.key)) act(-1, e);
@@ -250,6 +261,9 @@ export default function StoryPlayer({ onCta }) {
       window.removeEventListener('touchend', unlock);
     };
     window.addEventListener('touchend', unlock, { passive: true });
+    // while TAP TO PLAY is showing, a tap anywhere on the story (not on a button or link) counts as the tap
+    const onEnd = (e) => { if (st.blocked && !(e.target.closest && e.target.closest('button, a, input'))) retry(); };
+    window.addEventListener('touchend', onEnd, { passive: true });
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('touchstart', onTs, { passive: true });
     window.addEventListener('touchmove', onTm, { passive: false });
@@ -257,9 +271,9 @@ export default function StoryPlayer({ onCta }) {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('wheel', onWheel); window.removeEventListener('touchstart', onTs);
-      window.removeEventListener('touchmove', onTm); window.removeEventListener('touchend', unlock); window.removeEventListener('keydown', onKey); window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('touchmove', onTm); window.removeEventListener('touchend', unlock); window.removeEventListener('touchend', onEnd); window.removeEventListener('keydown', onKey); window.removeEventListener('scroll', onScroll);
     };
-  }, [play, cut]);
+  }, [play, cut, retry]);
 
   // question cards: one after another from the tap, then the call to action stays
   useEffect(() => {
@@ -302,6 +316,8 @@ export default function StoryPlayer({ onCta }) {
           <div className="px-bar"><span /></div>
         </div>
       )}
+
+      {blocked && <button type="button" className="story-tap btn-pixel" onClick={retry}>TAP TO PLAY</button>}
 
       {staticMode && (
         <div className="story-static">

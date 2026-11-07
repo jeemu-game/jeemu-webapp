@@ -284,6 +284,7 @@ img, video {
   font-size: 0.9rem;
   border-radius: var(--radius-full);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
 }
 
@@ -912,6 +913,7 @@ img, video {
   padding: 4px 10px;
   border-radius: var(--radius-full);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .slide-title {
@@ -1091,6 +1093,7 @@ img, video {
   border-radius: var(--radius-xl);
   overflow: hidden;
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .packs-tabs-scroll {
@@ -1955,6 +1958,7 @@ img, video {
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .sim-sound-toggle:hover {
@@ -1990,6 +1994,7 @@ img, video {
   background: rgba(255, 255, 255, 0.03);
   transition: all 0.2s ease;
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   cursor: pointer;
 }
 
