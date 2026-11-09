@@ -138,3 +138,97 @@ def test_webhook_verifies_signature_with_only_the_webhook_secret(client, monkeyp
         "/api/stripe/webhook", json={"type": "checkout.session.completed", "data": {"object": {}}}
     )
     assert res.status_code == 400
+
+
+def test_webhook_ignores_unpaid_session(client):
+    sub = client.post("/api/subscribers", json={"email": "unpaid@jeemu.test", "name": "U"}).json()[
+        "subscriber"
+    ]
+    payload = {
+        "type": "checkout.session.completed",
+        "data": {
+            "object": {
+                "id": "cs_test_unpaid1234",
+                "payment_status": "unpaid",
+                "customer_email": "unpaid@jeemu.test",
+                "metadata": {},
+            }
+        },
+    }
+    assert client.post("/api/stripe/webhook", json=payload).status_code == 200
+    rows = client.get(
+        "/api/subscribers", headers={"Authorization": "Bearer test-supabase-admin-token"}
+    ).json()["subscribers"]
+    me = next(s for s in rows if s["email"] == "unpaid@jeemu.test")
+    assert not me.get("isVip")
+    assert sub["email"] == "unpaid@jeemu.test"
+
+
+def _fake_stripe(monkeypatch, session):
+    from app.adapters.stripe_adapter import StripeAdapter
+
+    async def fake_retrieve(self, session_id):
+        return session
+
+    monkeypatch.setattr(StripeAdapter, "is_configured", lambda self: True)
+    monkeypatch.setattr(StripeAdapter, "retrieve_session", fake_retrieve)
+
+
+def test_checkout_status_rejects_malformed_ids(client):
+    assert (
+        client.get("/api/stripe/checkout-status", params={"session_id": "nope"}).status_code == 400
+    )
+    assert client.get(
+        "/api/stripe/checkout-status", params={"session_id": "cs_test_" + "x" * 300}
+    ).status_code in (400, 422)
+
+
+def test_checkout_status_needs_stripe_key(client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "STRIPE_SECRET_KEY", None)
+    res = client.get("/api/stripe/checkout-status", params={"session_id": "cs_test_abcdefgh1234"})
+    assert res.status_code == 503 and res.json()["paid"] is False
+
+
+def test_checkout_status_paid_vip_returns_only_the_referral_code(client, monkeypatch):
+    sub = client.post("/api/subscribers", json={"email": "payer@jeemu.test", "name": "P"}).json()[
+        "subscriber"
+    ]
+    session = {
+        "payment_status": "paid",
+        "customer_details": {"email": "payer@jeemu.test"},
+        "client_reference_id": sub["referralCode"],
+        "id": "cs_test_abcdefgh1234",
+        "payment_intent": "pi_1",
+    }
+    _fake_stripe(monkeypatch, session)
+    # before the webhook has run: paid, not yet VIP, no code is revealed
+    early = client.get(
+        "/api/stripe/checkout-status", params={"session_id": "cs_test_abcdefgh1234"}
+    ).json()
+    assert early == {"paid": True, "vip": False, "referralCode": None}
+    client.post(
+        "/api/stripe/webhook",
+        json={"type": "checkout.session.completed", "data": {"object": session}},
+    )
+    res = client.get(
+        "/api/stripe/checkout-status", params={"session_id": "cs_test_abcdefgh1234"}
+    ).json()
+    assert res == {"paid": True, "vip": True, "referralCode": sub["referralCode"]}
+
+
+def test_checkout_status_unpaid_or_unknown_reveals_nothing(client, monkeypatch):
+    _fake_stripe(
+        monkeypatch, {"payment_status": "unpaid", "customer_details": {"email": "x@jeemu.test"}}
+    )
+    assert client.get(
+        "/api/stripe/checkout-status", params={"session_id": "cs_test_abcdefgh1234"}
+    ).json() == {"paid": False}
+    _fake_stripe(
+        monkeypatch,
+        {"payment_status": "paid", "customer_details": {"email": "stranger@jeemu.test"}},
+    )
+    assert client.get(
+        "/api/stripe/checkout-status", params={"session_id": "cs_test_abcdefgh1234"}
+    ).json() == {"paid": True, "vip": False}

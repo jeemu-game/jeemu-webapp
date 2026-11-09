@@ -1,11 +1,13 @@
 """Stripe Checkout & Webhook router."""
 
 import json
+import re
 
-from fastapi import APIRouter, Header, HTTPException, Request
+from fastapi import APIRouter, Header, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from app.adapters import get_adapter
 from app.adapters.stripe_adapter import StripeAdapter
 from app.config import settings
 from app.modules.vip_deposit import VipDepositService
@@ -30,6 +32,58 @@ async def create_session(payload: CreateSessionRequest):
     if res.get("mode") in ("disabled", "unavailable"):
         return JSONResponse(status_code=503, content=res)
     return res
+
+
+def _field(obj, key):
+    """Read a field from a Stripe object or a plain dict."""
+    if obj is None:
+        return None
+    if isinstance(obj, dict):
+        return obj.get(key)
+    return getattr(obj, key, None)
+
+
+_SESSION_ID = re.compile(r"cs_(test|live)_[A-Za-z0-9]{8,190}")
+
+
+@router.get("/stripe/checkout-status")
+async def checkout_status(session_id: str = Query(..., max_length=200)):
+    """Used by the thank-you page after a $1 VIP payment (Payment Link redirect: /?vip=thanks&session_id={CHECKOUT_SESSION_ID}).
+
+    Only the payer's browser holds the unguessable Checkout Session id, so this is how the page knows the visitor really paid. It asks Stripe,
+    never trusts the URL alone, and returns just whether it is paid and the referral code of the subscriber the payment was matched to
+    (no email, no payment details). Without STRIPE_SECRET_KEY it answers 503 and the page shows a plain thank-you.
+    """
+    if not _SESSION_ID.fullmatch(session_id):
+        return JSONResponse(status_code=400, content={"paid": False})
+    adapter = StripeAdapter()
+    if not adapter.is_configured():
+        return JSONResponse(status_code=503, content={"paid": False, "error": "unavailable"})
+    try:
+        session = await adapter.retrieve_session(session_id)
+    except Exception as e:
+        print(f"Stripe session lookup failed: {e}")
+        return {"paid": False}
+    if _field(session, "payment_status") != "paid":
+        return {"paid": False}
+    email = _field(session, "customer_email") or _field(
+        _field(session, "customer_details"), "email"
+    )
+    ref = _field(session, "client_reference_id") or _field(
+        _field(session, "metadata"), "referral_code"
+    )
+    repo = get_adapter()
+    sub = (await repo.find_by_email(email) if email else None) or (
+        await repo.find_by_referral_code(ref) if ref else None
+    )
+    if not sub:
+        return {"paid": True, "vip": False}
+    # the webhook may not have been processed yet when the browser arrives: the page retries for a few seconds
+    return {
+        "paid": True,
+        "vip": bool(sub.get("isVip")),
+        "referralCode": sub.get("referralCode") if sub.get("isVip") else None,
+    }
 
 
 @router.post("/stripe/webhook")
@@ -76,6 +130,11 @@ async def stripe_webhook(
             if isinstance(session, dict)
             else getattr(session, "metadata", {}) or {}
         )
+        # Only a paid session upgrades anyone (a card that is still pending or failed also produces this event)
+        pay_status = _field(session, "payment_status")
+        if pay_status is not None and pay_status != "paid":
+            print(f"Ignoring checkout.session.completed with payment_status={pay_status}")
+            return {"received": True}
         subscriber_id = metadata.get("subscriber_id")
         # Payment Links (the $1 VIP button on the site) carry the buyer's referral code as client_reference_id
         client_ref = (

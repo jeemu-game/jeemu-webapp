@@ -30,13 +30,31 @@ export default function Waitlist() {
     if (ref) setRefCode(ref);
     const d = new URLSearchParams(window.location.search).get('deposit');
     if (d === 'success' || d === 'cancelled') setReturned(d);
-    if (new URLSearchParams(window.location.search).get('vip') === 'thanks') {
-      let code = '';
-      try { code = localStorage.getItem('jeemu_ref') || ''; } catch (_) { /* private mode: no referral link, still thank them */ }
-      setVipThanks({ code });
+    const q = new URLSearchParams(window.location.search);
+    if (q.get('vip') === 'thanks') {
+      // Stripe sends the payer back to /?vip=thanks&session_id=cs_... The session id is unguessable and only the payer's browser has it, so the
+      // server asks Stripe whether it was really paid before this page claims anything or shows a referral link. Anyone else who opens
+      // /?vip=thanks gets a plain page that says nothing about their status.
+      const sid = q.get('session_id') || '';
+      try { window.history.replaceState(null, '', '/?vip=thanks'); } catch (_) { /* keep the url */ }
       track('vip_thanks_view', {}, { once: true });
       setTimeout(() => section.current?.scrollIntoView(), 300);
+      if (!/^cs_(test|live)_[A-Za-z0-9]{8,190}$/.test(sid)) { setVipThanks({ state: 'plain' }); return undefined; }
+      setVipThanks({ state: 'checking' });
+      let tries = 0, dead = false;
+      const ask = async () => {
+        tries += 1;
+        let r = null;
+        try { const res = await fetch(`/api/v1/stripe/checkout-status?session_id=${encodeURIComponent(sid)}`); r = res.ok ? await res.json() : null; } catch (_) { r = null; }
+        if (dead) return;
+        if (r && r.paid && r.vip) { setVipThanks({ state: 'verified', code: r.referralCode || '' }); return; }
+        if (r && r.paid && tries < 6) { setTimeout(ask, 2000); return; }   // paid, and the receipt is still being processed
+        setVipThanks({ state: r && r.paid ? 'paid' : 'plain' });
+      };
+      ask();
+      return () => { dead = true; };
     }
+    return undefined;
   }, []);
 
   // Posts the signup. Returns the subscriber, or throws with a message that is safe to show.
@@ -83,11 +101,10 @@ export default function Waitlist() {
     if (import.meta.env.VITE_PREVIEW !== 'true') {
       try { code = (await signup()).referralCode || ''; } catch (_) { /* Stripe also records the email, so do not block the payment */ }
     }
-    try { if (code) localStorage.setItem('jeemu_ref', code); } catch (_) { /* optional */ }
     window.location.assign(vipUrl(email.trim(), code));
   };
 
-  const refCode2 = done?.referralCode || vipThanks?.code || '';
+  const refCode2 = done?.referralCode || (vipThanks?.state === 'verified' ? vipThanks.code : '') || '';
   const link = refCode2 ? `${window.location.origin}/?ref=${refCode2}` : '';
   const copy = () => navigator.clipboard.writeText(link).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2200); });
 
@@ -116,9 +133,9 @@ export default function Waitlist() {
           {vipThanks && !done ? (
             <div className="wl-done wl-thanks" role="status">
               <div className="wl-screen">
-                <div className="gs-bar"><span className="gs-jade">VIP UNLOCKED</span><img src={`${import.meta.env.BASE_URL}story/frog-pixel.png`} alt="" className="px-frog" /></div>
-                <p className="l1">THANK YOU. YOU'RE VIP.</p>
-                <p className="l2">WE'LL EMAIL YOUR RECEIPT.</p>
+                <div className="gs-bar"><span className="gs-jade">{vipThanks.state === 'verified' ? 'VIP UNLOCKED' : vipThanks.state === 'checking' ? 'CHECKING' : 'BACK FROM CHECKOUT'}</span><img src={`${import.meta.env.BASE_URL}story/frog-pixel.png`} alt="" className="px-frog" /></div>
+                <p className="l1">{vipThanks.state === 'verified' ? "THANK YOU. YOU'RE VIP." : vipThanks.state === 'checking' ? 'CHECKING YOUR PAYMENT...' : vipThanks.state === 'paid' ? 'THANK YOU. PAYMENT RECEIVED.' : 'WELCOME BACK.'}</p>
+                <p className="l2">{vipThanks.state === 'plain' ? "IF YOU JUST PAID, WE'LL EMAIL YOUR RECEIPT." : "WE'LL EMAIL YOUR RECEIPT."}</p>
                 <p className="l3">{link ? 'PASS IT ON:' : 'MORE NEWS BEFORE LAUNCH.'}</p>
               </div>
               {link && (
@@ -127,7 +144,8 @@ export default function Waitlist() {
                   <button type="button" className="btn-pixel btn-small" onClick={copy}>{copied ? 'COPIED' : 'COPY'}</button>
                 </div>
               )}
-              <p className="wl-fine">You get the early-bird price, a free Jeemu carry bag and word on launch day before everyone else. Every friend who goes VIP through your link counts towards the bonus rewards.</p>
+              {vipThanks.state === 'verified' && <p className="wl-fine">You get the early-bird price, a free Jeemu carry bag and word on launch day before everyone else. Every friend who goes VIP through your link counts towards the bonus rewards.</p>}
+              {vipThanks.state === 'plain' && <p className="wl-fine">Your VIP status is recorded against the email you signed up with. If it does not show up within a day, write to us from that email.</p>}
             </div>
           ) : done ? (
             <div className="wl-done" role="status">

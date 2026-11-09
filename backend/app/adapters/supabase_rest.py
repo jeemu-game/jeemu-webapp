@@ -230,6 +230,8 @@ class SupabaseRestAdapter:
             "vip_timestamp": now,
             "stripe_charge_id": charge_id,
         }
+        if stripe_session_id:
+            patch_payload["stripe_session_id"] = stripe_session_id
 
         url = f"{self.rest_url}/subscribers?id=eq.{target['id']}"
         headers = {**self.headers, "Prefer": "return=representation"}

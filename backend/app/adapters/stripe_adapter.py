@@ -69,6 +69,12 @@ class StripeAdapter:
                 return {"mode": "redirect", "url": self.payment_link}
             return {"mode": "unavailable", "error": "Could not start checkout. Please try again."}
 
+    async def retrieve_session(self, session_id: str) -> Any:
+        """Fetch a Checkout Session from Stripe (needs STRIPE_SECRET_KEY; a restricted key with read access to Checkout Sessions is enough)."""
+        if not self.is_configured():
+            raise ValueError("STRIPE_SECRET_KEY is not configured.")
+        return await asyncio.to_thread(stripe.checkout.Session.retrieve, session_id)
+
     def construct_event(self, payload: bytes, sig_header: str) -> Any:
         if not self.webhook_secret:
             raise ValueError("STRIPE_WEBHOOK_SECRET is not configured.")
