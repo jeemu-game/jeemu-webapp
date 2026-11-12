@@ -13,10 +13,13 @@ export const STAGES = [
 
 // Which frames show which screen content. Between INTRO_UNTIL and the tap the render's own logo shows (the screen is tiny then).
 export const INTRO_UNTIL = 54;
-export const INTRO_CARD = { tag: 'JEEMU', text: 'We help people achieve deeper connections without the awkwardness of starting the conversation.', foot: 'SCROLL TO START' };
+export const INTRO_CARD = { tag: 'JEEMU', text: 'The best game nights start with one good question.', foot: 'SCROLL TO START' };
+
+// Shown over the picture (the screen is too small to read) while the whole tower is in view.
+export const TOWER_CAPTION = "You already know this tower. You don't know this version.";
 
 // Shown one after another from the moment the block taps the base. The last one stays.
 export const SCREEN_CARDS = [
-  { tag: 'QUESTION 07', text: "What's the worst way you've ever started a conversation?", foot: 'TAP THE NEXT BLOCK' },
-  { tag: 'KICKSTARTER / 24 NOV', text: 'Early bird $89.99 USD.', cta: 'JOIN THE WAITLIST' }
+  { tag: 'NEW QUESTION', text: 'Let Jeemu bring that new question to every round.', foot: '' },
+  { tag: 'KICKSTARTER / 24 NOV', text: "Hop in early. Early bird prices are the best you'll see.", cta: 'JOIN THE WAITLIST' }
 ];

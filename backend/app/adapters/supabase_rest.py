@@ -201,17 +201,19 @@ class SupabaseRestAdapter:
         now = int(time.time() * 1000)
 
         # Lookup target
+        # Try each identifier in turn: the payer may have used a different email at checkout than at signup,
+        # in which case the referral code (client_reference_id) still finds the right subscriber.
         target = None
         if email:
             target = await self.find_by_email(email)
-        elif subscriber_id:
+        if not target and subscriber_id:
             url = f"{self.rest_url}/subscribers"
             async with self._client() as client:
                 r = await client.get(url, params={"id": f"eq.{subscriber_id}", "select": "*"})
                 rows = r.json() if r.status_code == 200 else []
                 if rows:
                     target = _sub_row_to_dict(rows[0])
-        elif referral_code:
+        if not target and referral_code:
             target = await self.find_by_referral_code(referral_code)
 
         if not target:
@@ -228,6 +230,8 @@ class SupabaseRestAdapter:
             "vip_timestamp": now,
             "stripe_charge_id": charge_id,
         }
+        if stripe_session_id:
+            patch_payload["stripe_session_id"] = stripe_session_id
 
         url = f"{self.rest_url}/subscribers?id=eq.{target['id']}"
         headers = {**self.headers, "Prefer": "return=representation"}
