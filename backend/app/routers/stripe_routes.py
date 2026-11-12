@@ -100,82 +100,64 @@ async def stripe_webhook(
         if not stripe_signature:
             raise HTTPException(status_code=400, detail="Missing Stripe signature")
         try:
-            event_data = adapter.construct_event(raw_body, stripe_signature)
+            adapter.construct_event(
+                raw_body, stripe_signature
+            )  # raises unless the signature is genuine
         except Exception as e:
             print(f"Stripe webhook signature verification failed: {e}")
             raise HTTPException(status_code=400, detail="Invalid Stripe signature") from e
     elif settings.ENV == "test":
-        # Strictly test harness only: accept unsigned JSON so tests can exercise flow with mocks.
-        try:
-            event_data = json.loads(raw_body.decode("utf-8"))
-        except Exception:
-            event_data = {}
+        pass  # Strictly test harness only: accept unsigned JSON so tests can exercise the flow.
     else:
         # Production without a webhook secret: refuse, never trust unsigned payment events.
         raise HTTPException(status_code=503, detail="Webhook not configured")
 
-    event_type = (
-        event_data.get("type")
-        if isinstance(event_data, dict)
-        else getattr(event_data, "type", None)
+    # Work on a plain dict: current Stripe libraries return objects that are not dicts (.get() fails on them). The body is only parsed after
+    # the signature has been verified above.
+    try:
+        event_data = json.loads(raw_body.decode("utf-8"))
+    except Exception:
+        event_data = {}
+    if not isinstance(event_data, dict):
+        event_data = {}
+
+    if event_data.get("type") != "checkout.session.completed":
+        return {"received": True}
+    session = (event_data.get("data") or {}).get("object") or {}
+    pay_status = session.get("payment_status")
+    # Only a paid session upgrades anyone (a card that is still pending or failed also produces this event)
+    if pay_status is not None and pay_status != "paid":
+        print(
+            f"Stripe webhook: ignoring checkout.session.completed with payment_status={pay_status}"
+        )
+        return {"received": True}
+    metadata = session.get("metadata") or {}
+    customer_email = session.get("customer_email") or (session.get("customer_details") or {}).get(
+        "email"
     )
-    if event_type == "checkout.session.completed":
-        session = (
-            event_data.get("data", {}).get("object", {})
-            if isinstance(event_data, dict)
-            else event_data.data.object
-        )
-        metadata = (
-            session.get("metadata", {})
-            if isinstance(session, dict)
-            else getattr(session, "metadata", {}) or {}
-        )
-        # Only a paid session upgrades anyone (a card that is still pending or failed also produces this event)
-        pay_status = _field(session, "payment_status")
-        if pay_status is not None and pay_status != "paid":
-            print(f"Ignoring checkout.session.completed with payment_status={pay_status}")
-            return {"received": True}
-        subscriber_id = metadata.get("subscriber_id")
-        # Payment Links (the $1 VIP button on the site) carry the buyer's referral code as client_reference_id
-        client_ref = (
-            session.get("client_reference_id")
-            if isinstance(session, dict)
-            else getattr(session, "client_reference_id", None)
-        )
-        referral_code = metadata.get("referral_code") or client_ref
-        customer_email = (
-            session.get("customer_email") or (session.get("customer_details") or {}).get("email")
-            if isinstance(session, dict)
-            else getattr(session, "customer_email", None)
-        )
-        payment_intent_id = (
-            session.get("payment_intent")
-            if isinstance(session, dict)
-            else getattr(session, "payment_intent", None)
-        )
-        session_id = (
-            session.get("id") if isinstance(session, dict) else getattr(session, "id", None)
-        )
-        total_cents = (
-            session.get("amount_total")
-            if isinstance(session, dict)
-            else getattr(session, "amount_total", None)
-        )
-        amount_charged = (
-            (total_cents / 100.0) if total_cents else settings.DEPOSIT_AMOUNT_CENTS / 100.0
-        )
+    # Payment Links (the $1 VIP button on the site) carry the buyer's referral code as client_reference_id
+    referral_code = metadata.get("referral_code") or session.get("client_reference_id")
+    total_cents = session.get("amount_total")
+    amount_charged = (total_cents / 100.0) if total_cents else settings.DEPOSIT_AMOUNT_CENTS / 100.0
 
-        vip_service = VipDepositService()
-        try:
-            await vip_service.handle_vip_deposit(
-                subscriber_id=subscriber_id,
-                referral_code=referral_code,
-                email=customer_email,
-                amount=amount_charged,
-                stripe_session_id=session_id,
-                stripe_payment_intent=payment_intent_id,
-            )
-        except Exception as e:
-            print(f"Error processing checkout.session.completed webhook: {e}")
-
+    print(
+        f"Stripe webhook: paid session {session.get('id')} email={customer_email!r} ref={referral_code!r}"
+    )
+    try:
+        result = await VipDepositService().handle_vip_deposit(
+            subscriber_id=metadata.get("subscriber_id"),
+            referral_code=referral_code,
+            email=customer_email,
+            amount=amount_charged,
+            stripe_session_id=session.get("id"),
+            stripe_payment_intent=session.get("payment_intent"),
+        )
+    except Exception as e:
+        # Fail loudly: a non-2xx makes Stripe retry for days instead of silently losing a paid VIP.
+        print(f"Stripe webhook: could not record the payment: {e!r}")
+        raise HTTPException(status_code=500, detail="Could not record the payment") from e
+    if not (result or {}).get("subscriber"):
+        print(
+            f"Stripe webhook: PAID BUT NO MATCHING SUBSCRIBER (email={customer_email!r} ref={referral_code!r}); needs a manual look"
+        )
     return {"received": True}

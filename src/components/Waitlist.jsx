@@ -48,8 +48,12 @@ export default function Waitlist() {
         try { const res = await fetch(`/api/v1/stripe/checkout-status?session_id=${encodeURIComponent(sid)}`); r = res.ok ? await res.json() : null; } catch (_) { r = null; }
         if (dead) return;
         if (r && r.paid && r.vip) { setVipThanks({ state: 'verified', code: r.referralCode || '' }); return; }
-        if (r && r.paid && tries < 6) { setTimeout(ask, 2000); return; }   // paid, and the receipt is still being processed
-        setVipThanks({ state: r && r.paid ? 'paid' : 'plain' });
+        if (r && r.paid) {   // paid, and the payment is still being recorded: keep looking for about a minute, quickly at first
+          setVipThanks((v) => (v && v.state === 'verified' ? v : { state: 'paid' }));
+          if (tries < 16) { setTimeout(ask, tries < 6 ? 2000 : 6000); }
+          return;
+        }
+        setVipThanks({ state: 'plain' });
       };
       ask();
       return () => { dead = true; };
@@ -104,6 +108,11 @@ export default function Waitlist() {
     window.location.assign(vipUrl(email.trim(), code));
   };
 
+  useEffect(() => {
+    if (vipThanks?.state !== 'verified') return;
+    try { confetti({ particleCount: 110, spread: 80, origin: { y: 0.7 }, shapes: ['square'], scalar: 0.9, colors: ['#00d97e', '#ffd34d', '#e2ede5', '#1ae88d'] }); } catch (_) { /* decoration only */ }
+  }, [vipThanks?.state]);
+
   const refCode2 = done?.referralCode || (vipThanks?.state === 'verified' ? vipThanks.code : '') || '';
   const link = refCode2 ? `${window.location.origin}/?ref=${refCode2}` : '';
   const copy = () => navigator.clipboard.writeText(link).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2200); });
@@ -131,12 +140,25 @@ export default function Waitlist() {
           {returned === 'success' && <div className="wl-ok" role="status">Thanks, your deposit was received. We'll email your receipt.</div>}
           {returned === 'cancelled' && <div className="wl-error" role="status">Checkout was cancelled. You have not been charged.</div>}
           {vipThanks && !done ? (
-            <div className="wl-done wl-thanks" role="status">
+            <div className={`wl-done wl-thanks is-${vipThanks.state}`} role="status">
               <div className="wl-screen">
-                <div className="gs-bar"><span className="gs-jade">{vipThanks.state === 'verified' ? 'VIP UNLOCKED' : vipThanks.state === 'checking' ? 'CHECKING' : 'BACK FROM CHECKOUT'}</span><img src={`${import.meta.env.BASE_URL}story/frog-pixel.png`} alt="" className="px-frog" /></div>
-                <p className="l1">{vipThanks.state === 'verified' ? "THANK YOU. YOU'RE VIP." : vipThanks.state === 'checking' ? 'CHECKING YOUR PAYMENT...' : vipThanks.state === 'paid' ? 'THANK YOU. PAYMENT RECEIVED.' : 'WELCOME BACK.'}</p>
-                <p className="l2">{vipThanks.state === 'plain' ? "IF YOU JUST PAID, WE'LL EMAIL YOUR RECEIPT." : "WE'LL EMAIL YOUR RECEIPT."}</p>
-                <p className="l3">{link ? 'PASS IT ON:' : 'MORE NEWS BEFORE LAUNCH.'}</p>
+                <div className="gs-bar"><span className="gs-jade">{vipThanks.state === 'verified' ? 'VIP UNLOCKED' : vipThanks.state === 'paid' ? 'ORDER IN' : vipThanks.state === 'checking' ? 'CHECKING' : 'JEEMU'}</span><img src={`${import.meta.env.BASE_URL}story/frog-pixel.png`} alt="" className="px-frog" /></div>
+                {vipThanks.state === 'verified' && (<>
+                  <p className="l1">THANK YOU. YOU'RE VIP.</p>
+                  <p className="l2">EARLY-BIRD PRICE LOCKED.</p>
+                  <p className="l2">FREE CARRY BAG RESERVED.</p>
+                  <p className="l3">{link ? 'PASS IT ON, EVERY FRIEND WHO GOES VIP COUNTS:' : 'WE\'LL TELL YOU FIRST ON LAUNCH DAY.'}</p>
+                </>)}
+                {vipThanks.state === 'paid' && (<>
+                  <p className="l1">PAYMENT RECEIVED.</p>
+                  <p className="l2">WE'RE RECORDING YOUR VIP SPOT...</p>
+                  <p className="l3">YOU CAN CLOSE THIS PAGE, WE'LL EMAIL YOU.</p>
+                </>)}
+                {vipThanks.state === 'checking' && <p className="l1">CHECKING YOUR PAYMENT...</p>}
+                {vipThanks.state === 'plain' && (<>
+                  <p className="l1">WELCOME BACK.</p>
+                  <p className="l2">IF YOU JUST PAID, WE'LL EMAIL YOUR RECEIPT.</p>
+                </>)}
               </div>
               {link && (
                 <div className="wl-share">
@@ -144,7 +166,7 @@ export default function Waitlist() {
                   <button type="button" className="btn-pixel btn-small" onClick={copy}>{copied ? 'COPIED' : 'COPY'}</button>
                 </div>
               )}
-              {vipThanks.state === 'verified' && <p className="wl-fine">You get the early-bird price, a free Jeemu carry bag and word on launch day before everyone else. Every friend who goes VIP through your link counts towards the bonus rewards.</p>}
+              {vipThanks.state === 'verified' && <p className="wl-fine">VIP spots are tied to the email you signed up with. 5 friends going VIP through your link earns the bonus NFC card deck, and 20 earns a Jeemu of your own.</p>}
               {vipThanks.state === 'plain' && <p className="wl-fine">Your VIP status is recorded against the email you signed up with. If it does not show up within a day, write to us from that email.</p>}
             </div>
           ) : done ? (

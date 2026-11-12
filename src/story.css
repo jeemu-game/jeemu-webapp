@@ -341,3 +341,16 @@ html.menu-open { overflow: hidden; }
 /* the frame deck: stills drawn on a canvas when the browser will not play video; sits exactly where the videos sit */
 .story-deck { position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; pointer-events: none; }
 .story-deck.hide { opacity: 0; }
+
+/* VIP thank-you: the message is shown on a bigger Jeemu screen, line by line, with a glow and scanlines */
+.wl-thanks .wl-screen { position: relative; padding-bottom: 18px; box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.5), 0 0 34px rgba(0, 217, 126, 0.25); min-height: 190px; }
+.wl-thanks .wl-screen::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px); }
+.wl-thanks .wl-screen p { white-space: normal; width: auto; overflow: visible; margin: 14px 16px 0; opacity: 0; animation: wlline 0.5s steps(5) forwards; line-height: 1.35; }
+.wl-thanks .wl-screen p.l1 { font-size: 1.35rem; color: var(--jade-primary); animation-delay: 0.15s; }
+.wl-thanks .wl-screen p.l2 { font-size: 0.9rem; color: var(--text-main); animation-delay: 0.9s; margin-top: 10px; }
+.wl-thanks .wl-screen p.l2 + p.l2 { animation-delay: 1.5s; margin-top: 4px; }
+.wl-thanks .wl-screen p.l3 { font-size: 0.72rem; color: #ffd34d; animation-delay: 2.2s; }
+.wl-thanks.is-checking .wl-screen p.l1::after, .wl-thanks.is-paid .wl-screen p.l2::after { content: ''; display: inline-block; width: 0.5em; height: 1em; margin-left: 6px; vertical-align: -0.15em; background: var(--jade-primary); animation: gsblink 1s steps(2) infinite; }
+.wl-thanks.is-verified .wl-screen { border-color: #ffd34d; }
+@keyframes wlline { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .wl-thanks .wl-screen p { animation: none; opacity: 1; } }

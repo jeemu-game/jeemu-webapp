@@ -232,3 +232,82 @@ def test_checkout_status_unpaid_or_unknown_reveals_nothing(client, monkeypatch):
     assert client.get(
         "/api/stripe/checkout-status", params={"session_id": "cs_test_abcdefgh1234"}
     ).json() == {"paid": True, "vip": False}
+
+
+def _signed(payload: dict, secret: str):
+    """Exactly how Stripe signs a webhook: HMAC-SHA256 over '<timestamp>.<body>' with the signing secret."""
+    import hashlib
+    import hmac
+    import json
+    import time
+
+    body = json.dumps(payload)
+    ts = int(time.time())
+    sig = hmac.new(secret.encode(), f"{ts}.{body}".encode(), hashlib.sha256).hexdigest()
+    return body, {"Stripe-Signature": f"t={ts},v1={sig}", "Content-Type": "application/json"}
+
+
+def test_real_signed_webhook_marks_vip_with_the_real_stripe_library(client, monkeypatch):
+    """Regression: stripe-python 16 returns objects that are not dicts; the handler used to crash on every real event."""
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "STRIPE_WEBHOOK_SECRET", "whsec_unit_test")
+    sub = client.post("/api/subscribers", json={"email": "real@jeemu.test", "name": "R"}).json()[
+        "subscriber"
+    ]
+    event = {
+        "id": "evt_real_1",
+        "object": "event",
+        "type": "checkout.session.completed",
+        "data": {
+            "object": {
+                "id": "cs_live_realpath1234",
+                "object": "checkout.session",
+                "payment_status": "paid",
+                "amount_total": 100,
+                "customer_email": None,
+                "customer_details": {"email": "REAL@jeemu.test"},
+                "client_reference_id": sub["referralCode"],
+                "metadata": {},
+                "payment_intent": "pi_real",
+            }
+        },
+    }
+    body, headers = _signed(event, "whsec_unit_test")
+    assert client.post("/api/stripe/webhook", content=body, headers=headers).status_code == 200
+    rows = client.get(
+        "/api/subscribers", headers={"Authorization": "Bearer test-supabase-admin-token"}
+    ).json()["subscribers"]
+    me = next(s for s in rows if s["email"] == "real@jeemu.test")
+    assert me["isVip"] is True and me["depositAmount"] == 1.0
+
+
+def test_webhook_rejects_a_forged_signature(client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "STRIPE_WEBHOOK_SECRET", "whsec_unit_test")
+    body, headers = _signed(
+        {"type": "checkout.session.completed", "data": {"object": {"payment_status": "paid"}}},
+        "whsec_wrong",
+    )
+    assert client.post("/api/stripe/webhook", content=body, headers=headers).status_code == 400
+
+
+def test_webhook_returns_500_when_recording_fails_so_stripe_retries(client, monkeypatch):
+    from app.modules.vip_deposit import VipDepositService
+
+    async def boom(self, **kw):
+        raise RuntimeError("database down")
+
+    monkeypatch.setattr(VipDepositService, "handle_vip_deposit", boom)
+    payload = {
+        "type": "checkout.session.completed",
+        "data": {
+            "object": {
+                "id": "cs_test_x1234567",
+                "payment_status": "paid",
+                "customer_email": "a@jeemu.test",
+            }
+        },
+    }
+    assert client.post("/api/stripe/webhook", json=payload).status_code == 500
