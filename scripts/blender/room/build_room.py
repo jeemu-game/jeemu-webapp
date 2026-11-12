@@ -193,7 +193,27 @@ def glass_mat(name, color=(1, 1, 1), rough=0.0):
 # ---------------------------------------------------------------- materials
 M_WALL = pbr('Stone', L['wall'], L['wall_tile'] * 1.3, val=L['wall_val'], sat=L['wall_sat'], bump=1.0, rough_mul=1.1, res='4k', vary=0.25)
 M_FLOOR = pbr('Floor', L['floor'], 2.4, vary=0.15, val=L['floor_val'], sat=L['floor_sat'], tint=L['floor_tint'], bump=0.1, rough_mul=0.8, rot=math.pi / 2)
-M_TABLE = pbr('TableTop', L['table'], 1.4, val=L['table_val'], tint=L['table_tint'], bump=0.03, rough_mul=0.55, coat=0.5, res='4k')
+M_TABLE = pbr('TableTop', L['table'], 1.4, val=L['table_val'], tint=L['table_tint'], bump=0.03, rough_mul=0.55, coat=0.22, res='4k')
+def scuff(m, lo=0.75, hi=1.6, scale=7.0, pores=0.015):
+    """Real surfaces never have an even sheen: break the roughness up with smudges and add fine pores."""
+    nt = m.node_tree; b = nt.nodes['Principled BSDF']; tc = nt.nodes.new('ShaderNodeTexCoord')
+    nz = nt.nodes.new('ShaderNodeTexNoise'); nz.inputs['Scale'].default_value = scale; nz.inputs['Detail'].default_value = 8; nz.inputs['Roughness'].default_value = 0.65
+    nt.links.new(tc.outputs['Object'], nz.inputs['Vector'])
+    mr = nt.nodes.new('ShaderNodeMapRange'); mr.inputs['From Min'].default_value = 0.35; mr.inputs['From Max'].default_value = 0.65
+    mr.inputs['To Min'].default_value = lo; mr.inputs['To Max'].default_value = hi; nt.links.new(nz.outputs['Fac'], mr.inputs['Value'])
+    old = b.inputs['Roughness'].links[0].from_socket if b.inputs['Roughness'].is_linked else None
+    mm = nt.nodes.new('ShaderNodeMath'); mm.operation = 'MULTIPLY'; mm.use_clamp = True
+    if old: nt.links.new(old, mm.inputs[0])
+    else: mm.inputs[0].default_value = b.inputs['Roughness'].default_value
+    nt.links.new(mr.outputs[0], mm.inputs[1]); nt.links.new(mm.outputs[0], b.inputs['Roughness'])
+    if 'Coat Roughness' in b.inputs: nt.links.new(mm.outputs[0], b.inputs['Coat Roughness'])
+    if pores:
+        pn = nt.nodes.new('ShaderNodeTexNoise'); pn.inputs['Scale'].default_value = 900; nt.links.new(tc.outputs['Object'], pn.inputs['Vector'])
+        bn = nt.nodes.new('ShaderNodeBump'); bn.inputs['Strength'].default_value = pores; nt.links.new(pn.outputs['Fac'], bn.inputs['Height'])
+        prev = b.inputs['Normal'].links[0].from_socket if b.inputs['Normal'].is_linked else None
+        if prev: nt.links.new(prev, bn.inputs['Normal'])
+        nt.links.new(bn.outputs[0], b.inputs['Normal'])
+scuff(M_TABLE)
 M_RUG = pbr('Rug', 'curly_teddy_natural', 0.5, sat=0.35, val=0.9, tint=L['rug_tint'], bump=1.0, rough_mul=1.3, vary=0.1)
 M_PLASTER = plain('Plaster', L['plaster'], rough=0.85, noise=0.08)
 M_HEARTH = plain('Hearth', L['hearth'], rough=0.45, noise=0.15)
@@ -322,12 +342,12 @@ f = 0.25 + 0.75 * A.fire
 light('FireMouth', 'AREA', (0, by + 0.02, (fz0 + fz1) / 2 - 0.05), 240 * f, (1.0, 0.42, 0.13), size=1.1, size_y=0.32,
       rot=(math.pi / 2, 0, 0)).data.cycles.is_caustics_light = False
 light('FireCore', 'POINT', (0, fire_cy - 0.05, LOG_Z + 0.12), 45 * f, (1.0, 0.36, 0.08), size=0.15)
+for i, (x, e, c) in enumerate(((-0.35, 40, (1.0, 0.33, 0.07)), (0.05, 60, (1.0, 0.45, 0.14)), (0.32, 32, (1.0, 0.30, 0.06)))):
+    light(f'FireLick{i}', 'POINT', (x, by - 0.02, LOG_Z + 0.18 + 0.05 * (i % 2)), e * f, c, size=0.12)
 # off-screen practical: a warm floor lamp camera-left, the soft key on Jeemu
-light('FloorLamp', 'AREA', (-1.9, -1.6, 1.15), 70, (1.0, 0.72, 0.46), size=0.55,
+light('FloorLamp', 'AREA', (-1.9, -1.6, 1.15), 35, (1.0, 0.70, 0.45), size=1.0,
       rot=Euler((math.radians(62), 0, math.radians(-50)), 'XYZ'))
-# faint cool bounce from the night glass so the shadows are not dead black
-light('NightFill', 'AREA', (0, WALL_Y - 0.3, 1.2), 10, (0.55, 0.65, 1.0), size=6.0, size_y=2.5,
-      rot=(math.radians(-90), 0, 0))
+# no fill lights: the room is lit only by things you could point to (fire, candles, an off-screen lamp)
 
 # ---------------------------------------------------------------- furniture
 def world_bbox(o):
@@ -431,11 +451,29 @@ def place(asset, x, y, z=FLOOR, rz=0.0, scale=1.0, sit=True):
 
 HEARTH_TOP = FLOOR + 0.32
 # seating: sofa along the left window (facing the fire/table) with cushions; Eames-style lounge chair + ottoman by the fire
-sofa = place('sofa_03', -2.15, 0.05, rz=math.radians(90))
+def tint_model(o, rgb, rough_add=0.0):
+    """Darkens/recolours an imported model by multiplying its base colour."""
+    seen = set()
+    for ob in [o] + list(o.children_recursive):
+        for slot in getattr(ob, 'material_slots', []):
+            m = slot.material
+            if not m or m.name in seen or not m.use_nodes: continue
+            seen.add(m.name); nt = m.node_tree; b = next((n for n in nt.nodes if n.type == 'BSDF_PRINCIPLED'), None)
+            if not b: continue
+            mx = nt.nodes.new('ShaderNodeMix'); mx.data_type = 'RGBA'; mx.blend_type = 'MULTIPLY'; mx.inputs['Factor'].default_value = 1
+            mx.inputs['B'].default_value = (*rgb, 1)
+            if b.inputs['Base Color'].is_linked: nt.links.new(b.inputs['Base Color'].links[0].from_socket, mx.inputs['A'])
+            else: mx.inputs['A'].default_value = b.inputs['Base Color'].default_value
+            nt.links.new(mx.outputs['Result'], b.inputs['Base Color'])
+
+sofa = place('sofa_02', -2.15, 0.05, rz=math.radians(90))
+if sofa: tint_model(sofa, (0.16, 0.16, 0.15))     # charcoal wool
 if sofa:
     lo, hi = world_bbox(sofa); seat = lo.z + (hi.z - lo.z) * 0.48
     pil = place('throw_pillows_01', lo.x + 0.30, 0.55, seat, rz=math.radians(80))
     pil2 = place('throw_pillows_01', lo.x + 0.30, -0.45, seat, rz=math.radians(105))
+    for pl in (pil, pil2):
+        if pl: tint_model(pl, (0.75, 0.62, 0.48))   # rust/ochre cushions against the charcoal
 place('mid_century_lounge_chair', 1.95, 1.05, rz=math.radians(-40))
 place('Ottoman_01', 1.45, 0.55, rz=math.radians(-40))
 # plants in the window corners and beside the chair
@@ -451,19 +489,6 @@ place('ceramic_vase_03', -1.62, 1.98, HEARTH_TOP, rz=0.2)
 place('ceramic_vase_01', -1.45, 2.06, HEARTH_TOP, rz=1.0)
 place('antique_ceramic_vase_01', -1.30, 1.95, HEARTH_TOP, rz=2.0, scale=0.8)
 place('concrete_cat_statue', 0.85, 1.98, HEARTH_TOP, rz=math.radians(-150), scale=0.9)
-M_BARK = pbr('Bark', 'bark_brown_02', 0.35, sat=0.3, val=0.6, bump=0.6)
-M_ENDGRAIN = plain('EndGrain', (0.42, 0.30, 0.19), rough=0.8, noise=0.25)
-import random; rnd = random.Random(11)
-for row in range(4):
-    for k in range(4 - (row % 2)):
-        r = rnd.uniform(0.045, 0.06); x = 1.32 + k * 0.125 + (row % 2) * 0.062
-        bpy.ops.mesh.primitive_cylinder_add(vertices=14, radius=r, depth=rnd.uniform(0.36, 0.42),
-                                            location=(x, 2.02 + rnd.uniform(-0.02, 0.02), HEARTH_TOP + 0.055 + row * 0.105),
-                                            rotation=(math.pi / 2, 0, rnd.uniform(-0.05, 0.05)))
-        lg = bpy.context.active_object; lg.name = 'Firewood'
-        lg.data.materials.append(M_BARK); lg.data.materials.append(M_ENDGRAIN)
-        for p in lg.data.polygons:
-            if abs(p.normal.y) > 0.9 or abs(p.normal.z) > 0.9: p.material_index = 1
 # on the table: wine bottle, wooden bowl, brass candlesticks with lit candles
 bottles = place('wine_bottles_01', 0.80, 0.28, 0.0)
 if bottles:   # keep only the bordeaux bottle
@@ -489,6 +514,17 @@ for cx, cy, h, r in ((-0.45, 0.09, 0.15, 0.034), (-0.385, 0.075, 0.10, 0.03), (-
     c = bpy.context.active_object; c.data.materials.append(M_WAX); c.modifiers.new('Bevel', 'BEVEL').width = 0.003
     for p in c.data.polygons: p.use_smooth = True
     candle_flame(cx, cy, 0.012 + h + 0.008)
+
+# ---------------------------------------------------------------- product realism
+scr_img = bpy.data.images.get('screen.png')
+if scr_img:   # standby: a black panel. The website overlays the live screen content on top of the render.
+    px = [0.004, 0.004, 0.005, 1.0] * (scr_img.size[0] * scr_img.size[1]); scr_img.pixels = px; scr_img.pack()
+scr = bpy.data.materials.get('ScreenMat')
+if scr:
+    sb = next(n for n in scr.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
+    sb.inputs['Roughness'].default_value = 0.06; sb.inputs['Coat Weight'].default_value = 0.0
+    scuff(scr, lo=0.4, hi=3.0, scale=40, pores=0)
+if bpy.data.materials.get('MouldedBlack'): scuff(bpy.data.materials['MouldedBlack'], lo=0.85, hi=1.35, scale=12, pores=0)
 
 # ---------------------------------------------------------------- world: clear night sky
 w = bpy.data.worlds.new('Night'); sc.world = w; w.use_nodes = True; wn = w.node_tree
@@ -519,9 +555,9 @@ sc.camera = cam
 r = sc.render; cy = sc.cycles
 r.engine = 'CYCLES'; r.resolution_x, r.resolution_y = A.width, A.height; r.resolution_percentage = 100
 r.film_transparent = False
-cy.samples = A.samples; cy.use_adaptive_sampling = True; cy.adaptive_threshold = 0.02
+cy.samples = A.samples; cy.use_adaptive_sampling = True; cy.adaptive_threshold = 0.01
 cy.use_denoising = True; cy.denoiser = 'OPENIMAGEDENOISE'
-cy.max_bounces = 8; cy.diffuse_bounces = 3; cy.glossy_bounces = 4; cy.transmission_bounces = 8; cy.transparent_max_bounces = 24
+cy.max_bounces = 8; cy.diffuse_bounces = 6; cy.glossy_bounces = 4; cy.transmission_bounces = 8; cy.transparent_max_bounces = 24
 cy.sample_clamp_indirect = 6.0; cy.caustics_reflective = False; cy.caustics_refractive = False
 if A.gpu:
     prefs = bpy.context.preferences.addons['cycles'].preferences
@@ -532,6 +568,7 @@ if A.gpu:
     cy.device = 'GPU'
 sc.view_settings.view_transform = 'AgX'; sc.view_settings.look = 'AgX - Medium High Contrast'; sc.view_settings.exposure = 0.0
 r.image_settings.file_format = 'PNG'
+# camera effects (bloom, lens fringing, vignette) are applied afterwards by post.py on the saved frames
 
 if A.save_blend: bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(A.save_blend))
 os.makedirs(os.path.dirname(os.path.abspath(A.out)), exist_ok=True)
