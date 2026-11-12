@@ -21,8 +21,10 @@ argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else sys.argv[1:]
 ap = argparse.ArgumentParser()
 ap.add_argument('--product', default=os.path.join(HERE, '..', 'jeemu.blend'))
 ap.add_argument('--look', default='dark', choices=['dark', 'light', 'scandi'])
-ap.add_argument('--view', default='wide', choices=['wide', 'play'])
+ap.add_argument('--view', default='wide', choices=['wide', 'play', 'over'])
 ap.add_argument('--fire', type=float, default=1.0)
+ap.add_argument('--sky', type=float, default=0.12, help='night-sky (HDRI) strength')
+ap.add_argument('--sky-rot', type=float, default=240.0, help='turn the night photo (degrees) to frame the treeline')
 ap.add_argument('--out', default=os.path.join(HERE, 'out', 'frame.png'))
 ap.add_argument('--width', type=int, default=960)
 ap.add_argument('--height', type=int, default=540)
@@ -41,8 +43,8 @@ FIRE = (-0.62, 0.62, FLOOR + 0.48, FLOOR + 0.98)   # firebox opening x0, x1, z0,
 LOOKS = {
     'dark':   dict(wall='rock_wall_08', wall_tile=1.4, wall_val=0.85, wall_sat=0.8,
                    floor='wood_floor', floor_val=0.45, floor_sat=0.85, floor_tint=(1.0, 0.92, 0.85),
-                   table='american_walnut_veneer', table_tint=(0.55, 0.36, 0.24), table_val=1.0,
-                   rug_tint=(0.62, 0.57, 0.50), plaster=(0.20, 0.19, 0.18), hearth=(0.035, 0.035, 0.037)),
+                   table='smoked_walnut_veneer', table_tint=(0.42, 0.27, 0.18), table_val=0.7,
+                   rug_tint=(0.80, 0.74, 0.66), plaster=(0.20, 0.19, 0.18), hearth=(0.035, 0.035, 0.037)),
     'light':  dict(wall='rustic_stone_wall_02', wall_tile=1.6, wall_val=1.0, wall_sat=0.75,
                    floor='wood_floor', floor_val=0.85, floor_sat=0.8, floor_tint=(1.0, 0.97, 0.92),
                    table='marble_01', table_tint=(1.0, 0.96, 0.9), table_val=1.0,
@@ -144,9 +146,9 @@ def plain(name, color, rough=0.6, metal=0.0, noise=0.0):
         nt.links.new(bump.outputs[0], b.inputs['Normal'])
     return m
 
-def pbr(name, asset, tile, val=1.0, sat=1.0, tint=(1, 1, 1), bump=0.4, rough_mul=1.0, rot=0.0, coat=0.0):
+def pbr(name, asset, tile, val=1.0, sat=1.0, tint=(1, 1, 1), bump=0.4, rough_mul=1.0, rot=0.0, coat=0.0, res='2k', vary=0.0):
     """Poly Haven texture, box-projected in world space (tile = metres per texture repeat)."""
-    t = ph_texture(asset)
+    t = ph_texture(asset, res)
     m = bpy.data.materials.new(name); nt, out = nodes_of(m)
     b = nt.nodes.new('ShaderNodeBsdfPrincipled'); nt.links.new(b.outputs[0], out.inputs[0])
     if coat and 'Coat Weight' in b.inputs: b.inputs['Coat Weight'].default_value = coat; b.inputs['Coat Roughness'].default_value = 0.25
@@ -163,7 +165,15 @@ def pbr(name, asset, tile, val=1.0, sat=1.0, tint=(1, 1, 1), bump=0.4, rough_mul
     nt.links.new(d.outputs['Color'], hsv.inputs['Color'])
     mix = nt.nodes.new('ShaderNodeMix'); mix.data_type = 'RGBA'; mix.blend_type = 'MULTIPLY'; mix.inputs['Factor'].default_value = 1
     nt.links.new(hsv.outputs[0], mix.inputs['A']); mix.inputs['B'].default_value = (*tint, 1)
-    nt.links.new(mix.outputs['Result'], b.inputs['Base Color'])
+    col = mix.outputs['Result']
+    if vary:   # low-frequency light/dark patches break up the texture repeat
+        nz = nt.nodes.new('ShaderNodeTexNoise'); nz.inputs['Scale'].default_value = 0.6; nz.inputs['Detail'].default_value = 3
+        nt.links.new(tc.outputs['Object'], nz.inputs['Vector'])
+        mr = nt.nodes.new('ShaderNodeMapRange'); mr.inputs['To Min'].default_value = 1 - vary; mr.inputs['To Max'].default_value = 1 + vary
+        nt.links.new(nz.outputs['Fac'], mr.inputs['Value'])
+        m2 = nt.nodes.new('ShaderNodeMix'); m2.data_type = 'RGBA'; m2.blend_type = 'MULTIPLY'; m2.inputs['Factor'].default_value = 1
+        nt.links.new(col, m2.inputs['A']); nt.links.new(mr.outputs[0], m2.inputs['B']); col = m2.outputs['Result']
+    nt.links.new(col, b.inputs['Base Color'])
     if 'rough' in t:
         r = img(t['rough'], False); mm = nt.nodes.new('ShaderNodeMath'); mm.operation = 'MULTIPLY'; mm.inputs[1].default_value = rough_mul
         nt.links.new(r.outputs['Color'], mm.inputs[0]); nt.links.new(mm.outputs[0], b.inputs['Roughness'])
@@ -181,10 +191,10 @@ def glass_mat(name, color=(1, 1, 1), rough=0.0):
     return m
 
 # ---------------------------------------------------------------- materials
-M_WALL = pbr('Stone', L['wall'], L['wall_tile'], val=L['wall_val'], sat=L['wall_sat'], bump=0.8, rough_mul=1.1)
-M_FLOOR = pbr('Floor', L['floor'], 2.4, val=L['floor_val'], sat=L['floor_sat'], tint=L['floor_tint'], bump=0.1, rough_mul=0.8, rot=math.pi / 2)
-M_TABLE = pbr('TableTop', L['table'], 1.2, val=L['table_val'], tint=L['table_tint'], bump=0.05, rough_mul=0.7, coat=0.3)
-M_RUG = pbr('Rug', 'rough_linen', 0.6, sat=0.0, val=1.0, tint=L['rug_tint'], bump=0.6, rough_mul=1.2)
+M_WALL = pbr('Stone', L['wall'], L['wall_tile'] * 1.3, val=L['wall_val'], sat=L['wall_sat'], bump=1.0, rough_mul=1.1, res='4k', vary=0.25)
+M_FLOOR = pbr('Floor', L['floor'], 2.4, vary=0.15, val=L['floor_val'], sat=L['floor_sat'], tint=L['floor_tint'], bump=0.1, rough_mul=0.8, rot=math.pi / 2)
+M_TABLE = pbr('TableTop', L['table'], 1.4, val=L['table_val'], tint=L['table_tint'], bump=0.03, rough_mul=0.55, coat=0.5, res='4k')
+M_RUG = pbr('Rug', 'curly_teddy_natural', 0.5, sat=0.35, val=0.9, tint=L['rug_tint'], bump=1.0, rough_mul=1.3, vary=0.1)
 M_PLASTER = plain('Plaster', L['plaster'], rough=0.85, noise=0.08)
 M_HEARTH = plain('Hearth', L['hearth'], rough=0.45, noise=0.15)
 M_STEEL = plain('BlackSteel', (0.018, 0.018, 0.02), rough=0.35, metal=0.9)
@@ -227,35 +237,7 @@ for s in (-1, 1):
     for z in (FLOOR, CEIL - 0.045):
         box('Rail', xa, WALL_Y - 0.06, z, xb, WALL_Y + 0.01, z + 0.045, mat=M_STEEL)
 
-# outside: dark lawn falling away, then a treeline
-box('Lawn', -40, WALL_Y + 0.1, FLOOR - 0.3, 40, 60, FLOOR - 0.25, mat=M_GROUND)
-
-# ---------------------------------------------------------------- furniture
-TX0, TX1, TY0, TY1 = -0.75, 0.75, -0.38, 0.38      # coffee table 150 x 76 cm, top at z=0
-box('TableTop', TX0, TY0, -0.045, TX1, TY1, 0.0, bevel=0.004, mat=M_TABLE)
-box('TableBase', TX0 + 0.32, TY0 + 0.20, FLOOR, TX1 - 0.32, TY1 - 0.20, -0.045, bevel=0.003, mat=plain('Plinth', (0.03, 0.025, 0.02), rough=0.5))
-rug = box('Rug', -1.6, -1.25, FLOOR, 1.6, 1.15, FLOOR + 0.012, bevel=0.004, mat=M_RUG)
-
-# wine glass (lathe profile) with red wine
-def lathe(name, prof, mat, steps=48):
-    bm = bmesh.new(); rings = []
-    for i in range(steps):
-        a = 2 * math.pi * i / steps; ca, sa = math.cos(a), math.sin(a)
-        rings.append([bm.verts.new((r * ca, r * sa, z)) for r, z in prof])
-    for i in range(steps):
-        r0, r1 = rings[i], rings[(i + 1) % steps]
-        for j in range(len(prof) - 1): bm.faces.new((r0[j], r1[j], r1[j + 1], r0[j + 1]))
-    me = bpy.data.meshes.new(name); bm.to_mesh(me); bm.free()
-    for p in me.polygons: p.use_smooth = True
-    o = link(bpy.data.objects.new(name, me)); o.data.materials.append(mat); return o
-
-glass_prof = [(0.0, 0.0), (0.038, 0.0), (0.039, 0.002), (0.006, 0.006), (0.0035, 0.012), (0.0035, 0.095), (0.012, 0.102),
-              (0.036, 0.125), (0.044, 0.16), (0.042, 0.19), (0.036, 0.215), (0.0355, 0.216), (0.0405, 0.19), (0.0425, 0.16),
-              (0.0345, 0.126), (0.011, 0.104), (0.0, 0.103)]
-wine_prof = [(0.0, 0.1035), (0.0105, 0.1045), (0.034, 0.126), (0.0405, 0.15), (0.0412, 0.152), (0.0, 0.152)]
-GX, GY = 0.34, -0.06
-for o in (lathe('WineGlass', glass_prof, glass_mat('Crystal')), lathe('Wine', wine_prof, glass_mat('Wine', (0.55, 0.03, 0.06)))):
-    o.location = (GX, GY, 0.0)
+# outside is the night photograph itself (world HDRI): a real treeline against distant town glow
 
 # ---------------------------------------------------------------- fire: charred logs with embers + flame cards
 def ember_mat():
@@ -300,7 +282,7 @@ def flame_mat(strength):
     mid = r.elements.new(0.45); mid.color = (1.0, 0.38, 0.05, 1)
     nt.links.new(a.outputs[0], cr.inputs['Fac'])
     em = nt.nodes.new('ShaderNodeEmission'); nt.links.new(cr.outputs['Color'], em.inputs['Color'])
-    es = nt.nodes.new('ShaderNodeMath'); es.operation = 'MULTIPLY'; es.inputs[1].default_value = 2.2 * strength
+    es = nt.nodes.new('ShaderNodeMath'); es.operation = 'MULTIPLY'; es.inputs[1].default_value = 1.3 * strength
     nt.links.new(a.outputs[0], es.inputs[0]); nt.links.new(es.outputs[0], em.inputs['Strength'])
     tr = nt.nodes.new('ShaderNodeBsdfTransparent'); mx = nt.nodes.new('ShaderNodeMixShader')
     nt.links.new(a.outputs[0], mx.inputs['Fac']); nt.links.new(tr.outputs[0], mx.inputs[1]); nt.links.new(em.outputs[0], mx.inputs[2])
@@ -347,47 +329,190 @@ light('FloorLamp', 'AREA', (-1.9, -1.6, 1.15), 70, (1.0, 0.72, 0.46), size=0.55,
 light('NightFill', 'AREA', (0, WALL_Y - 0.3, 1.2), 10, (0.55, 0.65, 1.0), size=6.0, size_y=2.5,
       rot=(math.radians(-90), 0, 0))
 
+# ---------------------------------------------------------------- furniture
+def world_bbox(o):
+    pts = []
+    for ob in [o] + list(o.children_recursive):
+        if ob.type == 'MESH':
+            pts += [ob.matrix_world @ Vector(c) for c in ob.bound_box]
+    if not pts: return Vector((0, 0, 0)), Vector((0, 0, 0))
+    return Vector([min(p[i] for p in pts) for i in range(3)]), Vector([max(p[i] for p in pts) for i in range(3)])
+
+def stadium(name, cx, cy, length, width, z0, z1, mat, bevel=0.0, seg=24):
+    """Racetrack-shaped slab: two half-circles joined by straight sides (long axis along X)."""
+    r = width / 2; hx = length / 2 - r; ring = []
+    for i in range(seg + 1):
+        a = -math.pi / 2 + math.pi * i / seg; ring.append((cx + hx + r * math.cos(a), cy + r * math.sin(a)))
+    for i in range(seg + 1):
+        a = math.pi / 2 + math.pi * i / seg; ring.append((cx - hx + r * math.cos(a), cy + r * math.sin(a)))
+    n = len(ring)
+    v = [(x, y, z0) for x, y in ring] + [(x, y, z1) for x, y in ring]
+    f = [tuple(reversed(range(n))), tuple(range(n, 2 * n))] + [(i, (i + 1) % n, n + (i + 1) % n, n + i) for i in range(n)]
+    o = mesh_obj(name, v, f)
+    for p in o.data.polygons: p.use_smooth = True
+    if bevel:
+        m = o.modifiers.new('Bevel', 'BEVEL'); m.width = bevel; m.segments = 6; m.limit_method = 'ANGLE'; m.angle_limit = math.radians(50)
+        o.modifiers.new('Normals', 'WEIGHTED_NORMAL').keep_sharp = True
+    o.data.materials.append(mat); return o
+
+# low racetrack coffee table in smoked walnut on a recessed dark plinth
+TCX, TCY, TL, TW = 0.18, 0.02, 1.75, 0.92
+stadium('TableTop', TCX, TCY, TL, TW, -0.05, 0.0, M_TABLE, bevel=0.018)
+stadium('TablePlinth', TCX, TCY, TL - 0.5, TW - 0.36, FLOOR + 0.01, -0.05, plain('Plinth', (0.025, 0.02, 0.016), rough=0.45))
+stadium('Rug', 0.05, -0.05, 3.6, 2.5, FLOOR, FLOOR + 0.018, M_RUG, bevel=0.008, seg=40)
+
+# glassware (lathe profiles)
+def lathe(name, prof, mat, steps=48):
+    bm = bmesh.new(); rings = []
+    for i in range(steps):
+        a = 2 * math.pi * i / steps; ca, sa = math.cos(a), math.sin(a)
+        rings.append([bm.verts.new((r * ca, r * sa, z)) for r, z in prof])
+    for i in range(steps):
+        r0, r1 = rings[i], rings[(i + 1) % steps]
+        for j in range(len(prof) - 1): bm.faces.new((r0[j], r1[j], r1[j + 1], r0[j + 1]))
+    me = bpy.data.meshes.new(name); bm.to_mesh(me); bm.free()
+    for p in me.polygons: p.use_smooth = True
+    o = link(bpy.data.objects.new(name, me)); o.data.materials.append(mat); return o
+
+glass_prof = [(0.0, 0.0), (0.038, 0.0), (0.039, 0.002), (0.006, 0.006), (0.0035, 0.012), (0.0035, 0.095), (0.012, 0.102),
+              (0.036, 0.125), (0.044, 0.16), (0.042, 0.19), (0.036, 0.215), (0.0355, 0.216), (0.0405, 0.19), (0.0425, 0.16),
+              (0.0345, 0.126), (0.011, 0.104), (0.0, 0.103)]
+def wine_prof(level):   # level: height of the wine surface above the bowl bottom
+    zt = 0.1035 + level; rt = min(0.0412, 0.0105 + level * 1.1)
+    return [(0.0, 0.1035), (0.0105, 0.1045), (min(0.034, rt), min(0.126, zt)), (rt, zt), (0.0, zt)]
+M_CRYSTAL = glass_mat('Crystal'); M_WINE = glass_mat('Wine', (0.50, 0.025, 0.05))
+for name, (gx, gy), level in (('GlassA', (0.36, -0.10), 0.048), ('GlassB', (0.62, 0.24), 0.012)):
+    lathe(name, glass_prof, M_CRYSTAL).location = (gx, gy, 0.0)
+    if level: lathe(name + 'Wine', wine_prof(level), M_WINE).location = (gx, gy, 0.0)
+
+# ---------------------------------------------------------------- polaroids from tonight, scattered on the table
+# Instant-film proportions: 88 x 107 mm card, 79 x 79 mm picture, deep bottom border for the handwriting.
+# The pictures here are placeholders; on the site the real photos and the handwritten copy are laid over each
+# polaroid (its corners are exported per frame, the same way the Jeemu screen is tracked today).
+PHOTOS = [os.path.join(HERE, '..', 'previews', f) for f in sorted(os.listdir(os.path.join(HERE, '..', 'previews'))) if f.endswith('.jpg')]
+M_CARD = plain('PolaroidCard', (0.86, 0.85, 0.82), rough=0.55, noise=0.03)
+def photo_mat(i):
+    m = bpy.data.materials.new(f'Photo{i}'); nt, out = nodes_of(m)
+    b = nt.nodes.new('ShaderNodeBsdfPrincipled'); b.inputs['Roughness'].default_value = 0.22
+    nt.links.new(b.outputs[0], out.inputs[0])
+    if PHOTOS:
+        tc = nt.nodes.new('ShaderNodeTexCoord'); mp = nt.nodes.new('ShaderNodeMapping')
+        mp.inputs['Scale'].default_value = (0.5625, 1, 1); mp.inputs['Location'].default_value = (0.22, 0, 0)   # centre-crop 16:9 to square
+        im = nt.nodes.new('ShaderNodeTexImage'); im.image = bpy.data.images.load(PHOTOS[i % len(PHOTOS)], check_existing=True)
+        nt.links.new(tc.outputs['UV'], mp.inputs['Vector']); nt.links.new(mp.outputs[0], im.inputs['Vector'])
+        warm = nt.nodes.new('ShaderNodeMix'); warm.data_type = 'RGBA'; warm.blend_type = 'MULTIPLY'; warm.inputs['Factor'].default_value = 0.35
+        warm.inputs['B'].default_value = (1.0, 0.8, 0.6, 1)
+        nt.links.new(im.outputs['Color'], warm.inputs['A']); nt.links.new(warm.outputs['Result'], b.inputs['Base Color'])
+    return m
+
+def polaroid(i, x, y, rz, lift=0.0):
+    z = 0.0004 + lift
+    card = box(f'Polaroid{i}', -0.044, -0.0535, 0.0, 0.044, 0.0535, 0.0008, mat=M_CARD)
+    bpy.ops.mesh.primitive_plane_add(size=0.079, location=(0, 0.008, 0.00085))
+    ph = bpy.context.active_object; ph.name = f'Polaroid{i}Photo'; ph.data.materials.append(photo_mat(i)); ph.parent = card
+    card.location = (x, y, z); card.rotation_euler = (0, 0, rz)
+    return card
+
+for i, (x, y, rz, lift) in enumerate(((0.30, -0.30, 0.18, 0.0), (0.44, -0.25, -0.22, 0.0009), (0.60, -0.31, 0.09, 0.0),
+                                      (0.78, -0.18, -0.35, 0.0), (0.93, -0.02, 0.5, 0.0), (-0.30, -0.28, -0.12, 0.0),
+                                      (-0.43, -0.22, 0.28, 0.0009), (0.73, -0.36, 1.45, 0.0018))):
+    polaroid(i, x, y, rz, lift)
+
 # ---------------------------------------------------------------- props (Poly Haven, CC0)
-def place(asset, loc, rz=0.0, scale=1.0):
+def place(asset, x, y, z=FLOOR, rz=0.0, scale=1.0, sit=True):
+    """Imports a model and stands it on the surface at height z (its lowest point touches z)."""
     try: o = ph_model(asset)
     except Exception as e: print('model failed', asset, e); return None
-    o.location = loc; o.rotation_euler = (0, 0, rz) if o.rotation_mode != 'QUATERNION' else o.rotation_euler
-    if o.rotation_mode == 'QUATERNION': o.rotation_quaternion = Euler((0, 0, rz)).to_quaternion()
-    o.scale = (scale,) * 3; return o
+    o.rotation_mode = 'XYZ'; o.rotation_euler = (0, 0, rz); o.scale = (scale,) * 3; o.location = (x, y, z)
+    bpy.context.view_layer.update()
+    if sit:
+        lo, hi = world_bbox(o); o.location.z += z - lo.z
+    bpy.context.view_layer.update(); return o
 
-place('pachira_aquatica_01', (-3.3, 1.9, FLOOR), 0.6)
-place('mid_century_lounge_chair', (2.55, 0.55, FLOOR), math.radians(130))
-place('sofa_02', (0.0, -2.5, FLOOR), 0.0)           # behind the camera: shows up in the glass reflections
-# treeline: simple stacked-cone conifers. Outside is only ever a dark, out-of-focus silhouette, so real tree
-# models (hundreds of MB each) would cost memory and render time for nothing.
-M_TREE = plain('Conifer', (0.010, 0.014, 0.010), rough=0.9, noise=0.5)
-import random; rnd = random.Random(3)
-for i in range(40):
-    x = rnd.uniform(-30, 30); y = rnd.uniform(22, 45); hgt = rnd.uniform(6, 11); rad = hgt * rnd.uniform(0.18, 0.26)
-    for k in range(4):
-        t = k / 4
-        bpy.ops.mesh.primitive_cone_add(vertices=9, radius1=rad * (1 - t * 0.7), radius2=0, depth=hgt * (0.45 - t * 0.06),
-                                        location=(x, y, FLOOR - 0.3 + hgt * (0.12 + t * 0.2) + hgt * (0.45 - t * 0.06) / 2))
-        c = bpy.context.active_object; c.data.materials.append(M_TREE); c.rotation_euler.z = rnd.uniform(0, 3)
+HEARTH_TOP = FLOOR + 0.32
+# seating: sofa along the left window (facing the fire/table) with cushions; Eames-style lounge chair + ottoman by the fire
+sofa = place('sofa_03', -2.15, 0.05, rz=math.radians(90))
+if sofa:
+    lo, hi = world_bbox(sofa); seat = lo.z + (hi.z - lo.z) * 0.48
+    pil = place('throw_pillows_01', lo.x + 0.30, 0.55, seat, rz=math.radians(80))
+    pil2 = place('throw_pillows_01', lo.x + 0.30, -0.45, seat, rz=math.radians(105))
+place('mid_century_lounge_chair', 1.95, 1.05, rz=math.radians(-40))
+place('Ottoman_01', 1.45, 0.55, rz=math.radians(-40))
+# plants in the window corners and beside the chair
+place('pachira_aquatica_01', -3.35, 1.95, rz=0.6)
+place('potted_plant_02', 3.25, 2.05, rz=1.2, scale=1.15)
+place('calathea_orbifolia_01', 2.65, 1.75, rz=0.3)
+# side table by the sofa with a plant on it
+st = place('side_table_01', -2.05, 1.05)
+if st:
+    lo, hi = world_bbox(st); place('anthurium_botany_01', -2.05, 1.05, hi.z, rz=0.4)
+# hearth styling: ceramic vases on the left, a cat sculpture, stacked firewood on the right
+place('ceramic_vase_03', -1.62, 1.98, HEARTH_TOP, rz=0.2)
+place('ceramic_vase_01', -1.45, 2.06, HEARTH_TOP, rz=1.0)
+place('antique_ceramic_vase_01', -1.30, 1.95, HEARTH_TOP, rz=2.0, scale=0.8)
+place('concrete_cat_statue', 0.85, 1.98, HEARTH_TOP, rz=math.radians(-150), scale=0.9)
+M_BARK = pbr('Bark', 'bark_brown_02', 0.35, sat=0.3, val=0.6, bump=0.6)
+M_ENDGRAIN = plain('EndGrain', (0.42, 0.30, 0.19), rough=0.8, noise=0.25)
+import random; rnd = random.Random(11)
+for row in range(4):
+    for k in range(4 - (row % 2)):
+        r = rnd.uniform(0.045, 0.06); x = 1.32 + k * 0.125 + (row % 2) * 0.062
+        bpy.ops.mesh.primitive_cylinder_add(vertices=14, radius=r, depth=rnd.uniform(0.36, 0.42),
+                                            location=(x, 2.02 + rnd.uniform(-0.02, 0.02), HEARTH_TOP + 0.055 + row * 0.105),
+                                            rotation=(math.pi / 2, 0, rnd.uniform(-0.05, 0.05)))
+        lg = bpy.context.active_object; lg.name = 'Firewood'
+        lg.data.materials.append(M_BARK); lg.data.materials.append(M_ENDGRAIN)
+        for p in lg.data.polygons:
+            if abs(p.normal.y) > 0.9 or abs(p.normal.z) > 0.9: p.material_index = 1
+# on the table: wine bottle, wooden bowl, brass candlesticks with lit candles
+bottles = place('wine_bottles_01', 0.80, 0.28, 0.0)
+if bottles:   # keep only the bordeaux bottle
+    for c in list(bottles.children_recursive):
+        if c.type == 'MESH' and 'bordeaux' not in c.name.lower(): bpy.data.objects.remove(c, do_unlink=True)
+    bpy.context.view_layer.update(); lo, hi = world_bbox(bottles)
+    bottles.location.x += 0.80 - (lo.x + hi.x) / 2; bottles.location.y += 0.28 - (lo.y + hi.y) / 2; bottles.location.z += -lo.z
+place('wooden_bowl_01', -0.40, 0.22, 0.0, rz=0.5)
+M_WAX = plain('Wax', (0.62, 0.57, 0.50), rough=0.4)
+M_WAX.node_tree.nodes['Principled BSDF'].inputs['Subsurface Weight'].default_value = 0.6
+M_WAX.node_tree.nodes['Principled BSDF'].inputs['Subsurface Radius'].default_value = (0.02, 0.012, 0.006)
+def candle_flame(x, y, z):
+    m = bpy.data.materials.new('CandleFlame'); nt, out = nodes_of(m)
+    em = nt.nodes.new('ShaderNodeEmission'); em.inputs['Color'].default_value = (1.0, 0.55, 0.18, 1); em.inputs['Strength'].default_value = 12
+    nt.links.new(em.outputs[0], out.inputs[0])
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=12, ring_count=8, radius=0.006, location=(x, y, z + 0.012))
+    fl = bpy.context.active_object; fl.scale = (0.6, 0.6, 1.9); fl.data.materials.append(m); fl.visible_shadow = False
+    light('Candle', 'POINT', (x, y, z + 0.02), 0.35, (1.0, 0.55, 0.22), size=0.01)
+# three pillar candles of different heights on a small round stone tray
+stadium('CandleTray', -0.42, 0.06, 0.20, 0.20, 0.0, 0.012, plain('TrayStone', (0.05, 0.048, 0.045), rough=0.35, noise=0.2), bevel=0.003)
+for cx, cy, h, r in ((-0.45, 0.09, 0.15, 0.034), (-0.385, 0.075, 0.10, 0.03), (-0.43, 0.01, 0.07, 0.03)):
+    bpy.ops.mesh.primitive_cylinder_add(vertices=32, radius=r, depth=h, location=(cx, cy, 0.012 + h / 2))
+    c = bpy.context.active_object; c.data.materials.append(M_WAX); c.modifiers.new('Bevel', 'BEVEL').width = 0.003
+    for p in c.data.polygons: p.use_smooth = True
+    candle_flame(cx, cy, 0.012 + h + 0.008)
 
 # ---------------------------------------------------------------- world: clear night sky
 w = bpy.data.worlds.new('Night'); sc.world = w; w.use_nodes = True; wn = w.node_tree
 for n in list(wn.nodes): wn.nodes.remove(n)
-env = wn.nodes.new('ShaderNodeTexEnvironment'); env.image = bpy.data.images.load(ph_hdri('rogland_clear_night'))
-bg = wn.nodes.new('ShaderNodeBackground'); bg.inputs['Strength'].default_value = 0.10
+env = wn.nodes.new('ShaderNodeTexEnvironment'); env.image = bpy.data.images.load(ph_hdri('moonless_golf', '4k'))
+emap = wn.nodes.new('ShaderNodeMapping'); emap.inputs['Rotation'].default_value = (0, 0, math.radians(A.sky_rot))
+etc = wn.nodes.new('ShaderNodeTexCoord'); wn.links.new(etc.outputs['Generated'], emap.inputs['Vector']); wn.links.new(emap.outputs[0], env.inputs['Vector'])
+bg = wn.nodes.new('ShaderNodeBackground'); bg.inputs['Strength'].default_value = A.sky
 wo = wn.nodes.new('ShaderNodeOutputWorld'); wn.links.new(env.outputs[0], bg.inputs[0]); wn.links.new(bg.outputs[0], wo.inputs[0])
 
 # ---------------------------------------------------------------- camera
 cam = bpy.data.objects['Cam']; cd = cam.data
+for c in list(cam.constraints): cam.constraints.remove(c)   # the product file aims the camera at Jeemu; views here set it explicitly
 VIEWS = {   # location, look-at, lens mm, f-stop
     'wide': ((0.05, -1.40, 0.24), (0.0, 2.4, 0.80), 26, 1.8),
     'play': ((0.24, -0.82, 0.30), (0.0, 0.0, 0.15), 35, 2.4),
+    'over': ((0.52, -0.66, 0.36), (0.50, -0.24, 0.0), 40, 3.2),     # leaning over the photos on the table
 }
 loc, tgt, lens, fstop = VIEWS[A.view]
 cam.location = loc
 cam.rotation_mode = 'XYZ'; cam.rotation_euler = (Vector(tgt) - Vector(loc)).to_track_quat('-Z', 'Y').to_euler()
 cd.lens = lens; cd.sensor_width = 36; cd.dof.use_dof = True; cd.dof.aperture_fstop = fstop
-cd.dof.focus_object = bpy.data.objects.get('Focus'); cd.clip_start = 0.01; cd.clip_end = 200
+cd.dof.focus_object = bpy.data.objects.get('Focus') if A.view != 'over' else None
+if A.view == 'over': cd.dof.focus_distance = (Vector(tgt) - Vector(loc)).length; cd.clip_start = 0.01; cd.clip_end = 200
 sc.camera = cam
 
 # ---------------------------------------------------------------- render settings
