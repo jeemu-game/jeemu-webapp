@@ -21,7 +21,7 @@ argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else sys.argv[1:]
 ap = argparse.ArgumentParser()
 ap.add_argument('--product', default=os.path.join(HERE, '..', 'jeemu.blend'))
 ap.add_argument('--look', default='dark', choices=['dark', 'light', 'scandi'])
-ap.add_argument('--view', default='wide', choices=['wide', 'play', 'over', 'close', 'top'])
+ap.add_argument('--view', default='wide', choices=['wide', 'play', 'over', 'close', 'top', 'product', 'frog'])
 ap.add_argument('--fire', type=float, default=1.0)
 ap.add_argument('--sky', type=float, default=0.12, help='night-sky (HDRI) strength')
 ap.add_argument('--sky-rot', type=float, default=240.0, help='turn the night photo (degrees) to frame the treeline')
@@ -33,6 +33,7 @@ ap.add_argument('--gpu', action='store_true')
 ap.add_argument('--save-blend', default='')
 ap.add_argument('--blank-photos', action='store_true', help='plain white picture areas: the website lays the real photos over them')
 ap.add_argument('--late', action='store_true', help='end of the night: embers, empty glasses, burnt-down candles, a gappy tower')
+ap.add_argument('--mask', action='store_true', help='render only a matte of Jeemu, the blocks and the polaroids (alpha), for compositing over an AI-enhanced still')
 ap.add_argument('--meta', default='', help='write JSON with the screen and polaroid corners in image pixels')
 A = ap.parse_args(argv)
 if A.late: A.fire = 0.0
@@ -547,7 +548,9 @@ if scr:
     sb = next(n for n in scr.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
     sb.inputs['Roughness'].default_value = 0.06; sb.inputs['Coat Weight'].default_value = 0.0
     scuff(scr, lo=0.4, hi=3.0, scale=40, pores=0)
-if bpy.data.materials.get('MouldedBlack'): scuff(bpy.data.materials['MouldedBlack'], lo=0.85, hi=1.35, scale=12, pores=0)
+# the real prototype: speckled black print, mint JEEMU and frog, pine blocks with numbers written on in pen
+sys.path.insert(0, HERE); import prototype
+prototype.apply(CACHE, os.path.join(HERE, '..', '..', '..', 'public', 'brand'))
 
 # ---------------------------------------------------------------- world: clear night sky
 w = bpy.data.worlds.new('Night'); sc.world = w; w.use_nodes = True; wn = w.node_tree
@@ -566,14 +569,16 @@ VIEWS = {   # location, look-at, lens mm, f-stop
     'play': ((0.24, -0.82, 0.30), (0.0, 0.0, 0.15), 35, 2.4),
     'over': ((0.52, -0.66, 0.36), (0.50, -0.24, 0.0), 40, 3.2),     # leaning over the photos on the table
     'close': ((0.07, -0.42, 0.15), (0.0, -0.06, 0.06), 45, 2.0),  # tight on the screen, fire soft behind
+    'product': ((0.26, -0.24, 0.13), (0.0, 0.0, 0.05), 55, 5.6),   # checks: the JEEMU side and the screen
+    'frog': ((-0.28, -0.20, 0.12), (0.0, 0.0, 0.05), 55, 5.6),     # checks: the frog side
     'top': ((0.20, -0.14, 2.0), (0.20, -0.14, 0.0), 0, 0),          # straight down on the polaroids (orthographic)
 }
 loc, tgt, lens, fstop = VIEWS[A.view]
 cam.location = loc
 cam.rotation_mode = 'XYZ'; cam.rotation_euler = (Vector(tgt) - Vector(loc)).to_track_quat('-Z', 'Y').to_euler()
 cd.lens = lens; cd.sensor_width = 36; cd.dof.use_dof = True; cd.dof.aperture_fstop = fstop
-cd.dof.focus_object = bpy.data.objects.get('Focus') if A.view not in ('over', 'close') else None
-if A.view in ('over', 'close'): cd.dof.focus_distance = (Vector(tgt) - Vector(loc)).length
+cd.dof.focus_object = bpy.data.objects.get('Focus') if A.view not in ('over', 'close', 'product', 'frog') else None
+if A.view in ('over', 'close', 'product', 'frog'): cd.dof.focus_distance = (Vector(tgt) - Vector(loc)).length
 cd.clip_start = 0.01; cd.clip_end = 200
 if A.view == 'top':
     cam.rotation_euler = (0, 0, 0); cd.type = 'ORTHO'; cd.ortho_scale = 1.80; cd.dof.use_dof = False
@@ -601,6 +606,12 @@ r.image_settings.file_format = 'PNG'
 if A.save_blend: bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(A.save_blend))
 os.makedirs(os.path.dirname(os.path.abspath(A.out)), exist_ok=True)
 r.filepath = os.path.abspath(A.out)
+if A.mask:   # keep what must stay exact (the product, the blocks, the polaroids); everything else is cut out of the frame
+    keep = ('Shell', 'Inlays', 'TopLogo', 'Screen', 'Block', 'Proto', 'PlateSkin', 'Polaroid')
+    for o in sc.objects:
+        if o.type in ('MESH', 'CURVE', 'FONT') and not o.name.startswith(keep): o.visible_camera = False
+    r.film_transparent = True; cy.samples = 16; cy.use_denoising = False
+    r.image_settings.color_mode = 'RGBA'
 bpy.ops.render.render(write_still=True)
 if A.meta:   # where the live overlays go: corners in image pixels, clockwise from top-left as the viewer reads them
     from bpy_extras.object_utils import world_to_camera_view
