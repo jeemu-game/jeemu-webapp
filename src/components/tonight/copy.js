@@ -23,9 +23,10 @@ export const POLAROIDS = [
   { photo: 'photos/3.jpg', note: 'Tap it on the base', title: 'Tap', body: 'Touch the block to the Jeemu mark on the base. The reader sits just behind it.' },
   { photo: 'photos/4.jpg', note: 'and then... the question', title: 'Answer', body: 'A question appears on the screen. Play it, then place the block back on top.' },
   { photo: 'photos/5.jpg', note: 'never ran out of questions', title: 'I never run out of questions.', body: 'New ones keep arriving, and you can write your own in the Jeemu app.' },
-  { photo: 'photos/6.jpg', note: 'base, blocks, cable. done.', title: "What's in the box", body: 'The Jeemu base, NFC blocks, a charging cable, and a sleeve with instructions.' },
-  { photo: 'photos/7.jpg', note: 'six of us, Shanghai ♡', title: 'Six students in Shanghai.', body: 'We came from all over the world to study business, and built the game we wished we still loved.' }
+  { photo: 'photos/6.jpg', note: 'base, blocks, cable. done.', title: "What's in the box", body: 'The Jeemu base, NFC blocks, a charging cable, and a sleeve with instructions.' }
 ];
+// pictures for polaroids that lie on the table but are not visited (render polaroid 7 onwards)
+export const EXTRA_PHOTOS = ['photos/7.jpg'];
 
 export const FINALE = {
   title: 'Be there when it falls.',

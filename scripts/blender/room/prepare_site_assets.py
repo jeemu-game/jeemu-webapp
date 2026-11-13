@@ -19,3 +19,7 @@ for name in ('close', 'wide', 'play', 'top', 'late'):
     im.save(os.path.join(DST, name + '.jpg'), quality=84, optimize=True, progressive=True)
     shutil.copy(js, os.path.join(DST, name + '.json'))
     print('ok', name, im.size, os.path.getsize(os.path.join(DST, name + '.jpg')) // 1024, 'KB')
+    if name == 'top':   # out-of-focus copy for the site's depth of field (half size is plenty once blurred)
+        from PIL import ImageFilter
+        soft = im.resize((im.width // 2, im.height // 2), Image.LANCZOS).filter(ImageFilter.GaussianBlur(7))
+        soft.save(os.path.join(DST, 'top_blur.jpg'), quality=80, optimize=True, progressive=True)

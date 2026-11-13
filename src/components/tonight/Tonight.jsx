@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { quadToMatrix3d } from '../story/quad';
 import LiveScreen from './LiveScreen';
-import { SCREENS, CAPTIONS, POLAROIDS, FINALE } from './copy';
+import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE } from './copy';
 
 // "Tonight": one game night, told by scrolling. Rendered stills of the room (from scripts/blender/room) sit on a
 // sticky stage; a virtual camera pans and zooms across them in step with the scroll, and everything that changes
@@ -26,6 +26,24 @@ const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 const lerp = (a, b, k) => a + (b - a) * k;
 const mid = (q) => [(q[0][0] + q[1][0] + q[2][0] + q[3][0]) / 4, (q[0][1] + q[1][1] + q[2][1] + q[3][1]) / 4];
 const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+
+// photos and handwriting on every polaroid on the table (the extra ones are on the table but not visited)
+function TableOverlays({ m, warp, written, soft = false }) {
+  return m.polaroids.map((q, i) => {
+    const pl = POLAROIDS[i], photo = pl ? pl.photo : EXTRA_PHOTOS[i - POLAROIDS.length];
+    if (!photo) return null;
+    return (
+      <React.Fragment key={i}>
+        <div className={`tn-warp tn-photo ${soft ? 'is-soft' : ''}`} style={warp(600, 600, q.photo)}><img src={`${BASE}${photo}`} alt="" /></div>
+        {pl && (
+          <div className={`tn-warp tn-note ${soft ? 'is-soft' : ''} ${i <= written ? 'is-written' : ''}`} style={warp(600, 135, q.caption)}>
+            <span style={{ fontSize: `${Math.min(60, 1050 / Math.max(10, pl.note.length))}px` }}>{pl.note}</span>
+          </div>
+        )}
+      </React.Fragment>
+    );
+  });
+}
 
 export default function Tonight({ onCta }) {
   const section = useRef(null);
@@ -138,15 +156,17 @@ export default function Tonight({ onCta }) {
                 {m.screen && screenFor[s] && (
                   <div className="tn-warp tn-screen" style={warp(320, 240, m.screen)}><LiveScreen card={screenFor[s]} /></div>
                 )}
-                {s === 'top' && m.polaroids.map((q, i) => POLAROIDS[i] && (
-                  <React.Fragment key={i}>
-                    <div className="tn-warp tn-photo" style={warp(600, 600, q.photo)}><img src={`${BASE}${POLAROIDS[i].photo}`} alt="" /></div>
-                    <div className={`tn-warp tn-note ${i <= written ? 'is-written' : ''}`} style={warp(600, 135, q.caption)}>
-                      <span style={{ fontSize: `${Math.min(60, 1050 / Math.max(10, POLAROIDS[i].note.length))}px` }}>{POLAROIDS[i].note}</span>
-                    </div>
-                  </React.Fragment>
-                ))}
+                {s === 'top' && <TableOverlays m={m} warp={warp} written={written} />}
               </div>
+              {s === 'top' && (
+                // depth of field: a softened copy of the table on top, with a clear hole where the camera is focused
+                <div className={`tn-dof ${portrait ? 'is-portrait' : ''}`} aria-hidden="true">
+                  <div className="tn-shot" style={stageStyle(m, cam)}>
+                    <img src={`${BASE}top_blur.jpg`} alt="" width={m.width} height={m.height} draggable="false" decoding="async" />
+                    <TableOverlays m={m} warp={warp} written={written} soft />
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
