@@ -92,6 +92,27 @@ def _plate_centre(inl, sx):
     return right * mid(right) + up * mid(up) + n * plate, top - plate
 
 
+BADGE_UP = 0.0005   # the badge stands this far proud of the shell
+
+
+def _badge(name, c, right, up, n, w, h, mat, r=0.004, depth=0.0015):
+    """A flat rounded-rectangle badge with a small bevel, standing slightly proud of the sloped face."""
+    pts = []
+    for cx, cy, a0 in ((w / 2 - r, h / 2 - r, 0), (-w / 2 + r, h / 2 - r, 90), (-w / 2 + r, -h / 2 + r, 180), (w / 2 - r, -h / 2 + r, 270)):
+        for i in range(9):
+            a = math.radians(a0 + i * 90 / 8); pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
+    bm = bmesh.new()
+    lo = [bm.verts.new((x, y, BADGE_UP - depth)) for x, y in pts]; hi = [bm.verts.new((x, y, BADGE_UP)) for x, y in pts]
+    bm.faces.new(hi); bm.faces.new(lo[::-1])
+    for i in range(len(pts)): j = (i + 1) % len(pts); bm.faces.new((lo[i], lo[j], hi[j], hi[i]))
+    me = bpy.data.meshes.new(name); bm.to_mesh(me); bm.free(); me.materials.append(mat)
+    o = bpy.data.objects.new(name, me); bpy.context.scene.collection.objects.link(o)
+    o.matrix_world = Matrix.Translation(c) @ Matrix((right, up, n)).transposed().to_4x4()
+    bv = o.modifiers.new('Bevel', 'BEVEL'); bv.width = 0.0003; bv.segments = 3; bv.limit_method = 'ANGLE'
+    for p in me.polygons: p.use_smooth = True
+    return o
+
+
 def _remove_letters(inl):
     """Delete the old bone-white lettering from the inlay; its pockets stay filled by the plate."""
     bm = bmesh.new(); bm.from_mesh(inl.data)
@@ -204,21 +225,21 @@ def apply(cache_dir, brand_dir):
     mint = mint_pla()
     inl = bpy.data.objects.get('Inlays')
     if inl:
-        cen = {sx: _plate_centre(inl, sx) for sx in (1, -1)}
-        _remove_letters(inl)
-        inl.material_slots[0].material = plate_m
-        for sx in (1, -1):   # the plate had cut-outs for the old letters: close them with a skin at plate level
+        cen = {}
+        for sx in (1, -1):   # one solid badge per side, a touch bigger than the old pocket so no gap or recess shows
             right, up, n = _face_frame(sx); W = inl.matrix_world
             vs = [W @ v.co for v in inl.data.vertices if v.co.x * sx > 0]
-            w = max(v.dot(right) for v in vs) - min(v.dot(right) for v in vs)
-            h = max(v.dot(up) for v in vs) - min(v.dot(up) for v in vs)
-            _quad(f'PlateSkin{sx}', None, Matrix.Translation(cen[sx][0] + n * 0.00003) @ Matrix((right, up, n)).transposed().to_4x4(),
-                  w, h, plate_m).visible_shadow = True
-        _wordmark(cen[1][0], 1, brand_dir, mint, cen[1][1])   # letters flush with the shell, like the old ones
+            span = lambda ax: (min(v.dot(ax) for v in vs), max(v.dot(ax) for v in vs))
+            (r0, r1), (u0, u1), (_, top) = span(right), span(up), span(n)
+            c = right * (r0 + r1) / 2 + up * (u0 + u1) / 2 + n * top     # on the shell surface
+            cen[sx] = c
+            _badge(f'Badge{sx}', c, right, up, n, r1 - r0 + 0.002, u1 - u0 + 0.002, plate_m)
+        bpy.data.objects.remove(inl, do_unlink=True)
+        _wordmark(cen[1], 1, brand_dir, mint, BADGE_UP + 0.0003)   # letters stand 0.3 mm proud of the badge
         frog = os.path.join(cache_dir, 'proto', 'frog.png'); _frog_png(frog)
         right, up, n = _face_frame(-1)
         fm = _decal_mat('ProtoFrog', frog, (1, 1, 1), 1.0, rough=0.42, use_rgb=True, bump=0.25)
-        c = cen[-1][0] + n * 0.00005
+        c = cen[-1] + n * (BADGE_UP + 0.00005)
         _quad('ProtoFrog', None, Matrix.Translation(c) @ Matrix((right, up, n)).transposed().to_4x4(), 0.0215, 0.0215, fm)
     top = bpy.data.objects.get('TopLogo')
     if top:
