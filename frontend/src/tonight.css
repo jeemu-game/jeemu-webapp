@@ -122,10 +122,10 @@ html.theme-tonight ::selection { background: var(--tn-brass); color: var(--tn-in
 @keyframes tn-drop { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
 .tn-kicker { display: block; font: 700 0.72rem/1 var(--tn-sans); letter-spacing: 0.24em; text-transform: uppercase; color: var(--tn-brass); margin-bottom: 14px; }
 .tn-caption {
-  position: absolute; left: clamp(20px, 6vw, 96px); bottom: clamp(28px, 9vh, 96px); max-width: min(620px, 88vw); pointer-events: none;
+  position: absolute; left: clamp(20px, 6vw, 96px); bottom: clamp(28px, 9vh, 96px); max-width: min(560px, 88vw); pointer-events: none;
   text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
 }
-.tn-caption h2 { font: 400 clamp(2.1rem, 5.2vw, 4.4rem)/1.02 var(--tn-serif); color: var(--tn-paper); letter-spacing: -0.01em; }
+.tn-caption h2 { font: 400 clamp(2rem, 4vw, 3.5rem)/1.04 var(--tn-serif); color: var(--tn-paper); letter-spacing: -0.01em; }
 .tn-caption em { color: var(--tn-brass-hi); }
 .tn-card {
   position: absolute; right: clamp(20px, 7vw, 120px); top: 50%; transform: translateY(-50%); width: min(380px, 34vw); pointer-events: none;
