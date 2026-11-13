@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="theme-color" content="#0a0c0e">
+  <meta name="theme-color" content="#0b0907">
   <title>Jeemu | Tower game, launching on Kickstarter 24 November</title>
   
   <meta name="description" content="Jeemu is a tower game. Pull a block, tap it on the base, and the screen asks you something. We help people achieve deeper connections without the awkwardness of starting the conversation. Launching on Kickstarter 24 November.">
@@ -22,18 +22,15 @@
   <!-- Fonts: a <link> (not a CSS @import) so the browser fetches them in parallel with the app instead of after its CSS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Pixelify+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&family=Kalam:wght@400&family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/story/frog-pixel.png">
+  <link rel="icon" type="image/png" href="/tonight/favicon.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <!-- Start fetching the first frame and the timeline before the app's JavaScript has run. Same phone / desktop
-       rule as StoryPlayer (portrait window = phone render). -->
-  <link rel="preload" as="image" href="/story/mobile/poster.jpg" media="(max-aspect-ratio: 749/1000)" fetchpriority="high">
-  <link rel="preload" as="fetch" href="/story/mobile/timeline.json" crossorigin media="(max-aspect-ratio: 749/1000)">
-  <link rel="preload" as="image" href="/story/poster.jpg" media="(min-aspect-ratio: 750/1000)" fetchpriority="high">
-  <link rel="preload" as="fetch" href="/story/timeline.json" crossorigin media="(min-aspect-ratio: 750/1000)">
+  <!-- The first shot of the story and where its live screen sits, fetched before the app's JavaScript runs -->
+  <link rel="preload" as="image" href="/tonight/close.jpg" fetchpriority="high">
+  <link rel="preload" as="fetch" href="/tonight/close.json" crossorigin>
 </head>
 <body>
   <div id="root"></div>

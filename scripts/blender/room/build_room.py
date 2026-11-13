@@ -21,7 +21,7 @@ argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else sys.argv[1:]
 ap = argparse.ArgumentParser()
 ap.add_argument('--product', default=os.path.join(HERE, '..', 'jeemu.blend'))
 ap.add_argument('--look', default='dark', choices=['dark', 'light', 'scandi'])
-ap.add_argument('--view', default='wide', choices=['wide', 'play', 'over'])
+ap.add_argument('--view', default='wide', choices=['wide', 'play', 'over', 'close', 'top'])
 ap.add_argument('--fire', type=float, default=1.0)
 ap.add_argument('--sky', type=float, default=0.12, help='night-sky (HDRI) strength')
 ap.add_argument('--sky-rot', type=float, default=240.0, help='turn the night photo (degrees) to frame the treeline')
@@ -31,7 +31,11 @@ ap.add_argument('--height', type=int, default=540)
 ap.add_argument('--samples', type=int, default=48)
 ap.add_argument('--gpu', action='store_true')
 ap.add_argument('--save-blend', default='')
+ap.add_argument('--blank-photos', action='store_true', help='plain white picture areas: the website lays the real photos over them')
+ap.add_argument('--late', action='store_true', help='end of the night: embers, empty glasses, burnt-down candles, a gappy tower')
+ap.add_argument('--meta', default='', help='write JSON with the screen and polaroid corners in image pixels')
 A = ap.parse_args(argv)
+if A.late: A.fire = 0.0
 
 CACHE = os.path.join(HERE, '.cache')
 FLOOR = -0.40            # coffee-table top is z = 0, so the floor is 40 cm below
@@ -401,7 +405,7 @@ def wine_prof(level):   # level: height of the wine surface above the bowl botto
     zt = 0.1035 + level; rt = min(0.0412, 0.0105 + level * 1.1)
     return [(0.0, 0.1035), (0.0105, 0.1045), (min(0.034, rt), min(0.126, zt)), (rt, zt), (0.0, zt)]
 M_CRYSTAL = glass_mat('Crystal'); M_WINE = glass_mat('Wine', (0.50, 0.025, 0.05))
-for name, (gx, gy), level in (('GlassA', (0.36, -0.10), 0.048), ('GlassB', (0.62, 0.24), 0.012)):
+for name, (gx, gy), level in (('GlassA', (0.36, -0.10), 0.003 if A.late else 0.048), ('GlassB', (0.62, 0.24), 0.0 if A.late else 0.012)):
     lathe(name, glass_prof, M_CRYSTAL).location = (gx, gy, 0.0)
     if level: lathe(name + 'Wine', wine_prof(level), M_WINE).location = (gx, gy, 0.0)
 
@@ -415,7 +419,9 @@ def photo_mat(i):
     m = bpy.data.materials.new(f'Photo{i}'); nt, out = nodes_of(m)
     b = nt.nodes.new('ShaderNodeBsdfPrincipled'); b.inputs['Roughness'].default_value = 0.22
     nt.links.new(b.outputs[0], out.inputs[0])
-    if PHOTOS:
+    if A.blank_photos:
+        b.inputs['Base Color'].default_value = (0.9, 0.9, 0.9, 1)
+    elif PHOTOS:
         tc = nt.nodes.new('ShaderNodeTexCoord'); mp = nt.nodes.new('ShaderNodeMapping')
         mp.inputs['Scale'].default_value = (0.5625, 1, 1); mp.inputs['Location'].default_value = (0.22, 0, 0)   # centre-crop 16:9 to square
         im = nt.nodes.new('ShaderNodeTexImage'); im.image = bpy.data.images.load(PHOTOS[i % len(PHOTOS)], check_existing=True)
@@ -433,10 +439,11 @@ def polaroid(i, x, y, rz, lift=0.0):
     card.location = (x, y, z); card.rotation_euler = (0, 0, rz)
     return card
 
-for i, (x, y, rz, lift) in enumerate(((0.30, -0.30, 0.18, 0.0), (0.44, -0.25, -0.22, 0.0009), (0.60, -0.31, 0.09, 0.0),
-                                      (0.78, -0.18, -0.35, 0.0), (0.93, -0.02, 0.5, 0.0), (-0.30, -0.28, -0.12, 0.0),
-                                      (-0.43, -0.22, 0.28, 0.0009), (0.73, -0.36, 1.45, 0.0018))):
-    polaroid(i, x, y, rz, lift)
+# seven in story order along the front of the table (the site pans from one to the next), plus one face-down extra
+POLAROIDS = [polaroid(i, x, y, rz, lift) for i, (x, y, rz, lift) in enumerate((
+    (-0.52, -0.23, 0.16, 0.0), (-0.30, -0.30, -0.22, 0.0), (-0.08, -0.25, 0.09, 0.0), (0.14, -0.31, -0.13, 0.0),
+    (0.37, -0.24, 0.24, 0.0), (0.60, -0.30, -0.18, 0.0), (0.83, -0.24, 0.12, 0.0)))]
+polaroid(7, 0.70, -0.06, 1.2, 0.0)
 
 # ---------------------------------------------------------------- props (Poly Haven, CC0)
 def place(asset, x, y, z=FLOOR, rz=0.0, scale=1.0, sit=True):
@@ -510,10 +517,26 @@ def candle_flame(x, y, z):
 # three pillar candles of different heights on a small round stone tray
 stadium('CandleTray', -0.42, 0.06, 0.20, 0.20, 0.0, 0.012, plain('TrayStone', (0.05, 0.048, 0.045), rough=0.35, noise=0.2), bevel=0.003)
 for cx, cy, h, r in ((-0.45, 0.09, 0.15, 0.034), (-0.385, 0.075, 0.10, 0.03), (-0.43, 0.01, 0.07, 0.03)):
+    if A.late: h *= 0.45
     bpy.ops.mesh.primitive_cylinder_add(vertices=32, radius=r, depth=h, location=(cx, cy, 0.012 + h / 2))
     c = bpy.context.active_object; c.data.materials.append(M_WAX); c.modifiers.new('Bevel', 'BEVEL').width = 0.003
     for p in c.data.polygons: p.use_smooth = True
     candle_flame(cx, cy, 0.012 + h + 0.008)
+
+# ---------------------------------------------------------------- end of the night: a gappy tower
+if A.late:
+    gone = {3: (0, 2), 4: (1,), 6: (0, 2), 7: (0,), 9: (0, 2), 10: (1,), 12: (0, 2), 14: (2,), 15: (0,)}
+    out_on_table = [(0.16, -0.13, 0.4), (-0.17, -0.11, -0.25)]      # two pulled blocks left lying by the base
+    k = 0
+    for layer, idxs in gone.items():
+        for j in idxs:
+            b = bpy.data.objects.get(f'Block{layer * 3 + j:02d}')
+            if not b: continue
+            if k < len(out_on_table):
+                x, y, rz = out_on_table[k]; b.location = (x, y, 0.0075); b.rotation_euler = (0, 0, rz)
+            else:
+                for c in list(b.children_recursive) + [b]: bpy.data.objects.remove(c, do_unlink=True)
+            k += 1
 
 # ---------------------------------------------------------------- product realism
 scr_img = bpy.data.images.get('screen.png')
@@ -542,13 +565,18 @@ VIEWS = {   # location, look-at, lens mm, f-stop
     'wide': ((0.05, -1.40, 0.24), (0.0, 2.4, 0.80), 26, 1.8),
     'play': ((0.24, -0.82, 0.30), (0.0, 0.0, 0.15), 35, 2.4),
     'over': ((0.52, -0.66, 0.36), (0.50, -0.24, 0.0), 40, 3.2),     # leaning over the photos on the table
+    'close': ((0.07, -0.42, 0.15), (0.0, -0.06, 0.06), 45, 2.0),  # tight on the screen, fire soft behind
+    'top': ((0.20, -0.14, 2.0), (0.20, -0.14, 0.0), 0, 0),          # straight down on the polaroids (orthographic)
 }
 loc, tgt, lens, fstop = VIEWS[A.view]
 cam.location = loc
 cam.rotation_mode = 'XYZ'; cam.rotation_euler = (Vector(tgt) - Vector(loc)).to_track_quat('-Z', 'Y').to_euler()
 cd.lens = lens; cd.sensor_width = 36; cd.dof.use_dof = True; cd.dof.aperture_fstop = fstop
-cd.dof.focus_object = bpy.data.objects.get('Focus') if A.view != 'over' else None
-if A.view == 'over': cd.dof.focus_distance = (Vector(tgt) - Vector(loc)).length; cd.clip_start = 0.01; cd.clip_end = 200
+cd.dof.focus_object = bpy.data.objects.get('Focus') if A.view not in ('over', 'close') else None
+if A.view in ('over', 'close'): cd.dof.focus_distance = (Vector(tgt) - Vector(loc)).length
+cd.clip_start = 0.01; cd.clip_end = 200
+if A.view == 'top':
+    cam.rotation_euler = (0, 0, 0); cd.type = 'ORTHO'; cd.ortho_scale = 1.80; cd.dof.use_dof = False
 sc.camera = cam
 
 # ---------------------------------------------------------------- render settings
@@ -574,4 +602,23 @@ if A.save_blend: bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(A.save_ble
 os.makedirs(os.path.dirname(os.path.abspath(A.out)), exist_ok=True)
 r.filepath = os.path.abspath(A.out)
 bpy.ops.render.render(write_still=True)
+if A.meta:   # where the live overlays go: corners in image pixels, clockwise from top-left as the viewer reads them
+    from bpy_extras.object_utils import world_to_camera_view
+    W, H = r.resolution_x, r.resolution_y
+    def px(v):
+        c = world_to_camera_view(sc, cam, v); return [round(c.x * W, 1), round((1 - c.y) * H, 1)]
+    meta = {'width': W, 'height': H, 'view': A.view}
+    s_ = bpy.data.objects.get('Screen')
+    if s_:
+        v = [s_.matrix_world @ x.co for x in s_.data.vertices]          # 0 low-left, 1 low-right, 2 high-left, 3 high-right
+        meta['screen'] = [px(v[2]), px(v[3]), px(v[1]), px(v[0])]
+    meta['polaroids'] = []
+    for card in POLAROIDS:
+        M = card.matrix_world
+        def quad(x0, y0, x1, y1, z=0.0009):
+            return [px(M @ Vector(c)) for c in ((x0, y1, z), (x1, y1, z), (x1, y0, z), (x0, y0, z))]
+        meta['polaroids'].append({'photo': quad(-0.0395, -0.0315, 0.0395, 0.0475), 'caption': quad(-0.040, -0.051, 0.040, -0.033),
+                                  'card': quad(-0.044, -0.0535, 0.044, 0.0535)})
+    json.dump(meta, open(A.meta, 'w'), indent=1)
+    print('wrote', A.meta)
 print('wrote', r.filepath)

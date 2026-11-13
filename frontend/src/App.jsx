@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from './components/Navbar';
-import StoryPlayer from './components/story/StoryPlayer';
-import HowItWorks from './components/HowItWorks';
+import TopBar from './components/tonight/TopBar';
+import Tonight from './components/tonight/Tonight';
 import Waitlist from './components/Waitlist';
 import JourneyTimeline from './components/JourneyTimeline';
 import TeamSection from './components/TeamSection';
@@ -58,6 +57,11 @@ export default function App() {
     return () => meta.remove();
   }, [isAdminView]);
 
+  // the "Tonight" skin applies to the public page only; the team admin page keeps its own look
+  useEffect(() => {
+    document.documentElement.classList.toggle('theme-tonight', !isAdminView);
+  }, [isAdminView]);
+
   if (isAdminView) {
     return (
       <AdminPanel
@@ -71,11 +75,10 @@ export default function App() {
 
   return (
     <div className="jeemu-app">
-      <a className="skip-link" href="#how">Skip to content</a>
-      <Navbar onCtaClick={() => toWaitlist('nav')} />
+      <a className="skip-link" href="#waitlist">Skip to the waitlist</a>
+      <TopBar onCtaClick={() => toWaitlist('nav')} />
       <main>
-        <StoryPlayer onCta={() => toWaitlist('story')} />
-        <HowItWorks />
+        <Tonight onCta={() => toWaitlist('story')} />
         <Waitlist />
         <JourneyTimeline />
         <TeamSection />
