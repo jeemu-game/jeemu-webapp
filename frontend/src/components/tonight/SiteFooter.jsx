@@ -14,7 +14,7 @@ export default function SiteFooter() {
         {SOCIAL_LINKS.map((s) => <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>)}
       </nav>
       <p className="sf-legal">
-        © {new Date().getFullYear()} Jeemu. Made in Shanghai. Jeemu is an independent game and is not affiliated with Kickstarter.
+        © {new Date().getFullYear()} Jeemu. Designed in New Zealand, made in Shanghai. Jeemu is an independent game and is not affiliated with Kickstarter.
         Launch date and pricing may change before the campaign goes live.
       </p>
     </footer>

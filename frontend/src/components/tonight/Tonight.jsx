@@ -14,7 +14,8 @@ import { FAQS } from '../../data/faq';
 // the corner positions the render script exports. Preview build: the stills stand in for the final rendered video.
 
 const BASE = `${import.meta.env.BASE_URL}tonight/`;
-const SHOTS = ['close', 'wide', 'play', 'top', 'late', 'end', 'top2'];
+const SHOTS = ['wide', 'close', 'play', 'top', 'late', 'end', 'top2'];
+const FIRST_SHOT = 'wide';   // the landing frame
 // shots of Jeemu's screen used as an interface: [shot, beat that brings it in, beat that takes it out]
 const CHAPTERS = [['end', 'toEnd', 'toChapters']];
 
@@ -32,7 +33,8 @@ const CHAPTER_PRINTS = [...STORY, TEAM_PRINT];
 
 // Scroll length of every beat, in % of the window height
 const BEATS = [
-  ['close', 100], ['toWide', 90], ['wide', 110], ['toPlay', 90], ['play', 120], ['toTable', 90],
+  // opens on the room; the first scroll pushes in to Jeemu's screen, the next pulls back into the game
+  ['wide', 110], ['toClose', 90], ['close', 100], ['toPlay', 90], ['play', 120], ['toTable', 90],
   ...POLAROIDS.map((_, i) => [`p${i}`, 105]),
   ['toLate', 90], ['late', 110], ['toEnd', 80], ['end', 150],   // end: the waitlist, on Jeemu's screen
   ['toChapters', 90], ...STOPS.map((st) => [st.id, st.len])
@@ -146,18 +148,19 @@ export default function Tonight({ onCta }) {
     return { sc, c: portrait ? [sc[0], lerp(m.height / 2, sc[1], 0.4)] : [lerp(m.width / 2, sc[0], 0.25), m.height / 2] };
   };
   const mv = (z0, z1, k) => (reduce ? 1 : lerp(z0, z1, k));
-  if (meta.close) {
-    const { sc, c } = hero(meta.close);
-    const k = ease(p('toWide'));
-    cams.close = { c: [lerp(c[0], sc[0], k), lerp(c[1], sc[1], k)], z: t < START.toWide[0] ? mv(1, 1.04, p('close')) : mv(1.04, 1.35, k), o: 1 - k };
-  }
   if (meta.wide) {
     const { sc, c } = hero(meta.wide);
-    const kin = ease(p('toWide')), kout = ease(p('toPlay'));
-    let cc = [lerp(sc[0], c[0], kin), lerp(sc[1], c[1], kin)], z = mv(1.7, 1, kin);
-    if (t >= START.wide[0]) { cc = c; z = mv(1, 1.03, p('wide')); }
-    if (t >= START.toPlay[0]) { cc = [lerp(c[0], sc[0], kout), lerp(c[1], sc[1], kout)]; z = mv(1.03, 1.4, kout); }
-    cams.wide = { c: cc, z, o: Math.min(kin, 1 - kout) };
+    const kout = ease(p('toClose'));
+    cams.wide = t < START.toClose[0] ? { c, z: mv(1, 1.03, p('wide')), o: 1 }
+      : { c: [lerp(c[0], sc[0], kout), lerp(c[1], sc[1], kout)], z: mv(1.03, 1.7, kout), o: 1 - kout };
+  }
+  if (meta.close) {
+    const { sc, c } = hero(meta.close);
+    const kin = ease(p('toClose')), kout = ease(p('toPlay'));
+    let cc = [lerp(sc[0], c[0], kin), lerp(sc[1], c[1], kin)], z = mv(1.35, 1, kin);
+    if (t >= START.close[0]) { cc = c; z = mv(1, 1.04, p('close')); }
+    if (t >= START.toPlay[0]) { cc = [lerp(c[0], sc[0], kout), lerp(c[1], sc[1], kout)]; z = mv(1.04, 1.35, kout); }
+    cams.close = { c: cc, z, o: Math.min(kin, 1 - kout) };
   }
   if (meta.play) {
     const { c } = hero(meta.play);
@@ -254,15 +257,15 @@ export default function Tonight({ onCta }) {
           return (
             <div key={s} className="tn-layer" style={{ opacity: cam.o, visibility: cam.o > 0.001 ? 'visible' : 'hidden' }}>
               <div className="tn-shot" style={stageStyle(m, cam, (s === 'top' || s === 'top2') && portrait ? vp.card + 24 : 0)}>
-                {(s === 'close' || loadRest) && <Pic src={`${BASE}${s}.jpg`} width={m.width} height={m.height} draggable="false" decoding="async"
-                  fetchPriority={s === 'close' ? 'high' : 'low'} onLoad={s === 'close' ? startRest : undefined} />}
+                {(s === FIRST_SHOT || loadRest) && <Pic src={`${BASE}${s}.jpg`} width={m.width} height={m.height} draggable="false" decoding="async"
+                  fetchPriority={s === FIRST_SHOT ? 'high' : 'low'} onLoad={s === FIRST_SHOT ? startRest : undefined} />}
                 {m.screen && s === 'end' && (
                   <div className="tn-warp tn-screen is-ui" style={warp(320, 240, m.screen)}>
                     <WaitlistScreen active={endOn} onArrive={() => setTimeout(() => document.getElementById('waitlist')?.scrollIntoView(), 300)} />
                   </div>
                 )}
                 {m.screen && screenFor[s] && (
-                  <div className="tn-warp tn-screen" style={warp(320, 240, m.screen)}><LiveScreen card={screenFor[s]} /></div>
+                  <div className="tn-warp tn-screen" style={warp(320, 240, m.screen)}><LiveScreen card={screenFor[s]} active={cam.o > 0.5} /></div>
                 )}
                 {loadRest && m.polaroids && (
                   <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp}
@@ -295,7 +298,7 @@ export default function Tonight({ onCta }) {
           const y = Math.max(y0, TOP_BAR + (portrait ? 110 : 80));   // phones crop the top of the wall away
           const cw = Math.min(vp.w - 32, WALL.w * sc);
           return (
-            <div className="tn-caption tn-on-wall" style={{ opacity: show('wide'), left: clamp(x, cw / 2 + 16, vp.w - cw / 2 - 16), top: y, width: cw }}>
+            <div className="tn-caption tn-on-wall" style={{ opacity: t < START.toClose[0] ? 1 : clamp(1 - p('toClose') / 0.3), left: clamp(x, cw / 2 + 16, vp.w - cw / 2 - 16), top: y, width: cw }}>
               <h2>{CAPTIONS.wide.title} {CAPTIONS.wide.sub}</h2>
             </div>
           );

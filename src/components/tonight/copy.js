@@ -3,8 +3,8 @@ import { EARLY_BIRD_PRICE, LAUNCH_DATE } from '../../data/offer';
 
 // What the live Jeemu screen shows in each shot (drawn at the device's 320 x 240 and warped onto the render)
 export const SCREENS = {
-  intro: { tag: 'JEEMU', text: 'The best game nights start with one good question.', foot: 'Scroll to start' },
-  wide: { tag: 'JEEMU', text: 'Pull a block to begin.', foot: '' },
+  intro: { tag: 'JEEMU', text: 'The best game nights start with one good question.', foot: '' },
+  wide: { tag: 'JEEMU', text: 'Ready when you are.', foot: '' },
   question: { tag: 'NEW QUESTION', text: "What's a small thing that made you happy this week?", foot: 'Block 23' },
   late: { tag: `KICKSTARTER · ${LAUNCH_DATE.toUpperCase()}`, text: "Early bird prices are the best you'll see.", foot: 'Keep scrolling to join' }
 };
