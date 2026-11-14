@@ -109,6 +109,7 @@ def _badge(name, c, right, up, n, w, h, mat, r=0.004, depth=0.0015):
     o = bpy.data.objects.new(name, me); bpy.context.scene.collection.objects.link(o)
     o.matrix_world = Matrix.Translation(c) @ Matrix((right, up, n)).transposed().to_4x4()
     bv = o.modifiers.new('Bevel', 'BEVEL'); bv.width = 0.0003; bv.segments = 3; bv.limit_method = 'ANGLE'
+    bv.harden_normals = True   # the big flat face stays dead flat; only the rounded edge is smoothed
     for p in me.polygons: p.use_smooth = True
     return o
 
@@ -221,6 +222,17 @@ def apply(cache_dir, brand_dir):
     # ---- the base
     shell_m = bpy.data.materials.get('MouldedBlack')
     if shell_m: galaxy_black(shell_m)
+    sh = bpy.data.objects.get('Shell')
+    if sh:   # keep crisp edges crisp: without this the shell's smoothing smears round the badge pocket and corners
+        # CAD tessellation: long thin triangles drag the fillets' smoothing across the flat faces (dark smudges,
+        # spikes and streaks round the badge and the slot). Faces lying in one of the shell's flat planes are shaded
+        # flat; only the real fillets and rounds stay smooth.
+        planes = [Vector(v).normalized() for v in ((1, 0, 1), (-1, 0, 1), (0, 1, 1), (0, -1, 1), (0, 0, 1), (0, 0, -1),
+                                                    (1, 0, -1), (-1, 0, -1), (0, 1, -1), (0, -1, -1))]
+        flat = 0
+        for p in sh.data.polygons:
+            if any(p.normal.dot(q) > 0.9995 for q in planes): p.use_smooth = False; flat += 1
+        print(f'shell: {flat} of {len(sh.data.polygons)} faces shaded flat')
     plate_m = plate_black(bpy.data.materials.new('PlateBlack'))
     mint = mint_pla()
     inl = bpy.data.objects.get('Inlays')
