@@ -78,7 +78,7 @@ const HOW_PRINTS = [...POLAROIDS, ...EXTRA_PHOTOS.map((photo) => ({ photo }))];
 
 // a question laser-etched into a fallen block's top face (75 x 25 mm): burnt-in dark lettering, slightly soft
 function EtchedBlock({ q, warp, text, soft = false }) {
-  const size = text.length > 34 ? 34 : 40;
+  const size = text.length > 34 ? 28 : text.length > 22 ? 32 : 38;
   return (
     <div className={`tn-warp tn-etch ${soft ? 'is-soft' : ''}`} style={warp(600, 200, q)}>
       <span style={{ fontSize: `${size}px` }}>{text}</span>
@@ -224,8 +224,11 @@ export default function Tonight({ onCta }) {
     if (outId && t >= START[outId][0]) z = mv(z, z * 1.12, ease(p(outId)));
     const arrived = cur >= 0 && (!inBeat(ids[cur]) || p(ids[cur]) > 0.32);
     // depth of field: sharp over whatever the camera is on (sized to it), soft beyond
+    // sized to the subject's whole footprint on screen (rotated blocks included), generous on the small blocks
     const q = quads[Math.max(0, cur)], sz = cover * z;
-    const half = [dist(q[0], q[1]) * sz / 2, dist(q[0], q[3]) * sz / 2];
+    const xs = q.map((v) => v[0]), ys = q.map((v) => v[1]);
+    const roomy = ids[Math.max(0, cur)].startsWith('q') ? 1.9 : 1.15;
+    const half = [(Math.max(...xs) - Math.min(...xs)) * sz / 2 * roomy, (Math.max(...ys) - Math.min(...ys)) * sz / 2 * roomy];
     const dof = { x: ((vp.w / 2 - off[0]) / vp.w) * 100, y: ((vp.h / 2 - off[1]) / vp.h) * 100,
       rx: (half[0] / 0.62 * 1.1 / vp.w) * 100, ry: (half[1] / 0.62 * 1.15 / vp.h) * 100 };
     return { c, z, o: Math.min(ease(p(inId)), outId ? 1 - ease(p(outId)) : 1), cur, arrived, dof };
@@ -303,14 +306,15 @@ export default function Tonight({ onCta }) {
                 {s === 'late' && fallFrame >= 0 && (
                   <img className="tn-fallframe" src={`${BASE}fall/${String(fallFrame).padStart(2, '0')}.${fall.ext}`} alt="" draggable="false" />
                 )}
-                {loadRest && (m.firebox || m.flames) && <LiveFire shot={s} m={m} warp={warp} active={cam.o > 0.01} />}
+                {(s === FIRST_SHOT || loadRest) && (m.firebox || m.flames) && <LiveFire shot={s} m={m} warp={warp} active={cam.o > 0.01} />}
                 {s === FIRST_SHOT && <div className={`tn-roomdark ${lit ? 'is-up' : ''}`} style={{ width: m.width, height: m.height }} aria-hidden="true" />}
                 {m.screen && s === 'end' && (
                   <div className="tn-warp tn-screen is-ui" style={warp(320, 240, m.screen)}>
                     <WaitlistScreen active={endOn} onArrive={() => setTimeout(() => document.getElementById('waitlist')?.scrollIntoView(), 300)} />
                   </div>
                 )}
-                {m.screen && screenFor[s] && (
+                {m.screen && screenFor[s] && !(s === 'late' && t >= START.fall[0]) && (
+                  // (hidden once the tower starts falling: the screen is drawn over the picture, so falling blocks would seem to pass behind it)
                   <div className="tn-warp tn-screen" style={warp(320, 240, m.screen)}><LiveScreen card={screenFor[s]} active={cam.o > 0.5} /></div>
                 )}
                 {loadRest && m.polaroids && (

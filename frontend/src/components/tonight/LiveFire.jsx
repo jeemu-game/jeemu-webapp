@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 // Real fire, moving, laid over the still render: filmed flames in the firebox mouth (the render has the firebox lit but
 // empty) and a filmed flame on each candle. Screen blend: the clips' black drops out and the flames add light.
@@ -6,9 +6,7 @@ import React, { useEffect, useState } from 'react';
 // Files (all optional; nothing shows until they exist): tonight/fire.avif (+ .webp), tonight/candle.avif (+ .webp),
 // tonight/<shot>_firemask.png. Corners come from the render's meta (firebox, flames).
 const BASE = `${import.meta.env.BASE_URL}tonight/`;
-const exists = {};
-const has = (f) => (exists[f] ||= fetch(BASE + f, { method: 'HEAD' })
-  .then((r) => r.ok && !/text\/html/.test(r.headers.get('content-type') || '')).catch(() => false));
+const MASKED = new Set(['wide', 'close', 'play', 'late', 'end']);   // shots with a firebox mask (scripts/blender/room)
 
 // animated images, not video: they play everywhere (no play button, Low Power Mode or autoplay rules don't apply)
 function Clip({ name, style, w, h, onLoad }) {
@@ -23,19 +21,18 @@ function Clip({ name, style, w, h, onLoad }) {
 // the fireplace is behind the focus in every shot: soften the clip to match each one's depth of field (image pixels)
 const DEFOCUS = { wide: 3, play: 7, late: 7, close: 16, end: 16 };
 // how far the fire has burned down in each shot: height of the flames in the firebox, and their brightness
-const BURN = { wide: [0.85, 1], close: [0.85, 1], play: [0.85, 1], late: [0.5, 0.6], end: [0.45, 0.55] };
+const BURN = { wide: [0.88, 1], close: [0.88, 1], play: [0.88, 1], late: [0.55, 0.75], end: [0.5, 0.7] };
 
 export default function LiveFire({ shot, m, warp, active }) {
-  const [ok, setOk] = useState({});
+  // the clips and the masks are part of the site now: no need to ask the server first (that delayed the fire)
+  const ok = { fire: true, candle: true, mask: MASKED.has(shot) };
   const [moving, setMoving] = useState(false);   // the animated fire has loaded: drop the still first frame
-  useEffect(() => {
-    let live = true;
-    Promise.all(['fire.webp', 'candle.webp', `${shot}_firemask.png`].map(has)).then(([fire, candle, mask]) => live && setOk({ fire, candle, mask }));
-    return () => { live = false; };
-  }, [shot]);
   // the flames sit low in the firebox (85% of its height) so they never lick over the stone at the top of the opening
-  const fb = m.firebox && (() => { const [tl, tr, br, bl] = m.firebox; const k = (BURN[shot] || [0.85])[0];
-    return [[bl[0] + (tl[0] - bl[0]) * k, bl[1] + (tl[1] - bl[1]) * k], [br[0] + (tr[0] - br[0]) * k, br[1] + (tr[1] - br[1]) * k], br, bl]; })();
+  // the flames sit low in the firebox: the clip keeps its shape and is sunk below the opening's floor (the mask cuts it),
+  // so a fire that's burning down shows only the tips of its flames, never a squashed copy
+  const fb = m.firebox && (() => { const [tl, tr, br, bl] = m.firebox; const d = 1 - (BURN[shot] || [0.85])[0];
+    const down = (pt, top, bot) => [pt[0] + (bot[0] - top[0]) * d, pt[1] + (bot[1] - top[1]) * d];
+    return [down(tl, tl, bl), down(tr, tr, br), down(br, tr, br), down(bl, tl, bl)]; })();
   const still = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   if (!active || still) return null;
   return (

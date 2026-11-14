@@ -143,12 +143,12 @@ html.theme-tonight ::selection { background: var(--tn-brass); color: var(--tn-in
 }
 .tn-card h3 { margin: 0 0 10px; font: 600 clamp(1.5rem, 2.2vw, 2rem)/1.1 var(--tn-sans); color: var(--tn-paper); letter-spacing: -0.02em; }
 .tn-card p { margin: 0; font-size: 1.02rem; line-height: 1.55; color: rgba(242, 234, 223, 0.86); }
-.tn-finale {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -38%); width: min(640px, 90vw); text-align: center; pointer-events: none;
-  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.75);
+.tn-finale {   /* in the dark to the left of the tower, so the tower (and its fall) stays the picture */
+  position: absolute; left: clamp(20px, 6vw, 110px); top: 24%; width: min(520px, 40vw); text-align: left; pointer-events: none;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.85), 0 0 2px rgba(0, 0, 0, 0.6);
 }
-.tn-finale h2 { font: 700 clamp(2.2rem, 5.6vw, 4.4rem)/1.02 var(--tn-sans); color: var(--tn-paper); letter-spacing: -0.035em; margin-bottom: 16px; }
-.tn-finale p { font-size: clamp(1rem, 1.6vw, 1.15rem); line-height: 1.55; color: rgba(242, 234, 223, 0.86); margin: 0 auto 28px; max-width: 30em; }
+.tn-finale h2 { font: 700 clamp(2rem, 4vw, 3.6rem)/1.04 var(--tn-sans); color: var(--tn-paper); letter-spacing: -0.03em; margin: 0 0 14px; }
+.tn-finale p { font-size: clamp(0.95rem, 1.3vw, 1.08rem); line-height: 1.55; color: rgba(242, 234, 223, 0.82); margin: 0; max-width: 26em; }
 .tn-btn {
   font: 700 0.95rem/1 var(--tn-sans); letter-spacing: 0.03em; padding: 17px 28px; border-radius: 999px; border: 0; cursor: pointer;
   color: #1a120b; background: linear-gradient(180deg, #ecd09b, #c49b5d); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 40px rgba(226, 118, 58, 0.25);
@@ -165,7 +165,7 @@ html.theme-tonight ::selection { background: var(--tn-brass); color: var(--tn-in
   .tn-card h3 { font-size: 1.45rem; margin-bottom: 6px; }
   .tn-card p { font-size: 0.94rem; }
   .tn-caption { left: 16px; right: 16px; bottom: 40px; }
-  .tn-finale { transform: translate(-50%, -45%); }
+  .tn-finale { left: 20px; right: 20px; top: 13%; width: auto; }
 }
 /* phones on their side: little height, so the card goes beside the photo, compact */
 @media (max-height: 500px) and (min-aspect-ratio: 9/10) {
@@ -351,10 +351,12 @@ html.theme-tonight input, html.theme-tonight textarea { cursor: text; }
 
 .tn-shot > .tn-fallframe { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
-/* a question laser-etched into a block: dark burnt lettering pressed into the pine */
-.tn-etch { mix-blend-mode: multiply; display: flex; align-items: center; justify-content: center; padding: 18px 34px; box-sizing: border-box; overflow: hidden; }
-.tn-etch span { font-family: var(--tn-sans); font-weight: 700; line-height: 1.12; text-align: center; letter-spacing: 0.01em; color: #3b2414;
-  text-shadow: 0 1px 0 rgba(255, 230, 190, 0.35), 0 -0.5px 0 rgba(0, 0, 0, 0.35); filter: blur(0.35px); }
+/* a question laser-burnt into a block: dark char sunk into the pine, the grain showing through (multiply), a darker
+   scorched edge, and the light catching the lower lip of the cut */
+.tn-etch { mix-blend-mode: multiply; display: flex; align-items: center; justify-content: center; padding: 26px 46px; box-sizing: border-box; overflow: hidden; }
+.tn-etch span { font-family: var(--tn-brand); font-weight: 400; line-height: 1.08; text-align: center; letter-spacing: 0.03em; text-transform: uppercase;
+  color: #3a200e; opacity: 0.9;
+  text-shadow: 0 -1.5px 0 rgba(20, 8, 0, 0.55), 0 1.5px 0 rgba(255, 214, 160, 0.35), 0 0 3px rgba(70, 32, 8, 0.45); }
 .tn-etch.is-soft span { filter: blur(5px); }
 
 /* countdown to the Kickstarter, quietly in the top bar */
