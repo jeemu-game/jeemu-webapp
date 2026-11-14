@@ -45,6 +45,7 @@ for (const [id, len] of BEATS) { START[id] = [acc, len]; acc += len; }
 const TOTAL = acc;
 const TOP_BAR = 56;
 const WALL = { x: 965, y: 300, w: 720 };   // the chimney breast in the wide shot, image pixels
+const FIREBOX = { x: 965, y: 712 };        // the fire in the wide shot, image pixels
 
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
@@ -92,7 +93,9 @@ export default function Tonight({ onCta }) {
   const [written2, setWritten2] = useState(-1);        // the same, on the chapters table
   // the opening shot loads first; the rest follow once it is in (or as soon as the visitor starts scrolling)
   const [loadRest, setLoadRest] = useState(false);
+  const [lit, setLit] = useState(false);              // the lights come up once the landing frame is in
   const startRest = () => {
+    setLit(true);
     const go = () => setLoadRest(true);
     if ('requestIdleCallback' in window) window.requestIdleCallback(go, { timeout: 1200 }); else setTimeout(go, 300);
   };
@@ -294,6 +297,11 @@ export default function Tonight({ onCta }) {
           );
         })}
         <div className="tn-fire" style={{ opacity: fire }} aria-hidden="true" />
+        {/* walking in: dark first, the fire glows through, then the room comes up (once, on load) */}
+        {meta.wide && cams.wide && (() => {
+          const [fx, fy] = project(meta.wide, cams.wide, FIREBOX.x, FIREBOX.y);
+          return <div className={`tn-lights ${lit ? 'is-up' : ''}`} style={{ '--fx': `${fx}px`, '--fy': `${fy}px` }} aria-hidden="true" />;
+        })()}
         <div className="tn-grain" aria-hidden="true" />
         <div className="tn-vignette" aria-hidden="true" />
 

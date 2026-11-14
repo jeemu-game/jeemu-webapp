@@ -329,3 +329,15 @@ html.theme-tonight a, html.theme-tonight button, html.theme-tonight [role='butto
 html.theme-tonight input, html.theme-tonight textarea { cursor: text; }
 .sf-credits { font-size: 0.7rem; opacity: 0.8; }
 .sf-credits a { color: inherit; }
+
+/* lights up: a black room, the fire glows through first, then everything comes up */
+@property --tn-glow { syntax: '<length>'; inherits: false; initial-value: 0px; }
+.tn-lights { position: absolute; inset: 0; pointer-events: none; z-index: 5;
+  background: radial-gradient(circle at var(--fx, 50%) var(--fy, 65%), rgba(5, 3, 2, 0) 0, rgba(5, 3, 2, 0.15) calc(var(--tn-glow) * 0.5), #050302 var(--tn-glow)); }
+.tn-lights.is-up { animation: tn-lights 2.8s cubic-bezier(0.5, 0, 0.2, 1) 0.15s forwards; }
+@keyframes tn-lights {
+  0% { --tn-glow: 0px; opacity: 1; }
+  40% { --tn-glow: 340px; opacity: 1; }
+  100% { --tn-glow: 2600px; opacity: 0; visibility: hidden; }
+}
+@media (prefers-reduced-motion: reduce) { .tn-lights { display: none; } }
