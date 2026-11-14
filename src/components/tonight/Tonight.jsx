@@ -188,7 +188,12 @@ export default function Tonight({ onCta }) {
     }
     if (outId && t >= START[outId][0]) z = mv(z, z * 1.12, ease(p(outId)));
     const arrived = cur >= 0 && (!inBeat(ids[cur]) || p(ids[cur]) > 0.32);
-    return { c, z, o: Math.min(ease(p(inId)), outId ? 1 - ease(p(outId)) : 1), cur, arrived, dofAt: portrait ? ((TOP_BAR + 8 + free / 2) / vp.h) * 100 : 50 };
+    // depth of field: sharp over whatever the camera is on (sized to it), soft beyond
+    const q = quads[Math.max(0, cur)], sz = cover * z;
+    const half = [dist(q[0], q[1]) * sz / 2, dist(q[0], q[3]) * sz / 2];
+    const dof = { x: ((vp.w / 2 - off[0]) / vp.w) * 100, y: ((vp.h / 2 - off[1]) / vp.h) * 100,
+      rx: (half[0] / 0.62 * 1.1 / vp.w) * 100, ry: (half[1] / 0.62 * 1.15 / vp.h) * 100 };
+    return { c, z, o: Math.min(ease(p(inId)), outId ? 1 - ease(p(outId)) : 1), cur, arrived, dof };
   };
   if (meta.top) cams.top = tablePan(meta.top, meta.top.polaroids.slice(0, POLAROIDS.length).map((q) => q.card), POLAROIDS.map((_, i) => `p${i}`), 'toTable', 'toLate');
   if (meta.top2 && meta.top2.faq) {
@@ -277,7 +282,7 @@ export default function Tonight({ onCta }) {
               </div>
               {(s === 'top' || s === 'top2') && (
                 // depth of field: a softened copy of the table on top, with a clear hole where the camera is focused
-                <div className={`tn-dof ${portrait ? 'is-portrait' : ''}`} style={{ '--dof-y': `${cam.dofAt}%` }} aria-hidden="true">
+                <div className="tn-dof" style={{ '--dof-x': `${cam.dof.x}%`, '--dof-y': `${cam.dof.y}%`, '--dof-rx': `${cam.dof.rx}%`, '--dof-ry': `${cam.dof.ry}%` }} aria-hidden="true">
                   <div className="tn-shot" style={stageStyle(m, cam, portrait ? vp.card + 24 : 0)}>
                     {loadRest && <Pic src={`${BASE}${s}_blur.jpg`} width={m.width} height={m.height} draggable="false" decoding="async" />}
                     {loadRest && <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp} written={s === 'top' ? written : written2} soft />}
