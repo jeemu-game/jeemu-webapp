@@ -44,7 +44,7 @@ export default function App() {
 
   const toWaitlist = (where = 'unknown') => {
     track('cta_click', { where });
-    document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('waitlist')?.scrollIntoView({ behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     window.history.replaceState(null, '', '#waitlist');   // like the footer link: the address shows where you are
   };
 

@@ -87,7 +87,7 @@ export default function Waitlist() {
     try {
       setDone(await signup());
       track('waitlist_joined');
-      try { confetti({ particleCount: 70, spread: 70, origin: { y: 0.75 }, shapes: ['square'], scalar: 0.8, colors: ['#cfa96b', '#f2eadf', '#a3e8c8', '#8a5a2b'] }); } catch (_) {}
+      try { confetti({ particleCount: 70, spread: 70, origin: { y: 0.75 }, shapes: ['square'], scalar: 0.8, disableForReducedMotion: true, colors: ['#cfa96b', '#f2eadf', '#a3e8c8', '#8a5a2b'] }); } catch (_) {}
     } catch (err) {
       setError(err.message || 'Network error. Please try again.');
     } finally {
@@ -110,7 +110,7 @@ export default function Waitlist() {
 
   useEffect(() => {
     if (vipThanks?.state !== 'verified') return;
-    try { confetti({ particleCount: 110, spread: 80, origin: { y: 0.7 }, shapes: ['square'], scalar: 0.9, colors: ['#cfa96b', '#f2eadf', '#a3e8c8', '#e2c08a'] }); } catch (_) { /* decoration only */ }
+    try { confetti({ particleCount: 110, spread: 80, origin: { y: 0.7 }, shapes: ['square'], scalar: 0.9, disableForReducedMotion: true, colors: ['#cfa96b', '#f2eadf', '#a3e8c8', '#e2c08a'] }); } catch (_) { /* decoration only */ }
   }, [vipThanks?.state]);
 
   const refCode2 = done?.referralCode || (vipThanks?.state === 'verified' ? vipThanks.code : '') || '';

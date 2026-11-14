@@ -20,6 +20,7 @@ const BEATS = [
 const START = {}; let acc = 0;
 for (const [id, len] of BEATS) { START[id] = [acc, len]; acc += len; }
 const TOTAL = acc;
+const TOP_BAR = 56;
 
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
@@ -47,8 +48,9 @@ function TableOverlays({ m, warp, written, soft = false }) {
 
 export default function Tonight({ onCta }) {
   const section = useRef(null);
+  const stage = useRef(null);
   const [t, setT] = useState(0);                       // scroll position in the story, in % of window height
-  const [vp, setVp] = useState({ w: 1280, h: 800 });
+  const [vp, setVp] = useState({ w: 1280, h: 800, card: 0 });
   const [meta, setMeta] = useState({});
   const [written, setWritten] = useState(-1);          // highest polaroid whose note has been written
   const reduce = useMemo(() => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
@@ -61,10 +63,15 @@ export default function Tonight({ onCta }) {
     let raf = 0;
     const read = () => {
       raf = 0;
-      const el = section.current; if (!el) return;
-      const h = window.innerHeight;
-      setT(clamp((-el.getBoundingClientRect().top / h) * 100, 0, TOTAL));
-      setVp((v) => (v.w === window.innerWidth && v.h === h ? v : { w: window.innerWidth, h }));
+      const el = section.current, st = stage.current; if (!el || !st) return;
+      // measure against the sticky stage (100svh), not innerHeight: on phones innerHeight changes as the address bar
+      // shows and hides, which would make the story jump mid-scroll
+      const h = st.clientHeight, w = st.clientWidth;
+      const range = el.offsetHeight - h;
+      setT(range > 0 ? clamp((-el.getBoundingClientRect().top / range) * TOTAL, 0, TOTAL) : 0);
+      // tallest text card: on portrait screens the polaroid is framed in the space above it
+      const card = Math.max(0, ...[...st.querySelectorAll('.tn-card')].map((c) => c.offsetHeight));
+      setVp((v) => (v.w === w && v.h === h && v.card === card ? v : { w, h, card }));
     };
     const on = () => { if (!raf) raf = requestAnimationFrame(read); };
     read();
@@ -85,6 +92,7 @@ export default function Tonight({ onCta }) {
 
   // ---- per-shot camera (centre in image pixels, zoom relative to "cover") and opacity
   const cams = {};
+  let dofAt = 50;   // where the sharp spot of the table's depth of field sits, % from the top
   const hero = (m) => {
     const sc = m.screen ? mid(m.screen) : [m.width / 2, m.height / 2];
     return { sc, c: portrait ? [sc[0], lerp(m.height / 2, sc[1], 0.4)] : [lerp(m.width / 2, sc[0], 0.25), m.height / 2] };
@@ -112,10 +120,12 @@ export default function Tonight({ onCta }) {
     const m = meta.top, cards = m.polaroids.map((q) => q.card);
     const cover = Math.max(vp.w / m.width, vp.h / m.height);
     const ch = dist(cards[0][0], cards[0][3]), cw = dist(cards[0][0], cards[0][1]);
-    const target = Math.max(1, Math.min((vp.h * (portrait ? 0.44 : 0.46)) / ch, (vp.w * (portrait ? 0.74 : 0.42)) / cw) / cover);
+    // portrait: the polaroid fills the space between the top bar and the text card; wide: left of centre, text on the right
+    const free = portrait ? Math.max(vp.h * 0.3, vp.h - TOP_BAR - (vp.card || vp.h * 0.25) - 34) : vp.h;
+    const target = Math.max(1, Math.min((portrait ? free * 0.86 : vp.h * 0.46) / ch, (vp.w * (portrait ? 0.74 : 0.42)) / cw) / cover);
     const centres = cards.map(mid);
-    // on wide screens the photo sits left of centre, leaving room for its text on the right
-    const off = portrait ? [0, -vp.h * 0.08] : [vp.w * 0.14, 0];
+    const off = portrait ? [0, vp.h / 2 - (TOP_BAR + 8 + free / 2)] : [vp.w * 0.14, 0];   // + moves the photo left / up
+    dofAt = portrait ? ((TOP_BAR + 8 + free / 2) / vp.h) * 100 : 50;
     const at = (i) => [centres[i][0] + off[0] / (cover * target), centres[i][1] + off[1] / (cover * target)];
     let c = at(0), z = mv(target * 1.25, target, ease(p('toTable')));
     if (cur >= 0) {
@@ -131,10 +141,11 @@ export default function Tonight({ onCta }) {
     cams.late = { c, z: mv(1.12, 1, ease(p('toLate'))) * (t >= START.late[0] ? mv(1, 1.03, p('late')) : 1), o: ease(p('toLate')) };
   }
 
-  const stageStyle = (m, cam) => {
+  const stageStyle = (m, cam, under = 0) => {
     const cover = Math.max(vp.w / m.width, vp.h / m.height), s = cover * cam.z;
     let tx = vp.w / 2 - cam.c[0] * s, ty = vp.h / 2 - cam.c[1] * s;
-    tx = clamp(tx, vp.w - m.width * s, 0); ty = clamp(ty, vp.h - m.height * s, 0);   // never show past the picture's edges
+    // never show past the picture's edges, except a strip hidden under the text card (`under` px at the bottom)
+    tx = clamp(tx, vp.w - m.width * s, 0); ty = clamp(ty, vp.h - m.height * s - under, 0);
     return { width: m.width, height: m.height, transform: `translate3d(${tx}px, ${ty}px, 0) scale(${s})` };
   };
   const warp = (w, h, q) => ({ width: w, height: h, transform: quadToMatrix3d(w, h, q) });
@@ -144,14 +155,14 @@ export default function Tonight({ onCta }) {
   const show = (id, a = 0.12, b = 0.9) => { const k = p(id); return inBeat(id) ? clamp(Math.min((k - a) / 0.1, (b - k) / 0.1)) : 0; };
 
   return (
-    <section className="tn" ref={section} style={{ height: `${TOTAL + 100}vh` }} aria-label="Jeemu, one game night">
-      <div className="tn-stage">
+    <section className="tn" ref={section} style={{ '--tn-len': TOTAL + 100 }} aria-label="Jeemu, one game night">
+      <div className="tn-stage" ref={stage}>
         {SHOTS.map((s) => {
           const m = meta[s], cam = cams[s];
           if (!m || !cam) return null;
           return (
             <div key={s} className="tn-layer" style={{ opacity: cam.o, visibility: cam.o > 0.001 ? 'visible' : 'hidden' }}>
-              <div className="tn-shot" style={stageStyle(m, cam)}>
+              <div className="tn-shot" style={stageStyle(m, cam, s === 'top' && portrait ? vp.card + 24 : 0)}>
                 <img src={`${BASE}${s}.jpg`} alt="" width={m.width} height={m.height} draggable="false" decoding="async" fetchPriority={s === 'close' ? 'high' : 'auto'} />
                 {m.screen && screenFor[s] && (
                   <div className="tn-warp tn-screen" style={warp(320, 240, m.screen)}><LiveScreen card={screenFor[s]} /></div>
@@ -160,8 +171,8 @@ export default function Tonight({ onCta }) {
               </div>
               {s === 'top' && (
                 // depth of field: a softened copy of the table on top, with a clear hole where the camera is focused
-                <div className={`tn-dof ${portrait ? 'is-portrait' : ''}`} aria-hidden="true">
-                  <div className="tn-shot" style={stageStyle(m, cam)}>
+                <div className={`tn-dof ${portrait ? 'is-portrait' : ''}`} style={{ '--dof-y': `${dofAt}%` }} aria-hidden="true">
+                  <div className="tn-shot" style={stageStyle(m, cam, portrait ? vp.card + 24 : 0)}>
                     <img src={`${BASE}top_blur.jpg`} alt="" width={m.width} height={m.height} draggable="false" decoding="async" />
                     <TableOverlays m={m} warp={warp} written={written} soft />
                   </div>
