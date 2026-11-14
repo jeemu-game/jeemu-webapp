@@ -21,7 +21,7 @@ argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else sys.argv[1:]
 ap = argparse.ArgumentParser()
 ap.add_argument('--product', default=os.path.join(HERE, '..', 'jeemu.blend'))
 ap.add_argument('--look', default='dark', choices=['dark', 'light', 'scandi'])
-ap.add_argument('--view', default='wide', choices=['wide', 'play', 'over', 'close', 'top', 'product', 'frog', 'badge'])
+ap.add_argument('--view', default='wide', choices=['wide', 'play', 'over', 'close', 'top', 'product', 'frog', 'badge', 'story', 'team', 'faq'])
 ap.add_argument('--fire', type=float, default=1.0)
 ap.add_argument('--sky', type=float, default=0.12, help='night-sky (HDRI) strength')
 ap.add_argument('--sky-rot', type=float, default=240.0, help='turn the night photo (degrees) to frame the treeline')
@@ -571,6 +571,9 @@ VIEWS = {   # location, look-at, lens mm, f-stop
     'close': ((0.07, -0.42, 0.15), (0.0, -0.06, 0.06), 45, 2.0),  # tight on the screen, fire soft behind
     'product': ((0.26, -0.24, 0.13), (0.0, 0.0, 0.05), 55, 5.6),   # checks: the JEEMU side and the screen
     'frog': ((-0.28, -0.20, 0.12), (0.0, 0.0, 0.05), 55, 5.6),     # checks: the frog side
+    'story': ((-0.20, -0.36, 0.11), (0.0, -0.06, 0.05), 45, 2.0),   # the screen from the left: fire and candles behind
+    'team': ((0.24, -0.33, 0.13), (0.0, -0.06, 0.05), 45, 2.0),     # from the right: the window side
+    'faq': ((0.05, -0.30, 0.30), (0.0, -0.065, 0.04), 45, 2.2),     # from above: blocks on the table around the base
     'badge': ((0.24, -0.09, 0.15), (0.066, 0.0, 0.026), 70, 16),   # checks: the JEEMU badge, sharp
     'top': ((0.20, -0.14, 2.0), (0.20, -0.14, 0.0), 0, 0),          # straight down on the polaroids (orthographic)
 }
@@ -578,8 +581,8 @@ loc, tgt, lens, fstop = VIEWS[A.view]
 cam.location = loc
 cam.rotation_mode = 'XYZ'; cam.rotation_euler = (Vector(tgt) - Vector(loc)).to_track_quat('-Z', 'Y').to_euler()
 cd.lens = lens; cd.sensor_width = 36; cd.dof.use_dof = True; cd.dof.aperture_fstop = fstop
-cd.dof.focus_object = bpy.data.objects.get('Focus') if A.view not in ('over', 'close', 'product', 'frog', 'badge') else None
-if A.view in ('over', 'close', 'product', 'frog', 'badge'): cd.dof.focus_distance = (Vector(tgt) - Vector(loc)).length
+cd.dof.focus_object = bpy.data.objects.get('Focus') if A.view not in ('over', 'close', 'product', 'frog', 'badge', 'story', 'team', 'faq') else None
+if A.view in ('over', 'close', 'product', 'frog', 'badge', 'story', 'team', 'faq'): cd.dof.focus_distance = (Vector(tgt) - Vector(loc)).length
 cd.clip_start = 0.01; cd.clip_end = 200
 if A.view == 'top':
     cam.rotation_euler = (0, 0, 0); cd.type = 'ORTHO'; cd.ortho_scale = 1.80; cd.dof.use_dof = False

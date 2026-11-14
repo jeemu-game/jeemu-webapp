@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { quadToMatrix3d } from '../story/quad';
 import LiveScreen from './LiveScreen';
 import Pic from './Pic';
+import { setLevel as setFireLevel } from './fireSound';
 import WaitlistScreen from '../waitlist/WaitlistScreen';
 import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE } from './copy';
 
@@ -12,6 +13,8 @@ import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE } from './copy';
 
 const BASE = `${import.meta.env.BASE_URL}tonight/`;
 const SHOTS = ['close', 'wide', 'play', 'top', 'late', 'end'];
+// shots of Jeemu's screen used as an interface: [shot, beat that brings it in, beat that takes it out]
+const CHAPTERS = [['end', 'toEnd', null]];
 
 // Scroll length of every beat, in % of the window height
 const BEATS = [
@@ -23,6 +26,7 @@ const START = {}; let acc = 0;
 for (const [id, len] of BEATS) { START[id] = [acc, len]; acc += len; }
 const TOTAL = acc;
 const TOP_BAR = 56;
+const WALL = { x: 965, y: 300, w: 720 };   // the chimney breast in the wide shot, image pixels
 
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
@@ -70,7 +74,18 @@ export default function Tonight({ onCta }) {
   }, []);
 
   useEffect(() => {
-    let raf = 0;
+    // The camera glides after the scroll position instead of jumping with every wheel tick or touch move: the shown
+    // position eases toward the real one (time constant ~0.12 s). Big jumps (links to a section) and reduced motion snap.
+    let raf = 0, glide = 0, shown = -1, target = 0, last = 0;
+    const smooth = !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const step = (now) => {
+      glide = 0;
+      const dt = Math.min(64, now - (last || now)); last = now;
+      const d = target - shown;
+      shown = Math.abs(d) < 0.05 ? target : shown + d * (1 - Math.exp(-dt / 120));
+      setT(shown);
+      if (shown !== target) glide = requestAnimationFrame(step); else last = 0;
+    };
     const read = () => {
       raf = 0;
       const el = section.current, st = stage.current; if (!el || !st) return;
@@ -78,7 +93,9 @@ export default function Tonight({ onCta }) {
       // shows and hides, which would make the story jump mid-scroll
       const h = st.clientHeight, w = st.clientWidth;
       const range = el.offsetHeight - h;
-      setT(range > 0 ? clamp((-el.getBoundingClientRect().top / range) * TOTAL, 0, TOTAL) : 0);
+      target = range > 0 ? clamp((-el.getBoundingClientRect().top / range) * TOTAL, 0, TOTAL) : 0;
+      if (!smooth || shown < 0 || Math.abs(target - shown) > 260) { shown = target; setT(target); }
+      else if (!glide) glide = requestAnimationFrame(step);
       // tallest text card: on portrait screens the polaroid is framed in the space above it
       const card = Math.max(0, ...[...st.querySelectorAll('.tn-card')].map((c) => c.offsetHeight));
       setVp((v) => (v.w === w && v.h === h && v.card === card ? v : { w, h, card }));
@@ -87,7 +104,7 @@ export default function Tonight({ onCta }) {
     read();
     window.addEventListener('scroll', on, { passive: true });
     window.addEventListener('resize', on);
-    return () => { window.removeEventListener('scroll', on); window.removeEventListener('resize', on); cancelAnimationFrame(raf); };
+    return () => { window.removeEventListener('scroll', on); window.removeEventListener('resize', on); cancelAnimationFrame(raf); cancelAnimationFrame(glide); };
   }, []);
 
   const p = (id) => { const [s, l] = START[id]; return clamp((t - s) / l); };        // 0..1 progress through a beat
@@ -153,30 +170,39 @@ export default function Tonight({ onCta }) {
     cams.late = t < START.toEnd[0] ? { c, z: zl, o: ease(p('toLate')) }
       : { c: [lerp(c[0], sc[0], kout), lerp(c[1], sc[1], kout)], z: zl * mv(1, 2.4, kout), o: 1 - ease(clamp((p('toEnd') - 0.35) / 0.65)) };
   }
-  if (meta.end && meta.end.screen) {
-    // the screen, big enough to use: about a third of a wide window, nearly the full width of a phone,
-    // and a little above centre so a phone keyboard doesn't cover it
-    const m = meta.end, q = m.screen, sc = mid(q), cover = Math.max(vp.w / m.width, vp.h / m.height);
-    const sw = dist(q[0], q[1]);
-    const zEnd = Math.max(1, ((portrait ? 0.8 : 0.36) * vp.w) / (sw * cover), portrait ? 1 : (0.42 * vp.h) / (dist(q[0], q[3]) * cover));
+  // the four screen shots: the screen big enough to use (about a third of a wide window, most of a phone's width) and a
+  // little above centre so a phone keyboard doesn't cover it. Each pushes in gently as it fades up, and on out as it goes.
+  CHAPTERS.forEach(([shot, inId, outId]) => {
+    const m = meta[shot]; if (!m || !m.screen) return;
+    const q = m.screen, sc = mid(q), cover = Math.max(vp.w / m.width, vp.h / m.height);
+    const zs = Math.max(1, ((portrait ? 0.8 : 0.36) * vp.w) / (dist(q[0], q[1]) * cover), portrait ? 1 : (0.42 * vp.h) / (dist(q[0], q[3]) * cover));
     const lift = portrait ? vp.h * 0.12 : vp.h * 0.03;
-    const cEnd = [sc[0], sc[1] + lift / (cover * zEnd)];
-    const k = ease(clamp((p('toEnd') - 0.25) / 0.75));
-    cams.end = { c: cEnd, z: Math.max(1, mv(zEnd * 0.82, zEnd, k)), o: k };
-  }
+    const c = [sc[0], sc[1] + lift / (cover * zs)];
+    const kin = ease(clamp((p(inId) - 0.25) / 0.75)), kout = outId ? ease(p(outId)) : 0;
+    const z = t < START[inId][0] + START[inId][1] ? mv(zs * 0.86, zs, kin) : mv(zs, zs * 1.08, kout);
+    cams[shot] = { c, z: Math.max(1, z), o: Math.min(kin, 1 - kout) };
+  });
+  const onShot = (shot) => cams[shot] && cams[shot].o > 0.6;
 
-  const stageStyle = (m, cam, under = 0) => {
+  const place = (m, cam, under = 0) => {
     const cover = Math.max(vp.w / m.width, vp.h / m.height), s = cover * cam.z;
     let tx = vp.w / 2 - cam.c[0] * s, ty = vp.h / 2 - cam.c[1] * s;
     // never show past the picture's edges, except a strip hidden under the text card (`under` px at the bottom)
     tx = clamp(tx, vp.w - m.width * s, 0); ty = clamp(ty, vp.h - m.height * s - under, 0);
+    return { tx, ty, s };
+  };
+  const stageStyle = (m, cam, under = 0) => {
+    const { tx, ty, s } = place(m, cam, under);
     return { width: m.width, height: m.height, transform: `translate3d(${tx}px, ${ty}px, 0) scale(${s})` };
   };
+  // a point in a shot (image pixels) -> where it is in the window right now
+  const project = (m, cam, x, y) => { const { tx, ty, s } = place(m, cam); return [tx + x * s, ty + y * s, s]; };
   const warp = (w, h, q) => ({ width: w, height: h, transform: quadToMatrix3d(w, h, q) });
 
   const screenFor = { close: SCREENS.intro, wide: SCREENS.wide, play: SCREENS.question, late: SCREENS.late };
-  const fire = cams.late ? lerp(1, 0.35, Math.max(cams.late.o, cams.end ? cams.end.o : 0)) : 1;
-  const endOn = t >= START.end[0] - 10;
+  const fire = cams.late ? lerp(1, 0.35, Math.max(cams.late.o, ...CHAPTERS.map(([sh]) => (cams[sh] ? cams[sh].o : 0)))) : 1;
+  const endOn = onShot('end');
+  setFireLevel((fire - 0.35) / 0.65);   // the crackle follows the fire: full while people play, softer as it dies down
   const show = (id, a = 0.12, b = 0.9) => { const k = p(id); return inBeat(id) ? clamp(Math.min((k - a) / 0.1, (b - k) / 0.1)) : 0; };
 
   return (
@@ -220,17 +246,22 @@ export default function Tonight({ onCta }) {
 
         {/* words */}
         <div className="tn-hint" style={{ opacity: t < 30 ? 1 - t / 30 : 0 }} aria-hidden="true">Scroll</div>
-        <div className="tn-caption" style={{ opacity: show('wide') }}>
-          <span className="tn-kicker">{CAPTIONS.wide.kicker}</span>
-          <h2>{CAPTIONS.wide.title}<br /><em>{CAPTIONS.wide.sub}</em></h2>
-        </div>
+        {meta.wide && cams.wide && (() => {
+          // over the stone chimney breast, moving with it (the wall spans about x 560-1370, y 0-600 in the render)
+          const [x, y0, sc] = project(meta.wide, cams.wide, WALL.x, WALL.y);
+          const y = Math.max(y0, TOP_BAR + (portrait ? 110 : 80));   // phones crop the top of the wall away
+          const cw = Math.min(vp.w - 32, WALL.w * sc);
+          return (
+            <div className="tn-caption tn-on-wall" style={{ opacity: show('wide'), left: clamp(x, cw / 2 + 16, vp.w - cw / 2 - 16), top: y, width: cw }}>
+              <h2>{CAPTIONS.wide.title} {CAPTIONS.wide.sub}</h2>
+            </div>
+          );
+        })()}
         <div className="tn-caption" style={{ opacity: show('play') }}>
-          <span className="tn-kicker">{CAPTIONS.play.kicker}</span>
           <h2>{CAPTIONS.play.title}</h2>
         </div>
         {POLAROIDS.map((pl, i) => (
           <div key={i} className="tn-card" style={{ opacity: show(`p${i}`, 0.3, 0.94) }}>
-            <span className="tn-kicker">{String(i + 1).padStart(2, '0')} / {String(POLAROIDS.length).padStart(2, '0')}</span>
             <h3>{pl.title}</h3>
             <p>{pl.body}</p>
           </div>
@@ -245,3 +276,4 @@ export default function Tonight({ onCta }) {
     </section>
   );
 }
+
