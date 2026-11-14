@@ -87,7 +87,7 @@ export default function Waitlist() {
     try {
       setDone(await signup());
       track('waitlist_joined');
-      try { confetti({ particleCount: 70, spread: 70, origin: { y: 0.75 }, shapes: ['square'], scalar: 0.8, colors: ['#05ffa1', '#ff71ce', '#01cdfe', '#b967ff'] }); } catch (_) {}
+      try { confetti({ particleCount: 70, spread: 70, origin: { y: 0.75 }, shapes: ['square'], scalar: 0.8, colors: ['#cfa96b', '#f2eadf', '#a3e8c8', '#8a5a2b'] }); } catch (_) {}
     } catch (err) {
       setError(err.message || 'Network error. Please try again.');
     } finally {
@@ -110,100 +110,100 @@ export default function Waitlist() {
 
   useEffect(() => {
     if (vipThanks?.state !== 'verified') return;
-    try { confetti({ particleCount: 110, spread: 80, origin: { y: 0.7 }, shapes: ['square'], scalar: 0.9, colors: ['#00d97e', '#ffd34d', '#e2ede5', '#1ae88d'] }); } catch (_) { /* decoration only */ }
+    try { confetti({ particleCount: 110, spread: 80, origin: { y: 0.7 }, shapes: ['square'], scalar: 0.9, colors: ['#cfa96b', '#f2eadf', '#a3e8c8', '#e2c08a'] }); } catch (_) { /* decoration only */ }
   }, [vipThanks?.state]);
 
   const refCode2 = done?.referralCode || (vipThanks?.state === 'verified' ? vipThanks.code : '') || '';
   const link = refCode2 ? `${window.location.origin}/?ref=${refCode2}` : '';
   const copy = () => navigator.clipboard.writeText(link).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2200); });
 
+  const shareBox = link && (
+    <div className="wn-share">
+      <span className="wn-share-label">Pass it on</span>
+      <div className="wn-share-row">
+        <input readOnly value={link} aria-label="Your referral link" onFocus={(e) => e.target.select()} />
+        <button type="button" className="wn-btn wn-btn-ghost wn-btn-small" onClick={copy}>{copied ? 'Copied' : 'Copy'}</button>
+      </div>
+    </div>
+  );
+  const THANKS = {
+    verified: { note: "You're VIP!", lines: ['Early-bird price locked.', 'Free carry bag reserved.'], sub: link ? 'Every friend who goes VIP through your link counts:' : "We'll tell you first on launch day." },
+    paid: { note: 'Payment received', lines: ["We're recording your VIP spot..."], sub: "You can close this page. We'll email you." },
+    checking: { note: 'One moment...', lines: ['Checking your payment.'], sub: '' },
+    plain: { note: 'Welcome back', lines: ["If you just paid, we'll email your receipt."], sub: '' }
+  };
+
   return (
-    <section className="wl" id="waitlist" ref={section}>
-      <div className="wl-inner">
-        <div className="wl-copy">
-          <div className="px-label">WAITLIST</div>
-          <h2>I never run out of questions.</h2>
-          <p>New ones keep arriving, and you can write your own in the Jeemu app.</p>
-          <p className="wl-price"><strong>Early bird: {EARLY_BIRD_PRICE} USD.</strong> Kickstarter launches on {LAUNCH_DATE}.</p>
-          <div className="wl-rewards">
-            <div className="px-label">KICKSTARTER EXCLUSIVE</div>
+    <section className="wl wn" id="waitlist" ref={section}>
+      <div className="wn-inner">
+        <div className="wn-copy">
+          <p className="wn-kicker">The waitlist</p>
+          <h2 className="wn-title">I never run out of questions.</h2>
+          <p className="wn-lede">New ones keep arriving, and you can write your own in the Jeemu app.</p>
+          <dl className="wn-price">
+            <div><dt>Early bird</dt><dd>{EARLY_BIRD_PRICE}<small> USD</small></dd></div>
+            <div><dt>Kickstarter</dt><dd>{LAUNCH_DATE}</dd></div>
+          </dl>
+          <div className="wn-rewards">
+            <p className="wn-kicker">Kickstarter exclusive</p>
             <h3>Get rewarded.</h3>
-            <ul>
-              <li><b>Go VIP ($1)</b><span>A free premium Jeemu carry bag</span></li>
-              <li><b>5 referrals</b><span>A bonus NFC card deck, so you can play without the tower</span></li>
-              <li><b>20 referrals</b><span>A Jeemu of your own, completely free</span></li>
-            </ul>
+            <ol>
+              <li><span className="wn-num">$1</span><div><b>Go VIP</b><span>A free premium Jeemu carry bag</span></div></li>
+              <li><span className="wn-num">5</span><div><b>Refer 5 friends</b><span>A bonus NFC card deck, so you can play without the tower</span></div></li>
+              <li><span className="wn-num">20</span><div><b>Refer 20 friends</b><span>A Jeemu of your own, completely free</span></div></li>
+            </ol>
           </div>
         </div>
 
-        <div className="wl-card">
-          {returned === 'success' && <div className="wl-ok" role="status">Thanks, your deposit was received. We'll email your receipt.</div>}
-          {returned === 'cancelled' && <div className="wl-error" role="status">Checkout was cancelled. You have not been charged.</div>}
+        <div className="wn-card">
+          {returned === 'success' && <div className="wn-banner" role="status">Thanks, your deposit was received. We'll email your receipt.</div>}
+          {returned === 'cancelled' && <div className="wn-banner is-warn" role="status">Checkout was cancelled. You have not been charged.</div>}
           {vipThanks && !done ? (
-            <div className={`wl-done wl-thanks is-${vipThanks.state}`} role="status">
-              <div className="wl-screen">
-                <div className="gs-bar"><span className="gs-jade">{vipThanks.state === 'verified' ? 'VIP UNLOCKED' : vipThanks.state === 'paid' ? 'ORDER IN' : vipThanks.state === 'checking' ? 'CHECKING' : 'JEEMU'}</span><img src={`${import.meta.env.BASE_URL}story/frog-pixel.png`} alt="" className="px-frog" /></div>
-                {vipThanks.state === 'verified' && (<>
-                  <p className="l1">THANK YOU. YOU'RE VIP.</p>
-                  <p className="l2">EARLY-BIRD PRICE LOCKED.</p>
-                  <p className="l2">FREE CARRY BAG RESERVED.</p>
-                  <p className="l3">{link ? 'PASS IT ON, EVERY FRIEND WHO GOES VIP COUNTS:' : 'WE\'LL TELL YOU FIRST ON LAUNCH DAY.'}</p>
-                </>)}
-                {vipThanks.state === 'paid' && (<>
-                  <p className="l1">PAYMENT RECEIVED.</p>
-                  <p className="l2">WE'RE RECORDING YOUR VIP SPOT...</p>
-                  <p className="l3">YOU CAN CLOSE THIS PAGE, WE'LL EMAIL YOU.</p>
-                </>)}
-                {vipThanks.state === 'checking' && <p className="l1">CHECKING YOUR PAYMENT...</p>}
-                {vipThanks.state === 'plain' && (<>
-                  <p className="l1">WELCOME BACK.</p>
-                  <p className="l2">IF YOU JUST PAID, WE'LL EMAIL YOUR RECEIPT.</p>
-                </>)}
-              </div>
-              {link && (
-                <div className="wl-share">
-                  <input readOnly value={link} aria-label="Your referral link" onFocus={(e) => e.target.select()} />
-                  <button type="button" className="btn-pixel btn-small" onClick={copy}>{copied ? 'COPIED' : 'COPY'}</button>
-                </div>
-              )}
-              {vipThanks.state === 'verified' && <p className="wl-fine">VIP spots are tied to the email you signed up with. 5 friends going VIP through your link earns the bonus NFC card deck, and 20 earns a Jeemu of your own.</p>}
-              {vipThanks.state === 'plain' && <p className="wl-fine">Your VIP status is recorded against the email you signed up with. If it does not show up within a day, write to us from that email.</p>}
+            <div className="wn-done" role="status">
+              <Polaroid note={THANKS[vipThanks.state].note} />
+              {THANKS[vipThanks.state].lines.map((l) => <p key={l} className="wn-done-line">{l}</p>)}
+              {THANKS[vipThanks.state].sub && <p className="wn-done-sub">{THANKS[vipThanks.state].sub}</p>}
+              {shareBox}
+              {vipThanks.state === 'verified' && <p className="wn-fine">VIP spots are tied to the email you signed up with. 5 friends going VIP through your link earns the bonus NFC card deck, and 20 earns a Jeemu of your own.</p>}
+              {vipThanks.state === 'plain' && <p className="wn-fine">Your VIP status is recorded against the email you signed up with. If it does not show up within a day, write to us from that email.</p>}
             </div>
           ) : done ? (
-            <div className="wl-done" role="status">
-              <div className="wl-screen">
-                <div className="gs-bar"><span className="gs-jade">BLOCK READ</span><img src={`${import.meta.env.BASE_URL}story/frog-pixel.png`} alt="" className="px-frog" /></div>
-                <p className="l1">YOU'RE ON THE LIST.</p>
-                <p className="l2">WE'LL EMAIL YOU BEFORE LAUNCH.</p>
-                <p className="l3">PASS IT ON:</p>
-              </div>
-              {link && (
-                <div className="wl-share">
-                  <input readOnly value={link} aria-label="Your referral link" onFocus={(e) => e.target.select()} />
-                  <button type="button" className="btn-pixel btn-small" onClick={copy}>{copied ? 'COPIED' : 'COPY'}</button>
-                </div>
-              )}
-              <a className="btn-pixel btn-vip" href={vipUrl(done?.email || email.trim(), done?.referralCode)} onClick={() => track('vip_click')}>GO VIP FOR $1</a>
-              <p className="wl-fine">VIPs lock in the early-bird price, receive a free Jeemu carry bag and hear about launch day first.</p>
+            <div className="wn-done" role="status">
+              <Polaroid note="You're on the list!" />
+              <p className="wn-done-line">We'll email you before launch.</p>
+              {shareBox}
+              <a className="wn-btn wn-btn-primary wn-btn-wide" href={vipUrl(done?.email || email.trim(), done?.referralCode)} onClick={() => track('vip_click')}>Go VIP for $1</a>
+              <p className="wn-fine">VIPs lock in the early-bird price, receive a free Jeemu carry bag and hear about launch day first.</p>
               <DepositStep subscriber={done} />
             </div>
           ) : (
-            <form onSubmit={submit} noValidate>
-              <label className="wl-field">
-                <span className="px-label">EMAIL</span>
-                <input type="email" required placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+            <form className="wn-form" onSubmit={submit} noValidate>
+              <h3 className="wn-card-title">Join the waitlist</h3>
+              <label className="wn-field">
+                <span>Your email</span>
+                <input type="email" required placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" inputMode="email" aria-invalid={!!error} aria-describedby={error ? 'wn-error' : undefined} />
               </label>
               <input type="text" className="wl-hp" tabIndex={-1} autoComplete="off" aria-hidden="true" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
-              {error && <div className="wl-error" role="alert">{error}</div>}
-              <div className="wl-actions">
-                <button className="btn-pixel" type="submit" disabled={!!loading}>{loading === 'free' ? 'JOINING…' : 'JOIN FREE'}</button>
-                <button className="btn-pixel btn-vip" type="button" onClick={goVip} disabled={!!loading}>{loading === 'vip' ? 'OPENING…' : 'GO VIP FOR $1'}</button>
+              {error && <div className="wn-error" id="wn-error" role="alert">{error}</div>}
+              <div className="wn-actions">
+                <button className="wn-btn wn-btn-primary" type="submit" disabled={!!loading}>{loading === 'free' ? 'Joining…' : 'Join free'}</button>
+                <button className="wn-btn wn-btn-ghost" type="button" onClick={goVip} disabled={!!loading}>{loading === 'vip' ? 'Opening…' : 'Go VIP for $1'}</button>
               </div>
-              <p className="wl-fine">VIPs lock in the early-bird price, receive a free Jeemu carry bag and hear about launch day first. Joining free needs no payment, and we only use your email to tell you about the launch.</p>
+              <p className="wn-fine">VIPs lock in the early-bird price, receive a free Jeemu carry bag and hear about launch day first. Joining free needs no payment, and we only use your email to tell you about the launch.</p>
             </form>
           )}
         </div>
       </div>
     </section>
+  );
+}
+
+// The confirmation: a polaroid from tonight with a note written on it, like the ones on the table.
+function Polaroid({ note }) {
+  return (
+    <figure className="wn-polaroid" aria-hidden="true">
+      <img src={`${import.meta.env.BASE_URL}tonight/photos/4.jpg`} alt="" width="800" height="800" loading="lazy" decoding="async" />
+      <figcaption>{note}</figcaption>
+    </figure>
   );
 }
