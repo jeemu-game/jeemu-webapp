@@ -18,6 +18,7 @@ export default function Waitlist() {
   const [vipThanks, setVipThanks] = useState(null);   // set when Stripe sends the buyer back to /?vip=thanks
 
   const section = useRef(null);
+  const card = useRef(null);
   useEffect(() => {
     const el = section.current;
     if (!el || !('IntersectionObserver' in window)) return undefined;
@@ -87,6 +88,11 @@ export default function Waitlist() {
     track('waitlist_submit');
     try {
       setDone(await signup());
+      // the thank-you is taller than the form: make sure its top isn't hidden under the top bar (phones)
+      requestAnimationFrame(() => {
+        const el = card.current;
+        if (el && el.getBoundingClientRect().top < 64) el.scrollIntoView({ block: 'start', behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      });
       track('waitlist_joined');
       try { confetti({ particleCount: 70, spread: 70, origin: { y: 0.75 }, shapes: ['square'], scalar: 0.8, disableForReducedMotion: true, colors: ['#cfa96b', '#f2eadf', '#a3e8c8', '#8a5a2b'] }); } catch (_) {}
     } catch (err) {
@@ -156,7 +162,7 @@ export default function Waitlist() {
           </div>
         </div>
 
-        <div className="wn-card">
+        <div className="wn-card" ref={card}>
           {returned === 'success' && <div className="wn-banner" role="status">Thanks, your deposit was received. We'll email your receipt.</div>}
           {returned === 'cancelled' && <div className="wn-banner is-warn" role="status">Checkout was cancelled. You have not been charged.</div>}
           {vipThanks && !done ? (
