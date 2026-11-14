@@ -21,7 +21,7 @@ argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else sys.argv[1:]
 ap = argparse.ArgumentParser()
 ap.add_argument('--product', default=os.path.join(HERE, '..', 'jeemu.blend'))
 ap.add_argument('--look', default='dark', choices=['dark', 'light', 'scandi'])
-ap.add_argument('--view', default='wide', choices=['wide', 'play', 'over', 'close', 'top', 'product', 'frog', 'badge', 'story', 'team', 'faq'])
+ap.add_argument('--view', default='wide', choices=['wide', 'play', 'over', 'close', 'top', 'product', 'frog', 'badge', 'story', 'team', 'faq', 'top2'])
 ap.add_argument('--fire', type=float, default=1.0)
 ap.add_argument('--sky', type=float, default=0.12, help='night-sky (HDRI) strength')
 ap.add_argument('--sky-rot', type=float, default=240.0, help='turn the night photo (degrees) to frame the treeline')
@@ -34,6 +34,7 @@ ap.add_argument('--save-blend', default='')
 ap.add_argument('--blank-photos', action='store_true', help='plain white picture areas: the website lays the real photos over them')
 ap.add_argument('--late', action='store_true', help='end of the night: embers, empty glasses, burnt-down candles, a gappy tower')
 ap.add_argument('--mask', action='store_true', help='render only a matte of Jeemu, the blocks and the polaroids (alpha), for compositing over an AI-enhanced still')
+ap.add_argument('--chapters', action='store_true', help='the after-party table: story polaroids, the team print and the FAQ cards instead of the how-it-plays polaroids')
 ap.add_argument('--meta', default='', help='write JSON with the screen and polaroid corners in image pixels')
 A = ap.parse_args(argv)
 if A.late: A.fire = 0.0
@@ -432,19 +433,42 @@ def photo_mat(i):
         nt.links.new(im.outputs['Color'], warm.inputs['A']); nt.links.new(warm.outputs['Result'], b.inputs['Base Color'])
     return m
 
-def polaroid(i, x, y, rz, lift=0.0):
-    z = 0.0004 + lift
-    card = box(f'Polaroid{i}', -0.044, -0.0535, 0.0, 0.044, 0.0535, 0.0008, mat=M_CARD)
-    bpy.ops.mesh.primitive_plane_add(size=0.079, location=(0, 0.008, 0.00085))
-    ph = bpy.context.active_object; ph.name = f'Polaroid{i}Photo'; ph.data.materials.append(photo_mat(i)); ph.parent = card
-    card.location = (x, y, z); card.rotation_euler = (0, 0, rz)
+# Instant prints. Square (88 x 107 mm, 79 mm picture) or wide (108 x 86 mm, 99 x 62 mm picture, for the team photo).
+# The site lays the real photo and the handwriting over each one using the corners written to --meta.
+PRINT = {
+    'square': dict(card=(-0.044, -0.0535, 0.044, 0.0535), photo=(-0.0395, -0.0315, 0.0395, 0.0475), caption=(-0.040, -0.051, 0.040, -0.033)),
+    'wide': dict(card=(-0.054, -0.043, 0.054, 0.043), photo=(-0.0495, -0.026, 0.0495, 0.036), caption=(-0.050, -0.041, 0.050, -0.028)),
+}
+def polaroid(i, x, y, rz, lift=0.0, kind='square', face_down=False):
+    k = PRINT[kind]; x0, y0, x1, y1 = k['card']; p0, q0, p1, q1 = k['photo']
+    card = box(f'Polaroid{i}', x0, y0, 0.0, x1, y1, 0.0008, mat=M_CARD)
+    bpy.ops.mesh.primitive_plane_add(size=1, location=((p0 + p1) / 2, (q0 + q1) / 2, 0.00085))
+    ph = bpy.context.active_object; ph.scale = (p1 - p0, q1 - q0, 1); ph.name = f'Polaroid{i}Photo'; ph.data.materials.append(photo_mat(i)); ph.parent = card
+    card.location = (x, y, 0.0004 + lift + (0.0008 if face_down else 0)); card.rotation_euler = (math.pi if face_down else 0, 0, rz)
+    card['kind'] = kind
     return card
 
-# seven in story order along the front of the table (the site pans from one to the next), plus one face-down extra
-POLAROIDS = [polaroid(i, x, y, rz, lift) for i, (x, y, rz, lift) in enumerate((
-    (-0.52, -0.23, 0.16, 0.0), (-0.30, -0.30, -0.22, 0.0), (-0.08, -0.25, 0.09, 0.0), (0.14, -0.31, -0.13, 0.0),
-    (0.37, -0.24, 0.24, 0.0), (0.60, -0.30, -0.18, 0.0), (0.83, -0.24, 0.12, 0.0)))]
-polaroid(7, 0.70, -0.06, 1.2, 0.0)
+if not A.chapters:
+    # seven in story order along the front of the table (the site pans from one to the next), plus one face-down extra
+    POLAROIDS = [polaroid(i, x, y, rz, lift) for i, (x, y, rz, lift) in enumerate((
+        (-0.52, -0.23, 0.16, 0.0), (-0.30, -0.30, -0.22, 0.0), (-0.08, -0.25, 0.09, 0.0), (0.14, -0.31, -0.13, 0.0),
+        (0.37, -0.24, 0.24, 0.0), (0.60, -0.30, -0.18, 0.0), (0.83, -0.24, 0.12, 0.0)))]
+    polaroid(7, 0.70, -0.06, 1.2, 0.0, face_down=True)
+    FAQ_CARD = None
+else:
+    # after the waitlist: our story (five prints along the front), the team (a wide print at the right end),
+    # and the questions people ask (a stack of 5 x 3 inch index cards at the back)
+    POLAROIDS = [polaroid(i, x, y, rz) for i, (x, y, rz) in enumerate((
+        (-0.55, -0.22, 0.12), (-0.31, -0.30, -0.17), (-0.06, -0.33, 0.08), (0.20, -0.31, -0.12), (0.45, -0.27, 0.18)))]
+    POLAROIDS.append(polaroid(5, 0.80, -0.20, -0.07, kind='wide'))
+    M_INDEX = plain('IndexCard', (0.84, 0.80, 0.72), rough=0.8, noise=0.05)
+    import random as _r; _r.seed(5)
+    FAQ_CARD = None
+    for k in range(9):   # a slightly messy stack; the top one carries the question
+        c = box(f'FaqCard{k}', -0.0635, -0.038, 0.0, 0.0635, 0.038, 0.00028, mat=M_INDEX)
+        c.location = (0.12 + _r.uniform(-0.004, 0.004), 0.25 + _r.uniform(-0.004, 0.004), k * 0.00029)
+        c.rotation_euler = (0, 0, -0.18 + _r.uniform(-0.05, 0.05))
+        FAQ_CARD = c
 
 # ---------------------------------------------------------------- props (Poly Haven, CC0)
 def place(asset, x, y, z=FLOOR, rz=0.0, scale=1.0, sit=True):
@@ -576,6 +600,7 @@ VIEWS = {   # location, look-at, lens mm, f-stop
     'faq': ((0.05, -0.30, 0.30), (0.0, -0.065, 0.04), 45, 2.2),     # from above: blocks on the table around the base
     'badge': ((0.24, -0.09, 0.15), (0.066, 0.0, 0.026), 70, 16),   # checks: the JEEMU badge, sharp
     'top': ((0.20, -0.14, 2.0), (0.20, -0.14, 0.0), 0, 0),          # straight down on the polaroids (orthographic)
+    'top2': ((0.18, 0.02, 2.0), (0.18, 0.02, 0.0), 0, 0),           # straight down on the whole table (the chapters)
 }
 loc, tgt, lens, fstop = VIEWS[A.view]
 cam.location = loc
@@ -584,8 +609,8 @@ cd.lens = lens; cd.sensor_width = 36; cd.dof.use_dof = True; cd.dof.aperture_fst
 cd.dof.focus_object = bpy.data.objects.get('Focus') if A.view not in ('over', 'close', 'product', 'frog', 'badge', 'story', 'team', 'faq') else None
 if A.view in ('over', 'close', 'product', 'frog', 'badge', 'story', 'team', 'faq'): cd.dof.focus_distance = (Vector(tgt) - Vector(loc)).length
 cd.clip_start = 0.01; cd.clip_end = 200
-if A.view == 'top':
-    cam.rotation_euler = (0, 0, 0); cd.type = 'ORTHO'; cd.ortho_scale = 1.80; cd.dof.use_dof = False
+if A.view in ('top', 'top2'):
+    cam.rotation_euler = (0, 0, 0); cd.type = 'ORTHO'; cd.ortho_scale = 1.80 if A.view == 'top' else 1.96; cd.dof.use_dof = False
 sc.camera = cam
 
 # ---------------------------------------------------------------- render settings
@@ -611,7 +636,7 @@ if A.save_blend: bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(A.save_ble
 os.makedirs(os.path.dirname(os.path.abspath(A.out)), exist_ok=True)
 r.filepath = os.path.abspath(A.out)
 if A.mask:   # keep what must stay exact (the product, the blocks, the polaroids); everything else is cut out of the frame
-    keep = ('Shell', 'Inlays', 'TopLogo', 'Screen', 'Block', 'Proto', 'PlateSkin', 'Polaroid')
+    keep = ('Shell', 'Inlays', 'TopLogo', 'Screen', 'Block', 'Proto', 'PlateSkin', 'Badge', 'Polaroid', 'FaqCard')
     for o in sc.objects:
         if o.type in ('MESH', 'CURVE', 'FONT') and not o.name.startswith(keep): o.visible_camera = False
     r.film_transparent = True; cy.samples = 16; cy.use_denoising = False
@@ -632,8 +657,11 @@ if A.meta:   # where the live overlays go: corners in image pixels, clockwise fr
         M = card.matrix_world
         def quad(x0, y0, x1, y1, z=0.0009):
             return [px(M @ Vector(c)) for c in ((x0, y1, z), (x1, y1, z), (x1, y0, z), (x0, y0, z))]
-        meta['polaroids'].append({'photo': quad(-0.0395, -0.0315, 0.0395, 0.0475), 'caption': quad(-0.040, -0.051, 0.040, -0.033),
-                                  'card': quad(-0.044, -0.0535, 0.044, 0.0535)})
+        k = PRINT[card.get('kind', 'square')]
+        meta['polaroids'].append({'kind': card.get('kind', 'square'), 'photo': quad(*k['photo']), 'caption': quad(*k['caption']), 'card': quad(*k['card'])})
+    if FAQ_CARD:   # the top index card, for the questions
+        M = FAQ_CARD.matrix_world
+        meta['faq'] = [px(M @ Vector(c)) for c in ((-0.0635, 0.038, 0.0003), (0.0635, 0.038, 0.0003), (0.0635, -0.038, 0.0003), (-0.0635, -0.038, 0.0003))]
     json.dump(meta, open(A.meta, 'w'), indent=1)
     print('wrote', A.meta)
 print('wrote', r.filepath)

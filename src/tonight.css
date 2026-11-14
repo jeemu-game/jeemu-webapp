@@ -296,3 +296,24 @@ html.theme-tonight .wl-ok { color: var(--tn-paper); }
 @keyframes tb-wave { 0%, 100% { height: 3px; } 50% { height: 11px; } }
 @media (max-width: 760px) { .tb-sound { margin-left: auto; font-size: 0; gap: 0; } .tb-sound .tb-wave { height: 14px; } .tb-cta { margin-left: 18px; } }
 @media (prefers-reduced-motion: reduce) { .tb-sound.is-on .tb-wave i { animation: none; height: 9px; } }
+
+/* ---------------------------------------------------------------- the chapters table */
+.tn-sub { margin: -4px 0 10px !important; font-size: 0.78rem !important; font-weight: 600; letter-spacing: 0.02em; color: rgba(242, 234, 223, 0.6) !important; }
+/* the top index card: faint blue rules and a red margin line, like a real 5 x 3 card; the question in pen */
+.tn-index { mix-blend-mode: multiply; overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 70px 40px 30px; box-sizing: border-box;
+  background:
+    linear-gradient(transparent 58px, rgba(200, 70, 70, 0.55) 58px, rgba(200, 70, 70, 0.55) 61px, transparent 61px),
+    repeating-linear-gradient(transparent 0 92px, rgba(90, 120, 190, 0.38) 92px 94px); }
+.tn-index span { font: 400 46px/1.25 var(--tn-hand); color: #1f2238; text-align: center; transform: rotate(-1deg); animation: tn-write 0.6s ease-out both; }
+.tn-index.is-soft span { filter: blur(5px); animation: none; }
+@keyframes tn-write { from { opacity: 0; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(-20% -2% -20% 0); } }
+@media (prefers-reduced-motion: reduce) { .tn-index span { animation: none; } }
+
+/* ---------------------------------------------------------------- footer */
+.sf { padding: 64px max(20px, env(safe-area-inset-left)) max(40px, env(safe-area-inset-bottom)); background: var(--tn-ink); border-top: 1px solid var(--tn-line);
+  display: grid; gap: 18px; justify-items: center; text-align: center; }
+.sf-mark { font: 400 1.9rem/1 var(--tn-brand); color: var(--tn-paper); }
+.sf-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; }
+.sf-links a { color: rgba(242, 234, 223, 0.7); text-decoration: none; font-size: 0.9rem; }
+.sf-links a:hover { color: var(--tn-paper); }
+.sf-legal { max-width: 56ch; margin: 6px 0 0; font-size: 0.78rem; line-height: 1.55; color: var(--tn-faint); }

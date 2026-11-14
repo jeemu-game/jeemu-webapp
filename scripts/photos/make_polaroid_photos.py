@@ -27,14 +27,27 @@ CROPS = [
     ('1.jpg', 0.66, 0.70, 0.42),   # 7 (on the table, not visited): hands at the tower
 ]
 SIZE = 800
+# after the waitlist, on the chapters table: our story (square prints) and the team (one wide print, 99 x 62 mm)
+BRAND = os.path.join(HERE, '..', '..', 'public', 'brand')
+CHAPTER_CROPS = [   # (output name, source: 'shoot:<file>' or 'brand:<file>', cx, cy, frac, aspect w/h)
+    ('s1', 'shoot:6.jpg', 0.47, 0.76, 0.42, 1.0),                  # the problem: a phone on the table next to the game
+    ('s2', 'shoot:2.jpg', 0.50, 0.42, 0.80, 1.0),                  # asking players
+    ('s3', 'brand:jeemu-prototype-tower.jpg', 0.50, 0.50, 1.0, 1.0),   # the idea
+    ('s4', 'brand:jeemu-prototype-angled.jpg', 0.40, 0.55, 1.0, 1.0),  # sketch to workbench
+    ('s5', 'brand:jeemu-prototype-side.jpg', 0.50, 0.50, 1.0, 1.0),    # building in the open
+    ('team', 'shoot:6.jpg', 0.50, 0.50, 1.0, 99 / 62),             # the six of us
+]
 
-def crop(im, cx, cy, frac):
-    W, H = im.size; s = int(min(W, H) * frac)
-    x = int(np.clip(cx * W - s / 2, 0, W - s)); y = int(np.clip(cy * H - s / 2, 0, H - s))
-    return im.crop((x, y, x + s, y + s)).resize((SIZE, SIZE), Image.LANCZOS)
+def crop(im, cx, cy, frac, aspect=1.0):
+    W, H = im.size
+    h = min(H, W / aspect) * frac; w = h * aspect
+    x = int(np.clip(cx * W - w / 2, 0, W - w)); y = int(np.clip(cy * H - h / 2, 0, H - h))
+    out = (SIZE, SIZE) if aspect == 1.0 else (int(SIZE * 1.5), int(SIZE * 1.5 / aspect))
+    return im.crop((x, y, int(x + w), int(y + h))).resize(out, Image.LANCZOS)
 
 def grade(im, seed=0):
     a = np.asarray(im.convert('RGB'), dtype=np.float32) / 255.0
+    H, W = a.shape[:2]
     # 1. white balance: pull every photo to the same warm, firelit neutral (kitchen LEDs and blue windows included)
     lum = a.mean(axis=2, keepdims=True)
     mean = a.reshape(-1, 3).mean(0); target = np.array([1.0, 0.90, 0.74]) * mean.mean()
@@ -52,13 +65,13 @@ def grade(im, seed=0):
     img = Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.7))
     a = np.asarray(img, dtype=np.float32) / 255.0
     hi = np.clip((a.mean(2, keepdims=True) - 0.72) / 0.28, 0, 1) * np.array([1.0, 0.55, 0.3])
-    glow = np.asarray(Image.fromarray((hi * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(SIZE * 0.02)), dtype=np.float32) / 255.0
+    glow = np.asarray(Image.fromarray((hi * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(min(W, H) * 0.02)), dtype=np.float32) / 255.0
     a = 1 - (1 - a) * (1 - glow * 0.35)                                  # screen blend
     # 5. vignette and grain
-    yy, xx = np.mgrid[0:SIZE, 0:SIZE]; d = np.hypot(xx - SIZE / 2, yy - SIZE / 2) / (SIZE * 0.707)
+    yy, xx = np.mgrid[0:H, 0:W]; d = np.hypot((xx - W / 2) / W, (yy - H / 2) / H) / 0.707
     a = a * (1 - 0.32 * np.clip(d, 0, 1) ** 2.4)[..., None]
     rng = np.random.default_rng(seed)
-    g = rng.normal(0, 1, (SIZE, SIZE)).astype(np.float32)
+    g = rng.normal(0, 1, (H, W)).astype(np.float32)
     g = np.asarray(Image.fromarray(np.clip(g * 40 + 128, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.6)), dtype=np.float32) / 255.0 - 0.5
     a = a + g[..., None] * 0.07
     return Image.fromarray((np.clip(a, 0, 1) * 255 + 0.5).astype(np.uint8))
@@ -69,3 +82,9 @@ if __name__ == '__main__':
         grade(crop(Image.open(os.path.join(src, f)), cx, cy, frac), seed=i).save(os.path.join(OUT, f'{i}.jpg'), quality=86)
         convert(os.path.join(OUT, f'{i}.jpg'))   # .avif and .webp copies for the site
         print('wrote', i, f)
+    for name, source, cx, cy, frac, aspect in CHAPTER_CROPS:
+        kind, f = source.split(':', 1)
+        path = os.path.join(src if kind == 'shoot' else BRAND, f)
+        grade(crop(Image.open(path), cx, cy, frac, aspect), seed=hash(name) % 1000).save(os.path.join(OUT, f'{name}.jpg'), quality=86)
+        convert(os.path.join(OUT, f'{name}.jpg'))
+        print('wrote', name, f)

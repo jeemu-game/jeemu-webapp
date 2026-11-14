@@ -33,3 +33,17 @@ export const FINALE = {
   sub: `Early bird prices are the best you'll see. Kickstarter, ${LAUNCH_DATE}. Early bird ${EARLY_BIRD_PRICE} USD.`,
   cta: 'Join the waitlist'
 };
+
+// ---- after the waitlist, on the late-night table (shot "top2")
+// Our story: five prints along the front of the table. note: handwritten on the print; title/body: beside it.
+// The full milestones (src/data/teamData.js) are also in the page for search engines and screen readers.
+export const STORY = [
+  { photo: 'photos/s1.jpg', note: 'Shanghai, Sept 2026', title: 'The problem', body: "Everyone loves the tower game. But once you've seen every question, the box goes back on the shelf and the phones come back out." },
+  { photo: 'photos/s2.jpg', note: 'we asked everyone', title: 'Asking the players', body: "We interviewed dozens of players. They loved the game, until they'd seen every question." },
+  { photo: 'photos/s3.jpg', note: 'take it off the wood', title: 'The idea', body: 'Put the question on a smart base instead. Tap a block and a question appears, from a game you picked or one you wrote yourself.' },
+  { photo: 'photos/s4.jpg', note: 'first prints!', title: 'From sketch to workbench', body: 'We found a makerspace, 3D printed our first models, and built the first Jeemu from parts sourced across China.' },
+  { photo: 'photos/s5.jpg', note: 'nearly there...', title: 'Building in the open', body: "We're refining the prototype, writing question packs and getting ready for Kickstarter." }
+];
+// The team: one wide print; the camera stays on it while each of the six gets a turn beside it (src/data/teamData.js)
+export const TEAM_PRINT = { photo: 'photos/team.jpg', note: 'the six of us' };
+

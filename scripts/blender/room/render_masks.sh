@@ -12,4 +12,5 @@ run play  --view play  --width 1920 --height 1080
 run late  --view play  --late --width 1920 --height 1080
 run top   --view top   --blank-photos --width 4800 --height 1524
 run end   --view close --late --width 1920 --height 1080
+run top2  --view top2  --late --chapters --blank-photos --width 4800 --height 2520
 echo done

@@ -1,9 +1,7 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import TopBar from './components/tonight/TopBar';
 import Tonight from './components/tonight/Tonight';
-import JourneyTimeline from './components/JourneyTimeline';
-import TeamSection from './components/TeamSection';
-import FaqFooter from './components/FaqFooter';
+import SiteFooter from './components/tonight/SiteFooter';
 // the team admin page is split out of the public bundle, and brings its own fonts
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
 const ADMIN_FONTS = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap';
@@ -86,10 +84,8 @@ export default function App() {
       <TopBar onCtaClick={() => toWaitlist('nav')} />
       <main>
         <Tonight onCta={() => toWaitlist('story')} />
-        <JourneyTimeline />
-        <TeamSection />
-        <FaqFooter />
       </main>
+      <SiteFooter />
     </div>
   );
 }

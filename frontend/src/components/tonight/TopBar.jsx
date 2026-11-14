@@ -3,7 +3,7 @@ import { startFire, stopFire } from './fireSound';
 
 // No bar: the wordmark and a few quiet links float over the night scene. "Sound" lets the fire crackle
 // (off until asked for; a visitor who turned it on before gets it back at their first tap or key press).
-const LINKS = [['#journey', 'Our story'], ['#faq', 'FAQ']];
+const LINKS = [['#journey', 'Our story'], ['#team', 'Team'], ['#faq', 'FAQ']];
 const KEY = 'jeemu-sound';
 
 export default function TopBar({ onCtaClick }) {

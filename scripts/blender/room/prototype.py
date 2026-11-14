@@ -1,7 +1,7 @@
 """Make the CAD Jeemu look like the real prototype from the photoshoot.
 
   * shell: 3D-printed "galaxy" black PLA: near-black with fine silver flecks and 0.2 mm layer lines
-  * +X face: a recessed dark plate with JEEMU in mint (Bagel Fat One, the brand face), flush with the shell
+  * +X face: a recessed dark plate with JEEMU in mint (Matcha, the wordmark face), flush with the shell
   * -X face: the frog mark in mint on the same kind of plate
   * blocks: pale pine with strong grain, a hand-written number in pen on both ends, a grey frog stamp on top
 
@@ -125,7 +125,7 @@ def _wordmark(c, sx, brand_dir, mat, raise_to):
     """JEEMU in the brand face, set flush with the shell surface."""
     right, up, n = _face_frame(sx)
     cu = bpy.data.curves.new('ProtoWordmark', 'FONT'); cu.body = 'JEEMU'
-    cu.font = bpy.data.fonts.load(os.path.join(brand_dir, 'BagelFatOne-Regular.ttf'))
+    cu.font = bpy.data.fonts.load(os.path.join(brand_dir, 'Matcha-Style.ttf'))   # the Jeemu wordmark face
     cu.align_x = 'CENTER'; cu.align_y = 'CENTER'; cu.size = 0.0155; cu.space_character = 1.04
     cu.extrude = 0.0005; cu.bevel_depth = 0.00012; cu.bevel_resolution = 2
     o = bpy.data.objects.new('ProtoWordmark', cu); bpy.context.scene.collection.objects.link(o)
