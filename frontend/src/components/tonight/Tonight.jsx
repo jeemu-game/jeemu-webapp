@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { quadToMatrix3d } from '../story/quad';
 import LiveScreen from './LiveScreen';
+import Pic from './Pic';
 import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE } from './copy';
 
 // "Tonight": one game night, told by scrolling. Rendered stills of the room (from scripts/blender/room) sit on a
@@ -35,7 +36,7 @@ function TableOverlays({ m, warp, written, soft = false }) {
     if (!photo) return null;
     return (
       <React.Fragment key={i}>
-        <div className={`tn-warp tn-photo ${soft ? 'is-soft' : ''}`} style={warp(600, 600, q.photo)}><img src={`${BASE}${photo}`} alt="" /></div>
+        <div className={`tn-warp tn-photo ${soft ? 'is-soft' : ''}`} style={warp(600, 600, q.photo)}><Pic src={`${BASE}${photo}`} decoding="async" /></div>
         {pl && (
           <div className={`tn-warp tn-note ${soft ? 'is-soft' : ''} ${i <= written ? 'is-written' : ''}`} style={warp(600, 135, q.caption)}>
             <span style={{ fontSize: `${Math.min(60, 1050 / Math.max(10, pl.note.length))}px` }}>{pl.note}</span>
@@ -53,6 +54,14 @@ export default function Tonight({ onCta }) {
   const [vp, setVp] = useState({ w: 1280, h: 800, card: 0 });
   const [meta, setMeta] = useState({});
   const [written, setWritten] = useState(-1);          // highest polaroid whose note has been written
+  // the opening shot loads first; the rest follow once it is in (or as soon as the visitor starts scrolling)
+  const [loadRest, setLoadRest] = useState(false);
+  const startRest = () => {
+    const go = () => setLoadRest(true);
+    if ('requestIdleCallback' in window) window.requestIdleCallback(go, { timeout: 1200 }); else setTimeout(go, 300);
+  };
+  useEffect(() => { if (t > 2) setLoadRest(true); }, [t]);
+  useEffect(() => { const id = setTimeout(() => setLoadRest(true), 4000); return () => clearTimeout(id); }, []);   // safety net
   const reduce = useMemo(() => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
 
   useEffect(() => {
@@ -163,18 +172,19 @@ export default function Tonight({ onCta }) {
           return (
             <div key={s} className="tn-layer" style={{ opacity: cam.o, visibility: cam.o > 0.001 ? 'visible' : 'hidden' }}>
               <div className="tn-shot" style={stageStyle(m, cam, s === 'top' && portrait ? vp.card + 24 : 0)}>
-                <img src={`${BASE}${s}.jpg`} alt="" width={m.width} height={m.height} draggable="false" decoding="async" fetchPriority={s === 'close' ? 'high' : 'auto'} />
+                {(s === 'close' || loadRest) && <Pic src={`${BASE}${s}.jpg`} width={m.width} height={m.height} draggable="false" decoding="async"
+                  fetchPriority={s === 'close' ? 'high' : 'low'} onLoad={s === 'close' ? startRest : undefined} />}
                 {m.screen && screenFor[s] && (
                   <div className="tn-warp tn-screen" style={warp(320, 240, m.screen)}><LiveScreen card={screenFor[s]} /></div>
                 )}
-                {s === 'top' && <TableOverlays m={m} warp={warp} written={written} />}
+                {s === 'top' && loadRest && <TableOverlays m={m} warp={warp} written={written} />}
               </div>
               {s === 'top' && (
                 // depth of field: a softened copy of the table on top, with a clear hole where the camera is focused
                 <div className={`tn-dof ${portrait ? 'is-portrait' : ''}`} style={{ '--dof-y': `${dofAt}%` }} aria-hidden="true">
                   <div className="tn-shot" style={stageStyle(m, cam, portrait ? vp.card + 24 : 0)}>
-                    <img src={`${BASE}top_blur.jpg`} alt="" width={m.width} height={m.height} draggable="false" decoding="async" />
-                    <TableOverlays m={m} warp={warp} written={written} soft />
+                    {loadRest && <Pic src={`${BASE}top_blur.jpg`} width={m.width} height={m.height} draggable="false" decoding="async" />}
+                    {loadRest && <TableOverlays m={m} warp={warp} written={written} soft />}
                   </div>
                 </div>
               )}

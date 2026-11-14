@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import DepositStep from './DepositStep';
+import Pic from './tonight/Pic';
 import { track } from '../analytics';
 import { EARLY_BIRD_PRICE, LAUNCH_DATE, vipUrl } from '../data/offer';
 
@@ -202,7 +203,7 @@ export default function Waitlist() {
 function Polaroid({ note }) {
   return (
     <figure className="wn-polaroid" aria-hidden="true">
-      <img src={`${import.meta.env.BASE_URL}tonight/photos/4.jpg`} alt="" width="800" height="800" loading="lazy" decoding="async" />
+      <Pic src={`${import.meta.env.BASE_URL}tonight/photos/4.jpg`} width="800" height="800" loading="lazy" decoding="async" />
       <figcaption>{note}</figcaption>
     </figure>
   );

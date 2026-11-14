@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import TopBar from './components/tonight/TopBar';
 import Tonight from './components/tonight/Tonight';
 import Waitlist from './components/Waitlist';
 import JourneyTimeline from './components/JourneyTimeline';
 import TeamSection from './components/TeamSection';
 import FaqFooter from './components/FaqFooter';
-import AdminPanel from './components/AdminPanel';
+// the team admin page is split out of the public bundle, and brings its own fonts
+const AdminPanel = lazy(() => import('./components/AdminPanel'));
+const ADMIN_FONTS = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap';
 import { track } from './analytics';
 
 export default function App() {
@@ -60,16 +62,22 @@ export default function App() {
   // the "Tonight" skin applies to the public page only; the team admin page keeps its own look
   useEffect(() => {
     document.documentElement.classList.toggle('theme-tonight', !isAdminView);
+    if (isAdminView && !document.querySelector('link[data-admin-fonts]')) {
+      const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = ADMIN_FONTS; l.dataset.adminFonts = '';
+      document.head.appendChild(l);
+    }
   }, [isAdminView]);
 
   if (isAdminView) {
     return (
-      <AdminPanel
-        onBackToSite={() => {
-          window.history.pushState({}, '', '/');
-          setIsAdminView(false);
-        }}
-      />
+      <Suspense fallback={null}>
+        <AdminPanel
+          onBackToSite={() => {
+            window.history.pushState({}, '', '/');
+            setIsAdminView(false);
+          }}
+        />
+      </Suspense>
     );
   }
 

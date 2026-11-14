@@ -8,6 +8,9 @@ vignette and film grain. Output: public/tonight/photos/<n>.jpg (800 x 800).
 Edit CROPS to change which photo goes on which polaroid or how it is framed:
 (source file, centre x, centre y, square size as a fraction of the photo's short side), all 0..1.
 """
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', 'web'))
+from modern_formats import convert
 import os, sys
 import numpy as np
 from PIL import Image, ImageFilter
@@ -64,4 +67,5 @@ if __name__ == '__main__':
     src = sys.argv[1]; os.makedirs(OUT, exist_ok=True)
     for i, (f, cx, cy, frac) in enumerate(CROPS, 1):
         grade(crop(Image.open(os.path.join(src, f)), cx, cy, frac), seed=i).save(os.path.join(OUT, f'{i}.jpg'), quality=86)
+        convert(os.path.join(OUT, f'{i}.jpg'))   # .avif and .webp copies for the site
         print('wrote', i, f)

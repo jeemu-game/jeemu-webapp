@@ -6,7 +6,7 @@ still. Free CC0 textures, models and the night sky come from Poly Haven and are 
 ## Stills the website uses
 ```
 ./render_site_stills.sh blender 256          # or: EXTRA=--gpu ./render_site_stills.sh "blender -b -P" 512
-python prepare_site_assets.py                # post-processes and copies them to public/tonight/
+python prepare_site_assets.py                # post-processes and copies them to public/tonight/ (+ .avif/.webp copies)
 npm run sync:frontend                        # mirror into frontend/ (what Vercel builds)
 ```
 `render_site_stills.sh` writes `out/site/{close,wide,play,late,top}.png` plus a `.json` next to each with the corners
