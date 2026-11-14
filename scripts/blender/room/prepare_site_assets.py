@@ -17,7 +17,14 @@ os.makedirs(DST, exist_ok=True)
 for name in ('close', 'wide', 'play', 'top', 'late', 'end', 'top2'):
     png, js = os.path.join(SRC, name + '.png'), os.path.join(SRC, name + '.json')
     if not (os.path.exists(png) and os.path.exists(js)): print('missing', name); continue
-    im = post(Image.open(png), vig=0.0 if name in ('top', 'top2') else 0.30)
+    raw = Image.open(png).convert('RGBA')
+    pp = os.path.join(SRC, name + '_patch.png')
+    if os.path.exists(pp):   # the firebox re-rendered without flames (the site adds filmed fire): blend it in, feathered
+        from PIL import ImageFilter
+        patch = Image.open(pp).convert('RGBA')
+        a = patch.split()[3].point(lambda v: 255 if v > 250 else 0).filter(ImageFilter.MinFilter(41)).filter(ImageFilter.GaussianBlur(14))
+        raw = Image.composite(patch, raw, a); print('  patched', name)
+    im = post(raw.convert('RGB'), vig=0.0 if name in ('top', 'top2') else 0.30)
     im.save(os.path.join(DST, name + '.jpg'), quality=84, optimize=True, progressive=True)
     shutil.copy(js, os.path.join(DST, name + '.json'))
     print('ok', name, im.size, 'jpg/webp/avif KB:', *convert(os.path.join(DST, name + '.jpg')))

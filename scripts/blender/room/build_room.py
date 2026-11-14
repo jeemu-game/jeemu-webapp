@@ -40,6 +40,8 @@ ap.add_argument('--fall-frames', type=int, default=60)
 ap.add_argument('--fall-range', type=int, nargs=2, default=None, help='only render these frames of the fall (first last)')
 ap.add_argument('--fall-test', action='store_true', help='run the collapse and print the tower height, no rendering')
 ap.add_argument('--fallen', default='', help='JSON of where the blocks landed (from --fall): show the fallen tower')
+ap.add_argument('--no-flames', action='store_true', help='no rendered fireplace flames or logs (the site lays filmed fire over the firebox); the firelight stays')
+ap.add_argument('--patch', action='store_true', help='render only a region around the firebox (transparent elsewhere), to patch into an existing still')
 ap.add_argument('--meta-only', action='store_true', help='write the --meta corners without rendering')
 ap.add_argument('--fire-mask', action='store_true', help='render only where the firebox opening is visible (white on transparent), for the live fire footage')
 ap.add_argument('--meta', default='', help='write JSON with the screen and polaroid corners in image pixels')
@@ -739,6 +741,20 @@ if A.fall or A.fall_test:
         sc.frame_set(f); bpy.ops.render.render(write_still=True)
     _fall.save_final(os.path.join(A.fall, 'fallen.json'))
     print('wrote', A.fall); raise SystemExit
+if A.no_flames:
+    for o in sc.objects:
+        if o.name.startswith(('Flame', 'Log')) and not o.name.startswith('FlameL'): o.hide_render = True
+if A.patch:   # just the firebox and a margin round it, so the change can be dropped into the finished still
+    bpy.context.view_layer.update()
+    from bpy_extras.object_utils import world_to_camera_view as _w2c
+    trim = bpy.data.objects['FireboxTrim']; bb = [trim.matrix_world @ Vector(c) for c in trim.bound_box]
+    pts = [_w2c(sc, sc.camera, v) for v in bb]
+    x0, x1 = min(p.x for p in pts), max(p.x for p in pts); y0, y1 = min(p.y for p in pts), max(p.y for p in pts)
+    mx, my = (x1 - x0) * 0.35 + 0.02, (y1 - y0) * 0.6 + 0.03
+    r.use_border = True; r.use_crop_to_border = False
+    r.border_min_x, r.border_max_x = max(0, x0 - mx), min(1, x1 + mx); r.border_min_y, r.border_max_y = max(0, y0 - my), min(1, y1 + my)
+    r.film_transparent = False; r.image_settings.color_mode = 'RGBA'
+    print('patch region', round(r.border_min_x, 3), round(r.border_max_x, 3), round(r.border_min_y, 3), round(r.border_max_y, 3))
 if A.fire_mask:   # everything else cuts a hole; only the firebox mouth shows, so the site's fire footage stays behind the tower
     bpy.ops.mesh.primitive_plane_add(size=1, location=((fx0 + fx1) / 2, by + 0.02, (fz0 + fz1) / 2), rotation=(math.pi / 2, 0, 0))
     fm = bpy.context.active_object; fm.name = 'FireMatte'; fm.scale = (fx1 - fx0, fz1 - fz0, 1)
