@@ -48,7 +48,6 @@ for (const [id, len] of BEATS) { START[id] = [acc, len]; acc += len; }
 const TOTAL = acc;
 const TOP_BAR = 56;
 const WALL = { x: 965, y: 300, w: 720 };   // the chimney breast in the wide shot, image pixels
-const FIREBOX = { x: 965, y: 712 };        // the fire in the wide shot, image pixels
 
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
@@ -305,6 +304,7 @@ export default function Tonight({ onCta }) {
                   <img className="tn-fallframe" src={`${BASE}fall/${String(fallFrame).padStart(2, '0')}.${fall.ext}`} alt="" draggable="false" />
                 )}
                 {loadRest && (m.firebox || m.flames) && <LiveFire shot={s} m={m} warp={warp} active={cam.o > 0.01} />}
+                {s === FIRST_SHOT && <div className={`tn-roomdark ${lit ? 'is-up' : ''}`} style={{ width: m.width, height: m.height }} aria-hidden="true" />}
                 {m.screen && s === 'end' && (
                   <div className="tn-warp tn-screen is-ui" style={warp(320, 240, m.screen)}>
                     <WaitlistScreen active={endOn} onArrive={() => setTimeout(() => document.getElementById('waitlist')?.scrollIntoView(), 300)} />
@@ -335,11 +335,8 @@ export default function Tonight({ onCta }) {
           );
         })}
         <div className="tn-fire" style={{ opacity: fire }} aria-hidden="true" />
-        {/* walking in: dark first, the fire glows through, then the room comes up (once, on load) */}
-        {meta.wide && cams.wide && (() => {
-          const [fx, fy] = project(meta.wide, cams.wide, FIREBOX.x, FIREBOX.y);
-          return <div className={`tn-lights ${lit ? 'is-up' : ''}`} style={{ '--fx': `${fx}px`, '--fy': `${fy}px` }} aria-hidden="true" />;
-        })()}
+        {/* walking in: dark, the fire catches, then the firelight comes up across the room (once, on load) */}
+        <div className={`tn-lights ${lit ? 'is-up' : ''}`} aria-hidden="true" />
         <div className="tn-grain" aria-hidden="true" />
         <div className="tn-vignette" aria-hidden="true" />
 

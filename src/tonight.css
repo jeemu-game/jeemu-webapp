@@ -330,17 +330,25 @@ html.theme-tonight input, html.theme-tonight textarea { cursor: text; }
 .sf-credits { font-size: 0.7rem; opacity: 0.8; }
 .sf-credits a { color: inherit; }
 
-/* lights up: a black room, the fire glows through first, then everything comes up */
-@property --tn-glow { syntax: '<length>'; inherits: false; initial-value: 0px; }
-.tn-lights { position: absolute; inset: 0; pointer-events: none; z-index: 5;
-  background: radial-gradient(circle at var(--fx, 50%) var(--fy, 65%), rgba(5, 3, 2, 0) 0, rgba(5, 3, 2, 0.15) calc(var(--tn-glow) * 0.5), #050302 var(--tn-glow)); }
-.tn-lights.is-up { animation: tn-lights 2.8s cubic-bezier(0.5, 0, 0.2, 1) 0.15s forwards; }
-@keyframes tn-lights {
-  0% { --tn-glow: 0px; opacity: 1; }
-  40% { --tn-glow: 340px; opacity: 1; }
-  100% { --tn-glow: 2600px; opacity: 0; visibility: hidden; }
+/* lights up, the way a room does at night: dark, the fire catches (flickering), then its light comes up across the room */
+.tn-lights { position: absolute; inset: 0; z-index: 5; pointer-events: none; background: #050302; }
+.tn-lights.is-up { animation: tn-catch 1.5s linear 0.2s forwards; }
+@keyframes tn-catch {   /* the fire catching: a few uneven flickers, then it's going */
+  0% { opacity: 1; } 18% { opacity: 1; } 24% { opacity: 0.55; } 29% { opacity: 0.9; } 38% { opacity: 0.25; }
+  45% { opacity: 0.6; } 58% { opacity: 0.1; } 66% { opacity: 0.3; } 100% { opacity: 0; visibility: hidden; }
 }
-@media (prefers-reduced-motion: reduce) { .tn-lights { display: none; } }
+/* the rest of the room stays dark a moment longer, then the firelight reaches it: uneven, with a couple of dips */
+.tn-roomdark { position: absolute; left: 0; top: 0; pointer-events: none; background: #050302;
+  -webkit-mask: url('/tonight/wide_dark.png') 0 0 / 100% 100% no-repeat; mask: url('/tonight/wide_dark.png') 0 0 / 100% 100% no-repeat; }
+.tn-roomdark.is-up { animation: tn-roomup 3.2s cubic-bezier(0.45, 0, 0.3, 1) 1.1s forwards; }
+@keyframes tn-roomup {
+  0% { opacity: 1; } 22% { opacity: 0.72; } 30% { opacity: 0.8; } 55% { opacity: 0.32; } 62% { opacity: 0.4; }
+  100% { opacity: 0; visibility: hidden; }
+}
+.tn-caption.tn-on-wall h2 { animation: tn-words 1.2s ease-out 3.4s both; }
+@keyframes tn-words { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .tn-lights, .tn-roomdark { display: none; } .tn-caption.tn-on-wall h2 { animation: none; } }
+
 .tn-shot > .tn-fallframe { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
 /* a question laser-etched into a block: dark burnt lettering pressed into the pine */
@@ -359,3 +367,4 @@ a.tb-count { color: var(--tn-paper); }
 @media (max-width: 760px) { .tb-count-lead { display: none; } .tb-count-short { display: inline; } }
 @media (max-width: 350px) { .tb-count-short { display: none; } .tb { gap: 12px; } .tb-mark { font-size: 1.3rem; } }
 @media (max-width: 760px) { .tb { gap: 14px; padding: 0 16px; } .tb-sound + .tb-count, .tb-count + .tb-cta { margin-left: 0; } .tb-cta { font-size: 0.82rem; } }
+.tn-hint { z-index: 4; }   /* under the opening darkness, like everything else */
