@@ -35,6 +35,11 @@ ap.add_argument('--blank-photos', action='store_true', help='plain white picture
 ap.add_argument('--late', action='store_true', help='end of the night: embers, empty glasses, burnt-down candles, a gappy tower')
 ap.add_argument('--mask', action='store_true', help='render only a matte of Jeemu, the blocks and the polaroids (alpha), for compositing over an AI-enhanced still')
 ap.add_argument('--chapters', action='store_true', help='the after-party table: story polaroids, the team print and the FAQ cards instead of the how-it-plays polaroids')
+ap.add_argument('--fall', default='', help='render the tower falling, frame by frame, into this folder (use with --late)')
+ap.add_argument('--fall-frames', type=int, default=60)
+ap.add_argument('--fall-range', type=int, nargs=2, default=None, help='only render these frames of the fall (first last)')
+ap.add_argument('--fall-test', action='store_true', help='run the collapse and print the tower height, no rendering')
+ap.add_argument('--fallen', default='', help='JSON of where the blocks landed (from --fall): show the fallen tower')
 ap.add_argument('--meta-only', action='store_true', help='write the --meta corners without rendering')
 ap.add_argument('--fire-mask', action='store_true', help='render only where the firebox opening is visible (white on transparent), for the live fire footage')
 ap.add_argument('--meta', default='', help='write JSON with the screen and polaroid corners in image pixels')
@@ -718,6 +723,22 @@ if A.mask:   # keep what must stay exact (the product, the blocks, the polaroids
         if o.type in ('MESH', 'CURVE', 'FONT') and not o.name.startswith(keep): o.visible_camera = False
     r.film_transparent = True; cy.samples = 16; cy.use_denoising = False
     r.image_settings.color_mode = 'RGBA'
+import fall as _fall
+if A.fallen: _fall.apply_final(A.fallen)
+if A.fall or A.fall_test:
+    _fall.setup(A.fall_frames)
+    if A.fall_test:
+        for f in range(1, A.fall_frames + 1, 5):
+            sc.frame_set(f); print(f'frame {f}: tower top {_fall.tower_height():.3f} m')
+        raise SystemExit
+    os.makedirs(A.fall, exist_ok=True)
+    f0, f1 = A.fall_range or (1, A.fall_frames)
+    for f in range(f0, f1 + 1):
+        r.filepath = os.path.join(os.path.abspath(A.fall), f'{f:03d}.png')
+        if os.path.exists(r.filepath): continue   # resumable
+        sc.frame_set(f); bpy.ops.render.render(write_still=True)
+    _fall.save_final(os.path.join(A.fall, 'fallen.json'))
+    print('wrote', A.fall); raise SystemExit
 if A.fire_mask:   # everything else cuts a hole; only the firebox mouth shows, so the site's fire footage stays behind the tower
     bpy.ops.mesh.primitive_plane_add(size=1, location=((fx0 + fx1) / 2, by + 0.02, (fz0 + fz1) / 2), rotation=(math.pi / 2, 0, 0))
     fm = bpy.context.active_object; fm.name = 'FireMatte'; fm.scale = (fx1 - fx0, fz1 - fz0, 1)
@@ -730,6 +751,7 @@ if A.fire_mask:   # everything else cuts a hole; only the firebox mouth shows, s
     sc.view_settings.view_transform = 'Standard'; r.image_settings.color_mode = 'RGBA'
 if not A.meta_only:
     bpy.ops.render.render(write_still=True)
+bpy.context.view_layer.update()   # make sure the camera's new placement is applied (a render does this; --meta-only doesn't)
 if A.meta:   # where the live overlays go: corners in image pixels, clockwise from top-left as the viewer reads them
     from bpy_extras.object_utils import world_to_camera_view
     W, H = r.resolution_x, r.resolution_y
@@ -751,7 +773,11 @@ if A.meta:   # where the live overlays go: corners in image pixels, clockwise fr
         M = FAQ_CARD.matrix_world
         meta['faq'] = [px(M @ Vector(c)) for c in ((-0.0635, 0.038, 0.0003), (0.0635, 0.038, 0.0003), (0.0635, -0.038, 0.0003), (-0.0635, -0.038, 0.0003))]
     # the firebox mouth and the candle flames, for the moving fire laid over the still
-    meta['firebox'] = [px(Vector(c)) for c in ((fx0, by, fz1), (fx1, by, fz1), (fx1, by, fz0), (fx0, by, fz0))]
+    trim = bpy.data.objects['FireboxTrim']   # the firebox mouth, read off the scene itself
+    bb = [trim.matrix_world @ Vector(c) for c in trim.bound_box]
+    _x0, _x1 = min(v.x for v in bb) + 0.012, max(v.x for v in bb) - 0.012
+    _z0, _z1 = min(v.z for v in bb) + 0.012, max(v.z for v in bb) - 0.012; _by = min(v.y for v in bb)
+    meta['firebox'] = [px(Vector(c)) for c in ((_x0, _by, _z1), (_x1, _by, _z1), (_x1, _by, _z0), (_x0, _by, _z0))]
     meta['flames'] = [{'base': px(Vector((x, y, z))), 'tip': px(Vector((x, y, z + 0.034)))} for x, y, z in FLAMES]
     json.dump(meta, open(A.meta, 'w'), indent=1)
     print('wrote', A.meta)

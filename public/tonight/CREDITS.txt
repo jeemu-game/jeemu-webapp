@@ -4,3 +4,6 @@ fire.mp3      "Campfire sound ambience" by Glaneur de sons, CC BY 3.0
 candle.*      From "White candle video" by Jahobr, CC0
               https://commons.wikimedia.org/wiki/File:White_candle_video.webm
               Changes: cropped to the flame, keyed onto black, tinted warm, 6 s seamless loop.
+fire.*        From "Fantastic fireplace fire chimney hearth - background - texture - motion graphics - free video library", CC BY 3.0
+              https://commons.wikimedia.org/wiki/File:Fantastic-fireplace-fire-chimney-hearth-_background_-_texture_-_motion_graphics_-_free_video_library.webm
+              Changes: cropped to the flames, keyed onto black, warmed, two time-offset copies side by side, 10 s seamless loop.

@@ -37,7 +37,7 @@ const BEATS = [
   // opens on the room; the first scroll pushes in to Jeemu's screen, the next pulls back into the game
   ['wide', 110], ['toClose', 90], ['close', 100], ['toPlay', 90], ['play', 120], ['toTable', 90],
   ...POLAROIDS.map((_, i) => [`p${i}`, 105]),
-  ['toLate', 90], ['late', 110], ['toEnd', 80], ['end', 150],   // end: the waitlist, on Jeemu's screen
+  ['toLate', 90], ['late', 110], ['fall', 120], ['toEnd', 80], ['end', 150],   // fall: the tower comes down, scrubbed by the scroll   // end: the waitlist, on Jeemu's screen
   ['toChapters', 90], ...STOPS.map((st) => [st.id, st.len])
 ];
 const START = {}; let acc = 0;
@@ -101,6 +101,21 @@ export default function Tonight({ onCta }) {
   };
   useEffect(() => { if (t > 2) setLoadRest(true); }, [t]);
   useEffect(() => { const id = setTimeout(() => setLoadRest(true), 4000); return () => clearTimeout(id); }, []);   // safety net
+  // the fall: frames from scripts/blender/room (render_fall.sh), decoded ahead so scrubbing never waits
+  const [fall, setFall] = useState(null);   // { count, ext }
+  useEffect(() => {
+    if (fall || t < START.play[0]) return;
+    let live = true;
+    fetch(`${BASE}fall/index.json`).then((r) => (r.ok ? r.json() : null)).then(async (j) => {
+      if (!j || !live) return;
+      const ext = await new Promise((res) => { const im = new Image(); im.onload = () => res('avif'); im.onerror = () => res('jpg');
+        im.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A='; });
+      const imgs = Array.from({ length: j.count }, (_, i) => { const im = new Image(); im.decoding = 'async'; im.src = `${BASE}fall/${String(i).padStart(2, '0')}.${ext}`; return im; });
+      if (live) setFall({ count: j.count, ext, imgs });
+    }).catch(() => {});
+    return () => { live = false; };
+  }, [t > START.play[0], fall]);
+  const fallFrame = fall && t >= START.fall[0] ? Math.min(fall.count - 1, Math.round(p('fall') * (fall.count - 1) * 1.15)) : -1;
   const reduce = useMemo(() => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
 
   useEffect(() => {
@@ -268,6 +283,9 @@ export default function Tonight({ onCta }) {
               <div className="tn-shot" style={stageStyle(m, cam, (s === 'top' || s === 'top2') && portrait ? vp.card + 24 : 0)}>
                 {(s === FIRST_SHOT || loadRest) && <Pic src={`${BASE}${s}.jpg`} width={m.width} height={m.height} draggable="false" decoding="async"
                   fetchPriority={s === FIRST_SHOT ? 'high' : 'low'} onLoad={s === FIRST_SHOT ? startRest : undefined} />}
+                {s === 'late' && fallFrame >= 0 && (
+                  <img className="tn-fallframe" src={`${BASE}fall/${String(fallFrame).padStart(2, '0')}.${fall.ext}`} alt="" draggable="false" />
+                )}
                 {loadRest && (m.firebox || m.flames) && <LiveFire shot={s} m={m} warp={warp} active={cam.o > 0.01} />}
                 {m.screen && s === 'end' && (
                   <div className="tn-warp tn-screen is-ui" style={warp(320, 240, m.screen)}>

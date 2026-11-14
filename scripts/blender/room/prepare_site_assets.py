@@ -35,3 +35,15 @@ for name in ('wide', 'close', 'play', 'late', 'end'):
         a = a.resize((a.width // 2, a.height // 2), Image.LANCZOS)
         Image.merge('LA', (a, a)).save(os.path.join(DST, name + '_firemask.png'), optimize=True)
         print('ok firemask', name)
+
+# the tower falling: numbered frames, scrubbed by the scroll on the site (camera post on each, same as the late shot)
+import glob
+frames = sorted(glob.glob(os.path.join(SRC, 'fall', '[0-9][0-9][0-9].png')))
+if frames:
+    fdst = os.path.join(DST, 'fall'); os.makedirs(fdst, exist_ok=True)
+    for i, f in enumerate(frames):
+        im = post(Image.open(f), vig=0.30)
+        out = os.path.join(fdst, f'{i:02d}.jpg'); im.save(out, quality=80, optimize=True, progressive=True)
+        convert(out)
+    json.dump({'count': len(frames), 'width': 1280, 'height': 720}, open(os.path.join(fdst, 'index.json'), 'w'))
+    print('ok fall', len(frames), 'frames')

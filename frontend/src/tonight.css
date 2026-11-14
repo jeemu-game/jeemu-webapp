@@ -319,8 +319,8 @@ html.theme-tonight .wl-ok { color: var(--tn-paper); }
 .sf-legal { max-width: 56ch; margin: 6px 0 0; font-size: 0.78rem; line-height: 1.55; color: var(--tn-faint); }
 
 /* live fire and candle clips over the still: black drops out (screen), the flames add light */
-.tn-firewrap { position: absolute; left: 0; top: 0; pointer-events: none; mix-blend-mode: screen; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
-.tn-firewrap .tn-clip { mix-blend-mode: normal; }   /* the wrapper blends (a masked box is its own layer) */
+.tn-firewrap { position: absolute; left: 0; top: 0; pointer-events: none; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+.tn-firewrap .tn-clip { mix-blend-mode: normal; }   /* the filmed fire replaces the rendered flames inside the firebox */
 .tn-clip { position: absolute; left: 0; top: 0; mix-blend-mode: screen; pointer-events: none; object-fit: cover; transform-origin: 0 0; }
 
 /* the old pixel cursor belongs to the previous design: the system cursor here */
@@ -341,3 +341,4 @@ html.theme-tonight input, html.theme-tonight textarea { cursor: text; }
   100% { --tn-glow: 2600px; opacity: 0; visibility: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { .tn-lights { display: none; } }
+.tn-shot > .tn-fallframe { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
