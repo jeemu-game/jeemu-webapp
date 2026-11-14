@@ -20,8 +20,6 @@ export default function SiteFooter() {
       <p className="sf-legal sf-credits">
         Fire sound: <a href="https://commons.wikimedia.org/wiki/File:Campfire_sound_ambience.ogg" target="_blank" rel="noopener noreferrer">Campfire sound ambience</a> by
         Glaneur de sons, <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a> (filtered and looped).
-        Fire from <a href="https://commons.wikimedia.org/wiki/File:Fantastic-fireplace-fire-chimney-hearth-_background_-_texture_-_motion_graphics_-_free_video_library.webm" target="_blank" rel="noopener noreferrer">Fantastic fireplace</a>,
-        <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a> (keyed and looped).
         Candle flame from <a href="https://commons.wikimedia.org/wiki/File:White_candle_video.webm" target="_blank" rel="noopener noreferrer">White candle video</a> by Jahobr (CC0).
         Wordmark font: Matcha Style by Khurasan Studio.
       </p>

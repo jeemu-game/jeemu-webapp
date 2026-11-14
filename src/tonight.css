@@ -321,7 +321,7 @@ html.theme-tonight .wl-ok { color: var(--tn-paper); }
 /* live fire and candle clips over the still: black drops out (screen), the flames add light */
 .tn-firewrap { position: absolute; left: 0; top: 0; pointer-events: none; mix-blend-mode: screen; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
 .tn-firewrap .tn-clip { mix-blend-mode: normal; }   /* the masked wrapper does the blending (a masked box is its own layer) */
-.tn-clip { position: absolute; left: 0; top: 0; mix-blend-mode: screen; pointer-events: none; object-fit: cover; transform-origin: 0 0; display: block; }
+.tn-clip { position: absolute; left: 0; top: 0; mix-blend-mode: screen; pointer-events: none; object-fit: cover; transform-origin: 0 0; display: block; max-width: none; max-height: none; }
 
 /* the old pixel cursor belongs to the previous design: the system cursor here */
 html.theme-tonight body, html.theme-tonight body * { cursor: auto; }
