@@ -1,7 +1,7 @@
 import React from 'react';
 
-// Slim smoked-walnut bar (the same veneer as the coffee table), with the wordmark pressed into it.
-const LINKS = [['#waitlist', 'Waitlist'], ['#journey', 'Our story'], ['#faq', 'FAQ']];
+// No bar: the wordmark and two quiet links float over the night scene. The call to action points at Jeemu's screen.
+const LINKS = [['#journey', 'Our story'], ['#faq', 'FAQ']];
 
 export default function TopBar({ onCtaClick }) {
   return (

@@ -1,7 +1,6 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import TopBar from './components/tonight/TopBar';
 import Tonight from './components/tonight/Tonight';
-import Waitlist from './components/Waitlist';
 import JourneyTimeline from './components/JourneyTimeline';
 import TeamSection from './components/TeamSection';
 import FaqFooter from './components/FaqFooter';
@@ -87,7 +86,6 @@ export default function App() {
       <TopBar onCtaClick={() => toWaitlist('nav')} />
       <main>
         <Tonight onCta={() => toWaitlist('story')} />
-        <Waitlist />
         <JourneyTimeline />
         <TeamSection />
         <FaqFooter />

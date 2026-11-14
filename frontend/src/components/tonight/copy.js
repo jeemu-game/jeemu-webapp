@@ -6,7 +6,7 @@ export const SCREENS = {
   intro: { tag: 'JEEMU', text: 'The best game nights start with one good question.', foot: 'Scroll to start' },
   wide: { tag: 'JEEMU', text: 'Pull a block to begin.', foot: '' },
   question: { tag: 'NEW QUESTION', text: "What's a small thing that made you happy this week?", foot: 'Block 23' },
-  late: { tag: `KICKSTARTER · ${LAUNCH_DATE.toUpperCase()}`, text: "Early bird prices are the best you'll see.", foot: 'Join the waitlist' }
+  late: { tag: `KICKSTARTER · ${LAUNCH_DATE.toUpperCase()}`, text: "Early bird prices are the best you'll see.", foot: 'Keep scrolling to join' }
 };
 
 // Words over the picture while the room is in view

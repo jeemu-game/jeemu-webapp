@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { quadToMatrix3d } from '../story/quad';
 import LiveScreen from './LiveScreen';
 import Pic from './Pic';
+import WaitlistScreen from '../waitlist/WaitlistScreen';
 import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE } from './copy';
 
 // "Tonight": one game night, told by scrolling. Rendered stills of the room (from scripts/blender/room) sit on a
@@ -10,13 +11,13 @@ import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE } from './copy';
 // the corner positions the render script exports. Preview build: the stills stand in for the final rendered video.
 
 const BASE = `${import.meta.env.BASE_URL}tonight/`;
-const SHOTS = ['close', 'wide', 'play', 'top', 'late'];
+const SHOTS = ['close', 'wide', 'play', 'top', 'late', 'end'];
 
 // Scroll length of every beat, in % of the window height
 const BEATS = [
   ['close', 100], ['toWide', 90], ['wide', 110], ['toPlay', 90], ['play', 120], ['toTable', 90],
   ...POLAROIDS.map((_, i) => [`p${i}`, 105]),
-  ['toLate', 90], ['late', 110]
+  ['toLate', 90], ['late', 110], ['toEnd', 80], ['end', 150]   // end: the waitlist, on Jeemu's screen
 ];
 const START = {}; let acc = 0;
 for (const [id, len] of BEATS) { START[id] = [acc, len]; acc += len; }
@@ -147,7 +148,21 @@ export default function Tonight({ onCta }) {
   }
   if (meta.late) {
     const { c } = hero(meta.late);
-    cams.late = { c, z: mv(1.12, 1, ease(p('toLate'))) * (t >= START.late[0] ? mv(1, 1.03, p('late')) : 1), o: ease(p('toLate')) };
+    const sc = meta.late.screen ? mid(meta.late.screen) : c, kout = ease(p('toEnd'));
+    const zl = mv(1.12, 1, ease(p('toLate'))) * (t >= START.late[0] ? mv(1, 1.03, p('late')) : 1);
+    cams.late = t < START.toEnd[0] ? { c, z: zl, o: ease(p('toLate')) }
+      : { c: [lerp(c[0], sc[0], kout), lerp(c[1], sc[1], kout)], z: zl * mv(1, 2.4, kout), o: 1 - ease(clamp((p('toEnd') - 0.35) / 0.65)) };
+  }
+  if (meta.end && meta.end.screen) {
+    // the screen, big enough to use: about a third of a wide window, nearly the full width of a phone,
+    // and a little above centre so a phone keyboard doesn't cover it
+    const m = meta.end, q = m.screen, sc = mid(q), cover = Math.max(vp.w / m.width, vp.h / m.height);
+    const sw = dist(q[0], q[1]);
+    const zEnd = Math.max(1, ((portrait ? 0.9 : 0.36) * vp.w) / (sw * cover), portrait ? 1 : (0.42 * vp.h) / (dist(q[0], q[3]) * cover));
+    const lift = portrait ? vp.h * 0.12 : vp.h * 0.03;
+    const cEnd = [sc[0], sc[1] + lift / (cover * zEnd)];
+    const k = ease(clamp((p('toEnd') - 0.25) / 0.75));
+    cams.end = { c: cEnd, z: Math.max(1, mv(zEnd * 0.82, zEnd, k)), o: k };
   }
 
   const stageStyle = (m, cam, under = 0) => {
@@ -160,11 +175,14 @@ export default function Tonight({ onCta }) {
   const warp = (w, h, q) => ({ width: w, height: h, transform: quadToMatrix3d(w, h, q) });
 
   const screenFor = { close: SCREENS.intro, wide: SCREENS.wide, play: SCREENS.question, late: SCREENS.late };
-  const fire = cams.late ? lerp(1, 0.35, cams.late.o) : 1;
+  const fire = cams.late ? lerp(1, 0.35, Math.max(cams.late.o, cams.end ? cams.end.o : 0)) : 1;
+  const endOn = t >= START.end[0] - 10;
   const show = (id, a = 0.12, b = 0.9) => { const k = p(id); return inBeat(id) ? clamp(Math.min((k - a) / 0.1, (b - k) / 0.1)) : 0; };
 
   return (
     <section className="tn" ref={section} style={{ '--tn-len': TOTAL + 100 }} aria-label="Jeemu, one game night">
+      {/* where "Join the waitlist" links land: partway into the end beat, so the camera is settled on the screen */}
+      <span id="waitlist" className="tn-anchor" style={{ '--at': START.end[0] + 45 }} aria-hidden="true" />
       <div className="tn-stage" ref={stage}>
         {SHOTS.map((s) => {
           const m = meta[s], cam = cams[s];
@@ -174,6 +192,11 @@ export default function Tonight({ onCta }) {
               <div className="tn-shot" style={stageStyle(m, cam, s === 'top' && portrait ? vp.card + 24 : 0)}>
                 {(s === 'close' || loadRest) && <Pic src={`${BASE}${s}.jpg`} width={m.width} height={m.height} draggable="false" decoding="async"
                   fetchPriority={s === 'close' ? 'high' : 'low'} onLoad={s === 'close' ? startRest : undefined} />}
+                {m.screen && s === 'end' && (
+                  <div className="tn-warp tn-screen is-ui" style={warp(320, 240, m.screen)}>
+                    <WaitlistScreen active={endOn} onArrive={() => setTimeout(() => document.getElementById('waitlist')?.scrollIntoView(), 300)} />
+                  </div>
+                )}
                 {m.screen && screenFor[s] && (
                   <div className="tn-warp tn-screen" style={warp(320, 240, m.screen)}><LiveScreen card={screenFor[s]} /></div>
                 )}
@@ -212,11 +235,11 @@ export default function Tonight({ onCta }) {
             <p>{pl.body}</p>
           </div>
         ))}
-        <div className="tn-finale" style={{ opacity: inBeat('late') || t >= TOTAL ? clamp(p('late') / 0.15) : 0, pointerEvents: t >= START.late[0] ? 'auto' : 'none' }}>
+        <div className="tn-finale" style={{ opacity: inBeat('late') ? clamp(Math.min(p('late') / 0.15, (1 - p('late')) / 0.2)) : 0 }}>
           <h2>{FINALE.title}</h2>
           <p>{FINALE.sub}</p>
-          <button type="button" className="tn-btn" onClick={() => onCta?.('finale')}>{FINALE.cta}</button>
         </div>
+        <p className="tn-fine" style={{ opacity: endOn ? 1 : 0 }}>Joining is free. We only use your email to tell you about the launch.</p>
         <div className="tn-progress" aria-hidden="true"><i style={{ transform: `scaleX(${t / TOTAL})` }} /></div>
       </div>
     </section>
