@@ -132,7 +132,6 @@ export default function Tonight({ onCta }) {
     }).catch(() => {});
     return () => { live = false; };
   }, [t > START.play[0], fall]);
-  const fallFrame = fall && t >= START.fall[0] ? Math.min(fall.count - 1, Math.round(p('fall') * (fall.count - 1) * 1.15)) : -1;
   const reduce = useMemo(() => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
 
   useEffect(() => {
@@ -175,6 +174,7 @@ export default function Tonight({ onCta }) {
 
   const p = (id) => { const [s, l] = START[id]; return clamp((t - s) / l); };        // 0..1 progress through a beat
   const inBeat = (id) => { const [s, l] = START[id]; return t >= s && t < s + l; };
+  const fallFrame = fall && t >= START.fall[0] ? Math.min(fall.count - 1, Math.round(p('fall') * (fall.count - 1) * 1.15)) : -1;
   const portrait = vp.w / vp.h < 0.9;
 
   // ---- per-shot camera (centre in image pixels, zoom relative to "cover") and opacity

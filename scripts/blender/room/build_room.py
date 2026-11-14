@@ -723,22 +723,6 @@ if A.mask:   # keep what must stay exact (the product, the blocks, the polaroids
         if o.type in ('MESH', 'CURVE', 'FONT') and not o.name.startswith(keep): o.visible_camera = False
     r.film_transparent = True; cy.samples = 16; cy.use_denoising = False
     r.image_settings.color_mode = 'RGBA'
-import fall as _fall
-if A.fallen: _fall.apply_final(A.fallen)
-if A.fall or A.fall_test:
-    _fall.setup(A.fall_frames)
-    if A.fall_test:
-        for f in range(1, A.fall_frames + 1, 5):
-            sc.frame_set(f); print(f'frame {f}: tower top {_fall.tower_height():.3f} m')
-        raise SystemExit
-    os.makedirs(A.fall, exist_ok=True)
-    f0, f1 = A.fall_range or (1, A.fall_frames)
-    for f in range(f0, f1 + 1):
-        r.filepath = os.path.join(os.path.abspath(A.fall), f'{f:03d}.png')
-        if os.path.exists(r.filepath): continue   # resumable
-        sc.frame_set(f); bpy.ops.render.render(write_still=True)
-    _fall.save_final(os.path.join(A.fall, 'fallen.json'))
-    print('wrote', A.fall); raise SystemExit
 if A.chapters:   # the FAQ is etched on fallen blocks here: no frog stamps underneath it
     for o in sc.objects:
         if '_stamp' in o.name: o.hide_render = True
@@ -756,6 +740,22 @@ if A.patch:   # just the firebox and a margin round it, so the change can be dro
     r.border_min_x, r.border_max_x = max(0, x0 - mx), min(1, x1 + mx); r.border_min_y, r.border_max_y = max(0, y0 - my), min(1, y1 + my)
     r.film_transparent = False; r.image_settings.color_mode = 'RGBA'
     print('patch region', round(r.border_min_x, 3), round(r.border_max_x, 3), round(r.border_min_y, 3), round(r.border_max_y, 3))
+import fall as _fall
+if A.fallen: _fall.apply_final(A.fallen)
+if A.fall or A.fall_test:
+    _fall.setup(A.fall_frames)
+    if A.fall_test:
+        for f in range(1, A.fall_frames + 1, 5):
+            sc.frame_set(f); print(f'frame {f}: tower top {_fall.tower_height():.3f} m')
+        raise SystemExit
+    os.makedirs(A.fall, exist_ok=True)
+    f0, f1 = A.fall_range or (1, A.fall_frames)
+    for f in range(f0, f1 + 1):
+        r.filepath = os.path.join(os.path.abspath(A.fall), f'{f:03d}.png')
+        if os.path.exists(r.filepath): continue   # resumable
+        sc.frame_set(f); bpy.ops.render.render(write_still=True)
+    _fall.save_final(os.path.join(A.fall, 'fallen.json'))
+    print('wrote', A.fall); raise SystemExit
 if A.fire_mask:   # everything else cuts a hole; only the firebox mouth shows, so the site's fire footage stays behind the tower
     bpy.ops.mesh.primitive_plane_add(size=1, location=((fx0 + fx1) / 2, by + 0.02, (fz0 + fz1) / 2), rotation=(math.pi / 2, 0, 0))
     fm = bpy.context.active_object; fm.name = 'FireMatte'; fm.scale = (fx1 - fx0, fz1 - fz0, 1)

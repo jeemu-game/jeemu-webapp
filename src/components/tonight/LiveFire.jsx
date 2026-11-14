@@ -22,6 +22,8 @@ function Clip({ name, style, w, h, onLoad }) {
 
 // the fireplace is behind the focus in every shot: soften the clip to match each one's depth of field (image pixels)
 const DEFOCUS = { wide: 3, play: 7, late: 7, close: 16, end: 16 };
+// how far the fire has burned down in each shot: height of the flames in the firebox, and their brightness
+const BURN = { wide: [0.85, 1], close: [0.85, 1], play: [0.85, 1], late: [0.5, 0.6], end: [0.45, 0.55] };
 
 export default function LiveFire({ shot, m, warp, active }) {
   const [ok, setOk] = useState({});
@@ -32,14 +34,14 @@ export default function LiveFire({ shot, m, warp, active }) {
     return () => { live = false; };
   }, [shot]);
   // the flames sit low in the firebox (85% of its height) so they never lick over the stone at the top of the opening
-  const fb = m.firebox && (() => { const [tl, tr, br, bl] = m.firebox; const k = 0.85;
+  const fb = m.firebox && (() => { const [tl, tr, br, bl] = m.firebox; const k = (BURN[shot] || [0.85])[0];
     return [[bl[0] + (tl[0] - bl[0]) * k, bl[1] + (tl[1] - bl[1]) * k], [br[0] + (tr[0] - br[0]) * k, br[1] + (tr[1] - br[1]) * k], br, bl]; })();
   const still = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   if (!active || still) return null;
   return (
     <>
       {ok.fire && ok.mask && m.firebox && (   // never without its mask: the fire must stay behind the tower
-        <div className="tn-firewrap" style={{ width: m.width, height: m.height, WebkitMaskImage: `url(${BASE}${shot}_firemask.png)`, maskImage: `url(${BASE}${shot}_firemask.png)` }}>
+        <div className="tn-firewrap" style={{ width: m.width, height: m.height, opacity: (BURN[shot] || [0, 1])[1], WebkitMaskImage: `url(${BASE}${shot}_firemask.png)`, maskImage: `url(${BASE}${shot}_firemask.png)` }}>
           {!moving && <img className="tn-clip" src={`${BASE}fire_first.jpg`} width={1280} height={512} alt="" aria-hidden="true"
             style={{ ...warp(1280, 512, fb), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />}
           <Clip name="fire" onLoad={() => setMoving(true)} w={1280} h={512} style={{ ...warp(1280, 512, fb), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />
