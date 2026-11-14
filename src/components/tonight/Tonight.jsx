@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { quadToMatrix3d } from '../story/quad';
 import LiveScreen from './LiveScreen';
 import Pic from './Pic';
+import LiveFire from './LiveFire';
 import { setLevel as setFireLevel } from './fireSound';
 import WaitlistScreen from '../waitlist/WaitlistScreen';
 import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE, STORY, TEAM_PRINT } from './copy';
@@ -259,6 +260,7 @@ export default function Tonight({ onCta }) {
               <div className="tn-shot" style={stageStyle(m, cam, (s === 'top' || s === 'top2') && portrait ? vp.card + 24 : 0)}>
                 {(s === FIRST_SHOT || loadRest) && <Pic src={`${BASE}${s}.jpg`} width={m.width} height={m.height} draggable="false" decoding="async"
                   fetchPriority={s === FIRST_SHOT ? 'high' : 'low'} onLoad={s === FIRST_SHOT ? startRest : undefined} />}
+                {loadRest && (m.firebox || m.flames) && <LiveFire shot={s} m={m} warp={warp} active={cam.o > 0.01} />}
                 {m.screen && s === 'end' && (
                   <div className="tn-warp tn-screen is-ui" style={warp(320, 240, m.screen)}>
                     <WaitlistScreen active={endOn} onArrive={() => setTimeout(() => document.getElementById('waitlist')?.scrollIntoView(), 300)} />

@@ -35,6 +35,8 @@ ap.add_argument('--blank-photos', action='store_true', help='plain white picture
 ap.add_argument('--late', action='store_true', help='end of the night: embers, empty glasses, burnt-down candles, a gappy tower')
 ap.add_argument('--mask', action='store_true', help='render only a matte of Jeemu, the blocks and the polaroids (alpha), for compositing over an AI-enhanced still')
 ap.add_argument('--chapters', action='store_true', help='the after-party table: story polaroids, the team print and the FAQ cards instead of the how-it-plays polaroids')
+ap.add_argument('--meta-only', action='store_true', help='write the --meta corners without rendering')
+ap.add_argument('--fire-mask', action='store_true', help='render only where the firebox opening is visible (white on transparent), for the live fire footage')
 ap.add_argument('--meta', default='', help='write JSON with the screen and polaroid corners in image pixels')
 A = ap.parse_args(argv)
 if A.late: A.fire = 0.0
@@ -532,7 +534,9 @@ place('wooden_bowl_01', -0.40, 0.22, 0.0, rz=0.5)
 M_WAX = plain('Wax', (0.62, 0.57, 0.50), rough=0.4)
 M_WAX.node_tree.nodes['Principled BSDF'].inputs['Subsurface Weight'].default_value = 0.6
 M_WAX.node_tree.nodes['Principled BSDF'].inputs['Subsurface Radius'].default_value = (0.02, 0.012, 0.006)
+FLAMES = []   # candle flame positions, for the live flames on the site
 def candle_flame(x, y, z):
+    FLAMES.append((x, y, z))
     m = bpy.data.materials.new('CandleFlame'); nt, out = nodes_of(m)
     em = nt.nodes.new('ShaderNodeEmission'); em.inputs['Color'].default_value = (1.0, 0.55, 0.18, 1); em.inputs['Strength'].default_value = 12
     nt.links.new(em.outputs[0], out.inputs[0])
@@ -641,7 +645,18 @@ if A.mask:   # keep what must stay exact (the product, the blocks, the polaroids
         if o.type in ('MESH', 'CURVE', 'FONT') and not o.name.startswith(keep): o.visible_camera = False
     r.film_transparent = True; cy.samples = 16; cy.use_denoising = False
     r.image_settings.color_mode = 'RGBA'
-bpy.ops.render.render(write_still=True)
+if A.fire_mask:   # everything else cuts a hole; only the firebox mouth shows, so the site's fire footage stays behind the tower
+    bpy.ops.mesh.primitive_plane_add(size=1, location=((fx0 + fx1) / 2, by + 0.02, (fz0 + fz1) / 2), rotation=(math.pi / 2, 0, 0))
+    fm = bpy.context.active_object; fm.name = 'FireMatte'; fm.scale = (fx1 - fx0, fz1 - fz0, 1)
+    mm = bpy.data.materials.new('FireMatte'); nt_, out_ = nodes_of(mm); em_ = nt_.nodes.new('ShaderNodeEmission'); em_.inputs['Strength'].default_value = 1.0
+    nt_.links.new(em_.outputs[0], out_.inputs[0]); fm.data.materials.append(mm)
+    for o in sc.objects:
+        if o.type in ('MESH', 'CURVE', 'FONT') and o is not fm: o.is_holdout = True
+        if o.type == 'LIGHT': o.hide_render = True
+    sc.world = None; r.film_transparent = True; cy.samples = 8; cy.use_denoising = False
+    sc.view_settings.view_transform = 'Standard'; r.image_settings.color_mode = 'RGBA'
+if not A.meta_only:
+    bpy.ops.render.render(write_still=True)
 if A.meta:   # where the live overlays go: corners in image pixels, clockwise from top-left as the viewer reads them
     from bpy_extras.object_utils import world_to_camera_view
     W, H = r.resolution_x, r.resolution_y
@@ -662,6 +677,9 @@ if A.meta:   # where the live overlays go: corners in image pixels, clockwise fr
     if FAQ_CARD:   # the top index card, for the questions
         M = FAQ_CARD.matrix_world
         meta['faq'] = [px(M @ Vector(c)) for c in ((-0.0635, 0.038, 0.0003), (0.0635, 0.038, 0.0003), (0.0635, -0.038, 0.0003), (-0.0635, -0.038, 0.0003))]
+    # the firebox mouth and the candle flames, for the moving fire laid over the still
+    meta['firebox'] = [px(Vector(c)) for c in ((fx0, by, fz1), (fx1, by, fz1), (fx1, by, fz0), (fx0, by, fz0))]
+    meta['flames'] = [{'base': px(Vector((x, y, z))), 'tip': px(Vector((x, y, z + 0.034)))} for x, y, z in FLAMES]
     json.dump(meta, open(A.meta, 'w'), indent=1)
     print('wrote', A.meta)
-print('wrote', r.filepath)
+print('wrote', r.filepath if not A.meta_only else '(meta only)')
