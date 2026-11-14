@@ -20,27 +20,14 @@ Runs on an RTX 3060 (12 GB). Afterwards `composite_ai.py` puts our exact Jeemu, 
 Check each model page's licence allows commercial use before publishing (both did when this was written).
 Plain SDXL base (`stabilityai/stable-diffusion-xl-base-1.0`) also works if you'd rather use that.
 
-## 3. Build the workflow (once)
-Double-click empty canvas to search for nodes. Wire it like this:
+## 3. Load the workflow (once)
+Drag `comfyui/jeemu_enhance.json` (in this folder) onto the ComfyUI page. Everything is wired and set:
+depth ControlNet at strength 0.6 (ends at 0.8), seed 24112026 fixed, 30 steps, cfg 5, dpmpp_2m / karras,
+denoise 0.30, and the prompts below. If a node shows red, it's a missing model or the missing preprocessor pack
+(step 1.4). If it runs out of memory at 1920x1080, swap VAE Encode / VAE Decode for their (Tiled) versions.
+`comfyui/make_workflow.py` regenerates the file if the prompts or settings change.
 
-```
-Load Checkpoint ──MODEL──────────────────────────────────────► KSampler
-               ├─CLIP──► CLIP Text Encode (positive) ──┐
-               ├─CLIP──► CLIP Text Encode (negative) ──┤
-               └─VAE───► VAE Encode / VAE Decode       ▼
-Load Image ──► Depth Anything V2 ──► Apply ControlNet ◄── Load ControlNet Model
-   │                                   (positive, negative in → out to KSampler)
-   └──► VAE Encode ──LATENT──► KSampler ──► VAE Decode ──► Save Image
-```
-
-Settings:
-- **Depth Anything V2**: model `depth_anything_v2_vitl.pth`, resolution 1024.
-- **Apply ControlNet**: strength **0.6**, start 0.0, end **0.8**.
-- **KSampler**: seed **24112026** (fixed, control after generate: *fixed*), steps **30**, cfg **5.0**,
-  sampler **dpmpp_2m**, scheduler **karras**, denoise **0.30**.
-- If it runs out of memory at 1920×1080, swap VAE Encode / VAE Decode for their **(Tiled)** versions.
-
-Positive prompt:
+Positive prompt (already in the file):
 ```
 RAW photo, interior photograph of a modern luxury living room at night, dark basalt stacked-stone fireplace with a real
 wood fire, black steel floor-to-ceiling windows, dark pine treeline outside, smoked walnut coffee table, pillar candles,
@@ -53,10 +40,8 @@ cgi, 3d render, video game, plastic, cartoon, illustration, painting, oversatura
 deformed, extra objects, people
 ```
 
-Save the workflow (menu → Save) as `jeemu_enhance.json` so the next run is one click.
-
 ## 4. Run it
-1. Load Image → pick `public/tonight/close.jpg` from the repo (or the files I send you). Queue.
+1. In **Load Image**, click *choose file to upload* and pick `close.jpg` (from `public/tonight/` or the files I send you). Press **Run**.
 2. Same for `wide.jpg`, `play.jpg`, `late.jpg`. **Do not change the seed, prompt or settings between them**, so the
    four pictures read as one room.
 3. Try denoise 0.25, 0.30 and 0.35 on `wide.jpg` first, and keep the lowest that looks like a photo.
