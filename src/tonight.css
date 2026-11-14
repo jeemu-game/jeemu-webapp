@@ -374,7 +374,7 @@ a.tb-count:hover { color: var(--tn-paper); }
 .tn-hint { z-index: 4; }   /* under the opening darkness, like everything else */
 /* the warm light a bed of embers throws up the back of the firebox */
 .tn-emberglow { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none;
-  background: radial-gradient(ellipse 60% 70% at 50% 100%, rgba(255, 110, 30, 0.42), rgba(160, 50, 10, 0.18) 55%, rgba(0, 0, 0, 0) 80%);
+  background: radial-gradient(ellipse 58% 34% at 50% 100%, rgba(255, 96, 22, 0.62), rgba(190, 52, 8, 0.26) 50%, rgba(0, 0, 0, 0) 85%);
   animation: tn-embers 4.2s ease-in-out infinite; }
 @keyframes tn-embers { 0%, 100% { opacity: 0.85; } 30% { opacity: 1; } 55% { opacity: 0.7; } 80% { opacity: 0.95; } }
 @media (prefers-reduced-motion: reduce) { .tn-emberglow { animation: none; } }

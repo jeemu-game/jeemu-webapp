@@ -752,7 +752,11 @@ if A.faq_blocks:   # the questions people ask, laser-burnt into the top of falle
     questions = _re.findall(r"q: '((?:[^'\\]|\\.)*)'", faq_src)
     font_path = os.path.join(CACHE, 'fonts', 'Manrope-600.ttf')
     burn = bpy.data.materials.new('LaserBurn'); nt_ = burn.node_tree; bsdf = nt_.nodes['Principled BSDF']
-    bsdf.inputs['Base Color'].default_value = (0.030, 0.012, 0.004, 1); bsdf.inputs['Roughness'].default_value = 0.88
+    # a laser burns the wood dark brown, not black: the grain still shows through, and the heat scorches a soft halo round each stroke
+    bsdf.inputs['Base Color'].default_value = (0.055, 0.020, 0.006, 1); bsdf.inputs['Roughness'].default_value = 0.95
+    bsdf.inputs['Alpha'].default_value = 0.86
+    scorch = bpy.data.materials.new('LaserScorch'); sb = scorch.node_tree.nodes['Principled BSDF']
+    sb.inputs['Base Color'].default_value = (0.12, 0.045, 0.012, 1); sb.inputs['Roughness'].default_value = 0.95; sb.inputs['Alpha'].default_value = 0.2
     for k, name in enumerate([n for n in A.faq_blocks.split(',') if n]):
         b = bpy.data.objects.get(name)
         if not b or k >= len(questions): continue
@@ -767,6 +771,12 @@ if A.faq_blocks:   # the questions people ask, laser-burnt into the top of falle
         flip_z = math.pi if up < 0 else 0.0
         turn = math.pi if M.col[0][0] < 0 else 0.0   # read left to right from above
         t.location = (0, 0, up * 0.00756); t.rotation_euler = (flip_z, 0, turn)
+        cu.offset = cu.size * 0.004                     # strokes bleed a little wider than the font
+        halo = bpy.data.curves.new(f'Scorch{k}', 'FONT'); halo.body = cu.body; halo.font = cu.font
+        halo.align_x, halo.align_y, halo.space_line, halo.size = cu.align_x, cu.align_y, cu.space_line, cu.size
+        halo.offset = cu.size * 0.022
+        h = bpy.data.objects.new(f'Scorch{k}', halo); COL.objects.link(h); h.data.materials.append(scorch)
+        h.parent = b; h.matrix_parent_inverse = Matrix(); h.location = (0, 0, up * 0.00753); h.rotation_euler = (flip_z, 0, turn)
         print('burnt', name, '|', ' / '.join(lines))
 if A.fall or A.fall_test:
     _fall.setup(A.fall_frames)

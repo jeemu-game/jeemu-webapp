@@ -24,6 +24,13 @@ for name in ('close', 'wide', 'play', 'top', 'late', 'end', 'top2'):
         patch = Image.open(pp).convert('RGBA')
         a = patch.split()[3].point(lambda v: 255 if v > 250 else 0).filter(ImageFilter.MinFilter(41)).filter(ImageFilter.GaussianBlur(14))
         raw = Image.composite(patch, raw, a); print('  patched', name)
+    ins_json = os.path.join(SRC, name + '_insets.json')
+    if os.path.exists(ins_json):   # the sharp close-ups, scaled down into the base, so the two match when one fades in
+        for iname, (x0, y0, x1, y1) in json.load(open(ins_json)).get('insets', {}).items():
+            f = os.path.join(SRC, 'insets', iname + '.png')
+            if os.path.exists(f):
+                raw.paste(Image.open(f).convert('RGBA').resize((x1 - x0, y1 - y0), Image.LANCZOS), (x0, y0))
+        print('  insets pasted', name)
     im = post(raw.convert('RGB'), vig=0.0 if name in ('top', 'top2') else 0.30)
     im.save(os.path.join(DST, name + '.jpg'), quality=84, optimize=True, progressive=True)
     shutil.copy(js, os.path.join(DST, name + '.json'))
