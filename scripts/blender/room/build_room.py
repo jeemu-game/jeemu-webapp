@@ -413,6 +413,79 @@ for name, (gx, gy), level in (('GlassA', (0.36, -0.10), 0.003 if A.late else 0.0
     lathe(name, glass_prof, M_CRYSTAL).location = (gx, gy, 0.0)
     if level: lathe(name + 'Wine', wine_prof(level), M_WINE).location = (gx, gy, 0.0)
 
+# ---------------------------------------------------------------- snacks: a stoneware bowl of crisps, and a tumbler of iced tea
+import random as _rnd
+_rnd.seed(11)
+M_STONEWARE = plain('Stoneware', (0.055, 0.05, 0.045), rough=0.42, noise=0.25)
+scuff(M_STONEWARE, lo=0.8, hi=1.4, scale=30)
+CHIPS_AT = (0.24, 0.13)
+bowl_prof = [(0.0, 0.0), (0.045, 0.0), (0.05, 0.004), (0.072, 0.03), (0.086, 0.056), (0.088, 0.058), (0.083, 0.057),
+             (0.069, 0.032), (0.046, 0.008), (0.0, 0.007)]
+lathe('ChipBowl', bowl_prof, M_STONEWARE, steps=64).location = (*CHIPS_AT, 0.0)
+
+def chip_mat():
+    m = bpy.data.materials.new('Crisp'); nt, out = nodes_of(m); L_ = nt.links.new
+    b = nt.nodes.new('ShaderNodeBsdfPrincipled'); L_(b.outputs[0], out.inputs[0])
+    tc = nt.nodes.new('ShaderNodeTexCoord'); nz = nt.nodes.new('ShaderNodeTexNoise'); nz.inputs['Scale'].default_value = 140.0
+    L_(tc.outputs['Object'], nz.inputs['Vector'])
+    ramp = nt.nodes.new('ShaderNodeValToRGB'); L_(nz.outputs['Fac'], ramp.inputs['Fac'])
+    e = ramp.color_ramp.elements; e[0].position = 0.5; e[0].color = (0.95, 0.66, 0.22, 1); e[1].position = 0.8; e[1].color = (0.60, 0.30, 0.07, 1)   # golden, browned spots
+    L_(ramp.outputs['Color'], b.inputs['Base Color'])
+    b.inputs['Roughness'].default_value = 0.38; b.inputs['Subsurface Weight'].default_value = 0.35
+    b.inputs['Subsurface Radius'].default_value = (0.004, 0.002, 0.001); b.inputs['Coat Weight'].default_value = 0.15   # a little oil
+    bp = nt.nodes.new('ShaderNodeBump'); bp.inputs['Strength'].default_value = 0.25; L_(nz.outputs['Fac'], bp.inputs['Height']); L_(bp.outputs[0], b.inputs['Normal'])
+    return m
+M_CHIP = chip_mat()
+
+def crisp(name, rad):
+    """One crisp: an irregular disc, curled like a saddle, with ruffled edges."""
+    bm = bmesh.new(); n = 22
+    edge = []
+    k1, k2 = _rnd.uniform(4, 14), _rnd.uniform(-12, 8)
+    for i in range(n):
+        a = 2 * math.pi * i / n; r = rad * _rnd.uniform(0.82, 1.08)
+        x, y = r * math.cos(a), r * math.sin(a)
+        edge.append(bm.verts.new((x, y, k1 * x * x + k2 * y * y + _rnd.uniform(-0.0012, 0.0012))))
+    mid = []
+    for i in range(n):
+        x, y = edge[i].co.x * 0.5, edge[i].co.y * 0.5
+        mid.append(bm.verts.new((x, y, k1 * x * x + k2 * y * y)))
+    c = bm.verts.new((0, 0, 0))
+    for i in range(n):
+        j = (i + 1) % n
+        bm.faces.new((mid[i], edge[i], edge[j], mid[j])); bm.faces.new((c, mid[i], mid[j]))
+    me = bpy.data.meshes.new(name); bm.to_mesh(me); bm.free()
+    for p_ in me.polygons: p_.use_smooth = True
+    o = link(bpy.data.objects.new(name, me)); o.data.materials.append(M_CHIP)
+    so = o.modifiers.new('Thick', 'SOLIDIFY'); so.thickness = 0.0009
+    o.modifiers.new('Sub', 'SUBSURF').levels = 1
+    return o
+
+n_chips = 22 if A.late else 70   # most of them are gone by the end of the night
+for k in range(n_chips):
+    u = math.sqrt(_rnd.random()); a = _rnd.uniform(0, 2 * math.pi)
+    r = u * (0.060 if not A.late else 0.040)
+    heap = (0.034 if not A.late else 0.004) * (1 - u ** 2)
+    ch = crisp(f'Crisp{k}', _rnd.uniform(0.017, 0.025))
+    ch.location = (CHIPS_AT[0] + r * math.cos(a), CHIPS_AT[1] + r * math.sin(a), 0.012 + heap + 0.026 * u ** 1.6 + _rnd.uniform(0, 0.006))
+    ch.rotation_euler = (_rnd.uniform(-0.8, 0.8), _rnd.uniform(-0.8, 0.8), _rnd.uniform(0, 2 * math.pi))
+if not A.late:   # one that didn't make it into the bowl
+    ch = crisp('CrispStray', 0.02); ch.location = (CHIPS_AT[0] + 0.11, CHIPS_AT[1] - 0.06, 0.003); ch.rotation_euler = (0.05, -0.04, 1.1)
+
+# a heavy tumbler of iced tea, with ice
+TUMBLER_AT = (-0.20, 0.21)
+tumbler_prof = [(0.0, 0.0), (0.036, 0.0), (0.038, 0.003), (0.039, 0.096), (0.0355, 0.096), (0.0345, 0.016), (0.0, 0.015)]
+lathe('Tumbler', tumbler_prof, M_CRYSTAL, steps=64).location = (*TUMBLER_AT, 0.0)
+tea_level = 0.024 if A.late else 0.066
+M_TEA = glass_mat('IcedTea', (1.0, 0.72, 0.36), rough=0.02)
+lathe('TumblerTea', [(0.0, 0.0151), (0.0344, 0.0151), (0.0344, 0.0151 + tea_level), (0.0, 0.0151 + tea_level)], M_TEA, steps=64).location = (*TUMBLER_AT, 0.0)
+M_ICE = glass_mat('Ice', (0.96, 0.98, 1.0), rough=0.08)
+for k, (dx, dy, rz) in enumerate(((-0.010, 0.006, 0.3), (0.011, -0.004, 1.1), (0.001, -0.013, 2.0))):
+    if A.late and k: break   # the last of the ice
+    cube = box(f'Ice{k}', -0.011, -0.011, -0.011, 0.011, 0.011, 0.011, bevel=0.004, mat=M_ICE)
+    cube.location = (TUMBLER_AT[0] + dx, TUMBLER_AT[1] + dy, 0.0151 + tea_level - 0.004 - (0.008 if A.late else 0))
+    cube.rotation_euler = (0.25 * k, -0.2, rz)
+
 # ---------------------------------------------------------------- polaroids from tonight, scattered on the table
 # Instant-film proportions: 88 x 107 mm card, 79 x 79 mm picture, deep bottom border for the handwriting.
 # The pictures here are placeholders; on the site the real photos and the handwritten copy are laid over each
@@ -468,7 +541,7 @@ else:
     FAQ_CARD = None
     for k in range(9):   # a slightly messy stack; the top one carries the question
         c = box(f'FaqCard{k}', -0.0635, -0.038, 0.0, 0.0635, 0.038, 0.00028, mat=M_INDEX)
-        c.location = (0.12 + _r.uniform(-0.004, 0.004), 0.25 + _r.uniform(-0.004, 0.004), k * 0.00029)
+        c.location = (-0.04 + _r.uniform(-0.004, 0.004), 0.31 + _r.uniform(-0.004, 0.004), k * 0.00029)
         c.rotation_euler = (0, 0, -0.18 + _r.uniform(-0.05, 0.05))
         FAQ_CARD = c
 

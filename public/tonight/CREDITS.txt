@@ -1,0 +1,6 @@
+fire.mp3      "Campfire sound ambience" by Glaneur de sons, CC BY 3.0
+              https://commons.wikimedia.org/wiki/File:Campfire_sound_ambience.ogg
+              Changes: trimmed to 45 s, high-pass 35 Hz, low-pass 7.5 kHz, gentle compression, loudness -30 LUFS, crossfaded into a seamless loop.
+candle.*      From "White candle video" by Jahobr, CC0
+              https://commons.wikimedia.org/wiki/File:White_candle_video.webm
+              Changes: cropped to the flame, keyed onto black, tinted warm, 6 s seamless loop.

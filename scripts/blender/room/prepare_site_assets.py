@@ -26,3 +26,12 @@ for name in ('close', 'wide', 'play', 'top', 'late', 'end', 'top2'):
         soft = im.resize((im.width // 4, im.height // 4), Image.LANCZOS).filter(ImageFilter.GaussianBlur(3.5))
         soft.save(os.path.join(DST, name + '_blur.jpg'), quality=82, optimize=True, progressive=True)
         convert(os.path.join(DST, name + '_blur.jpg'))
+
+# firebox mattes for the live fire: alpha only, half size is plenty for a soft mask
+for name in ('wide', 'close', 'play', 'late', 'end'):
+    fm = os.path.join(SRC, name + '_firemask.png')
+    if os.path.exists(fm):
+        a = Image.open(fm).split()[-1]
+        a = a.resize((a.width // 2, a.height // 2), Image.LANCZOS)
+        Image.merge('LA', (a, a)).save(os.path.join(DST, name + '_firemask.png'), optimize=True)
+        print('ok firemask', name)

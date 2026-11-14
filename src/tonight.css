@@ -322,3 +322,10 @@ html.theme-tonight .wl-ok { color: var(--tn-paper); }
 .tn-firewrap { position: absolute; left: 0; top: 0; pointer-events: none; mix-blend-mode: screen; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
 .tn-firewrap .tn-clip { mix-blend-mode: normal; }   /* the wrapper blends (a masked box is its own layer) */
 .tn-clip { position: absolute; left: 0; top: 0; mix-blend-mode: screen; pointer-events: none; object-fit: cover; transform-origin: 0 0; }
+
+/* the old pixel cursor belongs to the previous design: the system cursor here */
+html.theme-tonight body, html.theme-tonight body * { cursor: auto; }
+html.theme-tonight a, html.theme-tonight button, html.theme-tonight [role='button'], html.theme-tonight label { cursor: pointer; }
+html.theme-tonight input, html.theme-tonight textarea { cursor: text; }
+.sf-credits { font-size: 0.7rem; opacity: 0.8; }
+.sf-credits a { color: inherit; }

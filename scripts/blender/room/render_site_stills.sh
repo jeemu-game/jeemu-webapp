@@ -13,4 +13,11 @@ run late  --view play  --late --blank-photos     --width 1920 --height 1080
 run top   --view top   --fire 1.0 --blank-photos --width 4800 --height 1524
 run end   --view close --late --fire 0.25 --blank-photos --width 1920 --height 1080   # the waitlist: the screen at the end of the night
 run top2  --view top2  --late --chapters --blank-photos --fire 0.25 --width 4800 --height 2520   # after the waitlist: story, team, FAQ
+# where the firebox mouth shows (for the live fire footage): quick, 8 samples each
+fm() { name=$1; shift; [ -f "out/site/${name}_firemask.png" ] || $PY build_room.py "$@" --fire-mask --out "out/site/${name}_firemask.png"; }
+fm wide  --view wide  --width 1920 --height 1080
+fm close --view close --width 1920 --height 1080
+fm play  --view play  --width 1920 --height 1080
+fm late  --view play  --late --width 1920 --height 1080
+fm end   --view close --late --width 1920 --height 1080
 echo done
