@@ -39,6 +39,7 @@ ap.add_argument('--fall', default='', help='render the tower falling, frame by f
 ap.add_argument('--fall-frames', type=int, default=60)
 ap.add_argument('--fall-range', type=int, nargs=2, default=None, help='only render these frames of the fall (first last)')
 ap.add_argument('--fall-test', action='store_true', help='run the collapse and print the tower height, no rendering')
+ap.add_argument('--fall-save', default='', help='with --fall-test: save where the blocks land to this JSON')
 ap.add_argument('--fallen', default='', help='JSON of where the blocks landed (from --fall): show the fallen tower')
 ap.add_argument('--no-flames', action='store_true', help='no rendered fireplace flames or logs (the site lays filmed fire over the firebox); the firelight stays')
 ap.add_argument('--patch', action='store_true', help='render only a region around the firebox (transparent elsewhere), to patch into an existing still')
@@ -747,6 +748,7 @@ if A.fall or A.fall_test:
     if A.fall_test:
         for f in range(1, A.fall_frames + 1, 5):
             sc.frame_set(f); print(f'frame {f}: tower top {_fall.tower_height():.3f} m')
+        if A.fall_save: _fall.save_final(A.fall_save); print('saved', A.fall_save)
         raise SystemExit
     os.makedirs(A.fall, exist_ok=True)
     f0, f1 = A.fall_range or (1, A.fall_frames)

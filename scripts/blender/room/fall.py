@@ -56,6 +56,12 @@ def setup(frames=60, pull='Block22'):
         rb.kinematic = False; rb.keyframe_insert('kinematic', frame=17)
         target.location = loc0 + d * 0.115
 
+    # an invisible guard in front of Jeemu's screen: nothing lands there (the waitlist is on that screen later)
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(0.0, -0.17, 0.06))
+    guard = bpy.context.active_object; guard.name = 'FallGuard'; guard.scale = (0.30, 0.15, 0.12); guard.hide_render = True
+    guard.select_set(True); bpy.context.view_layer.objects.active = guard
+    bpy.ops.rigidbody.object_add(); guard.rigid_body.type = 'PASSIVE'; guard.rigid_body.collision_shape = 'BOX'; guard.select_set(False)
+
     bpy.ops.ptcache.bake_all(bake=True)
 
 
