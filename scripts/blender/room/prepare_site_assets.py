@@ -54,3 +54,17 @@ if frames:
         convert(out)
     json.dump({'count': len(frames), 'width': 1280, 'height': 720}, open(os.path.join(fdst, 'index.json'), 'w'))
     print('ok fall', len(frames), 'frames')
+
+# sharp close-ups for the chapters table (build_room.py --insets): where they go, and the pictures
+ins_meta = os.path.join(SRC, 'top2_insets.json'); top2_json = os.path.join(DST, 'top2.json')
+if os.path.exists(ins_meta) and os.path.exists(top2_json):
+    m = json.load(open(top2_json)); extra = json.load(open(ins_meta))
+    m['insets'] = extra.get('insets', {}); m['burnt'] = m.get('burnt') or extra.get('burnt', False)
+    json.dump(m, open(top2_json, 'w'), indent=1)
+    idst = os.path.join(DST, 'insets'); os.makedirs(idst, exist_ok=True)
+    for name in m['insets']:
+        f = os.path.join(SRC, 'insets', name + '.png')
+        if not os.path.exists(f): continue
+        out = os.path.join(idst, name + '.jpg'); post(Image.open(f).convert('RGB'), vig=0.0).save(out, quality=84, optimize=True, progressive=True)
+        convert(out)
+    print('ok insets', len(m['insets']))

@@ -841,6 +841,7 @@ if A.meta:   # where the live overlays go: corners in image pixels, clockwise fr
     _z0, _z1 = min(v.z for v in bb) + 0.012, max(v.z for v in bb) - 0.012; _by = min(v.y for v in bb)
     meta['firebox'] = [px(Vector(c)) for c in ((_x0, _by, _z1), (_x1, _by, _z1), (_x1, _by, _z0), (_x0, _by, _z0))]
     meta['flames'] = [{'base': px(Vector((x, y, z))), 'tip': px(Vector((x, y, z + 0.034)))} for x, y, z in FLAMES]
+    if A.faq_blocks: meta['burnt'] = True   # the questions are in the picture (the site skips its own lettering)
     if A.insets:   # where each close-up sits in the base image (pixels): the site lays them over it when it zooms in
         meta['insets'] = {}
         from bpy_extras.object_utils import world_to_camera_view as _w2c

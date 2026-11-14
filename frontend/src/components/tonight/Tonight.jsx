@@ -31,7 +31,7 @@ const STOPS = [
 const FIRST_TEAM = STORY.length, FIRST_FAQ = STORY.length + TEAM_MEMBERS.length;
 // after the fall the questions are etched on blocks lying on the table: the camera goes round them in this order
 // (names from the render's meta, faqBlocks; scripts/blender/room: flat, wide face up, clear of the tower)
-const FAQ_BLOCKS = ['Block51', 'Block11', 'Block37', 'Block33', 'Block30', 'Block23', 'Block09'];
+const FAQ_BLOCKS = ['Block11', 'Block51', 'Block39', 'Block43', 'Block52', 'Block53', 'Block09'];   // same order as the questions (render: --faq-blocks)
 // the prints on the chapters table, in the render's order
 const CHAPTER_PRINTS = [...STORY, TEAM_PRINT];
 
@@ -210,28 +210,31 @@ export default function Tonight({ onCta }) {
     const free = portrait ? Math.max(vp.h * 0.3, vp.h - TOP_BAR - (vp.card || vp.h * 0.25) - 34) : vp.h;
     const fit = (q) => Math.max(1, Math.min((portrait ? free * 0.86 : vp.h * 0.46) / dist(q[0], q[3]), (vp.w * (portrait ? 0.74 : 0.42)) / dist(q[0], q[1])) / cover);
     const off = portrait ? [0, vp.h / 2 - (TOP_BAR + 8 + free / 2)] : [vp.w * 0.14, 0];   // + moves the subject left / up
-    const at = (i, z) => { const c = mid(quads[i]); return [c[0] + off[0] / (cover * z), c[1] + off[1] / (cover * z)]; };
+    // the camera turns so what it looks at reads (nearly) level: blocks almost all the way, prints a little
+    const turn = (i) => { const q = quads[i]; const a = Math.atan2(q[1][1] - q[0][1], q[1][0] - q[0][0]) * 180 / Math.PI;
+      return reduce ? 0 : -a * (ids[i].startsWith('q') ? 0.88 : 0.6); };
+    const rot = (v, deg) => { const r = (deg * Math.PI) / 180, c = Math.cos(r), sn = Math.sin(r); return [v[0] * c - v[1] * sn, v[0] * sn + v[1] * c]; };
+    const at = (i, z, r) => { const c = mid(quads[i]), o = rot(off, -r); return [c[0] + o[0] / (cover * z), c[1] + o[1] / (cover * z)]; };
     let cur = -1;
     ids.forEach((id, i) => { if (t >= START[id][0]) cur = i; });
-    let c, z;
-    if (cur < 0) { const z0 = fit(quads[0]); c = at(0, z0); z = mv(z0 * 1.25, z0, ease(p(inId))); }
+    let c, z, r;
+    if (cur < 0) { const z0 = fit(quads[0]); r = turn(0); c = at(0, z0, r); z = mv(z0 * 1.25, z0, ease(p(inId))); }
     else {
       const k = ease(clamp(p(ids[cur]) / 0.32)), a = Math.max(0, cur - 1), za = fit(quads[a]), zb = fit(quads[cur]);
-      const from = at(a, za), to = at(cur, zb);
+      r = lerp(turn(a), turn(cur), k);
+      const from = at(a, za, r), to = at(cur, zb, r);
       c = [lerp(from[0], to[0], k), lerp(from[1], to[1], k)];
       z = lerp(za, zb, k) * (quads[a] !== quads[cur] && !reduce ? 1 - 0.1 * Math.sin(Math.PI * k) : 1);   // lift a little while moving
     }
     if (outId && t >= START[outId][0]) z = mv(z, z * 1.12, ease(p(outId)));
     const arrived = cur >= 0 && (!inBeat(ids[cur]) || p(ids[cur]) > 0.32);
-    // depth of field: sharp over whatever the camera is on (sized to it), soft beyond
-    // sized to the subject's whole footprint on screen (rotated blocks included), generous on the small blocks
+    // depth of field: sharp over whatever the camera is on (it reads level now, so its own width and height), soft beyond
     const q = quads[Math.max(0, cur)], sz = cover * z;
-    const xs = q.map((v) => v[0]), ys = q.map((v) => v[1]);
     const roomy = ids[Math.max(0, cur)].startsWith('q') ? 1.9 : 1.15;
-    const half = [(Math.max(...xs) - Math.min(...xs)) * sz / 2 * roomy, (Math.max(...ys) - Math.min(...ys)) * sz / 2 * roomy];
+    const half = [dist(q[0], q[1]) * sz / 2 * roomy, dist(q[0], q[3]) * sz / 2 * roomy];
     const dof = { x: ((vp.w / 2 - off[0]) / vp.w) * 100, y: ((vp.h / 2 - off[1]) / vp.h) * 100,
       rx: (half[0] / 0.62 * 1.1 / vp.w) * 100, ry: (half[1] / 0.62 * 1.15 / vp.h) * 100 };
-    return { c, z, o: Math.min(ease(p(inId)), outId ? 1 - ease(p(outId)) : 1), cur, arrived, dof };
+    return { c, z, r, o: Math.min(ease(p(inId)), outId ? 1 - ease(p(outId)) : 1), cur, arrived, dof };
   };
   if (meta.top) cams.top = tablePan(meta.top, meta.top.polaroids.slice(0, POLAROIDS.length).map((q) => q.card), POLAROIDS.map((_, i) => `p${i}`), 'toTable', 'toLate');
   if (meta.top2 && (meta.top2.faqBlocks || meta.top2.faq)) {
@@ -272,6 +275,10 @@ export default function Tonight({ onCta }) {
     return { tx, ty, s };
   };
   const stageStyle = (m, cam, under = 0) => {
+    if (cam.r) {   // turned: rotate about the middle of the window (the table is big enough that no edge shows)
+      const s = Math.max(vp.w / m.width, vp.h / m.height) * cam.z;
+      return { width: m.width, height: m.height, transform: `translate3d(${vp.w / 2}px, ${vp.h / 2}px, 0) rotate(${cam.r}deg) scale(${s}) translate(${-cam.c[0]}px, ${-cam.c[1]}px)` };
+    }
     const { tx, ty, s } = place(m, cam, under);
     return { width: m.width, height: m.height, transform: `translate3d(${tx}px, ${ty}px, 0) scale(${s})` };
   };
@@ -321,7 +328,10 @@ export default function Tonight({ onCta }) {
                   <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp}
                     written={s === 'top' ? written : s === 'top2' ? written2 : Infinity} />
                 )}
-                {s === 'top2' && m.faqBlocks && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} />)}
+                {s === 'top2' && loadRest && m.insets && Object.entries(m.insets).map(([n, [x0, y0, x1, y1]]) => (
+                  <Pic key={n} src={`${BASE}insets/${n}.jpg`} className="tn-inset" style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0 }} decoding="async" />
+                ))}
+                {s === 'top2' && m.faqBlocks && !m.burnt && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} />)}
                 {s === 'top2' && !m.faqBlocks && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} />}
               </div>
               {(s === 'top' || s === 'top2') && (
@@ -330,7 +340,7 @@ export default function Tonight({ onCta }) {
                   <div className="tn-shot" style={stageStyle(m, cam, portrait ? vp.card + 24 : 0)}>
                     {loadRest && <Pic src={`${BASE}${s}_blur.jpg`} width={m.width} height={m.height} draggable="false" decoding="async" />}
                     {loadRest && <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp} written={s === 'top' ? written : written2} soft />}
-                    {loadRest && s === 'top2' && m.faqBlocks && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} soft />)}
+                    {loadRest && s === 'top2' && m.faqBlocks && !m.burnt && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} soft />)}
                     {loadRest && s === 'top2' && !m.faqBlocks && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} soft />}
                   </div>
                 </div>
