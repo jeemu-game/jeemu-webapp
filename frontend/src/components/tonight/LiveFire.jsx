@@ -33,8 +33,8 @@ export default function LiveFire({ shot, m, warp, active }) {
   if (!active || still) return null;
   return (
     <>
-      {ok.fire && m.firebox && (
-        <div className="tn-firewrap" style={{ width: m.width, height: m.height, ...(ok.mask ? { WebkitMaskImage: `url(${BASE}${shot}_firemask.png)`, maskImage: `url(${BASE}${shot}_firemask.png)` } : {}) }}>
+      {ok.fire && ok.mask && m.firebox && (   // never without its mask: the fire must stay behind the tower
+        <div className="tn-firewrap" style={{ width: m.width, height: m.height, WebkitMaskImage: `url(${BASE}${shot}_firemask.png)`, maskImage: `url(${BASE}${shot}_firemask.png)` }}>
           <Clip name="fire" style={{ ...warp(1280, 512, m.firebox), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />
         </div>
       )}
