@@ -43,6 +43,9 @@ ap.add_argument('--fall-save', default='', help='with --fall-test: save where th
 ap.add_argument('--fallen', default='', help='JSON of where the blocks landed (from --fall): show the fallen tower')
 ap.add_argument('--no-flames', action='store_true', help='no rendered fireplace flames or logs (the site lays filmed fire over the firebox); the firelight stays')
 ap.add_argument('--patch', action='store_true', help='render only a region around the firebox (transparent elsewhere), to patch into an existing still')
+ap.add_argument('--faq-blocks', default='', help='comma-separated fallen blocks to burn the FAQ questions into (chapters table)')
+ap.add_argument('--insets', default='', help='comma-separated objects: render a sharp close-up of each (cropped, --inset-scale x the resolution) into out/site/insets/')
+ap.add_argument('--inset-scale', type=float, default=5.0)
 ap.add_argument('--meta-only', action='store_true', help='write the --meta corners without rendering')
 ap.add_argument('--fire-mask', action='store_true', help='render only where the firebox opening is visible (white on transparent), for the live fire footage')
 ap.add_argument('--meta', default='', help='write JSON with the screen and polaroid corners in image pixels')
@@ -743,6 +746,28 @@ if A.patch:   # just the firebox and a margin round it, so the change can be dro
     print('patch region', round(r.border_min_x, 3), round(r.border_max_x, 3), round(r.border_min_y, 3), round(r.border_max_y, 3))
 import fall as _fall
 if A.fallen: _fall.apply_final(A.fallen)
+if A.faq_blocks:   # the questions people ask, laser-burnt into the top of fallen blocks
+    import re as _re, textwrap as _tw
+    faq_src = open(os.path.join(HERE, '..', '..', '..', 'src', 'data', 'faq.js'), encoding='utf-8').read()
+    questions = _re.findall(r"q: '((?:[^'\\]|\\.)*)'", faq_src)
+    font_path = os.path.join(CACHE, 'fonts', 'Manrope-600.ttf')
+    burn = bpy.data.materials.new('LaserBurn'); nt_ = burn.node_tree; bsdf = nt_.nodes['Principled BSDF']
+    bsdf.inputs['Base Color'].default_value = (0.030, 0.012, 0.004, 1); bsdf.inputs['Roughness'].default_value = 0.88
+    for k, name in enumerate([n for n in A.faq_blocks.split(',') if n]):
+        b = bpy.data.objects.get(name)
+        if not b or k >= len(questions): continue
+        M = b.matrix_world; up = 1 if M.col[2][2] > 0 else -1
+        lines = _tw.wrap(questions[k].replace("\\'", "'"), 22)
+        cu = bpy.data.curves.new(f'Burn{k}', 'FONT'); cu.body = '\n'.join(lines); cu.font = bpy.data.fonts.load(font_path)
+        cu.align_x = 'CENTER'; cu.align_y = 'CENTER'; cu.space_line = 0.92
+        longest = max(len(l) for l in lines)
+        cu.size = min(0.0074, 0.064 / (longest * 0.56), 0.021 / (len(lines) * 0.98))
+        t = bpy.data.objects.new(f'Burn{k}', cu); COL.objects.link(t); t.data.materials.append(burn)
+        t.parent = b; t.matrix_parent_inverse = Matrix()
+        flip_z = math.pi if up < 0 else 0.0
+        turn = math.pi if M.col[0][0] < 0 else 0.0   # read left to right from above
+        t.location = (0, 0, up * 0.00756); t.rotation_euler = (flip_z, 0, turn)
+        print('burnt', name, '|', ' / '.join(lines))
 if A.fall or A.fall_test:
     _fall.setup(A.fall_frames)
     if A.fall_test:
@@ -816,6 +841,28 @@ if A.meta:   # where the live overlays go: corners in image pixels, clockwise fr
     _z0, _z1 = min(v.z for v in bb) + 0.012, max(v.z for v in bb) - 0.012; _by = min(v.y for v in bb)
     meta['firebox'] = [px(Vector(c)) for c in ((_x0, _by, _z1), (_x1, _by, _z1), (_x1, _by, _z0), (_x0, _by, _z0))]
     meta['flames'] = [{'base': px(Vector((x, y, z))), 'tip': px(Vector((x, y, z + 0.034)))} for x, y, z in FLAMES]
+    if A.insets:   # where each close-up sits in the base image (pixels): the site lays them over it when it zooms in
+        meta['insets'] = {}
+        from bpy_extras.object_utils import world_to_camera_view as _w2c
+        for name in [n for n in A.insets.split(',') if n]:
+            o = bpy.data.objects.get(name)
+            if not o: continue
+            pts = [px(o.matrix_world @ Vector(c)) for c in o.bound_box]
+            x0, x1 = min(p[0] for p in pts), max(p[0] for p in pts); y0, y1 = min(p[1] for p in pts), max(p[1] for p in pts)
+            mx, my = (x1 - x0) * 0.35 + 12, (y1 - y0) * 0.35 + 12
+            meta['insets'][name] = [max(0, round(x0 - mx)), max(0, round(y0 - my)), min(W, round(x1 + mx)), min(H, round(y1 + my))]
     json.dump(meta, open(A.meta, 'w'), indent=1)
     print('wrote', A.meta)
 print('wrote', r.filepath if not A.meta_only else '(meta only)')
+if A.insets and A.meta:   # sharp close-ups: the same picture, rendered only inside each box at a higher resolution
+    boxes = json.load(open(A.meta)).get('insets', {})
+    W0, H0 = r.resolution_x, r.resolution_y
+    os.makedirs(os.path.join(os.path.dirname(os.path.abspath(A.out)), 'insets'), exist_ok=True)
+    r.resolution_x, r.resolution_y = round(W0 * A.inset_scale), round(H0 * A.inset_scale)
+    r.use_border = True; r.use_crop_to_border = True
+    for name, (x0, y0, x1, y1) in boxes.items():
+        r.border_min_x, r.border_max_x = x0 / W0, x1 / W0
+        r.border_min_y, r.border_max_y = 1 - y1 / H0, 1 - y0 / H0
+        r.filepath = os.path.join(os.path.dirname(os.path.abspath(A.out)), 'insets', f'{name}.png')
+        if not os.path.exists(r.filepath): bpy.ops.render.render(write_still=True)
+        print('inset', name, (x0, y0, x1, y1))

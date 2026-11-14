@@ -362,7 +362,9 @@ html.theme-tonight input, html.theme-tonight textarea { cursor: text; }
 /* countdown to the Kickstarter, quietly in the top bar */
 .tb-count { position: relative; z-index: 1; font: 500 0.82rem/1 var(--tn-sans); color: rgba(242, 234, 223, 0.6); font-variant-numeric: tabular-nums;
   text-decoration: none; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6); white-space: nowrap; }
-a.tb-count { color: var(--tn-paper); }
+a.tb-count:hover { color: var(--tn-paper); }
+/* desktop: the countdown sits in the middle of the bar */
+@media (min-width: 761px) { .tb-count { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); } }
 @media (max-width: 760px) { .tb-count { margin-left: auto; font-size: 0.76rem; } .tb-count + .tb-cta, .tb-sound + .tb-count { margin-left: 14px; } .tb-sound { margin-left: auto; } }
 .tb-count-short { display: none; }
 .tb-cta { white-space: nowrap; }

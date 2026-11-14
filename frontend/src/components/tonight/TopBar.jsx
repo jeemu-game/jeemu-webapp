@@ -38,9 +38,9 @@ export default function TopBar({ onCtaClick }) {
       {canSound && <button type="button" className={`tb-sound ${sound ? 'is-on' : ''}`} onClick={toggle} aria-pressed={sound}>
         <span className="tb-wave" aria-hidden="true"><i /><i /><i /></span>{sound ? 'Sound on' : 'Sound'}
       </button>}
-      {c.live
-        ? <a className="tb-count" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer">Live on Kickstarter</a>
-        : <span className="tb-count" title="Kickstarter opens 24 November, 9:00 am EST"><span className="tb-count-lead">Kickstarter in </span><span className="tb-count-short">Live in </span>{fmtShort(c)}</span>}
+      <a className="tb-count" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer" title="Kickstarter opens 24 November, 9:00 am EST">
+        {c.live ? 'Live on Kickstarter' : (<><span className="tb-count-lead">Kickstarter in </span><span className="tb-count-short">Live in </span>{fmtShort(c)}</>)}
+      </a>
       <button type="button" className="tb-cta" onClick={onCtaClick}>Join the waitlist</button>
     </header>
   );
