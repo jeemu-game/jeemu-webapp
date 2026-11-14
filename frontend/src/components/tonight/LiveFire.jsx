@@ -31,6 +31,9 @@ export default function LiveFire({ shot, m, warp, active }) {
     Promise.all(['fire.webp', 'candle.webp', `${shot}_firemask.png`].map(has)).then(([fire, candle, mask]) => live && setOk({ fire, candle, mask }));
     return () => { live = false; };
   }, [shot]);
+  // the flames sit low in the firebox (85% of its height) so they never lick over the stone at the top of the opening
+  const fb = m.firebox && (() => { const [tl, tr, br, bl] = m.firebox; const k = 0.85;
+    return [[bl[0] + (tl[0] - bl[0]) * k, bl[1] + (tl[1] - bl[1]) * k], [br[0] + (tr[0] - br[0]) * k, br[1] + (tr[1] - br[1]) * k], br, bl]; })();
   const still = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   if (!active || still) return null;
   return (
@@ -38,8 +41,8 @@ export default function LiveFire({ shot, m, warp, active }) {
       {ok.fire && ok.mask && m.firebox && (   // never without its mask: the fire must stay behind the tower
         <div className="tn-firewrap" style={{ width: m.width, height: m.height, WebkitMaskImage: `url(${BASE}${shot}_firemask.png)`, maskImage: `url(${BASE}${shot}_firemask.png)` }}>
           {!moving && <img className="tn-clip" src={`${BASE}fire_first.jpg`} width={1280} height={512} alt="" aria-hidden="true"
-            style={{ ...warp(1280, 512, m.firebox), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />}
-          <Clip name="fire" onLoad={() => setMoving(true)} w={1280} h={512} style={{ ...warp(1280, 512, m.firebox), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />
+            style={{ ...warp(1280, 512, fb), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />}
+          <Clip name="fire" onLoad={() => setMoving(true)} w={1280} h={512} style={{ ...warp(1280, 512, fb), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />
         </div>
       )}
       {ok.candle && (m.flames || []).map((f, i) => {

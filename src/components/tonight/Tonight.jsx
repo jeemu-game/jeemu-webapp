@@ -86,6 +86,14 @@ function EtchedBlock({ q, warp, text, soft = false }) {
     </div>
   );
 }
+// until the chapters table is re-rendered with fallen blocks: the question written on the top index card
+function FaqCard({ q, warp, k, soft = false }) {
+  return (
+    <div className={`tn-warp tn-index ${soft ? 'is-soft' : ''}`} style={warp(600, 360, q)}>
+      <span key={k}>{FAQS[Math.max(0, k)].q}</span>
+    </div>
+  );
+}
 const faqQuads = (m) => {
   if (!m.faqBlocks) return [];
   const by = Object.fromEntries(m.faqBlocks.map((b) => [b.block, b.quad]));
@@ -252,6 +260,7 @@ export default function Tonight({ onCta }) {
   const reached2 = cur2 < 0 ? -1 : STOPS[cur2].faq !== undefined ? CHAPTER_PRINTS.length : STOPS[cur2].print;
   useEffect(() => { if (cams.top && cams.top.arrived && cur > written) setWritten(cur); });
   useEffect(() => { if (cams.top2 && cams.top2.arrived && reached2 > written2) setWritten2(reached2); });
+  const faqK = cur2 >= FIRST_FAQ ? cur2 - FIRST_FAQ : 0;
 
   const place = (m, cam, under = 0) => {
     const cover = Math.max(vp.w / m.width, vp.h / m.height), s = cover * cam.z;
@@ -309,6 +318,7 @@ export default function Tonight({ onCta }) {
                     written={s === 'top' ? written : s === 'top2' ? written2 : Infinity} />
                 )}
                 {s === 'top2' && m.faqBlocks && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} />)}
+                {s === 'top2' && !m.faqBlocks && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} />}
               </div>
               {(s === 'top' || s === 'top2') && (
                 // depth of field: a softened copy of the table on top, with a clear hole where the camera is focused
@@ -317,6 +327,7 @@ export default function Tonight({ onCta }) {
                     {loadRest && <Pic src={`${BASE}${s}_blur.jpg`} width={m.width} height={m.height} draggable="false" decoding="async" />}
                     {loadRest && <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp} written={s === 'top' ? written : written2} soft />}
                     {loadRest && s === 'top2' && m.faqBlocks && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} soft />)}
+                    {loadRest && s === 'top2' && !m.faqBlocks && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} soft />}
                   </div>
                 </div>
               )}
