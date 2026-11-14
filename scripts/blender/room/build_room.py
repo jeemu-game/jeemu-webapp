@@ -543,10 +543,8 @@ else:
     POLAROIDS = [polaroid(i, x, y, rz) for i, (x, y, rz) in enumerate((
         (-0.55, -0.22, 0.12), (-0.31, -0.30, -0.17), (-0.06, -0.33, 0.08), (0.20, -0.31, -0.12), (0.45, -0.27, 0.18)))]
     POLAROIDS.append(polaroid(5, 0.80, -0.20, -0.07, kind='wide'))
-    M_INDEX = plain('IndexCard', (0.84, 0.80, 0.72), rough=0.8, noise=0.05)
-    import random as _r; _r.seed(5)
-    FAQ_CARD = None
-    for k in range(9):   # a slightly messy stack; the top one carries the question
+    FAQ_CARD = None   # the questions are etched on fallen blocks now (see --meta: faqBlocks)
+    for k in range(0):   # a slightly messy stack; the top one carries the question
         c = box(f'FaqCard{k}', -0.0635, -0.038, 0.0, 0.0635, 0.038, 0.00028, mat=M_INDEX)
         c.location = (-0.04 + _r.uniform(-0.004, 0.004), 0.31 + _r.uniform(-0.004, 0.004), k * 0.00029)
         c.rotation_euler = (0, 0, -0.18 + _r.uniform(-0.05, 0.05))
@@ -741,6 +739,9 @@ if A.fall or A.fall_test:
         sc.frame_set(f); bpy.ops.render.render(write_still=True)
     _fall.save_final(os.path.join(A.fall, 'fallen.json'))
     print('wrote', A.fall); raise SystemExit
+if A.chapters:   # the FAQ is etched on fallen blocks here: no frog stamps underneath it
+    for o in sc.objects:
+        if '_stamp' in o.name: o.hide_render = True
 if A.no_flames:
     for o in sc.objects:
         if o.name.startswith(('Flame', 'Log')) and not o.name.startswith('FlameL'): o.hide_render = True
@@ -785,6 +786,24 @@ if A.meta:   # where the live overlays go: corners in image pixels, clockwise fr
             return [px(M @ Vector(c)) for c in ((x0, y1, z), (x1, y1, z), (x1, y0, z), (x0, y0, z))]
         k = PRINT[card.get('kind', 'square')]
         meta['polaroids'].append({'kind': card.get('kind', 'square'), 'photo': quad(*k['photo']), 'caption': quad(*k['caption']), 'card': quad(*k['card'])})
+    if A.chapters and A.fallen:   # fallen blocks lying flat, wide face up, clear of the tower: the FAQ is etched on these
+        cands = []
+        blocks = [b for b in bpy.data.objects if b.name.startswith('Block') and b.type == 'MESH' and len(b.name) == 7]
+        for b in blocks:
+            M = b.matrix_world; c = M.translation; z = Vector(M.col[2][:3]).normalized(); xa = Vector(M.col[0][:3]).normalized()
+            if abs(z.z) < 0.93 or c.z > 0.03 or math.hypot(c.x, c.y) < 0.13: continue
+            if any(o is not b and (o.matrix_world.translation - c).to_2d().length < 0.05 and o.matrix_world.translation.z > c.z + 0.008 for o in blocks): continue
+            up = 1 if z.z > 0 else -1
+            if xa.x < 0: xa = -xa   # text runs left to right in the picture
+            # corners of the face that looks up, clockwise from top-left as the picture reads
+            ya = z.cross(xa) * up if up > 0 else -z.cross(xa)
+            if ya.y < 0: ya = -ya
+            ctr = c + Vector((0, 0, 0.0076))
+            q = [ctr - xa * 0.0375 + ya * 0.0125, ctr + xa * 0.0375 + ya * 0.0125, ctr + xa * 0.0375 - ya * 0.0125, ctr - xa * 0.0375 - ya * 0.0125]
+            cands.append((math.atan2(c.y, c.x), b.name, [px(v) for v in q]))
+        cands.sort()
+        meta['faqBlocks'] = [{'block': n, 'quad': q} for _, n, q in cands]
+        print('faq blocks', len(cands))
     if FAQ_CARD:   # the top index card, for the questions
         M = FAQ_CARD.matrix_world
         meta['faq'] = [px(M @ Vector(c)) for c in ((-0.0635, 0.038, 0.0003), (0.0635, 0.038, 0.0003), (0.0635, -0.038, 0.0003), (-0.0635, -0.038, 0.0003))]

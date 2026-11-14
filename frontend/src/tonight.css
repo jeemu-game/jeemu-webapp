@@ -342,3 +342,9 @@ html.theme-tonight input, html.theme-tonight textarea { cursor: text; }
 }
 @media (prefers-reduced-motion: reduce) { .tn-lights { display: none; } }
 .tn-shot > .tn-fallframe { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* a question laser-etched into a block: dark burnt lettering pressed into the pine */
+.tn-etch { mix-blend-mode: multiply; display: flex; align-items: center; justify-content: center; padding: 18px 34px; box-sizing: border-box; overflow: hidden; }
+.tn-etch span { font-family: var(--tn-sans); font-weight: 700; line-height: 1.12; text-align: center; letter-spacing: 0.01em; color: #3b2414;
+  text-shadow: 0 1px 0 rgba(255, 230, 190, 0.35), 0 -0.5px 0 rgba(0, 0, 0, 0.35); filter: blur(0.35px); }
+.tn-etch.is-soft span { filter: blur(5px); }

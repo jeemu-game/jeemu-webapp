@@ -29,6 +29,9 @@ const STOPS = [
   ...FAQS.map((f, k) => ({ id: `q${k}`, faq: k, len: 80, title: f.q, body: f.a }))
 ];
 const FIRST_TEAM = STORY.length, FIRST_FAQ = STORY.length + TEAM_MEMBERS.length;
+// after the fall the questions are etched on blocks lying on the table: the camera goes round them in this order
+// (names from the render's meta, faqBlocks; scripts/blender/room: flat, wide face up, clear of the tower)
+const FAQ_BLOCKS = ['Block51', 'Block11', 'Block37', 'Block33', 'Block30', 'Block23', 'Block09'];
 // the prints on the chapters table, in the render's order
 const CHAPTER_PRINTS = [...STORY, TEAM_PRINT];
 
@@ -74,14 +77,21 @@ function PrintOverlays({ m, items, warp, written, soft = false }) {
 }
 const HOW_PRINTS = [...POLAROIDS, ...EXTRA_PHOTOS.map((photo) => ({ photo }))];
 
-// the top index card: ruled like a real 5 x 3 card, the question in the same hand as the notes
-function FaqCard({ q, warp, k, soft = false }) {
+// a question laser-etched into a fallen block's top face (75 x 25 mm): burnt-in dark lettering, slightly soft
+function EtchedBlock({ q, warp, text, soft = false }) {
+  const size = text.length > 34 ? 34 : 40;
   return (
-    <div className={`tn-warp tn-index ${soft ? 'is-soft' : ''}`} style={warp(600, 360, q)}>
-      <span key={k}>{FAQS[Math.max(0, k)].q}</span>
+    <div className={`tn-warp tn-etch ${soft ? 'is-soft' : ''}`} style={warp(600, 200, q)}>
+      <span style={{ fontSize: `${size}px` }}>{text}</span>
     </div>
   );
 }
+const faqQuads = (m) => {
+  if (!m.faqBlocks) return [];
+  const by = Object.fromEntries(m.faqBlocks.map((b) => [b.block, b.quad]));
+  const picked = FAQ_BLOCKS.map((n) => by[n]).filter(Boolean);
+  return FAQS.map((_, k) => picked[k % Math.max(1, picked.length)] || m.faqBlocks[k % m.faqBlocks.length].quad);
+};
 
 export default function Tonight({ onCta }) {
   const section = useRef(null);
@@ -214,9 +224,9 @@ export default function Tonight({ onCta }) {
     return { c, z, o: Math.min(ease(p(inId)), outId ? 1 - ease(p(outId)) : 1), cur, arrived, dof };
   };
   if (meta.top) cams.top = tablePan(meta.top, meta.top.polaroids.slice(0, POLAROIDS.length).map((q) => q.card), POLAROIDS.map((_, i) => `p${i}`), 'toTable', 'toLate');
-  if (meta.top2 && meta.top2.faq) {
-    const m = meta.top2;
-    cams.top2 = tablePan(m, STOPS.map((st) => (st.faq !== undefined ? m.faq : m.polaroids[st.print].card)), STOPS.map((st) => st.id), 'toChapters', null);
+  if (meta.top2 && (meta.top2.faqBlocks || meta.top2.faq)) {
+    const m = meta.top2, fq = faqQuads(m);
+    cams.top2 = tablePan(m, STOPS.map((st) => (st.faq !== undefined ? (fq[st.faq] || m.faq) : m.polaroids[st.print].card)), STOPS.map((st) => st.id), 'toChapters', null);
   }
   if (meta.late) {
     const { c } = hero(meta.late);
@@ -242,7 +252,6 @@ export default function Tonight({ onCta }) {
   const reached2 = cur2 < 0 ? -1 : STOPS[cur2].faq !== undefined ? CHAPTER_PRINTS.length : STOPS[cur2].print;
   useEffect(() => { if (cams.top && cams.top.arrived && cur > written) setWritten(cur); });
   useEffect(() => { if (cams.top2 && cams.top2.arrived && reached2 > written2) setWritten2(reached2); });
-  const faqK = cur2 >= FIRST_FAQ ? cur2 - FIRST_FAQ : 0;
 
   const place = (m, cam, under = 0) => {
     const cover = Math.max(vp.w / m.width, vp.h / m.height), s = cover * cam.z;
@@ -299,7 +308,7 @@ export default function Tonight({ onCta }) {
                   <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp}
                     written={s === 'top' ? written : s === 'top2' ? written2 : Infinity} />
                 )}
-                {s === 'top2' && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} />}
+                {s === 'top2' && m.faqBlocks && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} />)}
               </div>
               {(s === 'top' || s === 'top2') && (
                 // depth of field: a softened copy of the table on top, with a clear hole where the camera is focused
@@ -307,7 +316,7 @@ export default function Tonight({ onCta }) {
                   <div className="tn-shot" style={stageStyle(m, cam, portrait ? vp.card + 24 : 0)}>
                     {loadRest && <Pic src={`${BASE}${s}_blur.jpg`} width={m.width} height={m.height} draggable="false" decoding="async" />}
                     {loadRest && <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp} written={s === 'top' ? written : written2} soft />}
-                    {loadRest && s === 'top2' && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} soft />}
+                    {loadRest && s === 'top2' && m.faqBlocks && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} soft />)}
                   </div>
                 </div>
               )}

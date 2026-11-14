@@ -11,11 +11,11 @@ const has = (f) => (exists[f] ||= fetch(BASE + f, { method: 'HEAD' })
   .then((r) => r.ok && !/text\/html/.test(r.headers.get('content-type') || '')).catch(() => false));
 
 // animated images, not video: they play everywhere (no play button, Low Power Mode or autoplay rules don't apply)
-function Clip({ name, style, w, h }) {
+function Clip({ name, style, w, h, onLoad }) {
   return (
-    <picture>
+    <picture style={{ position: 'absolute', left: 0, top: 0 }}>
       <source srcSet={`${BASE}${name}.avif`} type="image/avif" />
-      <img className="tn-clip" style={style} src={`${BASE}${name}.webp`} width={w} height={h} alt="" draggable="false" decoding="async" aria-hidden="true" />
+      <img className="tn-clip" style={style} src={`${BASE}${name}.webp`} width={w} height={h} alt="" draggable="false" decoding="async" aria-hidden="true" onLoad={onLoad} />
     </picture>
   );
 }
@@ -25,6 +25,7 @@ const DEFOCUS = { wide: 3, play: 7, late: 7, close: 16, end: 16 };
 
 export default function LiveFire({ shot, m, warp, active }) {
   const [ok, setOk] = useState({});
+  const [moving, setMoving] = useState(false);   // the animated fire has loaded: drop the still first frame
   useEffect(() => {
     let live = true;
     Promise.all(['fire.webp', 'candle.webp', `${shot}_firemask.png`].map(has)).then(([fire, candle, mask]) => live && setOk({ fire, candle, mask }));
@@ -36,7 +37,9 @@ export default function LiveFire({ shot, m, warp, active }) {
     <>
       {ok.fire && ok.mask && m.firebox && (   // never without its mask: the fire must stay behind the tower
         <div className="tn-firewrap" style={{ width: m.width, height: m.height, WebkitMaskImage: `url(${BASE}${shot}_firemask.png)`, maskImage: `url(${BASE}${shot}_firemask.png)` }}>
-          <Clip name="fire" w={1280} h={512} style={{ ...warp(1280, 512, m.firebox), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />
+          {!moving && <img className="tn-clip" src={`${BASE}fire_first.jpg`} width={1280} height={512} alt="" aria-hidden="true"
+            style={{ ...warp(1280, 512, m.firebox), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />}
+          <Clip name="fire" onLoad={() => setMoving(true)} w={1280} h={512} style={{ ...warp(1280, 512, m.firebox), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />
         </div>
       )}
       {ok.candle && (m.flames || []).map((f, i) => {
