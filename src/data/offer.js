@@ -11,3 +11,5 @@ export const vipUrl = (email, code) => {
   if (ref) u.searchParams.set('client_reference_id', ref);
   return u.toString();
 };
+// The campaign opens 24 November, 9:00 am US Eastern (EST, UTC-5) = 14:00 UTC.
+export const LAUNCH_AT = Date.parse('2026-11-24T14:00:00Z');

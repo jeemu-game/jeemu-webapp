@@ -348,3 +348,14 @@ html.theme-tonight input, html.theme-tonight textarea { cursor: text; }
 .tn-etch span { font-family: var(--tn-sans); font-weight: 700; line-height: 1.12; text-align: center; letter-spacing: 0.01em; color: #3b2414;
   text-shadow: 0 1px 0 rgba(255, 230, 190, 0.35), 0 -0.5px 0 rgba(0, 0, 0, 0.35); filter: blur(0.35px); }
 .tn-etch.is-soft span { filter: blur(5px); }
+
+/* countdown to the Kickstarter, quietly in the top bar */
+.tb-count { position: relative; z-index: 1; font: 500 0.82rem/1 var(--tn-sans); color: rgba(242, 234, 223, 0.6); font-variant-numeric: tabular-nums;
+  text-decoration: none; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6); white-space: nowrap; }
+a.tb-count { color: var(--tn-paper); }
+@media (max-width: 760px) { .tb-count { margin-left: auto; font-size: 0.76rem; } .tb-count + .tb-cta, .tb-sound + .tb-count { margin-left: 14px; } .tb-sound { margin-left: auto; } }
+.tb-count-short { display: none; }
+.tb-cta { white-space: nowrap; }
+@media (max-width: 760px) { .tb-count-lead { display: none; } .tb-count-short { display: inline; } }
+@media (max-width: 350px) { .tb-count-short { display: none; } .tb { gap: 12px; } .tb-mark { font-size: 1.3rem; } }
+@media (max-width: 760px) { .tb { gap: 14px; padding: 0 16px; } .tb-sound + .tb-count, .tb-count + .tb-cta { margin-left: 0; } .tb-cta { font-size: 0.82rem; } }

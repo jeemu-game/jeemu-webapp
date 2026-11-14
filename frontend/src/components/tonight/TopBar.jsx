@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { available, startFire, stopFire } from './fireSound';
+import useCountdown, { fmtShort } from './useCountdown';
+import { KICKSTARTER_URL } from '../../data/offer';
 
 // No bar: the wordmark and a few quiet links float over the night scene. "Sound" plays the fire (off until asked for;
 // a visitor who turned it on before gets it back at their first tap or key press). Hidden until tonight/fire.mp3 exists.
@@ -7,6 +9,7 @@ const LINKS = [['#journey', 'Our story'], ['#team', 'Team'], ['#faq', 'FAQ']];
 const KEY = 'jeemu-sound';
 
 export default function TopBar({ onCtaClick }) {
+  const c = useCountdown();
   const [sound, setSound] = useState(false);
   const [canSound, setCanSound] = useState(false);   // the button only shows once the recording is there
   useEffect(() => { available().then(setCanSound); }, []);
@@ -35,6 +38,9 @@ export default function TopBar({ onCtaClick }) {
       {canSound && <button type="button" className={`tb-sound ${sound ? 'is-on' : ''}`} onClick={toggle} aria-pressed={sound}>
         <span className="tb-wave" aria-hidden="true"><i /><i /><i /></span>{sound ? 'Sound on' : 'Sound'}
       </button>}
+      {c.live
+        ? <a className="tb-count" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer">Live on Kickstarter</a>
+        : <span className="tb-count" title="Kickstarter opens 24 November, 9:00 am EST"><span className="tb-count-lead">Kickstarter in </span><span className="tb-count-short">Live in </span>{fmtShort(c)}</span>}
       <button type="button" className="tb-cta" onClick={onCtaClick}>Join the waitlist</button>
     </header>
   );
