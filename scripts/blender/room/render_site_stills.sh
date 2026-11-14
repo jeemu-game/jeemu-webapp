@@ -11,4 +11,5 @@ run wide  --view wide  --fire 0.7 --width 1920 --height 1080
 run play  --view play  --fire 1.0 --width 1920 --height 1080
 run late  --view play  --late     --width 1920 --height 1080
 run top   --view top   --fire 1.0 --blank-photos --width 4800 --height 1524
+run end   --view close --late --fire 0.25 --width 1920 --height 1080   # the waitlist: the screen at the end of the night
 echo done

@@ -158,7 +158,7 @@ export default function Tonight({ onCta }) {
     // and a little above centre so a phone keyboard doesn't cover it
     const m = meta.end, q = m.screen, sc = mid(q), cover = Math.max(vp.w / m.width, vp.h / m.height);
     const sw = dist(q[0], q[1]);
-    const zEnd = Math.max(1, ((portrait ? 0.9 : 0.36) * vp.w) / (sw * cover), portrait ? 1 : (0.42 * vp.h) / (dist(q[0], q[3]) * cover));
+    const zEnd = Math.max(1, ((portrait ? 0.8 : 0.36) * vp.w) / (sw * cover), portrait ? 1 : (0.42 * vp.h) / (dist(q[0], q[3]) * cover));
     const lift = portrait ? vp.h * 0.12 : vp.h * 0.03;
     const cEnd = [sc[0], sc[1] + lift / (cover * zEnd)];
     const k = ease(clamp((p('toEnd') - 0.25) / 0.75));
