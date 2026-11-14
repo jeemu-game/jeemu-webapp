@@ -3,7 +3,7 @@
   * shell: 3D-printed "galaxy" black PLA: near-black with fine silver flecks and 0.2 mm layer lines
   * +X face: a recessed dark plate with JEEMU in mint (Bagel Fat One, the brand face), flush with the shell
   * -X face: the frog mark in mint on the same kind of plate
-  * blocks: pale pine with strong grain, a hand-written number in pen on the sides and ends, a grey frog stamp on top
+  * blocks: pale pine with strong grain, a hand-written number in pen on both ends, a grey frog stamp on top
 
 Called from build_room.py after the late-night block removal: apply(cache_dir, brand_dir).
 """
@@ -189,7 +189,7 @@ def _quad(name, parent, matrix, w, h, mat, uv=(0, 0, 1, 1)):
 
 
 def _number_atlas(path, font, numbers, cols=16, cw=256, ch=128, seed=7):
-    """Every block's number, hand-written a few times (sides and ends), each a little different."""
+    """Every block's number, hand-written on each end, each a little different."""
     from PIL import Image, ImageDraw, ImageFont, ImageFilter
     rows = math.ceil(len(numbers) / cols); im = Image.new('L', (cols * cw, rows * ch), 0); rng = random.Random(seed)
     for i, num in enumerate(numbers):
@@ -264,7 +264,7 @@ def apply(cache_dir, brand_dir):
         bpy.data.objects.remove(o, do_unlink=True)
     blocks = sorted([o for o in bpy.data.objects if o.name.startswith('Block') and o.type == 'MESH'], key=lambda o: o.name)
     rng = random.Random(24); nums = list(range(1, 55)); rng.shuffle(nums)
-    per = 4   # two sides, two ends
+    per = 2   # the two end faces (the smallest ones); the long sides stay plain, like the real blocks
     atlas = os.path.join(cache_dir, 'proto', 'numbers.png')
     cols, rows = _number_atlas(atlas, font, [nums[int(b.name[5:]) % 54] for b in blocks for _ in range(per)])
     ink = _decal_mat('PenInk', atlas, (0.018, 0.012, 0.008), 0.92, rough=0.55)
@@ -278,10 +278,7 @@ def apply(cache_dir, brand_dir):
     for b in blocks:
         bb = [Vector(v) for v in b.bound_box]
         hx = max(v.x for v in bb); hy = max(v.y for v in bb); hz = max(v.z for v in bb); eps = 0.00008
-        end = 1 if rng.random() < 0.5 else -1
         faces = [  # (location, rotation, width, height) of each decal in the block's own frame
-            (Vector((end * hx * 0.62, -hy - eps, 0)), Matrix.Rotation(math.pi / 2, 4, 'X'), 0.021, 0.0105),
-            (Vector((-end * hx * 0.62, hy + eps, 0)), Matrix.Rotation(math.pi / 2, 4, 'X') @ Matrix.Rotation(math.pi, 4, 'Y'), 0.021, 0.0105),
             (Vector((hx + eps, 0, 0)), Matrix.Rotation(math.pi / 2, 4, 'Z') @ Matrix.Rotation(math.pi / 2, 4, 'X'), 0.019, 0.0095),
             (Vector((-hx - eps, 0, 0)), Matrix.Rotation(-math.pi / 2, 4, 'Z') @ Matrix.Rotation(math.pi / 2, 4, 'X'), 0.019, 0.0095),
         ]
