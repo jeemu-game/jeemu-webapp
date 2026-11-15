@@ -12,4 +12,5 @@ export default function useCountdown() {
 const two = (n) => String(n).padStart(2, '0');
 // "9d 14h 22m 05s", or shorter forms
 export const fmtLong = (c) => `${c.d}d ${two(c.h)}h ${two(c.m)}m ${two(c.s)}s`;
-export const fmtShort = (c) => (c.d > 0 ? `${c.d}d ${c.h}h` : `${c.h}h ${two(c.m)}m`);
+// compact, for phones: "9d 14:22:05"
+export const fmtClock = (c) => `${c.d}d ${two(c.h)}:${two(c.m)}:${two(c.s)}`;

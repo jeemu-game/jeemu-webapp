@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ASSET_V } from './assetVersion';
 
 // Real fire, moving, laid over the still render: filmed flames in the firebox mouth (the render has the firebox lit but
 // empty) and a filmed flame on each candle. Screen blend: the clips' black drops out and the flames add light.
@@ -21,8 +22,9 @@ function Clip({ name, style, w, h, onLoad }) {
 // the fireplace is behind the focus in every shot: soften the clip to match each one's depth of field (image pixels)
 const DEFOCUS = { wide: 3, play: 7, late: 11, close: 16, end: 20 };
 // how far the fire has burned down in each shot: height of the flames in the firebox, and their brightness
-const BURN = { wide: [0.88, 1], close: [0.88, 1], play: [0.88, 1] };
-// late at night the fire has burned down: a glowing bed of embers with low flames off it, along the bottom of the box
+const BURN = { wide: [0.88, 1.02], close: [0.88, 1.02], play: [0.88, 1.02], late: [0.66, 0.82], end: [0.66, 0.82] };
+// late at night it's the same fire, burned down: only low flame tips over a glowing bed, and dimmer. Its left end fades
+// out where the tower stands in front of it (the tower falls during that shot, so a fixed matte there would show a step)
 const LATE = new Set(['late', 'end']);
 
 export default function LiveFire({ shot, m, warp, active }) {
@@ -35,25 +37,20 @@ export default function LiveFire({ shot, m, warp, active }) {
   const fb = m.firebox && (() => { const [tl, tr, br, bl] = m.firebox; const d = 1 - (BURN[shot] || [0.85])[0];
     const down = (pt, top, bot) => [pt[0] + (bot[0] - top[0]) * d, pt[1] + (bot[1] - top[1]) * d];
     return [down(tl, tl, bl), down(tr, tr, br), down(br, tr, br), down(bl, tl, bl)]; })();
- const sub = (q, t0, t1) => { const [tl, tr, br, bl] = q; const at = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
-    return [at(tl, bl, t0), at(tr, br, t0), at(tr, br, t1), at(tl, bl, t1)]; };   // the band of the firebox from t0 to t1 (0 top, 1 floor)
   const late = LATE.has(shot);
+  const [, bright] = BURN[shot] || [0.85, 1];
+  const look = m.firebox && { ...warp(1280, 512, fb),
+    filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(${bright}) saturate(${late ? 1.25 : 0.9})`,
+    ...(late ? { WebkitMaskImage: 'linear-gradient(to right, transparent 4%, #000 16%)', maskImage: 'linear-gradient(to right, transparent 4%, #000 16%)' } : {}) };
   const still = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   if (!active || still) return null;
   return (
     <>
       {ok.fire && ok.mask && m.firebox && (   // never without its mask: the fire must stay behind the tower
-        <div className="tn-firewrap" style={{ width: m.width, height: m.height, WebkitMaskImage: `url(${BASE}${shot}_firemask.png)`, maskImage: `url(${BASE}${shot}_firemask.png)` }}>
-          {late ? (<>
-            <div className="tn-emberglow" style={warp(1280, 512, m.firebox)} />
-            {!moving && <img className="tn-clip" src={`${BASE}embers_first.jpg`} width={1280} height={232} alt="" aria-hidden="true"
-              style={{ ...warp(1280, 232, sub(m.firebox, 0.52, 1)), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(0.78)` }} />}
-            <Clip name="embers" onLoad={() => setMoving(true)} w={1280} h={232} style={{ ...warp(1280, 232, sub(m.firebox, 0.52, 1)), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(0.78)` }} />
-          </>) : (<>
-            {!moving && <img className="tn-clip" src={`${BASE}fire_first.jpg`} width={1280} height={512} alt="" aria-hidden="true"
-              style={{ ...warp(1280, 512, fb), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />}
-            <Clip name="fire" onLoad={() => setMoving(true)} w={1280} h={512} style={{ ...warp(1280, 512, fb), filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(1.02) saturate(0.9)` }} />
-          </>)}
+        <div className="tn-firewrap" style={{ width: m.width, height: m.height, WebkitMaskImage: `url(${BASE}${shot}_firemask.png?v=${ASSET_V})`, maskImage: `url(${BASE}${shot}_firemask.png?v=${ASSET_V})` }}>
+          {late && <div className="tn-emberglow" style={warp(1280, 512, m.firebox)} />}
+          {!moving && <img className="tn-clip" src={`${BASE}fire_first.jpg`} width={1280} height={512} alt="" aria-hidden="true" style={look} />}
+          <Clip name="fire" onLoad={() => setMoving(true)} w={1280} h={512} style={look} />
         </div>
       )}
       {ok.candle && (m.flames || []).map((f, i) => {

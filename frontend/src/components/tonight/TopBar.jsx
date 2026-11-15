@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { available, startFire, stopFire } from './fireSound';
-import useCountdown, { fmtShort } from './useCountdown';
+import useCountdown, { fmtLong, fmtClock } from './useCountdown';
 import { KICKSTARTER_URL } from '../../data/offer';
 
 // No bar: the wordmark and a few quiet links float over the night scene. "Sound" plays the fire (off until asked for;
@@ -39,7 +39,7 @@ export default function TopBar({ onCtaClick }) {
         <span className="tb-wave" aria-hidden="true"><i /><i /><i /></span>{sound ? 'Sound on' : 'Sound'}
       </button>}
       <a className="tb-count" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer" title="Kickstarter opens 24 November, 9:00 am EST">
-        {c.live ? 'Live on Kickstarter' : (<><span className="tb-count-lead">Kickstarter in </span><span className="tb-count-short">Live in </span>{fmtShort(c)}</>)}
+        {c.live ? 'Live on Kickstarter' : (<><span className="tb-count-lead">Kickstarter in {fmtLong(c)}</span><span className="tb-count-short">{fmtClock(c)}</span></>)}
       </a>
       <button type="button" className="tb-cta" onClick={onCtaClick}>Join the waitlist</button>
     </header>

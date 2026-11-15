@@ -369,7 +369,7 @@ a.tb-count:hover { color: var(--tn-paper); }
 .tb-count-short { display: none; }
 .tb-cta { white-space: nowrap; }
 @media (max-width: 760px) { .tb-count-lead { display: none; } .tb-count-short { display: inline; } }
-@media (max-width: 350px) { .tb-count-short { display: none; } .tb { gap: 12px; } .tb-mark { font-size: 1.3rem; } }
+@media (max-width: 350px) { .tb-count-short { font-size: 0.7rem; } .tb { gap: 12px; } .tb-mark { font-size: 1.3rem; } }
 @media (max-width: 760px) { .tb { gap: 14px; padding: 0 16px; } .tb-sound + .tb-count, .tb-count + .tb-cta { margin-left: 0; } .tb-cta { font-size: 0.82rem; } }
 .tn-hint { z-index: 4; }   /* under the opening darkness, like everything else */
 /* the warm light a bed of embers throws up the back of the firebox */
