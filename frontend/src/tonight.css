@@ -298,6 +298,10 @@ html.theme-tonight .wl-ok { color: var(--tn-paper); }
 @media (prefers-reduced-motion: reduce) { .tb-sound.is-on .tb-wave i { animation: none; height: 9px; } }
 
 /* ---------------------------------------------------------------- the chapters table */
+.tn-team { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 9px; }
+.tn-team li { display: flex; flex-direction: column; line-height: 1.25; }
+.tn-team b { font-weight: 600; color: rgba(242, 234, 223, 0.95); }
+.tn-team span { font-size: 0.82rem; color: rgba(242, 234, 223, 0.6); }
 .tn-sub { margin: -4px 0 10px !important; font-size: 0.78rem !important; font-weight: 600; letter-spacing: 0.02em; color: rgba(242, 234, 223, 0.6) !important; }
 /* the top index card: faint blue rules and a red margin line, like a real 5 x 3 card; the question in pen */
 .tn-index { mix-blend-mode: multiply; overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 70px 40px 30px; box-sizing: border-box;
@@ -385,3 +389,7 @@ a.tb-count:hover { color: var(--tn-paper); }
 
 /* FAQ: the question is on the block, so the card is just the answer, set a size up */
 .tn-card.is-answer p { font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.5; color: rgba(242, 234, 223, 0.92); }
+@media (max-width: 720px) {
+  .tn-team { grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+  .tn-team span { font-size: 0.74rem; }
+}

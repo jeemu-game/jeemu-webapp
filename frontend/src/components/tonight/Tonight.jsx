@@ -26,14 +26,15 @@ const FIRST_SHOT = 'wide';   // the landing frame
 const CHAPTERS = [['end', 'toEnd', 'toChapters']];
 
 // After the waitlist the camera looks straight down on the late-night table (shot "top2") and stops at each thing on it:
-// the five story prints, the team print (once per person), then the index cards (once per question).
+// the five story prints, the team print (one stop: the six of us on one card, no scrolling through six bios), then the
+// questions (once each).
 // print: which print in the render's list; faq: the card stack
 const STOPS = [
   ...STORY.map((st, i) => ({ id: `c${i}`, print: i, len: 95, title: st.title, body: st.body })),
-  ...TEAM_MEMBERS.map((m) => ({ id: `t${m.initials}`, print: STORY.length, len: 70, title: m.name, sub: m.role, body: m.bio })),
+  { id: 'team', print: STORY.length, len: 120, title: 'The six of us', team: TEAM_MEMBERS },
   ...FAQS.map((f, k) => ({ id: `q${k}`, faq: k, len: 80, title: f.q, body: f.a }))
 ];
-const FIRST_TEAM = STORY.length, FIRST_FAQ = STORY.length + TEAM_MEMBERS.length;
+const FIRST_TEAM = STORY.length, FIRST_FAQ = STORY.length + 1;
 // after the fall the questions are etched on blocks lying on the table: the camera goes round them in this order
 // (names from the render's meta, faqBlocks; scripts/blender/room: flat, wide face up, clear of the tower)
 const FAQ_BLOCKS = ['Block11', 'Block51', 'Block39', 'Block43', 'Block52', 'Block42', 'Block09'];   // same order as the questions (render: --faq-blocks)
@@ -399,7 +400,9 @@ export default function Tonight({ onCta }) {
             {/* FAQ: the question is already burnt into the block on screen; it stays here for screen readers */}
             <h3 className={st.faq !== undefined ? 'ws-sr' : undefined}>{st.title}</h3>
             {st.sub && <p className="tn-sub">{st.sub}</p>}
-            <p>{st.body}</p>
+            {st.team ? (
+              <ul className="tn-team">{st.team.map((m) => <li key={m.name}><b>{m.name}</b><span>{m.role}</span></li>)}</ul>
+            ) : <p>{st.body}</p>}
           </div>
         ))}
         <div className="tn-finale" style={{ opacity: inBeat('late') ? clamp(Math.min(p('late') / 0.15, (1 - p('late')) / 0.2)) : 0 }}>
