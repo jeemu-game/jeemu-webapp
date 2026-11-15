@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ASSET_V } from './assetVersion';
 
 // Real fire, moving, laid over the still render: filmed flames in the firebox mouth (the render has the firebox lit but
 // empty) and a filmed flame on each candle. Screen blend: the clips' black drops out and the flames add light.
@@ -46,7 +47,7 @@ export default function LiveFire({ shot, m, warp, active }) {
   return (
     <>
       {ok.fire && ok.mask && m.firebox && (   // never without its mask: the fire must stay behind the tower
-        <div className="tn-firewrap" style={{ width: m.width, height: m.height, WebkitMaskImage: `url(${BASE}${shot}_firemask.png)`, maskImage: `url(${BASE}${shot}_firemask.png)` }}>
+        <div className="tn-firewrap" style={{ width: m.width, height: m.height, WebkitMaskImage: `url(${BASE}${shot}_firemask.png?v=${ASSET_V})`, maskImage: `url(${BASE}${shot}_firemask.png?v=${ASSET_V})` }}>
           {late && <div className="tn-emberglow" style={warp(1280, 512, m.firebox)} />}
           {!moving && <img className="tn-clip" src={`${BASE}fire_first.jpg`} width={1280} height={512} alt="" aria-hidden="true" style={look} />}
           <Clip name="fire" onLoad={() => setMoving(true)} w={1280} h={512} style={look} />

@@ -3,6 +3,7 @@ import { quadToMatrix3d } from '../story/quad';
 import LiveScreen from './LiveScreen';
 import Pic from './Pic';
 import LiveFire from './LiveFire';
+import { ASSET_V } from './assetVersion';
 import { setLevel as setFireLevel } from './fireSound';
 import WaitlistScreen from '../waitlist/WaitlistScreen';
 import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE, STORY, TEAM_PRINT } from './copy';
@@ -15,6 +16,8 @@ import { FAQS } from '../../data/faq';
 // the corner positions the render script exports. Preview build: the stills stand in for the final rendered video.
 
 const BASE = `${import.meta.env.BASE_URL}tonight/`;
+// every render file goes out with the version of the current renders, so a re-render never shows from an old cache
+const at = (file) => `${BASE}${file}?v=${ASSET_V}`;
 const SHOTS = ['wide', 'close', 'play', 'top', 'late', 'end', 'top2'];
 const FIRST_SHOT = 'wide';   // the landing frame
 // shots of Jeemu's screen used as an interface: [shot, beat that brings it in, beat that takes it out]
@@ -64,7 +67,7 @@ function PrintOverlays({ m, items, warp, written, soft = false }) {
     const capH = Math.round(600 * dist(q.caption[0], q.caption[3]) / dist(q.caption[0], q.caption[1]));
     return (
       <React.Fragment key={i}>
-        <div className={`tn-warp tn-photo ${soft ? 'is-soft' : ''}`} style={warp(600, ph, q.photo)}><Pic src={`${BASE}${it.photo}`} decoding="async" /></div>
+        <div className={`tn-warp tn-photo ${soft ? 'is-soft' : ''}`} style={warp(600, ph, q.photo)}><Pic src={at(it.photo)} decoding="async" /></div>
         {it.note && (
           <div className={`tn-warp tn-note ${soft ? 'is-soft' : ''} ${i <= written ? 'is-written' : ''}`} style={warp(600, capH, q.caption)}>
             <span style={{ fontSize: `${Math.min(capH * 0.45, 1050 / Math.max(10, it.note.length))}px` }}>{it.note}</span>
@@ -123,11 +126,11 @@ export default function Tonight({ onCta }) {
   useEffect(() => {
     if (fall || t < START.play[0]) return;
     let live = true;
-    fetch(`${BASE}fall/index.json`).then((r) => (r.ok ? r.json() : null)).then(async (j) => {
+    fetch(at('fall/index.json')).then((r) => (r.ok ? r.json() : null)).then(async (j) => {
       if (!j || !live) return;
       const ext = await new Promise((res) => { const im = new Image(); im.onload = () => res('avif'); im.onerror = () => res('jpg');
         im.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A='; });
-      const imgs = Array.from({ length: j.count }, (_, i) => { const im = new Image(); im.decoding = 'async'; im.src = `${BASE}fall/${String(i).padStart(2, '0')}.${ext}`; return im; });
+      const imgs = Array.from({ length: j.count }, (_, i) => { const im = new Image(); im.decoding = 'async'; im.src = at(`fall/${String(i).padStart(2, '0')}.${ext}`); return im; });
       if (live) setFall({ count: j.count, ext, imgs });
     }).catch(() => {});
     return () => { live = false; };
@@ -135,7 +138,7 @@ export default function Tonight({ onCta }) {
   const reduce = useMemo(() => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
 
   useEffect(() => {
-    SHOTS.forEach((s) => fetch(`${BASE}${s}.json`).then((r) => r.json()).then((j) => setMeta((m) => ({ ...m, [s]: j }))).catch(() => {}));
+    SHOTS.forEach((s) => fetch(at(`${s}.json`)).then((r) => r.json()).then((j) => setMeta((m) => ({ ...m, [s]: j }))).catch(() => {}));
   }, []);
 
   useEffect(() => {
@@ -308,10 +311,10 @@ export default function Tonight({ onCta }) {
           return (
             <div key={s} className="tn-layer" style={{ opacity: cam.o, visibility: cam.o > 0.001 ? 'visible' : 'hidden' }}>
               <div className="tn-shot" style={stageStyle(m, cam, (s === 'top' || s === 'top2') && portrait ? vp.card + 24 : 0)}>
-                {(s === FIRST_SHOT || loadRest) && <Pic src={`${BASE}${s}.jpg`} width={m.width} height={m.height} draggable="false" decoding="async"
+                {(s === FIRST_SHOT || loadRest) && <Pic src={at(`${s}.jpg`)} width={m.width} height={m.height} draggable="false" decoding="async"
                   fetchPriority={s === FIRST_SHOT ? 'high' : 'low'} onLoad={s === FIRST_SHOT ? startRest : undefined} />}
                 {s === 'late' && fallFrame >= 0 && (
-                  <img className="tn-fallframe" src={`${BASE}fall/${String(fallFrame).padStart(2, '0')}.${fall.ext}`} alt="" draggable="false" />
+                  <img className="tn-fallframe" src={at(`fall/${String(fallFrame).padStart(2, '0')}.${fall.ext}`)} alt="" draggable="false" />
                 )}
                 {(s === FIRST_SHOT || loadRest) && (m.firebox || m.flames) && <LiveFire shot={s} m={m} warp={warp} active={cam.o > 0.01} />}
                 {s === FIRST_SHOT && <div className={`tn-roomdark ${lit ? 'is-up' : ''}`} style={{ width: m.width, height: m.height }} aria-hidden="true" />}
@@ -320,7 +323,7 @@ export default function Tonight({ onCta }) {
                     <WaitlistScreen active={endOn} onArrive={() => setTimeout(() => document.getElementById('waitlist')?.scrollIntoView(), 300)} />
                   </div>
                 )}
-                {m.screen && screenFor[s] && !(s === 'late' && t >= START.fall[0]) && (
+                {m.screen && screenFor[s] && (
                   // (hidden once the tower starts falling: the screen is drawn over the picture, so falling blocks would seem to pass behind it)
                   <div className="tn-warp tn-screen" style={warp(320, 240, m.screen)}><LiveScreen card={screenFor[s]} active={cam.o > 0.5} /></div>
                 )}
@@ -329,7 +332,7 @@ export default function Tonight({ onCta }) {
                     written={s === 'top' ? written : s === 'top2' ? written2 : Infinity} />
                 )}
                 {s === 'top2' && loadRest && m.insets && Object.entries(m.insets).map(([n, [x0, y0, x1, y1]]) => (
-                  <Pic key={n} src={`${BASE}insets/${n}.jpg`} className="tn-inset" style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0 }} decoding="async" />
+                  <Pic key={n} src={at(`insets/${n}.jpg`)} className="tn-inset" style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0 }} decoding="async" />
                 ))}
                 {s === 'top2' && m.faqBlocks && !m.burnt && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} />)}
                 {s === 'top2' && !m.faqBlocks && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} />}
@@ -338,7 +341,7 @@ export default function Tonight({ onCta }) {
                 // depth of field: a softened copy of the table on top, with a clear hole where the camera is focused
                 <div className="tn-dof" style={{ '--dof-x': `${cam.dof.x}%`, '--dof-y': `${cam.dof.y}%`, '--dof-rx': `${cam.dof.rx}%`, '--dof-ry': `${cam.dof.ry}%` }} aria-hidden="true">
                   <div className="tn-shot" style={stageStyle(m, cam, portrait ? vp.card + 24 : 0)}>
-                    {loadRest && <Pic src={`${BASE}${s}_blur.jpg`} width={m.width} height={m.height} draggable="false" decoding="async" />}
+                    {loadRest && <Pic src={at(`${s}_blur.jpg`)} width={m.width} height={m.height} draggable="false" decoding="async" />}
                     {loadRest && <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp} written={s === 'top' ? written : written2} soft />}
                     {loadRest && s === 'top2' && m.faqBlocks && !m.burnt && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} soft />)}
                     {loadRest && s === 'top2' && !m.faqBlocks && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} soft />}
