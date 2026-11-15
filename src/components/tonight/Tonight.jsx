@@ -395,8 +395,9 @@ export default function Tonight({ onCta }) {
           </div>
         ))}
  {STOPS.map((st) => (
-          <div key={st.id} className="tn-card" style={{ opacity: show(st.id, 0.3, 0.94) }}>
-            <h3>{st.title}</h3>
+          <div key={st.id} className={`tn-card ${st.faq !== undefined ? 'is-answer' : ''}`} style={{ opacity: show(st.id, 0.3, 0.94) }}>
+            {/* FAQ: the question is already burnt into the block on screen; it stays here for screen readers */}
+            <h3 className={st.faq !== undefined ? 'ws-sr' : undefined}>{st.title}</h3>
             {st.sub && <p className="tn-sub">{st.sub}</p>}
             <p>{st.body}</p>
           </div>

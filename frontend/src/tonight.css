@@ -382,3 +382,6 @@ a.tb-count:hover { color: var(--tn-paper); }
 .tn-shot > .tn-inset { position: absolute; display: block; pointer-events: none;
   -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%); }
 .tn-shot > .tn-inset img { display: block; width: 100%; height: 100%; }
+
+/* FAQ: the question is on the block, so the card is just the answer, set a size up */
+.tn-card.is-answer p { font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.5; color: rgba(242, 234, 223, 0.92); }
