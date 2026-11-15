@@ -822,6 +822,16 @@ if A.faq_blocks:   # the questions people ask, laser-burnt into the top of falle
                 for q in probe:
                     v = q - pos; hit, _, _, _, ob, _ = sc.ray_cast(dg_, pos, v.normalized(), distance=v.length - 0.003)
                     if hit and ob and ob.name != b.name and not ob.name.startswith('Burn'): HITS.append(ob.name); return False
+                # and nothing big and blurred in the foreground: rays to the table between the camera and the block
+                # (and either side of it) must get most of the way there before they hit anything
+                base_ = P - Vector((0, 0, 0.015))
+                fwd = (P - pos); fwd.z = 0; fwd.normalize(); side = fwd.cross(Vector((0, 0, 1)))
+                for along in (-0.10, -0.06, -0.03):
+                    for across in (-0.09, -0.045, 0, 0.045, 0.09):
+                        q = base_ + fwd * along + side * across; v = q - pos
+                        hit, loc_, _, _, ob, _ = sc.ray_cast(dg_, pos, v.normalized(), distance=v.length - 0.004)
+                        if hit and ob and not ob.name.startswith(('Table', 'Burn')) and (loc_ - pos).length < 0.8 * v.length:
+                            HITS.append('fg:' + ob.name); return False
                 return True
             pos = None; HITS = []
             for deg in (36, 44, 52, 60, 68, 76):

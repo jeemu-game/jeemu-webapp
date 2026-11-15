@@ -36,7 +36,7 @@ const STOPS = [
 const FIRST_TEAM = STORY.length, FIRST_FAQ = STORY.length + TEAM_MEMBERS.length;
 // after the fall the questions are etched on blocks lying on the table: the camera goes round them in this order
 // (names from the render's meta, faqBlocks; scripts/blender/room: flat, wide face up, clear of the tower)
-const FAQ_BLOCKS = ['Block11', 'Block51', 'Block39', 'Block43', 'Block52', 'Block53', 'Block09'];   // same order as the questions (render: --faq-blocks)
+const FAQ_BLOCKS = ['Block11', 'Block51', 'Block39', 'Block43', 'Block52', 'Block42', 'Block09'];   // same order as the questions (render: --faq-blocks)
 // the prints on the chapters table, in the render's order
 const CHAPTER_PRINTS = [...STORY, TEAM_PRINT];
 
