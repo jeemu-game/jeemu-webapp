@@ -324,16 +324,16 @@ export default function Tonight({ onCta }) {
                   </div>
                 )}
                 {m.screen && screenFor[s] && (
-                  // (hidden once the tower starts falling: the screen is drawn over the picture, so falling blocks would seem to pass behind it)
                   <div className="tn-warp tn-screen" style={warp(320, 240, m.screen)}><LiveScreen card={screenFor[s]} active={cam.o > 0.5} /></div>
                 )}
+                {/* sharp close-ups go under the prints: the photos on the prints are laid over the render */}
+                {s === 'top2' && loadRest && m.insets && Object.entries(m.insets).map(([n, [x0, y0, x1, y1]]) => (
+                  <Pic key={n} src={at(`insets/${n}.jpg`)} className="tn-inset" style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0 }} decoding="async" />
+                ))}
                 {loadRest && m.polaroids && (
                   <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp}
                     written={s === 'top' ? written : s === 'top2' ? written2 : Infinity} />
                 )}
-                {s === 'top2' && loadRest && m.insets && Object.entries(m.insets).map(([n, [x0, y0, x1, y1]]) => (
-                  <Pic key={n} src={at(`insets/${n}.jpg`)} className="tn-inset" style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0 }} decoding="async" />
-                ))}
                 {s === 'top2' && m.faqBlocks && !m.burnt && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} />)}
                 {s === 'top2' && !m.faqBlocks && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} />}
               </div>
