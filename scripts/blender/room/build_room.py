@@ -43,6 +43,7 @@ ap.add_argument('--fall-save', default='', help='with --fall-test: save where th
 ap.add_argument('--fallen', default='', help='JSON of where the blocks landed (from --fall): show the fallen tower')
 ap.add_argument('--no-flames', action='store_true', help='no rendered fireplace flames or logs (the site lays filmed fire over the firebox); the firelight stays')
 ap.add_argument('--patch', action='store_true', help='render only a region around the firebox (transparent elsewhere), to patch into an existing still')
+ap.add_argument('--faq-shot', type=int, default=None, help='with --faq-blocks: a close-up of the K-th question block (camera low and square to the text)')
 ap.add_argument('--faq-blocks', default='', help='comma-separated fallen blocks to burn the FAQ questions into (chapters table)')
 ap.add_argument('--insets', default='', help='comma-separated objects: render a sharp close-up of each (cropped, --inset-scale x the resolution) into out/site/insets/')
 ap.add_argument('--inset-scale', type=float, default=5.0)
@@ -751,33 +752,93 @@ if A.faq_blocks:   # the questions people ask, laser-burnt into the top of falle
     faq_src = open(os.path.join(HERE, '..', '..', '..', 'src', 'data', 'faq.js'), encoding='utf-8').read()
     questions = _re.findall(r"q: '((?:[^'\\]|\\.)*)'", faq_src)
     font_path = os.path.join(CACHE, 'fonts', 'Manrope-600.ttf')
-    burn = bpy.data.materials.new('LaserBurn'); nt_ = burn.node_tree; bsdf = nt_.nodes['Principled BSDF']
-    # a laser burns the wood dark brown, not black: the grain still shows through, and the heat scorches a soft halo round each stroke
-    bsdf.inputs['Base Color'].default_value = (0.055, 0.020, 0.006, 1); bsdf.inputs['Roughness'].default_value = 0.95
-    bsdf.inputs['Alpha'].default_value = 0.86
-    scorch = bpy.data.materials.new('LaserScorch'); sb = scorch.node_tree.nodes['Principled BSDF']
-    sb.inputs['Base Color'].default_value = (0.12, 0.045, 0.012, 1); sb.inputs['Roughness'].default_value = 0.95; sb.inputs['Alpha'].default_value = 0.2
+    # Laser engraving as a texture on the block's face, not geometry: the letters are charred dark brown, a bump map
+    # shades their edges like the walls of a shallow groove, and the heat leaves a faint scorch round each stroke.
+    from PIL import Image as _Im, ImageDraw as _Dr, ImageFont as _Fo, ImageFilter as _Fi
+    PXM = 40000                                    # texture pixels per metre (40 per mm): crisp at any zoom the site uses
+    FW, FH = 0.075, 0.025                          # the block's wide face
+    os.makedirs(os.path.join(CACHE, 'burn'), exist_ok=True)
+    def burn_texture(k, lines, size):
+        W_, H_ = round(FW * PXM), round(FH * PXM)
+        im = _Im.new('L', (W_, H_), 0); dr = _Dr.Draw(im); fo = _Fo.truetype(font_path, round(size * PXM))
+        lh = round(size * PXM * 1.0); y0 = H_ / 2 - lh * len(lines) / 2
+        for i, ln in enumerate(lines):
+            w_ = dr.textlength(ln, font=fo); dr.text(((W_ - w_) / 2, y0 + i * lh), ln, fill=255, font=fo)
+        im = im.filter(_Fi.MaxFilter(3))                       # the beam is a little wider than the font's strokes
+        groove = im.filter(_Fi.GaussianBlur(5))                # rounded walls: the bump map
+        halo = im.filter(_Fi.GaussianBlur(14))                 # scorch round the strokes
+        paths = []
+        for nm, img in (('mask', im), ('groove', groove), ('halo', halo)):
+            fp = os.path.join(CACHE, 'burn', f'{k}_{nm}.png'); img.save(fp); paths.append(fp)
+        return paths
+    def burn_material(k, paths):
+        m = bpy.data.materials.new(f'LaserBurn{k}')
+        nt_ = m.node_tree; N_ = nt_.nodes; L_ = nt_.links.new; bs = N_['Principled BSDF']; out_ = N_['Material Output']
+        tex = {}
+        for nm, fp in zip(('mask', 'groove', 'halo'), paths):
+            n = N_.new('ShaderNodeTexImage'); n.image = bpy.data.images.load(fp); n.image.colorspace_settings.name = 'Non-Color'
+            n.interpolation = 'Cubic'; tex[nm] = n.outputs['Color']
+        # colour: scorch brown at the edge of the halo, charred dark brown in the letters, darkest at their edges
+        col = N_.new('ShaderNodeMix'); col.data_type = 'RGBA'
+        col.inputs['A'].default_value = (0.13, 0.05, 0.014, 1); col.inputs['B'].default_value = (0.032, 0.011, 0.003, 1)
+        L_(tex['mask'], col.inputs['Factor']); L_(col.outputs['Result'], bs.inputs['Base Color'])
+        bs.inputs['Roughness'].default_value = 0.9
+        # alpha: the letters, plus a faint scorch round them; elsewhere the block's own wood shows
+        hs = N_.new('ShaderNodeMath'); hs.operation = 'MULTIPLY'; hs.inputs[1].default_value = 0.32; L_(tex['halo'], hs.inputs[0])
+        al = N_.new('ShaderNodeMath'); al.operation = 'MAXIMUM'; L_(tex['mask'], al.inputs[0]); L_(hs.outputs[0], al.inputs[1])
+        L_(al.outputs[0], bs.inputs['Alpha'])
+        # the groove: letters sit lower than the surface, with soft walls (bump from the blurred mask)
+        bu = N_.new('ShaderNodeBump'); bu.invert = True; bu.inputs['Strength'].default_value = 1.0; bu.inputs['Distance'].default_value = 0.0004
+        L_(tex['groove'], bu.inputs['Height']); L_(bu.outputs['Normal'], bs.inputs['Normal'])
+        return m
     for k, name in enumerate([n for n in A.faq_blocks.split(',') if n]):
         b = bpy.data.objects.get(name)
         if not b or k >= len(questions): continue
         M = b.matrix_world; up = 1 if M.col[2][2] > 0 else -1
         lines = _tw.wrap(questions[k].replace("\\'", "'"), 22)
-        cu = bpy.data.curves.new(f'Burn{k}', 'FONT'); cu.body = '\n'.join(lines); cu.font = bpy.data.fonts.load(font_path)
-        cu.align_x = 'CENTER'; cu.align_y = 'CENTER'; cu.space_line = 0.92
         longest = max(len(l) for l in lines)
-        cu.size = min(0.0074, 0.064 / (longest * 0.56), 0.021 / (len(lines) * 0.98))
-        t = bpy.data.objects.new(f'Burn{k}', cu); COL.objects.link(t); t.data.materials.append(burn)
+        size = min(0.0068, 0.062 / (longest * 0.56), 0.019 / (len(lines) * 0.98))
+        me = bpy.data.meshes.new(f'Burn{k}')
+        me.from_pydata([(-FW / 2, -FH / 2, 0), (FW / 2, -FH / 2, 0), (FW / 2, FH / 2, 0), (-FW / 2, FH / 2, 0)], [], [(0, 1, 2, 3)])
+        uv = me.uv_layers.new(); 
+        for li, (u, v) in zip(range(4), ((0, 0), (1, 0), (1, 1), (0, 1))): uv.data[li].uv = (u, v)
+        t = bpy.data.objects.new(f'Burn{k}', me); COL.objects.link(t)
+        t.data.materials.append(burn_material(k, burn_texture(k, lines, size)))
         t.parent = b; t.matrix_parent_inverse = Matrix()
         flip_z = math.pi if up < 0 else 0.0
         turn = math.pi if M.col[0][0] < 0 else 0.0   # read left to right from above
-        t.location = (0, 0, up * 0.00756); t.rotation_euler = (flip_z, 0, turn)
-        cu.offset = cu.size * 0.004                     # strokes bleed a little wider than the font
-        halo = bpy.data.curves.new(f'Scorch{k}', 'FONT'); halo.body = cu.body; halo.font = cu.font
-        halo.align_x, halo.align_y, halo.space_line, halo.size = cu.align_x, cu.align_y, cu.space_line, cu.size
-        halo.offset = cu.size * 0.022
-        h = bpy.data.objects.new(f'Scorch{k}', halo); COL.objects.link(h); h.data.materials.append(scorch)
-        h.parent = b; h.matrix_parent_inverse = Matrix(); h.location = (0, 0, up * 0.00753); h.rotation_euler = (flip_z, 0, turn)
+        t.location = (0, 0, up * 0.00762); t.rotation_euler = (flip_z, 0, turn)
+        t.visible_shadow = False
         print('burnt', name, '|', ' / '.join(lines))
+        if A.faq_shot == k:   # the close-up: low, square to the lettering, the block left of centre, the table soft behind
+            bpy.context.view_layer.update()
+            Mt = t.matrix_world; P = Mt.translation.copy()
+            R = Vector(Mt.col[0][:3]); R.z = 0; R.normalize(); U = Vector(Mt.col[1][:3]); U.z = 0; U.normalize()
+            d = 0.42
+            bpy.context.view_layer.update(); dg_ = bpy.context.evaluated_depsgraph_get()
+            Mb = b.matrix_world
+            probe = [Mb @ Vector((x, y, up * 0.0076)) for x in (-0.034, -0.017, 0, 0.017, 0.034) for y in (-0.011, 0, 0.011)]   # the face with the question
+            def clear(pos):   # nothing between the lens and the block (or just round it), so nothing smears across the frame
+                for q in probe:
+                    v = q - pos; hit, _, _, _, ob, _ = sc.ray_cast(dg_, pos, v.normalized(), distance=v.length - 0.003)
+                    if hit and ob and ob.name != b.name and not ob.name.startswith('Burn'): HITS.append(ob.name); return False
+                return True
+            pos = None; HITS = []
+            for deg in (36, 44, 52, 60, 68, 76):
+                for az in (0, -15, 15, -30, 30, -45, 45):
+                    el, ar = math.radians(deg), math.radians(az)
+                    Ua = Matrix.Rotation(ar, 3, 'Z') @ U
+                    cand = P - Ua * d * math.cos(el) + Vector((0, 0, d * math.sin(el)))
+                    if clear(cand): pos = cand; break
+                if pos: break
+            print('faq shot camera', deg, az, 'clear' if pos else 'BLOCKED', sorted(set(HITS)))
+            pos = pos or cand
+            f = (P - pos).normalized(); Rx = (R - f * R.dot(f)).normalized(); Zc = -f; Yc = Zc.cross(Rx)
+            cam.matrix_world = Matrix((Rx, Yc, Zc)).transposed().to_4x4()
+            cam.location = pos
+            cd.type = 'PERSP'; cd.lens = 85; cd.sensor_width = 36; cd.sensor_fit = 'AUTO'; cd.shift_x = 0.09; cd.shift_y = -0.06
+            cd.dof.use_dof = True; cd.dof.focus_object = None; cd.dof.focus_distance = d; cd.dof.aperture_fstop = 4.5
+            FAQ_SUBJECT = (b, up)
 if A.fall or A.fall_test:
     _fall.setup(A.fall_frames)
     if A.fall_test:
@@ -841,6 +902,11 @@ if A.meta:   # where the live overlays go: corners in image pixels, clockwise fr
         cands.sort()
         meta['faqBlocks'] = [{'block': n, 'quad': q} for _, n, q in cands]
         print('faq blocks', len(cands))
+    if A.faq_shot is not None and 'FAQ_SUBJECT' in globals():
+        b, up = FAQ_SUBJECT; Mb = b.matrix_world
+        cs = [Mb @ Vector((x, y, up * 0.00756)) for x, y in ((-0.0375, 0.0125), (0.0375, 0.0125), (0.0375, -0.0125), (-0.0375, -0.0125))]
+        pts = sorted([px(v) for v in cs], key=lambda q: q[1]); top_, bot_ = sorted(pts[:2]), sorted(pts[2:])
+        meta['subject'] = [top_[0], top_[1], bot_[1], bot_[0]]   # clockwise from top-left as the picture reads
     if FAQ_CARD:   # the top index card, for the questions
         M = FAQ_CARD.matrix_world
         meta['faq'] = [px(M @ Vector(c)) for c in ((-0.0635, 0.038, 0.0003), (0.0635, 0.038, 0.0003), (0.0635, -0.038, 0.0003), (-0.0635, -0.038, 0.0003))]

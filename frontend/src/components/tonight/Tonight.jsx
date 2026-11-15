@@ -18,7 +18,9 @@ import { FAQS } from '../../data/faq';
 const BASE = `${import.meta.env.BASE_URL}tonight/`;
 // every render file goes out with the version of the current renders, so a re-render never shows from an old cache
 const at = (file) => `${BASE}${file}?v=${ASSET_V}`;
-const SHOTS = ['wide', 'close', 'play', 'top', 'late', 'end', 'top2'];
+// the FAQ close-ups: one render per question, low and square to the block it's burnt into (scripts/blender/room/render_faq.sh)
+const FAQ_SHOTS = FAQS.map((_, k) => `faq${k}`);
+const SHOTS = ['wide', 'close', 'play', 'top', 'late', 'end', 'top2', ...FAQ_SHOTS];
 const FIRST_SHOT = 'wide';   // the landing frame
 // shots of Jeemu's screen used as an interface: [shot, beat that brings it in, beat that takes it out]
 const CHAPTERS = [['end', 'toEnd', 'toChapters']];
@@ -218,12 +220,14 @@ export default function Tonight({ onCta }) {
       return reduce ? 0 : -a * (ids[i].startsWith('q') ? 0.88 : 0.6); };
     const rot = (v, deg) => { const r = (deg * Math.PI) / 180, c = Math.cos(r), sn = Math.sin(r); return [v[0] * c - v[1] * sn, v[0] * sn + v[1] * c]; };
     const at = (i, z, r) => { const c = mid(quads[i]), o = rot(off, -r); return [c[0] + o[0] / (cover * z), c[1] + o[1] / (cover * z)]; };
+    // on the FAQ blocks the overhead table only needs to get near: the close-up render dissolves in for the reading
+    const fitI = (i) => fit(quads[i]) * (ids[i].startsWith('q') ? 0.6 : 1);
     let cur = -1;
     ids.forEach((id, i) => { if (t >= START[id][0]) cur = i; });
     let c, z, r;
-    if (cur < 0) { const z0 = fit(quads[0]); r = turn(0); c = at(0, z0, r); z = mv(z0 * 1.25, z0, ease(p(inId))); }
+    if (cur < 0) { const z0 = fitI(0); r = turn(0); c = at(0, z0, r); z = mv(z0 * 1.25, z0, ease(p(inId))); }
     else {
-      const k = ease(clamp(p(ids[cur]) / 0.32)), a = Math.max(0, cur - 1), za = fit(quads[a]), zb = fit(quads[cur]);
+      const k = ease(clamp(p(ids[cur]) / 0.32)), a = Math.max(0, cur - 1), za = fitI(a), zb = fitI(cur);
       r = lerp(turn(a), turn(cur), k);
       const from = at(a, za, r), to = at(cur, zb, r);
       c = [lerp(from[0], to[0], k), lerp(from[1], to[1], k)];
@@ -262,6 +266,17 @@ export default function Tonight({ onCta }) {
     const kin = ease(clamp((p(inId) - 0.25) / 0.75)), kout = outId ? ease(p(outId)) : 0;
     const z = t < START[inId][0] + START[inId][1] ? mv(zs * 0.86, zs, kin) : mv(zs, zs * 1.08, kout);
     cams[shot] = { c, z: Math.max(1, z), o: Math.min(kin, 1 - kout) };
+  });
+  FAQ_SHOTS.forEach((shot, k) => {
+    const m = meta[shot]; if (!m || !m.subject) return;
+    const id = `q${k}`, next = STOPS[FIRST_FAQ + k + 1];
+    if (t < START[id][0]) { cams[shot] = { c: [m.width / 2, m.height / 2], z: 1, o: 0 }; return; }
+    const cover = Math.max(vp.w / m.width, vp.h / m.height), sc = mid(m.subject);
+    const free = portrait ? Math.max(vp.h * 0.3, vp.h - TOP_BAR - (vp.card || vp.h * 0.25) - 34) : vp.h;
+    const off = portrait ? [0, vp.h / 2 - (TOP_BAR + 8 + free / 2)] : [vp.w * 0.14, 0];
+    const kin = ease(clamp((p(id) - 0.16) / 0.24)), kout = next ? ease(clamp(p(next.id) / 0.16)) : 0;
+    const z = mv(1.06, 1, kin) * mv(1, 1.03, p(id)) * (kout > 0 ? mv(1, 1.06, kout) : 1);   // settles in, drifts, leans on as it goes
+    cams[shot] = { c: [sc[0] + off[0] / (cover * z), sc[1] + off[1] / (cover * z)], z, o: Math.min(kin, 1 - kout) };
   });
   const onShot = (shot) => cams[shot] && cams[shot].o > 0.6;
   const cur = cams.top ? cams.top.cur : -1, cur2 = cams.top2 ? cams.top2.cur : -1;
@@ -316,7 +331,7 @@ export default function Tonight({ onCta }) {
                 {s === 'late' && fallFrame >= 0 && (
                   <img className="tn-fallframe" src={at(`fall/${String(fallFrame).padStart(2, '0')}.${fall.ext}`)} alt="" draggable="false" />
                 )}
-                {(s === FIRST_SHOT || loadRest) && (m.firebox || m.flames) && <LiveFire shot={s} m={m} warp={warp} active={cam.o > 0.01} />}
+                {(s === FIRST_SHOT || loadRest) && !s.startsWith('faq') && (m.firebox || m.flames) && <LiveFire shot={s} m={m} warp={warp} active={cam.o > 0.01} />}
                 {s === FIRST_SHOT && <div className={`tn-roomdark ${lit ? 'is-up' : ''}`} style={{ width: m.width, height: m.height }} aria-hidden="true" />}
                 {m.screen && s === 'end' && (
                   <div className="tn-warp tn-screen is-ui" style={warp(320, 240, m.screen)}>
@@ -330,7 +345,7 @@ export default function Tonight({ onCta }) {
                 {s === 'top2' && loadRest && m.insets && Object.entries(m.insets).map(([n, [x0, y0, x1, y1]]) => (
                   <Pic key={n} src={at(`insets/${n}.jpg`)} className="tn-inset" style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0 }} decoding="async" />
                 ))}
-                {loadRest && m.polaroids && (
+                {loadRest && m.polaroids && !s.startsWith('faq') && (
                   <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp}
                     written={s === 'top' ? written : s === 'top2' ? written2 : Infinity} />
                 )}

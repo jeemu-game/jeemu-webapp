@@ -14,7 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'out', 'site')
 DST = os.path.join(HERE, '..', '..', '..', 'public', 'tonight')
 os.makedirs(DST, exist_ok=True)
-for name in ('close', 'wide', 'play', 'top', 'late', 'end', 'top2'):
+for name in ('close', 'wide', 'play', 'top', 'late', 'end', 'top2') + tuple(f'faq{k}' for k in range(7)):
     png, js = os.path.join(SRC, name + '.png'), os.path.join(SRC, name + '.json')
     if not (os.path.exists(png) and os.path.exists(js)): print('missing', name); continue
     raw = Image.open(png).convert('RGBA')
