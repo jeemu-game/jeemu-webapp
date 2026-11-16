@@ -283,19 +283,6 @@ html.theme-tonight .wl-ok { color: var(--tn-paper); }
 .tn-progress { top: 0; height: 2px; }
 @media (max-width: 760px) { .tb { height: 56px; } .tb-cta { padding: 0; } }
 
-/* sound: three small bars that move only when the fire is audible */
-.tb-sound { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; padding: 0; border: 0; background: none; cursor: pointer;
-  font: 500 0.86rem/1 var(--tn-sans); letter-spacing: 0.02em; color: rgba(242, 234, 223, 0.72); text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6); }
-.tb-sound:hover, .tb-sound.is-on { color: var(--tn-paper); }
-.tb-sound:focus-visible { outline: 2px solid var(--tn-brass-hi); outline-offset: 4px; }
-.tb-wave { display: inline-flex; align-items: flex-end; gap: 2px; height: 11px; }
-.tb-wave i { display: block; width: 2px; height: 4px; background: currentColor; border-radius: 1px; }
-.tb-sound.is-on .tb-wave i { animation: tb-wave 0.9s ease-in-out infinite; }
-.tb-sound.is-on .tb-wave i:nth-child(2) { animation-delay: -0.3s; }
-.tb-sound.is-on .tb-wave i:nth-child(3) { animation-delay: -0.6s; }
-@keyframes tb-wave { 0%, 100% { height: 3px; } 50% { height: 11px; } }
-@media (max-width: 760px) { .tb-sound { margin-left: auto; font-size: 0; gap: 0; } .tb-sound .tb-wave { height: 14px; } .tb-sound + .tb-cta { margin-left: 18px; } }
-@media (prefers-reduced-motion: reduce) { .tb-sound.is-on .tb-wave i { animation: none; height: 9px; } }
 
 /* ---------------------------------------------------------------- the chapters table */
 .tn-team { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 9px; }
@@ -369,12 +356,12 @@ html.theme-tonight input, html.theme-tonight textarea { cursor: text; }
 a.tb-count:hover { color: var(--tn-paper); }
 /* desktop: the countdown sits in the middle of the bar */
 @media (min-width: 761px) { .tb-count { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); } }
-@media (max-width: 760px) { .tb-count { margin-left: auto; font-size: 0.76rem; } .tb-count + .tb-cta, .tb-sound + .tb-count { margin-left: 14px; } .tb-sound { margin-left: auto; } }
+@media (max-width: 760px) { .tb-count { margin-left: auto; font-size: 0.76rem; } .tb-count + .tb-cta { margin-left: 14px; } }
 .tb-count-short { display: none; }
 .tb-cta { white-space: nowrap; }
 @media (max-width: 760px) { .tb-count-lead { display: none; } .tb-count-short { display: inline; } }
 @media (max-width: 350px) { .tb-count-short { font-size: 0.7rem; } .tb { gap: 12px; } .tb-mark { font-size: 1.3rem; } }
-@media (max-width: 760px) { .tb { gap: 14px; padding: 0 16px; } .tb-sound + .tb-count, .tb-count + .tb-cta { margin-left: 0; } .tb-cta { font-size: 0.82rem; } }
+@media (max-width: 760px) { .tb { gap: 14px; padding: 0 16px; } .tb-count + .tb-cta { margin-left: 0; } .tb-cta { font-size: 0.82rem; } }
 .tn-hint { z-index: 4; }   /* under the opening darkness, like everything else */
 /* the warm light a bed of embers throws up the back of the firebox */
 .tn-emberglow { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none;
@@ -411,3 +398,17 @@ a.tb-count:hover { color: var(--tn-paper); }
 /* baking the phone frames (?capture): the picture only, the words come from the page */
 .tn-capture .tb, .tn-capture .tn-card, .tn-capture .tn-caption, .tn-capture .tn-finale, .tn-capture .tn-fine,
 .tn-capture .tn-progress, .tn-capture .tn-hint, .tn-capture .tn-grain, .tn-capture .tn-screen.is-ui { visibility: hidden !important; }
+
+/* the team on a wide window: all six, whole stories, beside the print */
+.tn-card.is-team { right: clamp(20px, 4vw, 72px); width: min(720px, 52vw); }
+.tn-card.is-team .tn-team { grid-template-columns: 1fr 1fr; gap: 18px 28px; margin-top: 10px; }
+.tn-card.is-team .tn-team p { margin-top: 6px; font-size: 0.86rem; line-height: 1.45; color: rgba(242, 234, 223, 0.82); }
+.tn-card.is-team .tn-team span { font-size: 0.8rem; }
+
+/* two prints at a stop: their words one after the other */
+.tn-card section + section { margin-top: 22px; }
+/* the words sit on a soft pool of shadow, so a print further along the table never shows through them */
+@media (min-width: 761px) {
+  .tn-card::before { content: ''; position: absolute; inset: -70px -90px; z-index: -1; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(8, 5, 3, 0.72), rgba(8, 5, 3, 0.45) 55%, rgba(8, 5, 3, 0) 100%); }
+}

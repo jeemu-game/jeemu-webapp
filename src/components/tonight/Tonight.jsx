@@ -6,7 +6,6 @@ import LiveFire from './LiveFire';
 import { ASSET_V } from './assetVersion';
 import { SMALL, MOBILE, CAPTURE } from './device';
 import MobileStage from './MobileStage';
-import { setLevel as setFireLevel } from './fireSound';
 import WaitlistScreen from '../waitlist/WaitlistScreen';
 import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE, STORY, TEAM_PRINT } from './copy';
 import { TEAM_MEMBERS, JOURNEY_MILESTONES, WHY_WE_CARE } from '../../data/teamData';
@@ -34,13 +33,23 @@ const CHAPTERS = [['end', 'toEnd', 'toChapters']];
 // After the waitlist the camera looks straight down on the late-night table (shot "top2") and stops at each thing on it:
 // the five story prints, the team print (one stop: the six of us on one card, no scrolling through six bios), then the
 // questions (once each).
-// print: which print in the render's list; faq: the card stack
+// A wide window frames two prints at a stop (half the scrolling); a phone keeps one per screen so each stays readable.
+// Decided once, at load (the stops are the page's length).
+const WIDE_AT_LOAD = typeof window === 'undefined' || window.innerWidth >= window.innerHeight * 0.9;
+const groups = (n) => (WIDE_AT_LOAD ? Array.from({ length: Math.ceil(n / 2) }, (_, g) => [2 * g, 2 * g + 1].filter((i) => i < n))
+  : Array.from({ length: n }, (_, i) => [i]));
+const HOW = groups(POLAROIDS.length);   // the table of polaroids: which ones each stop frames
+// prints: which prints in the render's list the stop frames; faq: the question's block
 const STOPS = [
-  ...STORY.map((st, i) => ({ id: `c${i}`, print: i, len: 95, title: st.title, body: st.body })),
-  { id: 'team', print: STORY.length, len: 120, title: 'The six of us', team: TEAM_MEMBERS },
+  ...groups(STORY.length).map((g, j) => ({ id: `c${j}`, prints: g, len: 95 + 30 * (g.length - 1), items: g.map((i) => STORY[i]) })),
+  { id: 'team', prints: [STORY.length], len: 120, title: 'The six of us', team: TEAM_MEMBERS },
   ...FAQS.map((f, k) => ({ id: `q${k}`, faq: k, len: 80, title: f.q, body: f.a }))
 ];
-const FIRST_TEAM = STORY.length, FIRST_FAQ = STORY.length + 1;
+const FIRST_TEAM = STOPS.findIndex((st) => st.id === 'team'), FIRST_FAQ = FIRST_TEAM + 1;
+const PAIRED = new Set([...HOW.map((g, j) => (g.length > 1 ? `p${j}` : '')), ...STOPS.map((st) => (st.prints && st.prints.length > 1 ? st.id : ''))]);
+// the rectangle around several prints, for the camera to frame them together
+const around = (qs) => { const xs = qs.flat().map((p) => p[0]), ys = qs.flat().map((p) => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys); return [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]; };
 // after the fall the questions are etched on blocks lying on the table: the camera goes round them in this order
 // (names from the render's meta, faqBlocks; scripts/blender/room: flat, wide face up, clear of the tower)
 const FAQ_BLOCKS = ['Block11', 'Block51', 'Block39', 'Block43', 'Block52', 'Block42', 'Block09'];   // same order as the questions (render: --faq-blocks)
@@ -51,7 +60,7 @@ const CHAPTER_PRINTS = [...STORY, TEAM_PRINT];
 const BEATS = [
   // opens on the room; the first scroll pushes in to Jeemu's screen, the next pulls back into the game
   ['wide', 110], ['toClose', 90], ['close', 100], ['toPlay', 90], ['play', 120], ['toTable', 90],
-  ...POLAROIDS.map((_, i) => [`p${i}`, 105]),
+  ...HOW.map((g, j) => [`p${j}`, 105 + 30 * (g.length - 1)]),
   ['toLate', 90], ['late', 110], ['fall', 120], ['toEnd', 80], ['end', 150],   // fall: the tower comes down, scrubbed by the scroll   // end: the waitlist, on Jeemu's screen
   ['toChapters', 90], ...STOPS.map((st) => [st.id, st.len])
 ];
@@ -74,7 +83,7 @@ const beatHold = (id, first) => { const [s, l] = START[id]; return hold(id, firs
 const FALL_END = START.fall[0] + START.fall[1] * 0.87;   // the last fall frame is reached here (fallFrame below)
 export const MOBILE_KEYS = [
   hold('wide', 0, START.toClose[0]), hold('close', endOf('toClose'), START.toPlay[0]), hold('play', endOf('toPlay'), START.toTable[0]),
-  ...POLAROIDS.map((_, i) => beatHold(`p${i}`, i === 0)),
+  ...HOW.map((_, j) => beatHold(`p${j}`, j === 0)),
   hold('late', endOf('toLate'), START.fall[0]), hold('fallen', FALL_END, START.toEnd[0]), hold('end', endOf('toEnd'), START.toChapters[0]),
   ...STOPS.map((st, i) => beatHold(st.id, i === 0))
 ];
@@ -245,15 +254,18 @@ export default function Tonight({ onCta }) {
   const tablePan = (m, quads, ids, inId, outId) => {
     const cover = Math.max(vp.w / m.width, vp.h / m.height);
     const free = portrait ? Math.max(vp.h * 0.3, vp.h - TOP_BAR - (vp.card || vp.h * 0.25) - 34) : vp.h;
-    const fit = (q) => Math.max(1, Math.min((portrait ? free * 0.86 : vp.h * 0.46) / dist(q[0], q[3]), (vp.w * (portrait ? 0.74 : 0.42)) / dist(q[0], q[1])) / cover);
-    const off = portrait ? [0, vp.h / 2 - (TOP_BAR + 8 + free / 2)] : [vp.w * 0.14, 0];   // + moves the subject left / up
+    const wideCard = (i) => !portrait && ids[i] === 'team';   // the team's card is wide: the print moves over for it
+    const pair = (i) => !portrait && PAIRED.has(ids[i]);   // two prints: more of the window for them
+    const fitQ = (q, i) => Math.max(1, Math.min((portrait ? free * 0.86 : vp.h * (wideCard(i) ? 0.4 : pair(i) ? 0.66 : 0.46)) / dist(q[0], q[3]),
+      (vp.w * (portrait ? 0.74 : wideCard(i) ? 0.32 : pair(i) ? 0.54 : 0.42)) / dist(q[0], q[1])) / cover);
+    const offFor = (i) => (portrait ? [0, vp.h / 2 - (TOP_BAR + 8 + free / 2)] : [vp.w * (wideCard(i) ? 0.26 : 0.14), 0]);   // + moves the subject left / up
     // the camera turns so what it looks at reads (nearly) level: blocks almost all the way, prints a little
     const turn = (i) => { const q = quads[i]; const a = Math.atan2(q[1][1] - q[0][1], q[1][0] - q[0][0]) * 180 / Math.PI;
       return reduce ? 0 : -a * (ids[i].startsWith('q') ? 0.88 : 0.6); };
     const rot = (v, deg) => { const r = (deg * Math.PI) / 180, c = Math.cos(r), sn = Math.sin(r); return [v[0] * c - v[1] * sn, v[0] * sn + v[1] * c]; };
-    const at = (i, z, r) => { const c = mid(quads[i]), o = rot(off, -r); return [c[0] + o[0] / (cover * z), c[1] + o[1] / (cover * z)]; };
+    const at = (i, z, r) => { const c = mid(quads[i]), o = rot(offFor(i), -r); return [c[0] + o[0] / (cover * z), c[1] + o[1] / (cover * z)]; };
     // on the FAQ blocks the overhead table only needs to get near: the close-up render dissolves in for the reading
-    const fitI = (i) => fit(quads[i]) * (ids[i].startsWith('q') ? 0.6 : 1);
+    const fitI = (i) => fitQ(quads[i], i) * (ids[i].startsWith('q') ? 0.6 : 1);
     let cur = -1;
     ids.forEach((id, i) => { if (t >= START[id][0]) cur = i; });
     let c, z, r;
@@ -271,14 +283,15 @@ export default function Tonight({ onCta }) {
     const q = quads[Math.max(0, cur)], sz = cover * z;
     const roomy = ids[Math.max(0, cur)].startsWith('q') ? 1.9 : 1.15;
     const half = [dist(q[0], q[1]) * sz / 2 * roomy, dist(q[0], q[3]) * sz / 2 * roomy];
+    const off = offFor(Math.max(0, cur));
     const dof = { x: ((vp.w / 2 - off[0]) / vp.w) * 100, y: ((vp.h / 2 - off[1]) / vp.h) * 100,
       rx: (half[0] / 0.62 * 1.1 / vp.w) * 100, ry: (half[1] / 0.62 * 1.15 / vp.h) * 100 };
     return { c, z, r, o: Math.min(ease(p(inId)), outId ? 1 - ease(p(outId)) : 1), cur, arrived, dof };
   };
-  if (meta.top) cams.top = tablePan(meta.top, meta.top.polaroids.slice(0, POLAROIDS.length).map((q) => q.card), POLAROIDS.map((_, i) => `p${i}`), 'toTable', 'toLate');
+  if (meta.top) cams.top = tablePan(meta.top, HOW.map((g) => around(g.map((i) => meta.top.polaroids[i].card))), HOW.map((_, j) => `p${j}`), 'toTable', 'toLate');
   if (meta.top2 && (meta.top2.faqBlocks || meta.top2.faq)) {
     const m = meta.top2, fq = faqQuads(m);
-    cams.top2 = tablePan(m, STOPS.map((st) => (st.faq !== undefined ? (fq[st.faq] || m.faq) : m.polaroids[st.print].card)), STOPS.map((st) => st.id), 'toChapters', null);
+    cams.top2 = tablePan(m, STOPS.map((st) => (st.faq !== undefined ? (fq[st.faq] || m.faq) : st.prints.length > 1 ? around(st.prints.map((i) => m.polaroids[i].card)) : m.polaroids[st.prints[0]].card)), STOPS.map((st) => st.id), 'toChapters', null);
   }
   if (meta.late) {
     const { c } = hero(meta.late);
@@ -312,8 +325,9 @@ export default function Tonight({ onCta }) {
   });
   const onShot = (shot) => cams[shot] && cams[shot].o > 0.6;
   const cur = cams.top ? cams.top.cur : -1, cur2 = cams.top2 ? cams.top2.cur : -1;
-  const reached2 = cur2 < 0 ? -1 : STOPS[cur2].faq !== undefined ? CHAPTER_PRINTS.length : STOPS[cur2].print;
-  useEffect(() => { if (cams.top && cams.top.arrived && cur > written) setWritten(cur); });
+  const reached2 = cur2 < 0 ? -1 : STOPS[cur2].faq !== undefined ? CHAPTER_PRINTS.length : Math.max(...STOPS[cur2].prints);
+  const reached = cur < 0 ? -1 : Math.max(...HOW[cur]);
+  useEffect(() => { if (cams.top && cams.top.arrived && reached > written) setWritten(reached); });
   useEffect(() => { if (cams.top2 && cams.top2.arrived && reached2 > written2) setWritten2(reached2); });
   const faqK = cur2 >= FIRST_FAQ ? cur2 - FIRST_FAQ : 0;
 
@@ -345,7 +359,6 @@ export default function Tonight({ onCta }) {
     window.__tn = { START, TOTAL, keys: MOBILE_KEYS, fall: MOBILE_FALL, fallCount: fall ? fall.count : 0,
       endScreen: meta.end && cams.end && meta.end.screen.map(([x, y]) => project(meta.end, cams.end, x, y).slice(0, 2)) };
   }
-  setFireLevel((fire - 0.35) / 0.65);   // the crackle follows the fire: full while people play, softer as it dies down
   const show = (id, a = 0.12, b = 0.9) => { const k = p(id); return inBeat(id) ? clamp(Math.min((k - a) / 0.1, (b - k) / 0.1)) : 0; };
 
   return (
@@ -432,19 +445,20 @@ export default function Tonight({ onCta }) {
         <div className="tn-caption" style={{ opacity: show('play') }}>
           <h2>{CAPTIONS.play.title}</h2>
         </div>
-        {POLAROIDS.map((pl, i) => (
-          <div key={i} className="tn-card" style={{ opacity: show(`p${i}`, 0.3, 0.94) }}>
-            <h3>{pl.title}</h3>
-            <p>{pl.body}</p>
+        {HOW.map((g, j) => (
+          <div key={j} className={`tn-card ${g.length > 1 ? 'is-pair' : ''}`} style={{ opacity: show(`p${j}`, 0.3, 0.94) }}>
+            {g.map((i) => <section key={i}><h3>{POLAROIDS[i].title}</h3><p>{POLAROIDS[i].body}</p></section>)}
           </div>
         ))}
  {STOPS.map((st) => (
-          <div key={st.id} className={`tn-card ${st.faq !== undefined ? 'is-answer' : ''}`} style={{ opacity: show(st.id, 0.3, 0.94) }}>
+          <div key={st.id} className={`tn-card ${st.faq !== undefined ? 'is-answer' : ''} ${st.team && !portrait ? 'is-team' : ''}`} style={{ opacity: show(st.id, 0.3, 0.94) }}>
             {/* FAQ: the question is already burnt into the block on screen; it stays here for screen readers */}
-            <h3 className={st.faq !== undefined ? 'ws-sr' : undefined}>{st.title}</h3>
+            {st.items ? st.items.map((it) => <section key={it.title}><h3>{it.title}</h3><p>{it.body}</p></section>) : (
+              <h3 className={st.faq !== undefined ? 'ws-sr' : undefined}>{st.title}</h3>)}
             {st.sub && <p className="tn-sub">{st.sub}</p>}
-            {st.team ? (
-              <ul className="tn-team">{st.team.map((m) => <li key={m.name}><b>{m.name}</b><span>{m.role}</span></li>)}</ul>
+            {st.items ? null : st.team ? (
+              // a wide window has room for everyone's whole story at once; a phone gets names and roles
+              <ul className="tn-team">{st.team.map((m) => <li key={m.name}><b>{m.name}</b><span>{m.role}</span>{!portrait && <p>{m.bio}</p>}</li>)}</ul>
             ) : <p>{st.body}</p>}
           </div>
         ))}

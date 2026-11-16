@@ -1,33 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { available, startFire, stopFire } from './fireSound';
+import React from 'react';
 import useCountdown, { fmtLong, fmtClock } from './useCountdown';
 import { KICKSTARTER_URL } from '../../data/offer';
 
-// No bar: the wordmark and a few quiet links float over the night scene. "Sound" plays the fire (off until asked for;
-// a visitor who turned it on before gets it back at their first tap or key press). Hidden until tonight/fire.mp3 exists.
+// No bar: the wordmark and a few quiet links float over the night scene.
 const LINKS = [['#journey', 'Our story'], ['#team', 'Team'], ['#faq', 'FAQ']];
-const KEY = 'jeemu-sound';
 
 export default function TopBar({ onCtaClick }) {
   const c = useCountdown();
-  const [sound, setSound] = useState(false);
-  const [canSound, setCanSound] = useState(false);   // the button only shows once the recording is there
-  useEffect(() => { available().then(setCanSound); }, []);
-  const toggle = async () => {
-    const next = !sound;
-    if (next) { if (!(await startFire())) return; } else stopFire();
-    setSound(next);
-    try { localStorage.setItem(KEY, next ? 'on' : 'off'); } catch (_) { /* private mode: just this visit */ }
-  };
-  useEffect(() => {
-    let wanted = false;
-    try { wanted = localStorage.getItem(KEY) === 'on'; } catch (_) { wanted = false; }
-    if (!wanted) return undefined;
-    const first = () => { startFire().then((ok) => ok && setSound(true)); off(); };
-    const off = () => { window.removeEventListener('pointerdown', first); window.removeEventListener('keydown', first); };
-    window.addEventListener('pointerdown', first, { once: true }); window.addEventListener('keydown', first, { once: true });
-    return off;
-  }, []);
 
   return (
     <header className="tb">
@@ -35,9 +14,6 @@ export default function TopBar({ onCtaClick }) {
       <nav className="tb-links" aria-label="Main">
         {LINKS.map(([href, label]) => <a key={href} href={href}>{label}</a>)}
       </nav>
-      {canSound && <button type="button" className={`tb-sound ${sound ? 'is-on' : ''}`} onClick={toggle} aria-pressed={sound}>
-        <span className="tb-wave" aria-hidden="true"><i /><i /><i /></span>{sound ? 'Sound on' : 'Sound'}
-      </button>}
       <a className="tb-count" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer" title="Kickstarter opens 24 November, 9:00 am EST">
         {c.live ? 'Live on Kickstarter' : (<><span className="tb-count-lead">Kickstarter in {fmtLong(c)}</span><span className="tb-count-short">{fmtClock(c)}</span></>)}
       </a>
