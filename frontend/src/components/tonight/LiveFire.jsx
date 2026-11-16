@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ASSET_V } from './assetVersion';
+import { SMALL } from './device';
 
 // Real fire, moving, laid over the still render: filmed flames in the firebox mouth (the render has the firebox lit but
 // empty) and a filmed flame on each candle. Screen blend: the clips' black drops out and the flames add light.
@@ -10,7 +11,7 @@ const BASE = `${import.meta.env.BASE_URL}tonight/`;
 const MASKED = new Set(['wide', 'close', 'play', 'late', 'end']);   // shots with a firebox mask (scripts/blender/room)
 // phones: the fire comes already softened (fire_soft1/2.mp4) instead of a CSS blur redone on every video frame, which an
 // iPhone can't keep up with alongside everything else
-const SMALL = typeof window !== 'undefined' && Math.min(window.screen.width, window.screen.height) < 600;
+
 
 // animated images, not video: they play everywhere (no play button, Low Power Mode or autoplay rules don't apply)
 function Clip({ name, style, w, h, onLoad }) {
@@ -32,7 +33,7 @@ function FireVideo({ src, style, onMoving, onBlocked }) {
     const v = ref.current; if (!v) return;
     v.muted = true;
     const p = v.play(); if (p && p.catch) p.catch(() => onBlocked());
-    const t = setTimeout(() => { if (v.paused) onBlocked(); }, 4000);
+    const t = setTimeout(() => { if (v.paused && !v.currentTime) onBlocked(); }, 4000);
     return () => clearTimeout(t);
   }, []);
   return <video ref={ref} className="tn-clip" style={{ ...style, opacity: on ? 1 : 0 }} src={src} width={1280} height={512}

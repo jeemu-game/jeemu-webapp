@@ -85,19 +85,6 @@ if os.path.exists(ins_meta) and os.path.exists(top2_json):
         convert(small)
     print('ok insets', len(m['insets']))
 
-# version stamp: a hash of everything published, so the site asks for new files after a re-render (never a stale cache)
-import hashlib, re
-h = hashlib.sha1()
-for root, _, files in sorted(os.walk(DST)):
-    for f in sorted(files):
-        h.update(f.encode()); h.update(open(os.path.join(root, f), 'rb').read())
-V = h.hexdigest()[:10]
-SRC_DIR = os.path.join(HERE, '..', '..', '..', 'src', 'components', 'tonight')
-open(os.path.join(SRC_DIR, 'assetVersion.js'), 'w').write(
-    "// Written by scripts/blender/room/prepare_site_assets.py: changes whenever the published renders do.\n"
-    f"export const ASSET_V = '{V}';\n")
-idx = os.path.join(HERE, '..', '..', '..', 'index.html')
-html = open(idx).read()
-html = re.sub(r'(href="/tonight/(?:wide\.avif|wide_m\.avif|wide\.json|wide_firemask\.png))(\?v=\w+)?"', rf'\1?v={V}"', html)
-open(idx, 'w').write(html)
-print('asset version', V)
+# version stamp (scripts/web/stamp_assets.py): browsers fetch the new files after a re-render, never a stale cache
+from stamp_assets import stamp
+print('asset version', stamp())

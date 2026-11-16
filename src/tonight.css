@@ -400,3 +400,14 @@ a.tb-count:hover { color: var(--tn-paper); }
 .tn-lite .tn-fire { mix-blend-mode: normal; animation: none; background: radial-gradient(90% 70% at 50% 45%, rgba(255, 140, 60, 0.10), rgba(255, 120, 40, 0) 70%); }
 .tn-lite .tn-photo, .tn-lite .tn-note, .tn-lite .tn-index, .tn-lite .tn-etch { mix-blend-mode: normal; }
 .tn-lite .tn-screen, .tn-lite .tn-screen.is-ui { filter: none; }
+
+/* ---------------------------------------------------------------- the phone version (MobileStage.jsx) */
+.mb-stage { position: absolute; inset: 0; overflow: hidden; background: #050302; }
+.mb-frame { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.mb-frame picture, .mb-frame img { display: block; width: 100%; height: 100%; }
+.mb-fire { position: absolute; display: block; object-fit: fill; pointer-events: none; transition: opacity 400ms; }
+.tn-caption.mb-wall { left: 50%; top: calc(56px + 13svh); width: calc(100% - 32px); }
+
+/* baking the phone frames (?capture): the picture only, the words come from the page */
+.tn-capture .tb, .tn-capture .tn-card, .tn-capture .tn-caption, .tn-capture .tn-finale, .tn-capture .tn-fine,
+.tn-capture .tn-progress, .tn-capture .tn-hint, .tn-capture .tn-grain, .tn-capture .tn-screen.is-ui { visibility: hidden !important; }

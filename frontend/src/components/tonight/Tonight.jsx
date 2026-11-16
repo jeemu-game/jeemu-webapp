@@ -4,6 +4,8 @@ import LiveScreen from './LiveScreen';
 import Pic from './Pic';
 import LiveFire from './LiveFire';
 import { ASSET_V } from './assetVersion';
+import { SMALL, MOBILE, CAPTURE } from './device';
+import MobileStage from './MobileStage';
 import { setLevel as setFireLevel } from './fireSound';
 import WaitlistScreen from '../waitlist/WaitlistScreen';
 import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE, STORY, TEAM_PRINT } from './copy';
@@ -20,10 +22,8 @@ const BASE = `${import.meta.env.BASE_URL}tonight/`;
 const at = (file) => `${BASE}${file}?v=${ASSET_V}`;
 // Phones get smaller copies of the renders (<shot>_m.jpg, from prepare_site_assets.py): a phone can't show more than
 // that, and decoding the full ones as the reader scrolls is what ran iPhone Safari out of memory. Same layout either way.
-const SMALL = typeof window !== 'undefined' && Math.min(window.screen.width, window.screen.height) < 600;
 const shotSrc = (s) => at(`${s}${SMALL ? '_m' : ''}.jpg`);
-// and a lighter look (tonight.css, .tn-lite): no full-screen blend layers redone every frame
-if (SMALL) document.documentElement.classList.add('tn-lite');
+
 // the FAQ close-ups: one render per question, low and square to the block it's burnt into (scripts/blender/room/render_faq.sh)
 const FAQ_SHOTS = FAQS.map((_, k) => `faq${k}`);
 const SHOTS = ['wide', 'close', 'play', 'top', 'late', 'end', 'top2', ...FAQ_SHOTS];
@@ -67,6 +67,18 @@ const SPAN = {
   top2: [START.toChapters[0], TOTAL],
   ...Object.fromEntries(FAQS.map((_, k) => { const n = STOPS[FIRST_FAQ + k + 1]; return [`faq${k}`, [START[`q${k}`][0], n ? endOf(n.id) : TOTAL]]; }))
 };
+// The phone version's frames (MobileStage.jsx): each stop held from a to b (% of the window height), crossfading between.
+// Table stops move on in the first third of their beat, like the camera does here; the fall plays its own frames.
+const hold = (id, a, b) => ({ id, a, b });
+const beatHold = (id, first) => { const [s, l] = START[id]; return hold(id, first ? s : s + 0.32 * l, s + l); };
+const FALL_END = START.fall[0] + START.fall[1] * 0.87;   // the last fall frame is reached here (fallFrame below)
+export const MOBILE_KEYS = [
+  hold('wide', 0, START.toClose[0]), hold('close', endOf('toClose'), START.toPlay[0]), hold('play', endOf('toPlay'), START.toTable[0]),
+  ...POLAROIDS.map((_, i) => beatHold(`p${i}`, i === 0)),
+  hold('late', endOf('toLate'), START.fall[0]), hold('fallen', FALL_END, START.toEnd[0]), hold('end', endOf('toEnd'), START.toChapters[0]),
+  ...STOPS.map((st, i) => beatHold(st.id, i === 0))
+];
+const MOBILE_FALL = { from: START.fall[0], to: FALL_END };
 const AHEAD = 140;   // mount this far (in % of the window height) before a shot comes into view, so it's decoded in time
 const near = (s, t) => t >= SPAN[s][0] - AHEAD && t <= SPAN[s][1] + AHEAD;
 const TOP_BAR = 56;
@@ -144,7 +156,7 @@ export default function Tonight({ onCta }) {
   // the fall: frames from scripts/blender/room (render_fall.sh), decoded ahead so scrubbing never waits
   const [fall, setFall] = useState(null);   // { count, ext }
   useEffect(() => {
-    if (fall || t < START.play[0]) return;
+    if (MOBILE || fall || t < START.play[0]) return;
     let live = true;
     fetch(at('fall/index.json')).then((r) => (r.ok ? r.json() : null)).then(async (j) => {
       if (!j || !live) return;
@@ -159,6 +171,7 @@ export default function Tonight({ onCta }) {
   const reduce = useMemo(() => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
 
   useEffect(() => {
+    if (MOBILE) { setTimeout(() => setLit(true), 150); return; }
     SHOTS.forEach((s) => fetch(at(`${s}.json`)).then((r) => r.json()).then((j) => setMeta((m) => ({ ...m, [s]: j }))).catch(() => {}));
   }, []);
 
@@ -326,7 +339,12 @@ export default function Tonight({ onCta }) {
   const screenFor = { close: SCREENS.intro, wide: SCREENS.wide, play: SCREENS.question, late: SCREENS.late };
   // the fire burns down for the end of the night and stays low for everything after it
   const fire = cams.late ? lerp(1, 0.35, Math.max(cams.late.o, cams.top2 ? cams.top2.o : 0, ...CHAPTERS.map(([sh]) => (cams[sh] ? cams[sh].o : 0)))) : 1;
-  const endOn = onShot('end');
+  const endOn = MOBILE ? t >= START.toEnd[0] + START.toEnd[1] * 0.6 && t < START.toChapters[0] + START.toChapters[1] * 0.3 : onShot('end');
+  // the capture script (scripts/web/capture_mobile.cjs) reads where things are
+  if (CAPTURE && typeof window !== 'undefined') {
+    window.__tn = { START, TOTAL, keys: MOBILE_KEYS, fall: MOBILE_FALL, fallCount: fall ? fall.count : 0,
+      endScreen: meta.end && cams.end && meta.end.screen.map(([x, y]) => project(meta.end, cams.end, x, y).slice(0, 2)) };
+  }
   setFireLevel((fire - 0.35) / 0.65);   // the crackle follows the fire: full while people play, softer as it dies down
   const show = (id, a = 0.12, b = 0.9) => { const k = p(id); return inBeat(id) ? clamp(Math.min((k - a) / 0.1, (b - k) / 0.1)) : 0; };
 
@@ -339,7 +357,9 @@ export default function Tonight({ onCta }) {
       <span id="faq" className="tn-anchor" style={{ '--at': START[STOPS[FIRST_FAQ].id][0] + 40 }} aria-hidden="true" />
       <ChapterText />
       <div className="tn-stage" ref={stage}>
-        {SHOTS.map((s) => {
+        {MOBILE && <MobileStage t={t} vp={vp} keys={MOBILE_KEYS} fall={MOBILE_FALL}
+          waitlist={<WaitlistScreen active={endOn} onArrive={() => setTimeout(() => document.getElementById('waitlist')?.scrollIntoView(), 300)} />} />}
+        {!MOBILE && SHOTS.map((s) => {
           const m = meta[s], cam = cams[s];
           if (!m || !cam || !near(s, t)) return null;
           return (
@@ -385,11 +405,11 @@ export default function Tonight({ onCta }) {
             </div>
           );
         })}
-        <div className="tn-fire" style={{ opacity: fire }} aria-hidden="true" />
+        {!MOBILE && <div className="tn-fire" style={{ opacity: fire }} aria-hidden="true" />}
         {/* walking in: dark, the fire catches, then the firelight comes up across the room (once, on load) */}
         <div className={`tn-lights ${lit ? 'is-up' : ''}`} aria-hidden="true" />
-        <div className="tn-grain" aria-hidden="true" />
-        <div className="tn-vignette" aria-hidden="true" />
+        {!MOBILE && <div className="tn-grain" aria-hidden="true" />}
+        {!MOBILE && <div className="tn-vignette" aria-hidden="true" />}
 
         {/* words */}
         <div className="tn-hint" style={{ opacity: t < 30 ? 1 - t / 30 : 0 }} aria-hidden="true">Scroll</div>
@@ -404,6 +424,11 @@ export default function Tonight({ onCta }) {
             </div>
           );
         })()}
+        {MOBILE && (   // on a phone the line sits high on the wall, as the full version puts it
+          <div className="tn-caption tn-on-wall mb-wall" style={{ opacity: t < START.toClose[0] ? 1 : clamp(1 - p('toClose') / 0.3) }}>
+            <h2>{CAPTIONS.wide.title} {CAPTIONS.wide.sub}</h2>
+          </div>
+        )}
         <div className="tn-caption" style={{ opacity: show('play') }}>
           <h2>{CAPTIONS.play.title}</h2>
         </div>
