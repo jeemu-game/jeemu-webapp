@@ -72,8 +72,11 @@ if os.path.exists(ins_meta) and os.path.exists(top2_json):
     for name in m['insets']:
         f = os.path.join(SRC, 'insets', name + '.png')
         if not os.path.exists(f): continue
-        out = os.path.join(idst, name + '.jpg'); post(Image.open(f).convert('RGB'), vig=0.0).save(out, quality=84, optimize=True, progressive=True)
+        out = os.path.join(idst, name + '.jpg'); big = post(Image.open(f).convert('RGB'), vig=0.0); big.save(out, quality=84, optimize=True, progressive=True)
         convert(out)
+        # half size for phones: a phone shows a print a few hundred points wide, and can't afford six full ones decoded
+        small = os.path.join(idst, name + '_s.jpg'); big.resize((big.width // 2, big.height // 2), Image.LANCZOS).save(small, quality=84, optimize=True, progressive=True)
+        convert(small)
     print('ok insets', len(m['insets']))
 
 # version stamp: a hash of everything published, so the site asks for new files after a re-render (never a stale cache)

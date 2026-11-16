@@ -52,6 +52,17 @@ const BEATS = [
 const START = {}; let acc = 0;
 for (const [id, len] of BEATS) { START[id] = [acc, len]; acc += len; }
 const TOTAL = acc;
+// Where in the scroll each shot can be on screen [from, to]. Only shots near the reader are mounted: a phone can't hold
+// every render decoded at once (that's what made iPhone Safari reload the page), and the browser frees what's unmounted.
+const endOf = (id) => START[id][0] + START[id][1];
+const SPAN = {
+  wide: [0, endOf('toClose')], close: [START.toClose[0], endOf('toPlay')], play: [START.toPlay[0], endOf('toTable')],
+  top: [START.toTable[0], endOf('toLate')], late: [START.toLate[0], endOf('toEnd')], end: [START.toEnd[0], endOf('toChapters')],
+  top2: [START.toChapters[0], TOTAL],
+  ...Object.fromEntries(FAQS.map((_, k) => { const n = STOPS[FIRST_FAQ + k + 1]; return [`faq${k}`, [START[`q${k}`][0], n ? endOf(n.id) : TOTAL]]; }))
+};
+const AHEAD = 140;   // mount this far (in % of the window height) before a shot comes into view, so it's decoded in time
+const near = (s, t) => t >= SPAN[s][0] - AHEAD && t <= SPAN[s][1] + AHEAD;
 const TOP_BAR = 56;
 const WALL = { x: 965, y: 300, w: 720 };   // the chimney breast in the wide shot, image pixels
 
@@ -133,8 +144,9 @@ export default function Tonight({ onCta }) {
       if (!j || !live) return;
       const ext = await new Promise((res) => { const im = new Image(); im.onload = () => res('avif'); im.onerror = () => res('jpg');
         im.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A='; });
-      const imgs = Array.from({ length: j.count }, (_, i) => { const im = new Image(); im.decoding = 'async'; im.src = at(`fall/${String(i).padStart(2, '0')}.${ext}`); return im; });
-      if (live) setFall({ count: j.count, ext, imgs });
+      // fetched ahead into the cache so scrubbing never waits; not kept decoded (31 frames is too much for a phone)
+      for (let i = 0; i < j.count; i++) fetch(at(`fall/${String(i).padStart(2, '0')}.${ext}`)).catch(() => {});
+      if (live) setFall({ count: j.count, ext });
     }).catch(() => {});
     return () => { live = false; };
   }, [t > START.play[0], fall]);
@@ -323,7 +335,7 @@ export default function Tonight({ onCta }) {
       <div className="tn-stage" ref={stage}>
         {SHOTS.map((s) => {
           const m = meta[s], cam = cams[s];
-          if (!m || !cam) return null;
+          if (!m || !cam || !near(s, t)) return null;
           return (
             <div key={s} className="tn-layer" style={{ opacity: cam.o, visibility: cam.o > 0.001 ? 'visible' : 'hidden' }}>
               <div className="tn-shot" style={stageStyle(m, cam, (s === 'top' || s === 'top2') && portrait ? vp.card + 24 : 0)}>
@@ -343,8 +355,8 @@ export default function Tonight({ onCta }) {
                   <div className="tn-warp tn-screen" style={warp(320, 240, m.screen)}><LiveScreen card={screenFor[s]} active={cam.o > 0.5} /></div>
                 )}
                 {/* sharp close-ups go under the prints: the photos on the prints are laid over the render */}
-                {s === 'top2' && loadRest && m.insets && Object.entries(m.insets).map(([n, [x0, y0, x1, y1]]) => (
-                  <Pic key={n} src={at(`insets/${n}.jpg`)} className="tn-inset" style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0 }} decoding="async" />
+                {s === 'top2' && loadRest && m.insets && t < endOf(STOPS[FIRST_FAQ].id) && Object.entries(m.insets).map(([n, [x0, y0, x1, y1]]) => (
+                  <Pic key={n} src={at(`insets/${n}${portrait || vp.w < 760 ? "_s" : ""}.jpg`)} className="tn-inset" style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0 }} decoding="async" />
                 ))}
                 {loadRest && m.polaroids && !s.startsWith('faq') && (
                   <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp}
