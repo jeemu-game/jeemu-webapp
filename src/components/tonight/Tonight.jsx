@@ -18,6 +18,10 @@ import { FAQS } from '../../data/faq';
 const BASE = `${import.meta.env.BASE_URL}tonight/`;
 // every render file goes out with the version of the current renders, so a re-render never shows from an old cache
 const at = (file) => `${BASE}${file}?v=${ASSET_V}`;
+// Phones get smaller copies of the renders (<shot>_m.jpg, from prepare_site_assets.py): a phone can't show more than
+// that, and decoding the full ones as the reader scrolls is what ran iPhone Safari out of memory. Same layout either way.
+const SMALL = typeof window !== 'undefined' && Math.min(window.screen.width, window.screen.height) < 600;
+const shotSrc = (s) => at(`${s}${SMALL ? '_m' : ''}.jpg`);
 // the FAQ close-ups: one render per question, low and square to the block it's burnt into (scripts/blender/room/render_faq.sh)
 const FAQ_SHOTS = FAQS.map((_, k) => `faq${k}`);
 const SHOTS = ['wide', 'close', 'play', 'top', 'late', 'end', 'top2', ...FAQ_SHOTS];
@@ -145,7 +149,7 @@ export default function Tonight({ onCta }) {
       const ext = await new Promise((res) => { const im = new Image(); im.onload = () => res('avif'); im.onerror = () => res('jpg');
         im.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A='; });
       // fetched ahead into the cache so scrubbing never waits; not kept decoded (31 frames is too much for a phone)
-      for (let i = 0; i < j.count; i++) fetch(at(`fall/${String(i).padStart(2, '0')}.${ext}`)).catch(() => {});
+      for (let i = 0; i < j.count; i++) fetch(at(`fall/${String(i).padStart(2, '0')}${SMALL ? '_m' : ''}.${ext}`)).catch(() => {});
       if (live) setFall({ count: j.count, ext });
     }).catch(() => {});
     return () => { live = false; };
@@ -339,10 +343,10 @@ export default function Tonight({ onCta }) {
           return (
             <div key={s} className="tn-layer" style={{ opacity: cam.o, visibility: cam.o > 0.001 ? 'visible' : 'hidden' }}>
               <div className="tn-shot" style={stageStyle(m, cam, (s === 'top' || s === 'top2') && portrait ? vp.card + 24 : 0)}>
-                {(s === FIRST_SHOT || loadRest) && <Pic src={at(`${s}.jpg`)} width={m.width} height={m.height} draggable="false" decoding="async"
+                {(s === FIRST_SHOT || loadRest) && <Pic src={shotSrc(s)} width={m.width} height={m.height} draggable="false" decoding="async"
                   fetchPriority={s === FIRST_SHOT ? 'high' : 'low'} onLoad={s === FIRST_SHOT ? startRest : undefined} />}
                 {s === 'late' && fallFrame >= 0 && (
-                  <img className="tn-fallframe" src={at(`fall/${String(fallFrame).padStart(2, '0')}.${fall.ext}`)} alt="" draggable="false" />
+                  <img className="tn-fallframe" src={at(`fall/${String(fallFrame).padStart(2, '0')}${SMALL ? '_m' : ''}.${fall.ext}`)} alt="" draggable="false" />
                 )}
                 {(s === FIRST_SHOT || loadRest) && !s.startsWith('faq') && (m.firebox || m.flames) && <LiveFire shot={s} m={m} warp={warp} active={cam.o > 0.01} />}
                 {s === FIRST_SHOT && <div className={`tn-roomdark ${lit ? 'is-up' : ''}`} style={{ width: m.width, height: m.height }} aria-hidden="true" />}
@@ -356,7 +360,7 @@ export default function Tonight({ onCta }) {
                 )}
                 {/* sharp close-ups go under the prints: the photos on the prints are laid over the render */}
                 {s === 'top2' && loadRest && m.insets && t < endOf(STOPS[FIRST_FAQ].id) && Object.entries(m.insets).map(([n, [x0, y0, x1, y1]]) => (
-                  <Pic key={n} src={at(`insets/${n}${portrait || vp.w < 760 ? "_s" : ""}.jpg`)} className="tn-inset" style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0 }} decoding="async" />
+                  <Pic key={n} src={at(`insets/${n}${SMALL ? "_s" : ""}.jpg`)} className="tn-inset" style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0 }} decoding="async" />
                 ))}
                 {loadRest && m.polaroids && !s.startsWith('faq') && (
                   <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp}

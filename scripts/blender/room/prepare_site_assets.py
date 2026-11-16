@@ -35,6 +35,10 @@ for name in ('close', 'wide', 'play', 'top', 'late', 'end', 'top2') + tuple(f'fa
     im.save(os.path.join(DST, name + '.jpg'), quality=84, optimize=True, progressive=True)
     shutil.copy(js, os.path.join(DST, name + '.json'))
     print('ok', name, im.size, 'jpg/webp/avif KB:', *convert(os.path.join(DST, name + '.jpg')))
+    # the phone copy (the site picks it on small screens): phones can't hold the full renders decoded while scrolling
+    mw = 3200 if name in ('top', 'top2') else 1100 if name.startswith('faq') else 1280
+    im.resize((mw, round(im.height * mw / im.width)), Image.LANCZOS).save(os.path.join(DST, name + '_m.jpg'), quality=86, optimize=True, progressive=True)
+    convert(os.path.join(DST, name + '_m.jpg'))
     if name in ('top', 'top2'):   # out-of-focus copy for the site's depth of field (quarter size is plenty once blurred, and light on phones)
         from PIL import ImageFilter
         soft = im.resize((im.width // 4, im.height // 4), Image.LANCZOS).filter(ImageFilter.GaussianBlur(3.5))
@@ -59,6 +63,8 @@ if frames:
         im = post(Image.open(f), vig=0.30)
         out = os.path.join(fdst, f'{i:02d}.jpg'); im.save(out, quality=80, optimize=True, progressive=True)
         convert(out)
+        sm = os.path.join(fdst, f'{i:02d}_m.jpg'); im.resize((800, 450), Image.LANCZOS).save(sm, quality=82, optimize=True, progressive=True)   # phones
+        convert(sm)
     json.dump({'count': len(frames), 'width': 1280, 'height': 720}, open(os.path.join(fdst, 'index.json'), 'w'))
     print('ok fall', len(frames), 'frames')
 
@@ -92,6 +98,6 @@ open(os.path.join(SRC_DIR, 'assetVersion.js'), 'w').write(
     f"export const ASSET_V = '{V}';\n")
 idx = os.path.join(HERE, '..', '..', '..', 'index.html')
 html = open(idx).read()
-html = re.sub(r'(href="/tonight/(?:wide\.avif|wide\.json|wide_firemask\.png))(\?v=\w+)?"', rf'\1?v={V}"', html)
+html = re.sub(r'(href="/tonight/(?:wide\.avif|wide_m\.avif|wide\.json|wide_firemask\.png))(\?v=\w+)?"', rf'\1?v={V}"', html)
 open(idx, 'w').write(html)
 print('asset version', V)
