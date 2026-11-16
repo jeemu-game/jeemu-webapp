@@ -8,6 +8,9 @@ import { ASSET_V } from './assetVersion';
 // tonight/<shot>_firemask.png. Corners come from the render's meta (firebox, flames).
 const BASE = `${import.meta.env.BASE_URL}tonight/`;
 const MASKED = new Set(['wide', 'close', 'play', 'late', 'end']);   // shots with a firebox mask (scripts/blender/room)
+// phones: the fire comes already softened (fire_soft1/2.mp4) instead of a CSS blur redone on every video frame, which an
+// iPhone can't keep up with alongside everything else
+const SMALL = typeof window !== 'undefined' && Math.min(window.screen.width, window.screen.height) < 600;
 
 // animated images, not video: they play everywhere (no play button, Low Power Mode or autoplay rules don't apply)
 function Clip({ name, style, w, h, onLoad }) {
@@ -22,7 +25,7 @@ function Clip({ name, style, w, h, onLoad }) {
 // the firebox fire is a small video: it streams, so it moves within the first few KB (an animated image only moves once
 // the whole file is in). It stays invisible until it is really playing, so a blocked autoplay (Low Power Mode, data
 // saver) never shows a play button: then the animated image takes over.
-function FireVideo({ style, onMoving, onBlocked }) {
+function FireVideo({ src, style, onMoving, onBlocked }) {
   const ref = useRef(null);
   const [on, setOn] = useState(false);
   useEffect(() => {
@@ -32,7 +35,7 @@ function FireVideo({ style, onMoving, onBlocked }) {
     const t = setTimeout(() => { if (v.paused) onBlocked(); }, 4000);
     return () => clearTimeout(t);
   }, []);
-  return <video ref={ref} className="tn-clip" style={{ ...style, opacity: on ? 1 : 0 }} src={`${BASE}fire.mp4`} width={1280} height={512}
+  return <video ref={ref} className="tn-clip" style={{ ...style, opacity: on ? 1 : 0 }} src={src} width={1280} height={512}
     muted autoPlay loop playsInline disablePictureInPicture preload="auto" aria-hidden="true" tabIndex={-1}
     onPlaying={() => { setOn(true); onMoving(); }} onError={onBlocked} />;
 }
@@ -59,18 +62,30 @@ export default function LiveFire({ shot, m, warp, active }) {
   const late = LATE.has(shot);
   const [, bright] = BURN[shot] || [0.85, 1];
   const look = m.firebox && { ...warp(1280, 512, fb),
-    filter: `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) brightness(${bright}) saturate(${late ? 1.25 : 0.9})`,
+    filter: `${SMALL ? '' : `blur(${(DEFOCUS[shot] || 4) * 1280 / Math.max(1, m.firebox[1][0] - m.firebox[0][0])}px) `}brightness(${bright}) saturate(${late ? 1.25 : 0.9})`,
     ...(late ? { WebkitMaskImage: 'linear-gradient(to right, transparent 4%, #000 16%)', maskImage: 'linear-gradient(to right, transparent 4%, #000 16%)' } : {}) };
   const still = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   if (!active || still) return null;
+  const video = SMALL ? `${BASE}fire_soft${(DEFOCUS[shot] || 4) > 8 ? 2 : 1}.mp4` : `${BASE}fire.mp4`;
+  // the masked, blended box only as big as the firebox (plus room for the blur), not the whole frame: a full-frame mask
+  // and blend layer per shot is a lot of memory on a phone
+  const box = m.firebox && (() => { const pts = [...m.firebox, ...fb], pad = 60;
+    const x0 = Math.max(0, Math.floor(Math.min(...pts.map((q) => q[0])) - pad)), y0 = Math.max(0, Math.floor(Math.min(...pts.map((q) => q[1])) - pad));
+    const x1 = Math.min(m.width, Math.ceil(Math.max(...pts.map((q) => q[0])) + pad)), y1 = Math.min(m.height, Math.ceil(Math.max(...pts.map((q) => q[1])) + pad));
+    return { x0, y0, w: x1 - x0, h: y1 - y0 }; })();
   return (
     <>
       {ok.fire && ok.mask && m.firebox && (   // never without its mask: the fire must stay behind the tower
-        <div className="tn-firewrap" style={{ width: m.width, height: m.height, WebkitMaskImage: `url(${BASE}${shot}_firemask.png?v=${ASSET_V})`, maskImage: `url(${BASE}${shot}_firemask.png?v=${ASSET_V})` }}>
-          {late && <div className="tn-emberglow" style={warp(1280, 512, m.firebox)} />}
-          {!moving && <img className="tn-clip" src={`${BASE}fire_first.jpg`} width={1280} height={512} alt="" aria-hidden="true" style={look} />}
-          {blocked ? <Clip name="fire" onLoad={() => setMoving(true)} w={1280} h={512} style={look} />
-            : <FireVideo style={look} onMoving={() => setMoving(true)} onBlocked={() => setBlocked(true)} />}
+        <div className="tn-firewrap" style={{ left: box.x0, top: box.y0, width: box.w, height: box.h, overflow: 'hidden',
+          WebkitMaskImage: `url(${BASE}${shot}_firemask.png?v=${ASSET_V})`, maskImage: `url(${BASE}${shot}_firemask.png?v=${ASSET_V})`,
+          WebkitMaskSize: `${m.width}px ${m.height}px`, maskSize: `${m.width}px ${m.height}px`,
+          WebkitMaskPosition: `${-box.x0}px ${-box.y0}px`, maskPosition: `${-box.x0}px ${-box.y0}px` }}>
+          <div style={{ position: 'absolute', left: -box.x0, top: -box.y0, width: m.width, height: m.height }}>
+            {late && <div className="tn-emberglow" style={warp(1280, 512, m.firebox)} />}
+            {!moving && <img className="tn-clip" src={`${BASE}fire_first.jpg`} width={1280} height={512} alt="" aria-hidden="true" style={look} />}
+            {blocked ? <Clip name="fire" onLoad={() => setMoving(true)} w={1280} h={512} style={look} />
+              : <FireVideo src={video} style={look} onMoving={() => setMoving(true)} onBlocked={() => setBlocked(true)} />}
+          </div>
         </div>
       )}
       {ok.candle && (m.flames || []).map((f, i) => {

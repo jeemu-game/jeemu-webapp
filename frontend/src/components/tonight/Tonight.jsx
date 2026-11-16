@@ -22,6 +22,8 @@ const at = (file) => `${BASE}${file}?v=${ASSET_V}`;
 // that, and decoding the full ones as the reader scrolls is what ran iPhone Safari out of memory. Same layout either way.
 const SMALL = typeof window !== 'undefined' && Math.min(window.screen.width, window.screen.height) < 600;
 const shotSrc = (s) => at(`${s}${SMALL ? '_m' : ''}.jpg`);
+// and a lighter look (tonight.css, .tn-lite): no full-screen blend layers redone every frame
+if (SMALL) document.documentElement.classList.add('tn-lite');
 // the FAQ close-ups: one render per question, low and square to the block it's burnt into (scripts/blender/room/render_faq.sh)
 const FAQ_SHOTS = FAQS.map((_, k) => `faq${k}`);
 const SHOTS = ['wide', 'close', 'play', 'top', 'late', 'end', 'top2', ...FAQ_SHOTS];
