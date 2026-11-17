@@ -14,10 +14,14 @@ export default function TopBar({ onCtaClick }) {
       <nav className="tb-links" aria-label="Main">
         {LINKS.map(([href, label]) => <a key={href} href={href}>{label}</a>)}
       </nav>
-      <a className="tb-count" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer" title="Kickstarter opens 24 November, 9:00 am EST">
-        {c.live ? 'Live on Kickstarter' : (<><span className="tb-count-lead">Kickstarter in {fmtLong(c)}</span><span className="tb-count-short">{fmtClock(c)}</span></>)}
-      </a>
-      <button type="button" className="tb-cta" onClick={onCtaClick}>Join the waitlist</button>
+      {c.live ? (   // launch day onwards: the button goes to the campaign (it says what the countdown said)
+        <a className="tb-cta" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer">Back us on Kickstarter</a>
+      ) : (<>
+        <a className="tb-count" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer" title="Kickstarter opens 24 November, 9:00 am EST">
+          <span className="tb-count-lead">Kickstarter in {fmtLong(c)}</span><span className="tb-count-short">{fmtClock(c)}</span>
+        </a>
+        <button type="button" className="tb-cta" onClick={onCtaClick}>Join the waitlist</button>
+      </>)}
     </header>
   );
 }

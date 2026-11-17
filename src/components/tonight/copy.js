@@ -6,7 +6,7 @@ export const SCREENS = {
   intro: { tag: 'JEEMU', text: 'The best game nights start with one good question.', foot: '' },
   wide: { tag: 'JEEMU', text: 'Ready when you are.', foot: '' },
   question: { tag: 'NEW QUESTION', text: "What's a small thing that made you happy this week?", foot: 'Block 23' },
-  late: { tag: `KICKSTARTER · ${LAUNCH_DATE.toUpperCase()}`, text: "Early bird prices are the best you'll see.", foot: 'Keep scrolling to join' }
+  late: { tag: `KICKSTARTER · ${LAUNCH_DATE.toUpperCase()}`, text: "Early bird prices are the best you'll see.", foot: 'Keep scrolling' }
 };
 
 // Words over the picture while the room is in view
@@ -31,6 +31,7 @@ export const EXTRA_PHOTOS = ['photos/7.jpg'];
 export const FINALE = {
   title: 'Be there when it falls.',
   sub: `Early bird prices are the best you'll see. Kickstarter, ${LAUNCH_DATE}. Early bird ${EARLY_BIRD_PRICE} USD.`,
+  subLive: `We're live on Kickstarter. Early bird ${EARLY_BIRD_PRICE} USD while the spots last.`,
   cta: 'Join the waitlist'
 };
 

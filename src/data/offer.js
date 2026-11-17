@@ -13,3 +13,7 @@ export const vipUrl = (email, code) => {
 };
 // The campaign opens 24 November, 9:00 am US Eastern (EST, UTC-5) = 14:00 UTC.
 export const LAUNCH_AT = Date.parse('2026-11-24T14:00:00Z');
+// Live: the campaign is open. The page switches itself over at LAUNCH_AT (buttons and Jeemu's end screen go to
+// Kickstarter). Add ?live to the address to see the launch-day page early.
+const PREVIEW_LIVE = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('live');
+export const isLive = () => PREVIEW_LIVE || Date.now() >= LAUNCH_AT;

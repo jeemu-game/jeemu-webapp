@@ -7,6 +7,8 @@ import { ASSET_V } from './assetVersion';
 import { SMALL, MOBILE, CAPTURE } from './device';
 import MobileStage from './MobileStage';
 import WaitlistScreen from '../waitlist/WaitlistScreen';
+import KickstarterScreen from '../waitlist/KickstarterScreen';
+import { useLive } from './useCountdown';
 import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE, STORY, TEAM_PRINT } from './copy';
 import { TEAM_MEMBERS, JOURNEY_MILESTONES, WHY_WE_CARE } from '../../data/teamData';
 import { FAQS } from '../../data/faq';
@@ -148,6 +150,7 @@ export default function Tonight({ onCta }) {
   const section = useRef(null);
   const stage = useRef(null);
   const [t, setT] = useState(0);                       // scroll position in the story, in % of window height
+  const live = useLive();                              // the campaign has opened: Jeemu's end screen sends people to it
   const [vp, setVp] = useState({ w: 1280, h: 800, card: 0 });
   const [meta, setMeta] = useState({});
   const [written, setWritten] = useState(-1);          // highest polaroid whose note has been written
@@ -359,6 +362,8 @@ export default function Tonight({ onCta }) {
     window.__tn = { START, TOTAL, keys: MOBILE_KEYS, fall: MOBILE_FALL, fallCount: fall ? fall.count : 0,
       endScreen: meta.end && cams.end && meta.end.screen.map(([x, y]) => project(meta.end, cams.end, x, y).slice(0, 2)) };
   }
+  const endScreen = live ? <KickstarterScreen active={endOn} />
+    : <WaitlistScreen active={endOn} onArrive={() => setTimeout(() => document.getElementById('waitlist')?.scrollIntoView(), 300)} />;
   const show = (id, a = 0.12, b = 0.9) => { const k = p(id); return inBeat(id) ? clamp(Math.min((k - a) / 0.1, (b - k) / 0.1)) : 0; };
 
   return (
@@ -371,7 +376,7 @@ export default function Tonight({ onCta }) {
       <ChapterText />
       <div className="tn-stage" ref={stage}>
         {MOBILE && <MobileStage t={t} vp={vp} keys={MOBILE_KEYS} fall={MOBILE_FALL}
-          waitlist={<WaitlistScreen active={endOn} onArrive={() => setTimeout(() => document.getElementById('waitlist')?.scrollIntoView(), 300)} />} />}
+          waitlist={endScreen} />}
         {!MOBILE && SHOTS.map((s) => {
           const m = meta[s], cam = cams[s];
           if (!m || !cam || !near(s, t)) return null;
@@ -387,7 +392,7 @@ export default function Tonight({ onCta }) {
                 {s === FIRST_SHOT && <div className={`tn-roomdark ${lit ? 'is-up' : ''}`} style={{ width: m.width, height: m.height }} aria-hidden="true" />}
                 {m.screen && s === 'end' && (
                   <div className="tn-warp tn-screen is-ui" style={warp(320, 240, m.screen)}>
-                    <WaitlistScreen active={endOn} onArrive={() => setTimeout(() => document.getElementById('waitlist')?.scrollIntoView(), 300)} />
+                    {endScreen}
                   </div>
                 )}
                 {m.screen && screenFor[s] && (
@@ -464,9 +469,9 @@ export default function Tonight({ onCta }) {
         ))}
         <div className="tn-finale" style={{ opacity: inBeat('late') ? clamp(Math.min(p('late') / 0.15, (1 - p('late')) / 0.2)) : 0 }}>
           <h2>{FINALE.title}</h2>
-          <p>{FINALE.sub}</p>
+          <p>{live ? FINALE.subLive : FINALE.sub}</p>
         </div>
-        <p className="tn-fine" style={{ opacity: endOn ? 1 : 0 }}>Joining is free. We only use your email to tell you about the launch.</p>
+        <p className="tn-fine" style={{ opacity: endOn && !live ? 1 : 0 }}>Joining is free. We only use your email to tell you about the launch.</p>
         <div className="tn-progress" aria-hidden="true"><i style={{ transform: `scaleX(${t / TOTAL})` }} /></div>
       </div>
     </section>

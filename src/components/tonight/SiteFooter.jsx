@@ -1,13 +1,16 @@
 import React from 'react';
 import { SOCIAL_LINKS } from '../../data/socials';
+import { KICKSTARTER_URL } from '../../data/offer';
+import { useLive } from './useCountdown';
 
 // When the night is over: the wordmark, where to go, the small print. Nothing else.
 export default function SiteFooter() {
+  const live = useLive();
   return (
     <footer className="sf">
       <span className="sf-mark">Jeemu</span>
       <nav className="sf-links" aria-label="Footer">
-        <a href="#waitlist">Join the waitlist</a>
+        {live ? <a href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer">Back us on Kickstarter</a> : <a href="#waitlist">Join the waitlist</a>}
         <a href="#journey">Our story</a>
         <a href="#team">Team</a>
         <a href="#faq">FAQ</a>
@@ -15,7 +18,7 @@ export default function SiteFooter() {
       </nav>
       <p className="sf-legal">
         © {new Date().getFullYear()} Jeemu. Designed in New Zealand, made in Shanghai. Jeemu is an independent game and is not affiliated with Kickstarter.
-        Launch date and pricing may change before the campaign goes live.
+        {!live && 'Launch date and pricing may change before the campaign goes live.'}
       </p>
       <p className="sf-legal sf-credits">
         Fire from <a href="https://commons.wikimedia.org/wiki/File:Fantastic-fireplace-fire-chimney-hearth-_background_-_texture_-_motion_graphics_-_free_video_library.webm" target="_blank" rel="noopener noreferrer">Fantastic fireplace</a>,
