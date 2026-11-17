@@ -968,13 +968,14 @@ def cam_state(name):
     if name.startswith('print:'):
         i, h = name[6:].split('@'); i, h = int(i), float(h)
         card = POLAROIDS[i]; c = card.matrix_world.translation; rz = card.rotation_euler.z
-        roll = rz * 0.6; V = 0.20 * 16 / 9                        # 20 cm across on a phone; the frame's height
+        roll = rz * 0.6; V = 0.15 * 16 / 9                        # 15 cm across on a phone (the print fills most of it); the frame's height
         up = Vector((-math.sin(roll), math.cos(roll), 0))
         loc_ = Vector((c.x, c.y, h)) - up * (0.5 - 0.36) * V        # the print sits a little above the middle
         return dict(loc=loc_, rot=Euler((0, 0, roll)).to_quaternion(), lens=20.25 * h / V, fstop=8, focus=h, shift=sh, vig=0.0)
     if name.startswith('faq'):
         fc = FAQ_CAMS[int(name[3:])]
-        return dict(loc=fc['loc'], rot=fc['rot'], lens=85, fstop=4.5, focus=fc['focus'], shift=(0.0, -0.15) if A.portrait else (0.09, -0.06), vig=0.30)
+        # a phone is narrow: a wider lens there, so the whole question fits across
+        return dict(loc=fc['loc'], rot=fc['rot'], lens=46 if A.portrait else 85, fstop=2.8 if A.portrait else 4.5, focus=fc['focus'], shift=(0.0, -0.15) if A.portrait else (0.09, -0.06), vig=0.30)
     raise SystemExit('unknown camera state ' + name)
 
 def aimed(st):
