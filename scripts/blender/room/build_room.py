@@ -977,8 +977,19 @@ def cam_state(name):
         return dict(loc=fc['loc'], rot=fc['rot'], lens=85, fstop=4.5, focus=fc['focus'], shift=(0.0, -0.15) if A.portrait else (0.09, -0.06), vig=0.30)
     raise SystemExit('unknown camera state ' + name)
 
+def aimed(st):
+    """Where a state's camera aims (a point at its focus distance) and its up direction."""
+    M = st['rot'].to_matrix(); st['tgt'] = st['loc'] - Vector(M.col[2]) * st['focus']; st['up'] = Vector(M.col[1]); return st
+
+def look(pos, tgt, up):
+    from mathutils import Matrix as _M
+    f = (tgt - pos).normalized(); r = f.cross(up)
+    if r.length < 1e-6: r = f.cross(Vector((0, 1, 0)))
+    r.normalize(); u = r.cross(f)
+    return _M((r, u, -f)).transposed().to_quaternion()
+
 def move_frames(spec):
-    states = [cam_state(spec[0])] + [cam_state(n) for n, _ in spec[1:]]
+    states = [aimed(cam_state(spec[0]))] + [aimed(cam_state(n)) for n, _ in spec[1:]]
     counts = [n for _, n in spec[1:]]; total = sum(counts)
     ease_ = lambda x: x * x * x * (x * (x * 6 - 15) + 10)   # smootherstep: starts and stops at rest
     pts = [s_['loc'] for s_ in states]
@@ -992,8 +1003,9 @@ def move_frames(spec):
         while i < len(counts) - 1 and u > sum(counts[:i + 1]): i += 1
         t = (u - sum(counts[:i])) / counts[i]
         a, b = states[i], states[i + 1]
-        out.append(dict(loc=cr(i, t), rot=a['rot'].slerp(b['rot'], t), lens=math.exp(math.log(a['lens']) * (1 - t) + math.log(b['lens']) * t),
-                        fstop=a['fstop'] + (b['fstop'] - a['fstop']) * t, focus=a['focus'] + (b['focus'] - a['focus']) * t,
+        pos = cr(i, t); tgt = a['tgt'].lerp(b['tgt'], t); up = a['up'].lerp(b['up'], t)
+        out.append(dict(loc=pos, rot=look(pos, tgt, up), lens=math.exp(math.log(a['lens']) * (1 - t) + math.log(b['lens']) * t),
+                        fstop=a['fstop'] + (b['fstop'] - a['fstop']) * t, focus=(tgt - pos).length,   # sharp where it aims
                         shift=(a['shift'][0] + (b['shift'][0] - a['shift'][0]) * t, a['shift'][1] + (b['shift'][1] - a['shift'][1]) * t),
                         vig=a['vig'] + (b['vig'] - a['vig']) * t))
     return out
@@ -1050,6 +1062,7 @@ if A.move:
     def place_cam(st):
         cam.location = st['loc']; cam.rotation_mode = 'QUATERNION'; cam.rotation_quaternion = st['rot']
         cd.lens = st['lens']; cd.shift_x, cd.shift_y = st['shift']; cd.dof.focus_distance = st['focus']; cd.dof.aperture_fstop = st['fstop']
+        cd.clip_start = max(0.01, st['loc'].z - 1.9)   # high above the table the camera looks through the ceiling
         bpy.context.view_layer.update()
     def px(v):
         c = world_to_camera_view(sc, cam, v); return [round(c.x * W, 1), round((1 - c.y) * H, 1)]
