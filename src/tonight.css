@@ -413,3 +413,11 @@ a.tb-count:hover { color: var(--tn-paper); }
     background: radial-gradient(closest-side, rgba(8, 5, 3, 0.72), rgba(8, 5, 3, 0.45) 55%, rgba(8, 5, 3, 0) 100%); }
 }
 .ws-keys.ws-keys-one { grid-template-columns: 1fr; }
+
+/* the film (SeqPlayer.jsx): rendered frames on a canvas while moving, the shot in full when stopped */
+.sq-stage { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.sq-stage .tn-screen.is-ui { pointer-events: auto; }
+.sq-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.sq-frame { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.sq-frame picture, .sq-frame img { display: block; width: 100%; height: 100%; }
+.sq-fire { position: absolute; display: block; object-fit: fill; pointer-events: none; transition: opacity 300ms; }

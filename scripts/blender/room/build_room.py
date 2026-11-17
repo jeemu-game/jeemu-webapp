@@ -32,12 +32,15 @@ ap.add_argument('--samples', type=int, default=48)
 ap.add_argument('--gpu', action='store_true')
 ap.add_argument('--save-blend', default='')
 ap.add_argument('--blank-photos', action='store_true', help='plain white picture areas: the website lays the real photos over them')
+ap.add_argument('--bake-ui', action='store_true', help="the site's photos, handwriting and Jeemu's screen in the picture itself (camera moves: no live overlays)")
+ap.add_argument('--screen', default='', help="with --bake-ui: what Jeemu's screen shows (screens/<name>.png); 'a>b' switches from a to b halfway through a move")
 ap.add_argument('--late', action='store_true', help='end of the night: embers, empty glasses, burnt-down candles, a gappy tower')
 ap.add_argument('--mask', action='store_true', help='render only a matte of Jeemu, the blocks and the polaroids (alpha), for compositing over an AI-enhanced still')
 ap.add_argument('--chapters', action='store_true', help='the after-party table: story polaroids, the team print and the FAQ cards instead of the how-it-plays polaroids')
 ap.add_argument('--fall', default='', help='render the tower falling, frame by frame, into this folder (use with --late)')
 ap.add_argument('--fall-frames', type=int, default=60)
 ap.add_argument('--fall-range', type=int, nargs=2, default=None, help='only render these frames of the fall (first last)')
+ap.add_argument('--fall-sub', type=int, default=1, help='slow motion: render N steps per simulation frame (in between from the cached collapse, same outcome)')
 ap.add_argument('--fall-test', action='store_true', help='run the collapse and print the tower height, no rendering')
 ap.add_argument('--fall-save', default='', help='with --fall-test: save where the blocks land to this JSON')
 ap.add_argument('--fallen', default='', help='JSON of where the blocks landed (from --fall): show the fallen tower')
@@ -49,6 +52,9 @@ ap.add_argument('--insets', default='', help='comma-separated objects: render a 
 ap.add_argument('--inset-scale', type=float, default=5.0)
 ap.add_argument('--meta-only', action='store_true', help='write the --meta corners without rendering')
 ap.add_argument('--fire-mask', action='store_true', help='render only where the firebox opening is visible (white on transparent), for the live fire footage')
+ap.add_argument('--move', default='', help='render a camera move (a name from MOVES) frame by frame into --out (a folder)')
+ap.add_argument('--move-range', type=int, nargs=2, default=None, help='only these frames of the move (first last, from 0)')
+ap.add_argument('--portrait', action='store_true', help='a phone frame: --width/--height portrait, same vertical view as the landscape shot')
 ap.add_argument('--meta', default='', help='write JSON with the screen and polaroid corners in image pixels')
 A = ap.parse_args(argv)
 if A.late: A.fire = 0.0
@@ -503,12 +509,48 @@ for k, (dx, dy, rz) in enumerate(((-0.010, 0.006, 0.3), (0.011, -0.004, 1.1), (0
 # The pictures here are placeholders; on the site the real photos and the handwritten copy are laid over each
 # polaroid (its corners are exported per frame, the same way the Jeemu screen is tracked today).
 PHOTOS = [os.path.join(HERE, '..', 'previews', f) for f in sorted(os.listdir(os.path.join(HERE, '..', 'previews'))) if f.endswith('.jpg')]
+SITE = os.path.join(HERE, '..', '..', '..')
+def site_prints():
+    """The site's own photos and handwritten notes, in the render's print order (src/components/tonight/copy.js)."""
+    import re as _re
+    src = open(os.path.join(SITE, 'src', 'components', 'tonight', 'copy.js'), encoding='utf-8').read()
+    def items(block):
+        return [(m.group(1), (m.group(2) or '').replace("\\'", "'")) for m in
+                _re.finditer(r"photo: '([^']+)'(?:, note: '((?:[^'\\]|\\.)*)')?", block)]
+    how = items(src[src.index('export const POLAROIDS'):src.index('export const EXTRA_PHOTOS')])
+    how += [(p_, '') for p_ in _re.findall(r"'(photos/[^']+)'", src[src.index('export const EXTRA_PHOTOS'):src.index('export const FINALE')])]
+    story = items(src[src.index('export const STORY'):src.index('export const TEAM_PRINT')])
+    story += items(src[src.index('export const TEAM_PRINT'):])
+    return story if A.chapters else how
+PRINTS_SITE = site_prints() if A.bake_ui else []
+def cover_mapping(nt, img, quad_aspect):
+    """UV mapping that crops the picture to fill a quad of this aspect (like CSS object-fit: cover)."""
+    ia = img.size[0] / max(1, img.size[1]); mp = nt.nodes.new('ShaderNodeMapping'); tc = nt.nodes.new('ShaderNodeTexCoord')
+    sx, sy = (quad_aspect / ia, 1.0) if ia > quad_aspect else (1.0, ia / quad_aspect)
+    mp.inputs['Scale'].default_value = (sx, sy, 1); mp.inputs['Location'].default_value = ((1 - sx) / 2, (1 - sy) / 2, 0)
+    nt.links.new(tc.outputs['UV'], mp.inputs['Vector']); return mp.outputs[0]
+def note_texture(i, text, w_m, h_m):
+    """The handwritten caption, as the site writes it: Kalam, ink #23243a, a slight tilt, sized to the strip."""
+    from PIL import Image as _I, ImageDraw as _D, ImageFont as _F
+    PX = 20000; W_, H_ = max(8, round(w_m * PX)), max(8, round(h_m * PX))
+    capH = 600 * h_m / w_m; size = min(capH * 0.45, 1050 / max(10, len(text))) * W_ / 600
+    im = _I.new('RGBA', (W_ * 2, H_ * 2), (0, 0, 0, 0)); dr = _D.Draw(im)
+    fo = _F.truetype(os.path.join(CACHE, 'fonts', 'Kalam.ttf'), round(size * 2))
+    tw = dr.textlength(text, font=fo); bb = dr.textbbox((0, 0), text, font=fo)
+    dr.text(((W_ * 2 - tw) / 2, (H_ * 2 - (bb[3] - bb[1])) / 2 - bb[1]), text, fill=(0x23, 0x24, 0x3a, 235), font=fo)
+    im = im.rotate(1.5, resample=_I.BICUBIC).resize((W_, H_), _I.LANCZOS)
+    os.makedirs(os.path.join(CACHE, 'notes'), exist_ok=True)
+    fp = os.path.join(CACHE, 'notes', f'{"c" if A.chapters else "p"}{i}.png'); im.save(fp); return fp
 M_CARD = plain('PolaroidCard', (0.86, 0.85, 0.82), rough=0.55, noise=0.03)
 def photo_mat(i):
     m = bpy.data.materials.new(f'Photo{i}'); nt, out = nodes_of(m)
     b = nt.nodes.new('ShaderNodeBsdfPrincipled'); b.inputs['Roughness'].default_value = 0.22
     nt.links.new(b.outputs[0], out.inputs[0])
-    if A.blank_photos:
+    if A.bake_ui and i < len(PRINTS_SITE):   # the site's own (already graded) photo, cropped like the site crops it
+        im = nt.nodes.new('ShaderNodeTexImage'); im.image = bpy.data.images.load(os.path.join(SITE, 'public', 'tonight', PRINTS_SITE[i][0]), check_existing=True)
+        im.interpolation = 'Cubic'; nt.links.new(cover_mapping(nt, im.image, PHOTO_ASPECT.get(i, 1.0)), im.inputs['Vector'])
+        nt.links.new(im.outputs['Color'], b.inputs['Base Color'])
+    elif A.blank_photos:
         b.inputs['Base Color'].default_value = (0.9, 0.9, 0.9, 1)
     elif PHOTOS:
         tc = nt.nodes.new('ShaderNodeTexCoord'); mp = nt.nodes.new('ShaderNodeMapping')
@@ -526,13 +568,25 @@ PRINT = {
     'square': dict(card=(-0.044, -0.0535, 0.044, 0.0535), photo=(-0.0395, -0.0315, 0.0395, 0.0475), caption=(-0.040, -0.051, 0.040, -0.033)),
     'wide': dict(card=(-0.054, -0.043, 0.054, 0.043), photo=(-0.0495, -0.026, 0.0495, 0.036), caption=(-0.050, -0.041, 0.050, -0.028)),
 }
+PHOTO_ASPECT = {}
 def polaroid(i, x, y, rz, lift=0.0, kind='square', face_down=False):
     k = PRINT[kind]; x0, y0, x1, y1 = k['card']; p0, q0, p1, q1 = k['photo']
+    PHOTO_ASPECT[i] = (p1 - p0) / (q1 - q0)
     card = box(f'Polaroid{i}', x0, y0, 0.0, x1, y1, 0.0008, mat=M_CARD)
     bpy.ops.mesh.primitive_plane_add(size=1, location=((p0 + p1) / 2, (q0 + q1) / 2, 0.00085))
     ph = bpy.context.active_object; ph.scale = (p1 - p0, q1 - q0, 1); ph.name = f'Polaroid{i}Photo'; ph.data.materials.append(photo_mat(i)); ph.parent = card
     card.location = (x, y, 0.0004 + lift + (0.0008 if face_down else 0)); card.rotation_euler = (math.pi if face_down else 0, 0, rz)
     card['kind'] = kind
+    note = PRINTS_SITE[i][1] if A.bake_ui and i < len(PRINTS_SITE) else ''
+    if note and not face_down:   # the handwritten caption on the bottom strip
+        c0, d0, c1, d1 = k['caption']
+        bpy.ops.mesh.primitive_plane_add(size=1, location=((c0 + c1) / 2, (d0 + d1) / 2, 0.00086))
+        nt_ = bpy.context.active_object; nt_.scale = (c1 - c0, d1 - d0, 1); nt_.name = f'Polaroid{i}Note'; nt_.parent = card
+        m = bpy.data.materials.new(f'Note{i}'); n_, out_ = nodes_of(m)
+        bs = n_.nodes.new('ShaderNodeBsdfPrincipled'); bs.inputs['Roughness'].default_value = 0.6
+        tx = n_.nodes.new('ShaderNodeTexImage'); tx.image = bpy.data.images.load(note_texture(i, note, c1 - c0, d1 - d0)); tx.interpolation = 'Cubic'
+        n_.links.new(tx.outputs['Color'], bs.inputs['Base Color']); n_.links.new(tx.outputs['Alpha'], bs.inputs['Alpha'])
+        n_.links.new(bs.outputs[0], out_.inputs[0]); nt_.data.materials.append(m); nt_.visible_shadow = False
     return card
 
 if not A.chapters:
@@ -652,7 +706,15 @@ if A.late:
 
 # ---------------------------------------------------------------- product realism
 scr_img = bpy.data.images.get('screen.png')
-if scr_img:   # standby: a black panel. The website overlays the live screen content on top of the render.
+SCREEN_NODE = None; SCREEN_IMGS = {}
+def screen_image(name):
+    if name not in SCREEN_IMGS:
+        SCREEN_IMGS[name] = bpy.data.images.load(os.path.join(HERE, 'screens', name + '.png'), check_existing=True)
+    return SCREEN_IMGS[name]
+if A.bake_ui and A.screen and bpy.data.materials.get('ScreenMat'):   # what the site shows on it, in the picture itself
+    SCREEN_NODE = next(n for n in bpy.data.materials['ScreenMat'].node_tree.nodes if n.type == 'TEX_IMAGE')
+    SCREEN_NODE.image = screen_image(A.screen.split('>')[0]); SCREEN_NODE.interpolation = 'Cubic'
+elif scr_img:   # standby: a black panel. The website overlays the live screen content on top of the render.
     px = [0.004, 0.004, 0.005, 1.0] * (scr_img.size[0] * scr_img.size[1]); scr_img.pixels = px; scr_img.pack()
 scr = bpy.data.materials.get('ScreenMat')
 if scr:
@@ -698,6 +760,8 @@ if A.view in ('over', 'close', 'product', 'frog', 'badge', 'story', 'team', 'faq
 cd.clip_start = 0.01; cd.clip_end = 200
 if A.view in ('top', 'top2'):
     cam.rotation_euler = (0, 0, 0); cd.type = 'ORTHO'; cd.ortho_scale = 1.80 if A.view == 'top' else 1.96; cd.dof.use_dof = False
+if A.portrait and cd.type != 'ORTHO':   # a phone frame: the same height of view as the landscape shot, narrower
+    cd.sensor_fit = 'VERTICAL'; cd.sensor_height = 36 * 9 / 16
 sc.camera = cam
 
 # ---------------------------------------------------------------- render settings
@@ -747,6 +811,7 @@ if A.patch:   # just the firebox and a margin round it, so the change can be dro
     print('patch region', round(r.border_min_x, 3), round(r.border_max_x, 3), round(r.border_min_y, 3), round(r.border_max_y, 3))
 import fall as _fall
 if A.fallen: _fall.apply_final(A.fallen)
+FAQ_CAMS = {}
 if A.faq_blocks:   # the questions people ask, laser-burnt into the top of fallen blocks
     import re as _re, textwrap as _tw
     faq_src = open(os.path.join(HERE, '..', '..', '..', 'src', 'data', 'faq.js'), encoding='utf-8').read()
@@ -810,7 +875,7 @@ if A.faq_blocks:   # the questions people ask, laser-burnt into the top of falle
         t.location = (0, 0, up * 0.00762); t.rotation_euler = (flip_z, 0, turn)
         t.visible_shadow = False
         print('burnt', name, '|', ' / '.join(lines))
-        if A.faq_shot == k:   # the close-up: low, square to the lettering, the block left of centre, the table soft behind
+        if A.faq_shot == k or (A.move and f'faq{k}' in A.move):   # the close-up: low, square to the lettering, the block left of centre, the table soft behind
             bpy.context.view_layer.update()
             Mt = t.matrix_world; P = Mt.translation.copy()
             R = Vector(Mt.col[0][:3]); R.z = 0; R.normalize(); U = Vector(Mt.col[1][:3]); U.z = 0; U.normalize()
@@ -844,26 +909,13 @@ if A.faq_blocks:   # the questions people ask, laser-burnt into the top of falle
             print('faq shot camera', deg, az, 'clear' if pos else 'BLOCKED', sorted(set(HITS)))
             pos = pos or cand
             f = (P - pos).normalized(); Rx = (R - f * R.dot(f)).normalized(); Zc = -f; Yc = Zc.cross(Rx)
+            FAQ_CAMS[k] = dict(loc=pos.copy(), rot=Matrix((Rx, Yc, Zc)).transposed().to_quaternion(), focus=d)
+            if A.faq_shot != k: continue
             cam.matrix_world = Matrix((Rx, Yc, Zc)).transposed().to_4x4()
             cam.location = pos
             cd.type = 'PERSP'; cd.lens = 85; cd.sensor_width = 36; cd.sensor_fit = 'AUTO'; cd.shift_x = 0.09; cd.shift_y = -0.06
             cd.dof.use_dof = True; cd.dof.focus_object = None; cd.dof.focus_distance = d; cd.dof.aperture_fstop = 4.5
             FAQ_SUBJECT = (b, up)
-if A.fall or A.fall_test:
-    _fall.setup(A.fall_frames)
-    if A.fall_test:
-        for f in range(1, A.fall_frames + 1, 5):
-            sc.frame_set(f); print(f'frame {f}: tower top {_fall.tower_height():.3f} m')
-        if A.fall_save: _fall.save_final(A.fall_save); print('saved', A.fall_save)
-        raise SystemExit
-    os.makedirs(A.fall, exist_ok=True)
-    f0, f1 = A.fall_range or (1, A.fall_frames)
-    for f in range(f0, f1 + 1):
-        r.filepath = os.path.join(os.path.abspath(A.fall), f'{f:03d}.png')
-        if os.path.exists(r.filepath): continue   # resumable
-        sc.frame_set(f); bpy.ops.render.render(write_still=True)
-    _fall.save_final(os.path.join(A.fall, 'fallen.json'))
-    print('wrote', A.fall); raise SystemExit
 if A.fire_mask:   # everything else cuts a hole; only the firebox mouth shows, so the site's fire footage stays behind the tower
     bpy.ops.mesh.primitive_plane_add(size=1, location=((fx0 + fx1) / 2, by + 0.02, (fz0 + fz1) / 2), rotation=(math.pi / 2, 0, 0))
     fm = bpy.context.active_object; fm.name = 'FireMatte'; fm.scale = (fx1 - fx0, fz1 - fz0, 1)
@@ -874,6 +926,164 @@ if A.fire_mask:   # everything else cuts a hole; only the firebox mouth shows, s
         if o.type == 'LIGHT': o.hide_render = True
     sc.world = None; r.film_transparent = True; cy.samples = 8; cy.use_denoising = False
     sc.view_settings.view_transform = 'Standard'; r.image_settings.color_mode = 'RGBA'
+# ---------------------------------------------------------------- camera moves (the site scrubs these with the scroll)
+# A move is a list of camera states, each reached after so many frames; the whole move is one eased path (it starts
+# and stops gently), so its first and last frames are exactly the shots before and after it. States:
+#   a view name (wide, close, play)       the shot itself
+#   over:NAME@H                           straight down on the table from H metres, framing OVER[NAME] (desktop handoff
+#                                         to the site's pan over the overhead still: at 20 m it's as flat as that still)
+#   print:I@H                             phone: straight down on print I, turned to read level, above the words
+#   faqK                                  the close-up of the K-th question block
+OVER = {'topIn': (0.0, -0.14, 0.95), 'topOut': (0.0, -0.14, 0.95), 'top2In': (0.0, -0.10, 1.40), 'top2Out': (0.0, -0.10, 1.40)}
+ORTHO = {'top': ((0.20, -0.14), 1.80, (4800, 1524)), 'top2': ((0.18, 0.02), 1.96, (4800, 2520))}
+MOVES = {
+    'wide-close': ['wide', ('close', 48)],
+    'close-play': ['close', ('play', 48)],
+    'play-top': ['play', ('over:topIn@1.4', 54), ('over:topIn@20', 18)],
+    'top-late': ['over:topOut@20', ('over:topOut@1.4', 18), ('play', 54)],
+    'fallen-end': ['play', ('close', 48)],
+    'end-top2': ['close', ('over:top2In@1.4', 54), ('over:top2In@20', 18)],
+    'top2-faq0': ['over:top2Out@20', ('over:top2Out@1.4', 18), ('faq0', 54)],
+    # phones: no overhead stills, the camera glides from print to print
+    'p-play-print0': ['play', ('print:0@0.9', 60)],
+    'p-prints-out': ['print:5@0.9', ('over:topOut@1.4', 36)],
+    'p-top-late': ['over:topOut@1.4', ('play', 60)],
+    'p-end-print0': ['close', ('print:0@0.9', 60)],
+    'p-team-faq0': ['print:5@0.9', ('faq0', 54)],
+}
+for i in range(5): MOVES[f'p-print{i}-print{i + 1}'] = [f'print:{i}@0.9', (f'print:{i + 1}@0.9', 30)]
+for k in range(6): MOVES[f'faq{k}-faq{k + 1}'] = [f'faq{k}', (f'faq{k + 1}', 36)]
+
+def cam_state(name):
+    from mathutils import Quaternion, Euler
+    sh = (0.0, 0.0)
+    if name in VIEWS:
+        loc_, tgt_, lens_, fs_ = VIEWS[name]; loc_, tgt_ = Vector(loc_), Vector(tgt_)
+        fo = bpy.data.objects.get('Focus')
+        focus = (fo.matrix_world.translation - loc_).length if (fo and name in ('wide', 'play')) else (tgt_ - loc_).length
+        return dict(loc=loc_, rot=(tgt_ - loc_).to_track_quat('-Z', 'Y'), lens=lens_, fstop=fs_, focus=focus, shift=sh, vig=0.30)
+    if name.startswith('over:'):
+        key, h = name[5:].split('@'); h = float(h); cx, cy, w = OVER[key]
+        return dict(loc=Vector((cx, cy, h)), rot=Quaternion(), lens=36 * h / w, fstop=16, focus=h, shift=sh, vig=0.0)
+    if name.startswith('print:'):
+        i, h = name[6:].split('@'); i, h = int(i), float(h)
+        card = POLAROIDS[i]; c = card.matrix_world.translation; rz = card.rotation_euler.z
+        roll = rz * 0.6; V = 0.20 * 16 / 9                        # 20 cm across on a phone; the frame's height
+        up = Vector((-math.sin(roll), math.cos(roll), 0))
+        loc_ = Vector((c.x, c.y, h)) - up * (0.5 - 0.36) * V        # the print sits a little above the middle
+        return dict(loc=loc_, rot=Euler((0, 0, roll)).to_quaternion(), lens=20.25 * h / V, fstop=8, focus=h, shift=sh, vig=0.0)
+    if name.startswith('faq'):
+        fc = FAQ_CAMS[int(name[3:])]
+        return dict(loc=fc['loc'], rot=fc['rot'], lens=85, fstop=4.5, focus=fc['focus'], shift=(0.0, -0.15) if A.portrait else (0.09, -0.06), vig=0.30)
+    raise SystemExit('unknown camera state ' + name)
+
+def move_frames(spec):
+    states = [cam_state(spec[0])] + [cam_state(n) for n, _ in spec[1:]]
+    counts = [n for _, n in spec[1:]]; total = sum(counts)
+    ease_ = lambda x: x * x * x * (x * (x * 6 - 15) + 10)   # smootherstep: starts and stops at rest
+    pts = [s_['loc'] for s_ in states]
+    def cr(i, t):   # Catmull-Rom through the states (a smooth path, no corners where legs meet)
+        p0, p1, p2, p3 = pts[max(0, i - 1)], pts[i], pts[i + 1], pts[min(len(pts) - 1, i + 2)]
+        return 0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t)
+    out = []
+    for f in range(total + 1):
+        u = ease_(f / total) * total
+        i = 0
+        while i < len(counts) - 1 and u > sum(counts[:i + 1]): i += 1
+        t = (u - sum(counts[:i])) / counts[i]
+        a, b = states[i], states[i + 1]
+        out.append(dict(loc=cr(i, t), rot=a['rot'].slerp(b['rot'], t), lens=math.exp(math.log(a['lens']) * (1 - t) + math.log(b['lens']) * t),
+                        fstop=a['fstop'] + (b['fstop'] - a['fstop']) * t, focus=a['focus'] + (b['focus'] - a['focus']) * t,
+                        shift=(a['shift'][0] + (b['shift'][0] - a['shift'][0]) * t, a['shift'][1] + (b['shift'][1] - a['shift'][1]) * t),
+                        vig=a['vig'] + (b['vig'] - a['vig']) * t))
+    return out
+
+if A.fall or A.fall_test:
+    _fall.setup(A.fall_frames)
+    if A.fall_test:
+        for f in range(1, A.fall_frames + 1, 5):
+            sc.frame_set(f); print(f'frame {f}: tower top {_fall.tower_height():.3f} m')
+        if A.fall_save: _fall.save_final(A.fall_save); print('saved', A.fall_save)
+        raise SystemExit
+    os.makedirs(A.fall, exist_ok=True)
+    if not A.fire_mask:   # the camera is fixed: one set of corners for every frame, like a move's meta
+        from bpy_extras.object_utils import world_to_camera_view as _w2c
+        bpy.context.view_layer.update(); W_, H_ = r.resolution_x, r.resolution_y
+        def _px(v): c = _w2c(sc, cam, v); return [round(c.x * W_, 1), round((1 - c.y) * H_, 1)]
+        trim = bpy.data.objects['FireboxTrim']; bb = [trim.matrix_world @ Vector(c) for c in trim.bound_box]
+        _x0, _x1 = min(v.x for v in bb) + 0.012, max(v.x for v in bb) - 0.012
+        _z0, _z1 = min(v.z for v in bb) + 0.012, max(v.z for v in bb) - 0.012; _by = min(v.y for v in bb)
+        fc_ = Vector(((_x0 + _x1) / 2, _by, (_z0 + _z1) / 2)); S1 = cd.dof.focus_distance * 1000
+        if cd.dof.focus_object: S1 = (cd.dof.focus_object.matrix_world.translation - cam.matrix_world.translation).length * 1000
+        S2 = (cam.matrix_world.inverted() @ fc_).length * 1000; fl = cd.lens
+        coc = (fl * fl / cd.dof.aperture_fstop) * abs(S2 - S1) / max(1e-6, S2 * (S1 - fl))
+        s_ = bpy.data.objects.get('Screen'); v_ = [s_.matrix_world @ x.co for x in s_.data.vertices]
+        one = {'firebox': [_px(Vector(c)) for c in ((_x0, _by, _z1), (_x1, _by, _z1), (_x1, _by, _z0), (_x0, _by, _z0))],
+               'screen': [_px(v_[2]), _px(v_[3]), _px(v_[1]), _px(v_[0])], 'vig': 0.30,
+               'fireBlur': round(coc / (cd.sensor_height if A.portrait else 36) * (H_ if A.portrait else W_) / 2, 2)}
+        n_ = max(1, A.fall_sub); f0_, f1_ = A.fall_range or (1, A.fall_frames)
+        json.dump({'move': 'fall', 'width': W_, 'height': H_, 'portrait': A.portrait, 'late': A.late,
+                   'frames': [one] * ((f1_ - f0_) * n_ + 1)}, open(os.path.join(A.fall, 'meta.json'), 'w'))
+    f0, f1 = A.fall_range or (1, A.fall_frames)
+    n = max(1, A.fall_sub)
+    steps = [(f, k / n) for f in range(f0, f1) for k in range(n)] + [(f1, 0.0)]   # f0 .. f1 in 1/n frame steps
+    for i, (f, sf) in enumerate(steps):
+        r.filepath = os.path.join(os.path.abspath(A.fall), f'{"m" if A.fire_mask else ""}{i:03d}.png')
+        if os.path.exists(r.filepath): continue   # resumable
+        sc.frame_set(f, subframe=sf); bpy.ops.render.render(write_still=True)
+    if not A.fire_mask: _fall.save_final(os.path.join(A.fall, 'fallen.json'))
+    print('wrote', A.fall); raise SystemExit
+if A.move:
+    from bpy_extras.object_utils import world_to_camera_view
+    spec = MOVES[A.move]; frames = move_frames(spec)
+    os.makedirs(A.out, exist_ok=True)
+    cd.type = 'PERSP'; cd.dof.use_dof = True; cd.dof.focus_object = None
+    if A.portrait: cd.sensor_fit = 'VERTICAL'; cd.sensor_height = 36 * 9 / 16
+    else: cd.sensor_fit = 'HORIZONTAL'; cd.sensor_width = 36
+    r.use_persistent_data = True
+    W, H = r.resolution_x, r.resolution_y
+    trim = bpy.data.objects['FireboxTrim']; bb = [trim.matrix_world @ Vector(c) for c in trim.bound_box]
+    _x0, _x1 = min(v.x for v in bb) + 0.012, max(v.x for v in bb) - 0.012
+    _z0, _z1 = min(v.z for v in bb) + 0.012, max(v.z for v in bb) - 0.012; _by = min(v.y for v in bb)
+    fire_c = Vector(((_x0 + _x1) / 2, _by, (_z0 + _z1) / 2))
+    scr_names = A.screen.split('>') if A.screen else []
+    def place_cam(st):
+        cam.location = st['loc']; cam.rotation_mode = 'QUATERNION'; cam.rotation_quaternion = st['rot']
+        cd.lens = st['lens']; cd.shift_x, cd.shift_y = st['shift']; cd.dof.focus_distance = st['focus']; cd.dof.aperture_fstop = st['fstop']
+        bpy.context.view_layer.update()
+    def px(v):
+        c = world_to_camera_view(sc, cam, v); return [round(c.x * W, 1), round((1 - c.y) * H, 1)]
+    meta = {'move': A.move, 'width': W, 'height': H, 'portrait': A.portrait, 'late': A.late, 'frames': []}
+    for i, st in enumerate(frames):   # where things are in every frame (cheap), for the fire and the waitlist on the site
+        place_cam(st); fm_ = {}
+        s_ = bpy.data.objects.get('Screen')
+        if s_:
+            v = [s_.matrix_world @ x.co for x in s_.data.vertices]; fm_['screen'] = [px(v[2]), px(v[3]), px(v[1]), px(v[0])]
+        fm_['firebox'] = [px(Vector(c)) for c in ((_x0, _by, _z1), (_x1, _by, _z1), (_x1, _by, _z0), (_x0, _by, _z0))]
+        # how out of focus the fire is (circle of confusion, image pixels), so the filmed fire is softened to match
+        S1 = st['focus'] * 1000; S2 = (cam.matrix_world.inverted() @ fire_c).length * 1000; fl = st['lens']
+        coc = (fl * fl / st['fstop']) * abs(S2 - S1) / max(1e-6, S2 * (S1 - fl))
+        fm_['vig'] = round(st['vig'], 3)
+        fm_['fireBlur'] = round(coc / (cd.sensor_height if A.portrait else 36) * (H if A.portrait else W) / 2, 2)
+        meta['frames'].append(fm_)
+    # the overhead handoffs: which part of the overhead still (pixels) the frame shows
+    for end, name in ((0, spec[0]), (-1, spec[-1][0])):
+        if isinstance(name, str) and name.startswith('over:') and not A.portrait:
+            cx, cy, w = OVER[name[5:].split('@')[0]]; h_ = w * H / W
+            o = 'top2' if A.chapters else 'top'; (ox, oy), osc, (OW, OH) = ORTHO[o]
+            k_ = OW / osc; x0_ = ox - osc / 2; y1_ = oy + osc * OH / OW / 2
+            meta['handoff' + ('In' if end == 0 else 'Out')] = {'still': o, 'rect': [round((cx - w / 2 - x0_) * k_, 1), round((y1_ - (cy + h_ / 2)) * k_, 1),
+                                                                     round((cx + w / 2 - x0_) * k_, 1), round((y1_ - (cy - h_ / 2)) * k_, 1)]}
+    if not A.fire_mask: json.dump(meta, open(os.path.join(A.out, 'meta.json'), 'w'))
+    f0, f1 = A.move_range or (0, len(frames) - 1)
+    for i in range(f0, min(f1, len(frames) - 1) + 1):
+        r.filepath = os.path.join(os.path.abspath(A.out), f'{"m" if A.fire_mask else ""}{i:03d}.png')
+        if os.path.exists(r.filepath): continue   # resumable
+        if SCREEN_NODE and len(scr_names) > 1: SCREEN_NODE.image = screen_image(scr_names[0 if i < len(frames) / 2 else 1])
+        place_cam(frames[i]); bpy.ops.render.render(write_still=True)
+        print(f'move {A.move} frame {i}/{len(frames) - 1}', flush=True)
+    print('wrote', A.out); raise SystemExit
+
 if not A.meta_only:
     bpy.ops.render.render(write_still=True)
 bpy.context.view_layer.update()   # make sure the camera's new placement is applied (a render does this; --meta-only doesn't)
@@ -928,6 +1138,7 @@ if A.meta:   # where the live overlays go: corners in image pixels, clockwise fr
     meta['firebox'] = [px(Vector(c)) for c in ((_x0, _by, _z1), (_x1, _by, _z1), (_x1, _by, _z0), (_x0, _by, _z0))]
     meta['flames'] = [{'base': px(Vector((x, y, z))), 'tip': px(Vector((x, y, z + 0.034)))} for x, y, z in FLAMES]
     if A.faq_blocks: meta['burnt'] = True   # the questions are in the picture (the site skips its own lettering)
+    if A.bake_ui: meta['baked'] = True      # photos and handwriting are in the picture (the site lays nothing over them)
     if A.insets:   # where each close-up sits in the base image (pixels): the site lays them over it when it zooms in
         meta['insets'] = {}
         from bpy_extras.object_utils import world_to_camera_view as _w2c
@@ -937,7 +1148,8 @@ if A.meta:   # where the live overlays go: corners in image pixels, clockwise fr
             pts = [px(o.matrix_world @ Vector(c)) for c in o.bound_box]
             x0, x1 = min(p[0] for p in pts), max(p[0] for p in pts); y0, y1 = min(p[1] for p in pts), max(p[1] for p in pts)
             mx, my = (x1 - x0) * 0.35 + 12, (y1 - y0) * 0.35 + 12
-            meta['insets'][name] = [max(0, round(x0 - mx)), max(0, round(y0 - my)), min(W, round(x1 + mx)), min(H, round(y1 + my))]
+            # named after the still too (both overhead tables have a Polaroid0): top2_Polaroid0
+            meta['insets'][f'{os.path.splitext(os.path.basename(A.out))[0]}_{name}' if A.bake_ui else name] = [max(0, round(x0 - mx)), max(0, round(y0 - my)), min(W, round(x1 + mx)), min(H, round(y1 + my))]
     json.dump(meta, open(A.meta, 'w'), indent=1)
     print('wrote', A.meta)
 print('wrote', r.filepath if not A.meta_only else '(meta only)')

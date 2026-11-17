@@ -6,6 +6,7 @@ import LiveFire from './LiveFire';
 import { ASSET_V } from './assetVersion';
 import { SMALL, MOBILE, CAPTURE } from './device';
 import MobileStage from './MobileStage';
+import SeqPlayer, { filmReady, segInfo, frameFit } from './SeqPlayer';
 import WaitlistScreen from '../waitlist/WaitlistScreen';
 import KickstarterScreen from '../waitlist/KickstarterScreen';
 import { useLive } from './useCountdown';
@@ -37,7 +38,11 @@ const CHAPTERS = [['end', 'toEnd', 'toChapters']];
 // questions (once each).
 // A wide window frames two prints at a stop (half the scrolling); a phone keeps one per screen so each stays readable.
 // Decided once, at load (the stops are the page's length).
-const WIDE_AT_LOAD = typeof window === 'undefined' || window.innerWidth >= window.innerHeight * 0.9;
+const WIDE_AT_LOAD = !MOBILE && (typeof window === 'undefined' || window.innerWidth >= window.innerHeight * 0.9);
+// The rendered film (SeqPlayer.jsx): once every camera move for this device is rendered and packed, the story plays it.
+const FILM_DEV = MOBILE ? 'phone' : 'desk';
+const FILM = !CAPTURE && filmReady(FILM_DEV);
+const DESK_FILM = FILM && FILM_DEV === 'desk';
 const groups = (n) => (WIDE_AT_LOAD ? Array.from({ length: Math.ceil(n / 2) }, (_, g) => [2 * g, 2 * g + 1].filter((i) => i < n))
   : Array.from({ length: n }, (_, i) => [i]));
 const HOW = groups(POLAROIDS.length);   // the table of polaroids: which ones each stop frames
@@ -59,13 +64,26 @@ const FAQ_BLOCKS = ['Block11', 'Block51', 'Block39', 'Block43', 'Block52', 'Bloc
 const CHAPTER_PRINTS = [...STORY, TEAM_PRINT];
 
 // Scroll length of every beat, in % of the window height
-const BEATS = [
+const PRINT_STOPS = STOPS.filter((st) => st.faq === undefined), FAQ_STOPS = STOPS.filter((st) => st.faq !== undefined);
+// the film: each move gets its own beat (the camera moves as you scroll); on a phone the table stops include the glide
+// from the print before, so they're longer
+const FILM_BEATS = [
+  ['wide', 110], ['toClose', 130], ['close', 100], ['toPlay', 130], ['play', 120], ['toTable', 150],
+  ...HOW.map((g, j) => [`p${j}`, DESK_FILM ? 105 + 30 * (g.length - 1) : j ? 125 : 100]),
+  ...(DESK_FILM ? [['backTop', 60]] : []),
+  ['toLate', DESK_FILM ? 160 : 190], ['late', 110], ['fall', 200], ['toEnd', 120], ['end', 150], ['toChapters', 150],
+  ...PRINT_STOPS.map((st, i) => [st.id, DESK_FILM ? st.len : i ? 125 : 100]),
+  ...(DESK_FILM ? [['backTop2', 60]] : []),
+  ['toFaq', 150], ...FAQ_STOPS.map((st, k) => [st.id, k ? 130 : 90])
+];
+const BEATS = FILM ? FILM_BEATS : [
   // opens on the room; the first scroll pushes in to Jeemu's screen, the next pulls back into the game
   ['wide', 110], ['toClose', 90], ['close', 100], ['toPlay', 90], ['play', 120], ['toTable', 90],
   ...HOW.map((g, j) => [`p${j}`, 105 + 30 * (g.length - 1)]),
   ['toLate', 90], ['late', 110], ['fall', 120], ['toEnd', 80], ['end', 150],   // fall: the tower comes down, scrubbed by the scroll   // end: the waitlist, on Jeemu's screen
   ['toChapters', 90], ...STOPS.map((st) => [st.id, st.len])
 ];
+const BEAT_IDS = BEATS.map(([id]) => id);
 const START = {}; let acc = 0;
 for (const [id, len] of BEATS) { START[id] = [acc, len]; acc += len; }
 const TOTAL = acc;
@@ -92,6 +110,8 @@ export const MOBILE_KEYS = [
 const MOBILE_FALL = { from: START.fall[0], to: FALL_END };
 const AHEAD = 140;   // mount this far (in % of the window height) before a shot comes into view, so it's decoded in time
 const near = (s, t) => t >= SPAN[s][0] - AHEAD && t <= SPAN[s][1] + AHEAD;
+const FILM_SPAN = FILM ? { top: [START.toTable[0], endOf('toLate')], top2: [START.toChapters[0], endOf('toFaq')] } : {};
+const filmNear = (s, t) => FILM_SPAN[s] && t >= FILM_SPAN[s][0] - AHEAD && t <= FILM_SPAN[s][1] + AHEAD;
 const TOP_BAR = 56;
 const WALL = { x: 965, y: 300, w: 720 };   // the chimney breast in the wide shot, image pixels
 
@@ -168,7 +188,7 @@ export default function Tonight({ onCta }) {
   // the fall: frames from scripts/blender/room (render_fall.sh), decoded ahead so scrubbing never waits
   const [fall, setFall] = useState(null);   // { count, ext }
   useEffect(() => {
-    if (MOBILE || fall || t < START.play[0]) return;
+    if (FILM || MOBILE || fall || t < START.play[0]) return;
     let live = true;
     fetch(at('fall/index.json')).then((r) => (r.ok ? r.json() : null)).then(async (j) => {
       if (!j || !live) return;
@@ -183,8 +203,9 @@ export default function Tonight({ onCta }) {
   const reduce = useMemo(() => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
 
   useEffect(() => {
-    if (MOBILE) { setTimeout(() => setLit(true), 150); return; }
-    SHOTS.forEach((s) => fetch(at(`${s}.json`)).then((r) => r.json()).then((j) => setMeta((m) => ({ ...m, [s]: j }))).catch(() => {}));
+    if (FILM) setTimeout(() => setLit(true), 150);
+    if (MOBILE && !DESK_FILM) { setTimeout(() => setLit(true), 150); return; }
+    (DESK_FILM ? ['top', 'top2'] : SHOTS).forEach((s) => fetch(at(`${s}.json`)).then((r) => r.json()).then((j) => setMeta((m) => ({ ...m, [s]: j }))).catch(() => {}));
   }, []);
 
   useEffect(() => {
@@ -226,6 +247,60 @@ export default function Tonight({ onCta }) {
   const fallFrame = fall && t >= START.fall[0] ? Math.min(fall.count - 1, Math.round(p('fall') * (fall.count - 1) * 1.15)) : -1;
   const portrait = vp.w / vp.h < 0.9;
 
+  // ---- the film: which frame, or which shot in full, the scroll is on (SeqPlayer)
+  const film = (() => {
+    if (!FILM) return null;
+    let bi = 0; while (bi < BEAT_IDS.length - 1 && t >= START[BEAT_IDS[bi + 1]][0]) bi++;
+    const id = BEAT_IDS[bi], k = p(id), desk = DESK_FILM;
+    const sq = (seg, x) => ({ seg, frame: Math.round(clamp(x) * (segInfo(FILM_DEV, seg).n - 1)) });
+    const st = (seg, which) => ({ seg, still: which });
+    // a stop reached by a move at the start of its own beat: the move, then the shot in full
+    const arrive = (seg, x, share = 0.35) => (x < share ? sq(seg, x / share) : st(seg, 'last'));
+    let v = null, css = null, o = 1, under = null, waitlist = false;
+    if (id === 'wide') v = st('wide-close', 'first');
+    else if (id === 'toClose') v = sq('wide-close', k);
+    else if (id === 'close') v = st('wide-close', 'last');
+    else if (id === 'toPlay') v = sq('close-play', k);
+    else if (id === 'play') v = st('close-play', 'last');
+    else if (id === 'toTable') v = sq(desk ? 'play-top' : 'play-print0', k);
+    else if (/^p\d+$/.test(id) || id === 'backTop') {
+      const j = +id.slice(1);
+      if (desk) { css = 'top'; o = 0; v = st('play-top', 'last'); }
+      else v = j === 0 ? st('play-print0', 'last') : arrive(`hprint${j - 1}-${j}`, k);
+    } else if (id === 'toLate') {
+      if (desk) { if (k < 0.15) { css = 'top'; o = k / 0.15; v = sq('top-late', 0); } else v = sq('top-late', (k - 0.15) / 0.85); }   // the night moves on: same view, later
+      else if (k < 0.3) v = sq('hprints-out', k / 0.3);
+      else if (k < 0.42) { under = st('hprints-out', 'last'); v = sq('top-late', 0); o = (k - 0.3) / 0.12; }
+      else v = sq('top-late', (k - 0.42) / 0.58);
+    } else if (id === 'late') v = st('fall', 'first');
+    else if (id === 'fall') v = k < 0.92 ? sq('fall', k / 0.92) : st('fall', 'last');
+    else if (id === 'toEnd') v = sq('fallen-end', k);
+    else if (id === 'end') { v = st('fallen-end', 'last'); waitlist = true; }
+    else if (id === 'toChapters') v = sq(desk ? 'end-top2' : 'end-print0', k);
+    else if (id === 'backTop2' || PRINT_STOPS.some((x) => x.id === id)) {
+      const i = PRINT_STOPS.findIndex((x) => x.id === id);
+      if (desk) { css = 'top2'; o = 0; v = st('end-top2', 'last'); }
+      else v = i === 0 ? st('end-print0', 'last') : arrive(`cprint${i - 1}-${i}`, k);
+    } else if (id === 'toFaq') v = sq(desk ? 'top2-faq0' : 'team-faq0', k);
+    else {   // a question: q0 is where the camera came down; the others are reached by gliding from the one before
+      const q = +id.slice(1);
+      v = q === 0 ? st(desk ? 'top2-faq0' : 'team-faq0', 'last') : arrive(`faq${q - 1}-faq${q}`, k, 0.38);
+    }
+    // fetch ahead: the moves in this beat and the next two
+    const segsOf = (b) => {
+      const fixed = { toClose: ['wide-close'], toPlay: ['close-play'], toTable: [desk ? 'play-top' : 'play-print0'], toLate: desk ? ['top-late'] : ['hprints-out', 'top-late'],
+        fall: ['fall'], toEnd: ['fallen-end'], toChapters: [desk ? 'end-top2' : 'end-print0'], toFaq: [desk ? 'top2-faq0' : 'team-faq0'] }[b];
+      if (fixed) return fixed;
+      const n = /^([pq])(\d+)$/.exec(b); const ci = PRINT_STOPS.findIndex((x) => x.id === b);
+      if (n && n[1] === 'q' && +n[2] > 0) return [`faq${n[2] - 1}-faq${n[2]}`];
+      if (!desk && n && n[1] === 'p' && +n[2] > 0) return [`hprint${n[2] - 1}-${n[2]}`];
+      if (!desk && ci > 0) return [`cprint${ci - 1}-${ci}`];
+      return [];
+    };
+    const next = BEAT_IDS.slice(bi, bi + 3).flatMap(segsOf);
+    return { v, css, o, under, waitlist, next };
+  })();
+
   // ---- per-shot camera (centre in image pixels, zoom relative to "cover") and opacity
   const cams = {};
   const hero = (m) => {
@@ -254,7 +329,9 @@ export default function Tonight({ onCta }) {
   }
   // A camera looking straight down on a table, stopping at one thing after another (quads[i], reached in beat ids[i]).
   // Portrait: the thing fills the space between the top bar and the text; wide: left of centre, text on the right.
-  const tablePan = (m, quads, ids, inId, outId) => {
+  // hand: the film's handoffs (desktop) { inRect, outRect, outBeat, frame }: the rendered camera arrives at, and leaves
+  // from, exactly these parts of the overhead still (pixels), so the cut between film and pan can't be seen
+  const tablePan = (m, quads, ids, inId, outId, hand) => {
     const cover = Math.max(vp.w / m.width, vp.h / m.height);
     const free = portrait ? Math.max(vp.h * 0.3, vp.h - TOP_BAR - (vp.card || vp.h * 0.25) - 34) : vp.h;
     const wideCard = (i) => !portrait && ids[i] === 'team';   // the team's card is wide: the print moves over for it
@@ -272,7 +349,15 @@ export default function Tonight({ onCta }) {
     let cur = -1;
     ids.forEach((id, i) => { if (t >= START[id][0]) cur = i; });
     let c, z, r;
-    if (cur < 0) { const z0 = fitI(0); r = turn(0); c = at(0, z0, r); z = mv(z0 * 1.25, z0, ease(p(inId))); }
+    // the camera on a rectangle of the still: the frame's width across it, no turn
+    const rectCam = (rc) => { const sf = Math.max(vp.w / hand.frame[0], vp.h / hand.frame[1]);
+      return { c: [(rc[0] + rc[2]) / 2, (rc[1] + rc[3]) / 2], z: (sf * hand.frame[0] / (rc[2] - rc[0])) / cover, r: 0 }; };
+    const stopCam = (i) => { const zi = fitI(i), ri = turn(i); return { c: at(i, zi, ri), z: zi, r: ri }; };
+    const blend = (A, B, k) => ({ c: [lerp(A.c[0], B.c[0], k), lerp(A.c[1], B.c[1], k)], z: lerp(A.z, B.z, k), r: lerp(A.r, B.r, k) });
+    let rectness = 0;
+    if (hand && cur <= 0) {   // coming down from the film onto the first stop
+      const k = cur < 0 ? 0 : ease(clamp(p(ids[0]) / 0.32)); ({ c, z, r } = blend(rectCam(hand.inRect), stopCam(0), k)); rectness = 1 - k;
+    } else if (cur < 0) { const z0 = fitI(0); r = turn(0); c = at(0, z0, r); z = mv(z0 * 1.25, z0, ease(p(inId))); }
     else {
       const k = ease(clamp(p(ids[cur]) / 0.32)), a = Math.max(0, cur - 1), za = fitI(a), zb = fitI(cur);
       r = lerp(turn(a), turn(cur), k);
@@ -280,7 +365,9 @@ export default function Tonight({ onCta }) {
       c = [lerp(from[0], to[0], k), lerp(from[1], to[1], k)];
       z = lerp(za, zb, k) * (quads[a] !== quads[cur] && !reduce ? 1 - 0.1 * Math.sin(Math.PI * k) : 1);   // lift a little while moving
     }
-    if (outId && t >= START[outId][0]) z = mv(z, z * 1.12, ease(p(outId)));
+    if (hand && t >= START[hand.outBeat][0]) {   // back up to where the film takes over
+      const k = ease(p(hand.outBeat)); ({ c, z, r } = blend({ c, z, r }, rectCam(hand.outRect), k)); rectness = k;
+    } else if (outId && !hand && t >= START[outId][0]) z = mv(z, z * 1.12, ease(p(outId)));
     const arrived = cur >= 0 && (!inBeat(ids[cur]) || p(ids[cur]) > 0.32);
     // depth of field: sharp over whatever the camera is on (it reads level now, so its own width and height), soft beyond
     const q = quads[Math.max(0, cur)], sz = cover * z;
@@ -288,13 +375,22 @@ export default function Tonight({ onCta }) {
     const half = [dist(q[0], q[1]) * sz / 2 * roomy, dist(q[0], q[3]) * sz / 2 * roomy];
     const off = offFor(Math.max(0, cur));
     const dof = { x: ((vp.w / 2 - off[0]) / vp.w) * 100, y: ((vp.h / 2 - off[1]) / vp.h) * 100,
-      rx: (half[0] / 0.62 * 1.1 / vp.w) * 100, ry: (half[1] / 0.62 * 1.15 / vp.h) * 100 };
+      rx: lerp((half[0] / 0.62 * 1.1 / vp.w) * 100, 400, rectness), ry: lerp((half[1] / 0.62 * 1.15 / vp.h) * 100, 400, rectness) };   // the film's view is sharp all over
     return { c, z, r, o: Math.min(ease(p(inId)), outId ? 1 - ease(p(outId)) : 1), cur, arrived, dof };
   };
-  if (meta.top) cams.top = tablePan(meta.top, HOW.map((g) => around(g.map((i) => meta.top.polaroids[i].card))), HOW.map((_, j) => `p${j}`), 'toTable', 'toLate');
+  const handOf = (into, outOf, outBeat) => { const a = segInfo('desk', into), b = segInfo('desk', outOf);
+    return a && b && a.handoffOut && b.handoffIn ? { inRect: a.handoffOut.rect, outRect: b.handoffIn.rect, outBeat, frame: [a.width, a.height] } : null; };
+  if (meta.top) cams.top = tablePan(meta.top, HOW.map((g) => around(g.map((i) => meta.top.polaroids[i].card))), HOW.map((_, j) => `p${j}`), 'toTable', 'toLate',
+    DESK_FILM ? handOf('play-top', 'top-late', 'backTop') : null);
   if (meta.top2 && (meta.top2.faqBlocks || meta.top2.faq)) {
     const m = meta.top2, fq = faqQuads(m);
-    cams.top2 = tablePan(m, STOPS.map((st) => (st.faq !== undefined ? (fq[st.faq] || m.faq) : st.prints.length > 1 ? around(st.prints.map((i) => m.polaroids[i].card)) : m.polaroids[st.prints[0]].card)), STOPS.map((st) => st.id), 'toChapters', null);
+    const stops = DESK_FILM ? PRINT_STOPS : STOPS;   // the film flies to the questions itself
+    cams.top2 = tablePan(m, stops.map((st) => (st.faq !== undefined ? (fq[st.faq] || m.faq) : st.prints.length > 1 ? around(st.prints.map((i) => m.polaroids[i].card)) : m.polaroids[st.prints[0]].card)), stops.map((st) => st.id), 'toChapters', null,
+      DESK_FILM ? handOf('end-top2', 'top2-faq0', 'backTop2') : null);
+  }
+  if (film) {   // the film decides when the overhead stills are on
+    if (cams.top) cams.top.o = film.css === 'top' ? 1 : 0;
+    if (cams.top2) cams.top2.o = film.css === 'top2' ? 1 : 0;
   }
   if (meta.late) {
     const { c } = hero(meta.late);
@@ -356,7 +452,7 @@ export default function Tonight({ onCta }) {
   const screenFor = { close: SCREENS.intro, wide: SCREENS.wide, play: SCREENS.question, late: SCREENS.late };
   // the fire burns down for the end of the night and stays low for everything after it
   const fire = cams.late ? lerp(1, 0.35, Math.max(cams.late.o, cams.top2 ? cams.top2.o : 0, ...CHAPTERS.map(([sh]) => (cams[sh] ? cams[sh].o : 0)))) : 1;
-  const endOn = MOBILE ? t >= START.toEnd[0] + START.toEnd[1] * 0.6 && t < START.toChapters[0] + START.toChapters[1] * 0.3 : onShot('end');
+  const endOn = FILM ? inBeat('end') : MOBILE ? t >= START.toEnd[0] + START.toEnd[1] * 0.6 && t < START.toChapters[0] + START.toChapters[1] * 0.3 : onShot('end');
   // the capture script (scripts/web/capture_mobile.cjs) reads where things are
   if (CAPTURE && typeof window !== 'undefined') {
     window.__tn = { START, TOTAL, keys: MOBILE_KEYS, fall: MOBILE_FALL, fallCount: fall ? fall.count : 0,
@@ -375,11 +471,11 @@ export default function Tonight({ onCta }) {
       <span id="faq" className="tn-anchor" style={{ '--at': START[STOPS[FIRST_FAQ].id][0] + 40 }} aria-hidden="true" />
       <ChapterText />
       <div className="tn-stage" ref={stage}>
-        {MOBILE && <MobileStage t={t} vp={vp} keys={MOBILE_KEYS} fall={MOBILE_FALL}
+        {MOBILE && !FILM && <MobileStage t={t} vp={vp} keys={MOBILE_KEYS} fall={MOBILE_FALL}
           waitlist={endScreen} />}
-        {!MOBILE && SHOTS.map((s) => {
+        {(FILM ? (DESK_FILM ? ['top', 'top2'] : []) : MOBILE ? [] : SHOTS).map((s) => {
           const m = meta[s], cam = cams[s];
-          if (!m || !cam || !near(s, t)) return null;
+          if (!m || !cam || (FILM ? !filmNear(s, t) : !near(s, t))) return null;
           return (
             <div key={s} className="tn-layer" style={{ opacity: cam.o, visibility: cam.o > 0.001 ? 'visible' : 'hidden' }}>
               <div className="tn-shot" style={stageStyle(m, cam, (s === 'top' || s === 'top2') && portrait ? vp.card + 24 : 0)}>
@@ -399,10 +495,10 @@ export default function Tonight({ onCta }) {
                   <div className="tn-warp tn-screen" style={warp(320, 240, m.screen)}><LiveScreen card={screenFor[s]} active={cam.o > 0.5} /></div>
                 )}
                 {/* sharp close-ups go under the prints: the photos on the prints are laid over the render */}
-                {s === 'top2' && loadRest && m.insets && t < endOf(STOPS[FIRST_FAQ].id) && Object.entries(m.insets).map(([n, [x0, y0, x1, y1]]) => (
+                {(s === 'top2' || s === 'top') && loadRest && m.insets && (DESK_FILM || (s === 'top2' && t < endOf(STOPS[FIRST_FAQ].id))) && Object.entries(m.insets).map(([n, [x0, y0, x1, y1]]) => (
                   <Pic key={n} src={at(`insets/${n}${SMALL ? "_s" : ""}.jpg`)} className="tn-inset" style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0 }} decoding="async" />
                 ))}
-                {loadRest && m.polaroids && !s.startsWith('faq') && (
+                {loadRest && m.polaroids && !m.baked && !s.startsWith('faq') && (
                   <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp}
                     written={s === 'top' ? written : s === 'top2' ? written2 : Infinity} />
                 )}
@@ -414,7 +510,7 @@ export default function Tonight({ onCta }) {
                 <div className="tn-dof" style={{ '--dof-x': `${cam.dof.x}%`, '--dof-y': `${cam.dof.y}%`, '--dof-rx': `${cam.dof.rx}%`, '--dof-ry': `${cam.dof.ry}%` }} aria-hidden="true">
                   <div className="tn-shot" style={stageStyle(m, cam, portrait ? vp.card + 24 : 0)}>
                     {loadRest && <Pic src={at(`${s}_blur.jpg`)} width={m.width} height={m.height} draggable="false" decoding="async" />}
-                    {loadRest && <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp} written={s === 'top' ? written : written2} soft />}
+                    {loadRest && !m.baked && <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp} written={s === 'top' ? written : written2} soft />}
                     {loadRest && s === 'top2' && m.faqBlocks && !m.burnt && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} soft />)}
                     {loadRest && s === 'top2' && !m.faqBlocks && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} soft />}
                   </div>
@@ -423,7 +519,11 @@ export default function Tonight({ onCta }) {
             </div>
           );
         })}
-        {!MOBILE && <div className="tn-fire" style={{ opacity: fire }} aria-hidden="true" />}
+        {FILM && film && (<>
+          {film.under && <SeqPlayer dev={FILM_DEV} vp={vp} view={film.under} />}
+          <SeqPlayer dev={FILM_DEV} vp={vp} view={film.v} o={film.o} next={film.next} waitlist={film.waitlist ? endScreen : null} />
+        </>)}
+        {!MOBILE && <div className="tn-fire" style={{ opacity: FILM ? (t >= START.toLate[0] ? 0.35 : 1) : fire }} aria-hidden="true" />}
         {/* walking in: dark, the fire catches, then the firelight comes up across the room (once, on load) */}
         <div className={`tn-lights ${lit ? 'is-up' : ''}`} aria-hidden="true" />
         {!MOBILE && <div className="tn-grain" aria-hidden="true" />}
@@ -431,7 +531,16 @@ export default function Tonight({ onCta }) {
 
         {/* words */}
         <div className="tn-hint" style={{ opacity: t < 30 ? 1 - t / 30 : 0 }} aria-hidden="true">Scroll</div>
-        {meta.wide && cams.wide && (() => {
+        {DESK_FILM && (() => {   // over the stone chimney breast in the landing frame (same camera as the old still)
+          const f = frameFit(segInfo('desk', 'wide-close'), vp);
+          const x = f.tx + WALL.x * f.s, y = Math.max(f.ty + WALL.y * f.s, TOP_BAR + 80), cw = Math.min(vp.w - 32, WALL.w * f.s);
+          return (
+            <div className="tn-caption tn-on-wall" style={{ opacity: t < START.toClose[0] ? 1 : clamp(1 - p('toClose') / 0.3), left: clamp(x, cw / 2 + 16, vp.w - cw / 2 - 16), top: y, width: cw }}>
+              <h2>{CAPTIONS.wide.title} {CAPTIONS.wide.sub}</h2>
+            </div>
+          );
+        })()}
+        {!FILM && meta.wide && cams.wide && (() => {
           // over the stone chimney breast, moving with it (the wall spans about x 560-1370, y 0-600 in the render)
           const [x, y0, sc] = project(meta.wide, cams.wide, WALL.x, WALL.y);
           const y = Math.max(y0, TOP_BAR + (portrait ? 110 : 80));   // phones crop the top of the wall away

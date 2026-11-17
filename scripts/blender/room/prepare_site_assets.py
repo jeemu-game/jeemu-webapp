@@ -25,8 +25,9 @@ for name in ('close', 'wide', 'play', 'top', 'late', 'end', 'top2') + tuple(f'fa
         a = patch.split()[3].point(lambda v: 255 if v > 250 else 0).filter(ImageFilter.MinFilter(41)).filter(ImageFilter.GaussianBlur(14))
         raw = Image.composite(patch, raw, a); print('  patched', name)
     ins_json = os.path.join(SRC, name + '_insets.json')
-    if os.path.exists(ins_json):   # the sharp close-ups, scaled down into the base, so the two match when one fades in
-        for iname, (x0, y0, x1, y1) in json.load(open(ins_json)).get('insets', {}).items():
+    ins = json.load(open(ins_json)).get('insets', {}) if os.path.exists(ins_json) else json.load(open(js)).get('insets', {})
+    if ins:   # the sharp close-ups, scaled down into the base, so the two match when one fades in
+        for iname, (x0, y0, x1, y1) in ins.items():
             f = os.path.join(SRC, 'insets', iname + '.png')
             if os.path.exists(f):
                 raw.paste(Image.open(f).convert('RGBA').resize((x1 - x0, y1 - y0), Image.LANCZOS), (x0, y0))
@@ -68,12 +69,15 @@ if frames:
     json.dump({'count': len(frames), 'width': 1280, 'height': 720}, open(os.path.join(fdst, 'index.json'), 'w'))
     print('ok fall', len(frames), 'frames')
 
-# sharp close-ups for the chapters table (build_room.py --insets): where they go, and the pictures
-ins_meta = os.path.join(SRC, 'top2_insets.json'); top2_json = os.path.join(DST, 'top2.json')
-if os.path.exists(ins_meta) and os.path.exists(top2_json):
-    m = json.load(open(top2_json)); extra = json.load(open(ins_meta))
-    m['insets'] = extra.get('insets', {}); m['burnt'] = m.get('burnt') or extra.get('burnt', False)
-    json.dump(m, open(top2_json, 'w'), indent=1)
+# sharp close-ups for the overhead tables (build_room.py --insets): where they go, and the pictures
+for still in ('top', 'top2'):
+    ins_meta = os.path.join(SRC, still + '_insets.json'); sj = os.path.join(DST, still + '.json')
+    if not os.path.exists(sj): continue
+    m = json.load(open(sj))
+    if os.path.exists(ins_meta):
+        extra = json.load(open(ins_meta)); m['insets'] = extra.get('insets', {}); m['burnt'] = m.get('burnt') or extra.get('burnt', False)
+        json.dump(m, open(sj, 'w'), indent=1)
+    if not m.get('insets'): continue
     idst = os.path.join(DST, 'insets'); os.makedirs(idst, exist_ok=True)
     for name in m['insets']:
         f = os.path.join(SRC, 'insets', name + '.png')
