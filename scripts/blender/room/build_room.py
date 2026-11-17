@@ -557,7 +557,7 @@ def note_texture(i, text, w_m, h_m):
     PX = 20000; W_, H_ = max(8, round(w_m * PX)), max(8, round(h_m * PX))
     capH = 600 * h_m / w_m; size = min(capH * 0.45, 1050 / max(10, len(text))) * W_ / 600
     im = _I.new('RGBA', (W_ * 2, H_ * 2), (0, 0, 0, 0)); dr = _D.Draw(im)
-    fo = _F.truetype(os.path.join(CACHE, 'fonts', 'Kalam.ttf'), round(size * 2))
+    fo = _F.truetype(os.path.join(HERE, 'fonts', 'Kalam.ttf'), round(size * 2))
     tw = dr.textlength(text, font=fo); bb = dr.textbbox((0, 0), text, font=fo)
     dr.text(((W_ * 2 - tw) / 2, (H_ * 2 - (bb[3] - bb[1])) / 2 - bb[1]), text, fill=(0x23, 0x24, 0x3a, 235), font=fo)
     im = im.rotate(1.5, resample=_I.BICUBIC).resize((W_, H_), _I.LANCZOS)
@@ -838,7 +838,7 @@ if A.faq_blocks:   # the questions people ask, laser-burnt into the top of falle
     import re as _re, textwrap as _tw
     faq_src = open(os.path.join(HERE, '..', '..', '..', 'src', 'data', 'faq.js'), encoding='utf-8').read()
     questions = _re.findall(r"q: '((?:[^'\\]|\\.)*)'", faq_src)
-    font_path = os.path.join(CACHE, 'fonts', 'Manrope-600.ttf')
+    font_path = os.path.join(HERE, 'fonts', 'Manrope-600.ttf')   # shipped with the scripts (OFL)
     # Laser engraving as a texture on the block's face, not geometry: the letters are charred dark brown, a bump map
     # shades their edges like the walls of a shallow groove, and the heat leaves a faint scorch round each stroke.
     from PIL import Image as _Im, ImageDraw as _Dr, ImageFont as _Fo, ImageFilter as _Fi
