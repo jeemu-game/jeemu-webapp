@@ -74,6 +74,7 @@ def main():
             run([sys.executable, os.path.join(HERE, 'prepare_site_assets.py'), os.path.join(root, 'stills')])
         return
     B = [sys.executable, os.path.join(HERE, 'build_room.py')] if a.bpy else [a.blender, '-b', '-P', os.path.join(HERE, 'build_room.py'), '--']
+    if not a.bpy: B.append('--gpu')   # the graphics card renders (OptiX/CUDA on NVIDIA)
     t0 = time.time()
     for name, move, scene, screen, dev in JOBS:
         if a.only and name not in a.only and name.split('/')[-1] not in a.only: continue
