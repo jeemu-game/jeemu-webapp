@@ -87,7 +87,14 @@ def _get(url, dst):
     if os.path.exists(dst) and os.path.getsize(dst) > 0: return dst
     os.makedirs(os.path.dirname(dst), exist_ok=True)
     req = urllib.request.Request(url, headers={'User-Agent': 'jeemu-render/1.0'})
-    with urllib.request.urlopen(req, timeout=120) as r, open(dst + '.part', 'wb') as f: f.write(r.read())
+    import time as _time
+    for attempt in range(8):   # a shaky connection: wait and try again rather than give up (5 s, 10 s, 20 s ... )
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r, open(dst + '.part', 'wb') as f: f.write(r.read())
+            break
+        except OSError as e:
+            if attempt == 7: raise
+            wait = min(120, 5 * 2 ** attempt); print(f'download failed ({e}); trying again in {wait} s: {url}', flush=True); _time.sleep(wait)
     os.replace(dst + '.part', dst); return dst
 
 def _files(asset):
