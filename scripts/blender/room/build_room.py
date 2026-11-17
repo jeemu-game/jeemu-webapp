@@ -1112,8 +1112,9 @@ if A.move:
     # the overhead handoffs: which part of the overhead still (pixels) the frame shows
     for end, name in ((0, spec[0]), (-1, spec[-1][0])):
         if isinstance(name, str) and name.startswith('over:') and not A.portrait:
-            cx, cy, w = OVER[name[5:].split('@')[0]]; h_ = w * H / W
-            o = 'top2' if A.chapters else 'top'; (ox, oy), osc, (OW, OH) = ORTHO[o]
+            key = name[5:].split('@')[0]; cx, cy, w = OVER[key]; h_ = w * H / W
+            o = 'top2' if key.startswith('top2') else 'top'   # which overhead still the site pans there (not the scene: the
+            (ox, oy), osc, (OW, OH) = ORTHO[o]                # night moves on at the evening table's handoff)
             k_ = OW / osc; x0_ = ox - osc / 2; y1_ = oy + osc * OH / OW / 2
             meta['handoff' + ('In' if end == 0 else 'Out')] = {'still': o, 'rect': [round((cx - w / 2 - x0_) * k_, 1), round((y1_ - (cy + h_ / 2)) * k_, 1),
                                                                      round((cx + w / 2 - x0_) * k_, 1), round((y1_ - (cy - h_ / 2)) * k_, 1)]}
