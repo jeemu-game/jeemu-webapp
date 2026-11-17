@@ -187,6 +187,7 @@ export default function Tonight({ onCta }) {
   useEffect(() => { const id = setTimeout(() => setLoadRest(true), 4000); return () => clearTimeout(id); }, []);   // safety net
   // the fall: frames from scripts/blender/room (render_fall.sh), decoded ahead so scrubbing never waits
   const [fall, setFall] = useState(null);   // { count, ext }
+  const fallImgs = useRef([]);              // the fall's frames, decoded and held (computers only)
   useEffect(() => {
     if (FILM || MOBILE || fall || t < START.play[0]) return;
     let live = true;
@@ -194,8 +195,13 @@ export default function Tonight({ onCta }) {
       if (!j || !live) return;
       const ext = await new Promise((res) => { const im = new Image(); im.onload = () => res('avif'); im.onerror = () => res('jpg');
         im.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A='; });
-      // fetched ahead into the cache so scrubbing never waits; not kept decoded (31 frames is too much for a phone)
-      for (let i = 0; i < j.count; i++) fetch(at(`fall/${String(i).padStart(2, '0')}${SMALL ? '_m' : ''}.${ext}`)).catch(() => {});
+      // fetched ahead into the cache so scrubbing never waits. A computer also keeps them decoded, so every frame
+      // shows the instant it's asked for (otherwise a quick scroll skips from standing to fallen); a phone can't afford that
+      for (let i = 0; i < j.count; i++) {
+        const u = at(`fall/${String(i).padStart(2, '0')}${SMALL ? '_m' : ''}.${ext}`);
+        if (SMALL) fetch(u).catch(() => {});
+        else { const im = new Image(); im.src = u; im.decode?.().catch(() => {}); fallImgs.current[i] = im; }
+      }
       if (live) setFall({ count: j.count, ext });
     }).catch(() => {});
     return () => { live = false; };
@@ -482,9 +488,10 @@ export default function Tonight({ onCta }) {
                 {(s === FIRST_SHOT || loadRest) && <Pic src={shotSrc(s)} width={m.width} height={m.height} draggable="false" decoding="async"
                   fetchPriority={s === FIRST_SHOT ? 'high' : 'low'} onLoad={s === FIRST_SHOT ? startRest : undefined} />}
                 {s === 'late' && fallFrame >= 0 && (
-                  <img className="tn-fallframe" src={at(`fall/${String(fallFrame).padStart(2, '0')}${SMALL ? '_m' : ''}.${fall.ext}`)} alt="" draggable="false" />
+                  <img className="tn-fallframe" decoding="sync" src={at(`fall/${String(fallFrame).padStart(2, '0')}${SMALL ? '_m' : ''}.${fall.ext}`)} alt="" draggable="false" />
                 )}
-                {(s === FIRST_SHOT || loadRest) && !s.startsWith('faq') && (m.firebox || m.flames) && <LiveFire shot={s} m={m} warp={warp} active={cam.o > 0.01} />}
+                {(s === FIRST_SHOT || loadRest) && !s.startsWith('faq') && (m.firebox || m.flames) && <LiveFire shot={s} m={m} warp={warp} active={cam.o > 0.01}
+                  mask={s === 'late' && fall && fallFrame > fall.count * 0.3 ? 'fallen' : undefined} />}
                 {s === FIRST_SHOT && <div className={`tn-roomdark ${lit ? 'is-up' : ''}`} style={{ width: m.width, height: m.height }} aria-hidden="true" />}
                 {m.screen && s === 'end' && (
                   <div className="tn-warp tn-screen is-ui" style={warp(320, 240, m.screen)}>

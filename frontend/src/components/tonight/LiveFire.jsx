@@ -49,7 +49,8 @@ const BURN = { wide: [0.88, 1.02], close: [0.88, 1.02], play: [0.88, 1.02], late
 // out where the tower stands in front of it (the tower falls during that shot, so a fixed matte there would show a step)
 const LATE = new Set(['late', 'end']);
 
-export default function LiveFire({ shot, m, warp, active }) {
+export default function LiveFire({ shot, m, warp, active, mask }) {
+  const matte = mask || shot;   // which firebox matte (the late shot switches to the fallen tower's as it comes down)
   // the clips and the masks are part of the site now: no need to ask the server first (that delayed the fire)
   const ok = { fire: true, candle: true, mask: MASKED.has(shot) };
   const [moving, setMoving] = useState(false);   // the fire is moving: drop the still first frame
@@ -78,7 +79,7 @@ export default function LiveFire({ shot, m, warp, active }) {
     <>
       {ok.fire && ok.mask && m.firebox && (   // never without its mask: the fire must stay behind the tower
         <div className="tn-firewrap" style={{ left: box.x0, top: box.y0, width: box.w, height: box.h, overflow: 'hidden',
-          WebkitMaskImage: `url(${BASE}${shot}_firemask.png?v=${ASSET_V})`, maskImage: `url(${BASE}${shot}_firemask.png?v=${ASSET_V})`,
+          WebkitMaskImage: `url(${BASE}${matte}_firemask.png?v=${ASSET_V})`, maskImage: `url(${BASE}${matte}_firemask.png?v=${ASSET_V})`,
           WebkitMaskSize: `${m.width}px ${m.height}px`, maskSize: `${m.width}px ${m.height}px`,
           WebkitMaskPosition: `${-box.x0}px ${-box.y0}px`, maskPosition: `${-box.x0}px ${-box.y0}px` }}>
           <div style={{ position: 'absolute', left: -box.x0, top: -box.y0, width: m.width, height: m.height }}>
