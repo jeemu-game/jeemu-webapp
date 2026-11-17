@@ -560,12 +560,12 @@ export default function Tonight({ onCta }) {
           <h2>{CAPTIONS.play.title}</h2>
         </div>
         {HOW.map((g, j) => (
-          <div key={j} className={`tn-card ${g.length > 1 ? 'is-pair' : ''}`} style={{ opacity: show(`p${j}`, 0.3, 0.94) }}>
+          <div key={j} className={`tn-card ${g.length > 1 ? 'is-pair' : ''}`} style={{ opacity: show(`p${j}`, FILM && !DESK_FILM ? 0.4 : 0.3, 0.94) }}>
             {g.map((i) => <section key={i}><h3>{POLAROIDS[i].title}</h3><p>{POLAROIDS[i].body}</p></section>)}
           </div>
         ))}
  {STOPS.map((st) => (
-          <div key={st.id} className={`tn-card ${st.faq !== undefined ? 'is-answer' : ''} ${st.team && !portrait ? 'is-team' : ''}`} style={{ opacity: show(st.id, 0.3, 0.94) }}>
+          <div key={st.id} className={`tn-card ${st.faq !== undefined ? 'is-answer' : ''} ${st.team && !portrait ? 'is-team' : ''}`} style={{ opacity: show(st.id, FILM && (!DESK_FILM || st.faq !== undefined) ? 0.42 : 0.3, 0.94) }}>
             {/* FAQ: the question is already burnt into the block on screen; it stays here for screen readers */}
             {st.items ? st.items.map((it) => <section key={it.title}><h3>{it.title}</h3><p>{it.body}</p></section>) : (
               <h3 className={st.faq !== undefined ? 'ws-sr' : undefined}>{st.title}</h3>)}
