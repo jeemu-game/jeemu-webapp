@@ -14,6 +14,21 @@ Units: metres, Z up. The tabletop is z = 0 with Jeemu at the origin; its screen 
 """
 import argparse, json, math, os, sys, urllib.request
 import bpy, bmesh
+try:
+    import PIL  # noqa: F401  (Pillow draws the handwriting, the screens' textures and the laser burns)
+except ImportError:
+    # Blender has its own Python without Pillow; borrow it from the computer's own Python of the same version
+    _v = f'{sys.version_info[0]}{sys.version_info[1]}'
+    for _p in (os.path.expandvars(rf'%LOCALAPPDATA%\Programs\Python\Python{_v}\Lib\site-packages'),
+               os.path.expandvars(rf'%APPDATA%\Python\Python{_v}\site-packages'),
+               rf'C:\Program Files\Python{_v}\Lib\site-packages',
+               os.path.expanduser(f'~/.local/lib/python{sys.version_info[0]}.{sys.version_info[1]}/site-packages')):
+        if os.path.isdir(os.path.join(_p, 'PIL')): sys.path.append(_p); break
+    try:
+        import PIL  # noqa: F401,F811
+    except ImportError:
+        raise SystemExit(f'Pillow is missing. Install it for Python {sys.version_info[0]}.{sys.version_info[1]} '
+                         f'(the version inside Blender):  py -{sys.version_info[0]}.{sys.version_info[1]} -m pip install pillow')
 from mathutils import Vector, Matrix, Euler
 
 HERE = os.path.dirname(os.path.abspath(__file__))
