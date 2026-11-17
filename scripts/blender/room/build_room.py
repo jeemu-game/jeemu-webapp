@@ -1016,9 +1016,16 @@ def move_frames(spec):
     counts = [n for _, n in spec[1:]]; total = sum(counts)
     ease_ = lambda x: x * x * x * (x * (x * 6 - 15) + 10)   # smootherstep: starts and stops at rest
     pts = [s_['loc'] for s_ in states]
-    def cr(i, t):   # Catmull-Rom through the states (a smooth path, no corners where legs meet)
-        p0, p1, p2, p3 = pts[max(0, i - 1)], pts[i], pts[i + 1], pts[min(len(pts) - 1, i + 2)]
-        return 0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t)
+    def tangent(j):   # through each state, heading on towards the next; never bent further than its shorter leg
+        if j == 0: return pts[1] - pts[0]            # the ends run straight on (the move's timing already eases in and out)
+        if j == len(pts) - 1: return pts[-1] - pts[-2]
+        d = pts[j + 1] - pts[j - 1]
+        n = min((pts[j] - pts[j - 1]).length, (pts[j + 1] - pts[j]).length)
+        return d.normalized() * n if d.length > 1e-9 else Vector((0, 0, 0))
+    def cr(i, t):   # a smooth path through the states (Hermite), no corners where legs meet and no overshoot
+        p1, p2, m1, m2 = pts[i], pts[i + 1], tangent(i), tangent(i + 1)
+        t2, t3 = t * t, t * t * t
+        return (2 * t3 - 3 * t2 + 1) * p1 + (t3 - 2 * t2 + t) * m1 + (-2 * t3 + 3 * t2) * p2 + (t3 - t2) * m2
     out = []
     for f in range(total + 1):
         u = ease_(f / total) * total

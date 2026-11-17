@@ -67,7 +67,7 @@ def ember_glow():
         yy, xx = np.mgrid[0:512, 0:1280].astype(np.float32)
         r = np.sqrt(((xx - 640) / (0.58 * 1280)) ** 2 + ((yy - 512) / (0.34 * 512)) ** 2)   # ellipse at the bottom middle
         c0, c1 = np.array([255, 96, 22, 0.62], np.float32), np.array([190, 52, 8, 0.26], np.float32)
-        a = np.where(r < 0.5, c0 + (c1 - c0) * (r / 0.5)[..., None], c1 * np.clip(1 - (r - 0.5) / 0.35, 0, 1)[..., None])
+        a = np.where((r < 0.5)[..., None], c0 + (c1 - c0) * (r / 0.5)[..., None], c1 * np.clip(1 - (r - 0.5) / 0.35, 0, 1)[..., None])
         rgb, al = a[..., :3] / 255.0, a[..., 3] * 0.85
         EMBER = Image.fromarray(np.dstack([rgb * 255, al * 255]).clip(0, 255).astype(np.uint8), 'RGBA')
     return EMBER
