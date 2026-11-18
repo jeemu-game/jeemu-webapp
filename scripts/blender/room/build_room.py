@@ -747,6 +747,11 @@ if scr:
 # the real prototype: speckled black print, mint JEEMU and frog, pine blocks with numbers written on in pen
 sys.path.insert(0, HERE); import prototype
 prototype.apply(CACHE, os.path.join(HERE, '..', '..', '..', 'public', 'brand'), wood=A.base == 'wood')
+if A.base == 'wood':   # the base in real photographed hardwood: deep, straight grain, oiled to a satin sheen
+    _wd = pbr('BaseWood', 'dark_wood', 0.30, val=0.62, sat=0.92, bump=0.04, rough_mul=0.75, coat=0.25)
+    for o in bpy.data.objects:
+        for sl in getattr(o, 'material_slots', []):
+            if sl.material and sl.material.name.startswith(('MouldedBlack', 'PlateWalnut')): sl.material = _wd
 
 # ---------------------------------------------------------------- world: clear night sky
 w = bpy.data.worlds.new('Night'); sc.world = w; w.use_nodes = True; wn = w.node_tree
