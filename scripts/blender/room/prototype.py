@@ -115,6 +115,17 @@ def laser_burn(name, mask_png):
     return m
 
 
+def _frog_outline_png(src, dst):
+    """The frog as a laser draws it: its outline plus its sunglasses and smile (not a filled silhouette)."""
+    from PIL import Image, ImageChops, ImageFilter
+    im = Image.open(src).convert('RGBA'); a = im.split()[3]; w = max(3, im.width // 26) | 1   # about 0.8 mm on the base: a laser line weight that reads
+    edge = ImageChops.subtract(a, a.filter(ImageFilter.MinFilter(w)))              # a band just inside the silhouette
+    lum = im.convert('L'); dark = Image.eval(lum, lambda v: 255 if v < 60 else 0)
+    feat = ImageChops.multiply(dark, a)                                           # the sunglasses and the smile
+    m = ImageChops.lighter(edge, feat)
+    Image.merge('RGBA', (m, m, m, m)).save(dst)
+
+
 def _wordmark_png(path, brand_dir, px=2400):
     """JEEMU in the brand face, white on transparent; returns its width / height."""
     from PIL import Image, ImageDraw, ImageFont
@@ -317,7 +328,11 @@ def apply(cache_dir, brand_dir, wood=False):
             (r0, r1), (u0, u1), (_, top) = span(right), span(up), span(n)
             c = right * (r0 + r1) / 2 + up * (u0 + u1) / 2 + n * top     # on the shell surface
             cen[sx] = c
-            _badge(f'Badge{sx}', c, right, up, n, r1 - r0 + 0.002, u1 - u0 + 0.002, plate_m)
+            if wood:   # solid wood: the pocket filled flush with the shell, no panel, the logo burnt straight in
+                _badge(f'Badge{sx}', c - n * BADGE_UP, right, up, n, r1 - r0 + 0.002, u1 - u0 + 0.002, plate_m)
+                cen[sx] = c - n * BADGE_UP
+            else:
+                _badge(f'Badge{sx}', c, right, up, n, r1 - r0 + 0.002, u1 - u0 + 0.002, plate_m)
         bpy.data.objects.remove(inl, do_unlink=True)
         frog = os.path.join(cache_dir, 'proto', 'frog.png'); _frog_png(frog)
         right, up, n = _face_frame(-1)
@@ -326,7 +341,8 @@ def apply(cache_dir, brand_dir, wood=False):
             r1, u1, n1 = _face_frame(1); h_ = 0.0175
             _quad('LaserWordmark', None, Matrix.Translation(cen[1] + n1 * (BADGE_UP + 0.00005)) @ Matrix((r1, u1, n1)).transposed().to_4x4(),
                   h_ * ar, h_, laser_burn('LaserWordmark', wm))
-            fm = laser_burn('LaserFrog', frog)
+            frog_line = os.path.join(cache_dir, 'proto', 'frog_outline.png'); _frog_outline_png(frog, frog_line)
+            fm = laser_burn('LaserFrog', frog_line)
         else:
             _wordmark(cen[1], 1, brand_dir, mint, BADGE_UP + 0.0003)   # letters stand 0.3 mm proud of the badge
             fm = _decal_mat('ProtoFrog', frog, (1, 1, 1), 1.0, rough=0.42, use_rgb=True, bump=0.25)

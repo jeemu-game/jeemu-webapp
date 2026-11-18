@@ -48,6 +48,7 @@ ap.add_argument('--gpu', action='store_true')
 ap.add_argument('--save-blend', default='')
 ap.add_argument('--blank-photos', action='store_true', help='plain white picture areas: the website lays the real photos over them')
 ap.add_argument('--base', default='black', choices=['black', 'wood'], help="Jeemu's base: black print with mint inlays, or walnut with the logo laser-burnt in")
+ap.add_argument('--table', default='walnut', choices=['walnut', 'marble'], help='the coffee table top: walnut veneer, or a warm white marble slab')
 ap.add_argument('--bake-ui', action='store_true', help="the site's photos, handwriting and Jeemu's screen in the picture itself (camera moves: no live overlays)")
 ap.add_argument('--screen', default='', help="with --bake-ui: what Jeemu's screen shows (screens/<name>.png); 'a>b' switches from a to b halfway through a move")
 ap.add_argument('--late', action='store_true', help='end of the night: embers, empty glasses, burnt-down candles, a gappy tower')
@@ -242,7 +243,40 @@ def glass_mat(name, color=(1, 1, 1), rough=0.0):
 # ---------------------------------------------------------------- materials
 M_WALL = pbr('Stone', L['wall'], L['wall_tile'] * 1.3, val=L['wall_val'], sat=L['wall_sat'], bump=1.0, rough_mul=1.1, res='4k', vary=0.25)
 M_FLOOR = pbr('Floor', L['floor'], 2.4, vary=0.15, val=L['floor_val'], sat=L['floor_sat'], tint=L['floor_tint'], bump=0.1, rough_mul=0.8, rot=math.pi / 2)
-M_TABLE = pbr('TableTop', L['table'], 1.4, val=L['table_val'], tint=L['table_tint'], bump=0.03, rough_mul=0.55, coat=0.22, res='4k')
+def marble_mat(name):
+    """A warm white marble slab, polished: a soft cloudy ground, thin taupe veins wandering across it with fainter ones
+    between, and a little translucency (light goes into real marble before it comes back out)."""
+    m = bpy.data.materials.new(name); nt, out = nodes_of(m); Lk = nt.links.new
+    b = nt.nodes.new('ShaderNodeBsdfPrincipled'); Lk(b.outputs[0], out.inputs[0])
+    tc = nt.nodes.new('ShaderNodeTexCoord'); mp = nt.nodes.new('ShaderNodeMapping')
+    mp.inputs['Scale'].default_value = (1.6, 1.6, 1.6); mp.inputs['Rotation'].default_value = (0, 0, 0.55); Lk(tc.outputs['Object'], mp.inputs['Vector'])
+    def waves(scale, dist, detail):
+        w = nt.nodes.new('ShaderNodeTexWave'); w.wave_type = 'BANDS'; w.bands_direction = 'DIAGONAL'
+        w.inputs['Scale'].default_value = scale; w.inputs['Distortion'].default_value = dist; w.inputs['Detail'].default_value = detail
+        w.inputs['Detail Scale'].default_value = 1.8; w.inputs['Detail Roughness'].default_value = 0.6; Lk(mp.outputs[0], w.inputs['Vector']); return w
+    def vein(src, colour, width):
+        r = nt.nodes.new('ShaderNodeValToRGB'); e = r.color_ramp.elements; r.color_ramp.interpolation = 'EASE'
+        e[0].position = 0.5 - width; e[0].color = (1, 1, 1, 1); e[1].position = 0.5; e[1].color = (*colour, 1)
+        e2 = r.color_ramp.elements.new(0.5 + width); e2.color = (1, 1, 1, 1)
+        Lk(src.outputs['Fac'], r.inputs['Fac']); return r.outputs['Color']
+    v1 = vein(waves(1.1, 11.0, 7.0), (0.46, 0.41, 0.37), 0.035)       # the main veins
+    v2 = vein(waves(2.9, 16.0, 6.0), (0.70, 0.67, 0.63), 0.02)        # fainter ones between
+    cloud = nt.nodes.new('ShaderNodeTexNoise'); cloud.inputs['Scale'].default_value = 2.2; cloud.inputs['Detail'].default_value = 6
+    Lk(mp.outputs[0], cloud.inputs['Vector'])
+    cr = nt.nodes.new('ShaderNodeValToRGB'); ce = cr.color_ramp.elements
+    ce[0].color = (0.74, 0.71, 0.66, 1); ce[1].color = (0.86, 0.84, 0.80, 1); Lk(cloud.outputs['Fac'], cr.inputs['Fac'])
+    m1 = nt.nodes.new('ShaderNodeMix'); m1.data_type = 'RGBA'; m1.blend_type = 'MULTIPLY'; m1.inputs['Factor'].default_value = 1
+    Lk(cr.outputs['Color'], m1.inputs['A']); Lk(v1, m1.inputs['B'])
+    m2 = nt.nodes.new('ShaderNodeMix'); m2.data_type = 'RGBA'; m2.blend_type = 'MULTIPLY'; m2.inputs['Factor'].default_value = 1
+    Lk(m1.outputs['Result'], m2.inputs['A']); Lk(v2, m2.inputs['B'])
+    Lk(m2.outputs['Result'], b.inputs['Base Color'])
+    b.inputs['Roughness'].default_value = 0.10
+    b.inputs['Coat Weight'].default_value = 0.45; b.inputs['Coat Roughness'].default_value = 0.05
+    if 'Subsurface Weight' in b.inputs:
+        b.inputs['Subsurface Weight'].default_value = 0.12; b.inputs['Subsurface Radius'].default_value = (0.004, 0.003, 0.002)
+    return m
+M_TABLE = (marble_mat('TableTop') if A.table == 'marble' else
+           pbr('TableTop', L['table'], 1.4, val=L['table_val'], tint=L['table_tint'], bump=0.03, rough_mul=0.55, coat=0.22, res='4k'))
 def scuff(m, lo=0.75, hi=1.6, scale=7.0, pores=0.015):
     """Real surfaces never have an even sheen: break the roughness up with smudges and add fine pores."""
     nt = m.node_tree; b = nt.nodes['Principled BSDF']; tc = nt.nodes.new('ShaderNodeTexCoord')
@@ -262,7 +296,7 @@ def scuff(m, lo=0.75, hi=1.6, scale=7.0, pores=0.015):
         prev = b.inputs['Normal'].links[0].from_socket if b.inputs['Normal'].is_linked else None
         if prev: nt.links.new(prev, bn.inputs['Normal'])
         nt.links.new(bn.outputs[0], b.inputs['Normal'])
-scuff(M_TABLE)
+scuff(M_TABLE, *((0.6, 1.8) if A.table == 'marble' else ()))   # polished stone: smudges show more
 M_RUG = pbr('Rug', 'curly_teddy_natural', 0.5, sat=0.35, val=0.9, tint=L['rug_tint'], bump=1.0, rough_mul=1.3, vary=0.1)
 M_PLASTER = plain('Plaster', L['plaster'], rough=0.85, noise=0.08)
 M_HEARTH = plain('Hearth', L['hearth'], rough=0.45, noise=0.15)
@@ -749,6 +783,8 @@ sys.path.insert(0, HERE); import prototype
 prototype.apply(CACHE, os.path.join(HERE, '..', '..', '..', 'public', 'brand'), wood=A.base == 'wood')
 if A.base == 'wood':   # the base in real photographed hardwood: deep, straight grain, oiled to a satin sheen
     _wd = pbr('BaseWood', 'dark_wood', 0.30, val=0.62, sat=0.92, bump=0.04, rough_mul=0.75, coat=0.25)
+    for _n in _wd.node_tree.nodes:   # one block of wood: the grain runs on unbroken across the filled logo pockets
+        if _n.type == 'TEX_COORD': _n.object = bpy.data.objects.get('Shell')
     for o in bpy.data.objects:
         for sl in getattr(o, 'material_slots', []):
             if sl.material and sl.material.name.startswith(('MouldedBlack', 'PlateWalnut')): sl.material = _wd

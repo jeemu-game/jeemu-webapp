@@ -61,6 +61,7 @@ def main():
     ap.add_argument('--blender', default='blender'); ap.add_argument('--samples', type=int, default=96)
     ap.add_argument('--only', nargs='*'); ap.add_argument('--list', action='store_true'); ap.add_argument('--pack', action='store_true')
     ap.add_argument('--quick', action='store_true')
+    ap.add_argument('--table', default='walnut', choices=['walnut', 'marble'], help='the coffee table: walnut (default) or marble')
     ap.add_argument('--base', default='black', choices=['black', 'wood'], help="Jeemu's base: black (default) or wood")
     ap.add_argument('--bpy', action='store_true', help='use the pip bpy module (python build_room.py) instead of a Blender app')
     a = ap.parse_args()
@@ -76,7 +77,7 @@ def main():
         return
     B = [sys.executable, os.path.join(HERE, 'build_room.py')] if a.bpy else [a.blender, '-b', '-P', os.path.join(HERE, 'build_room.py'), '--']
     if not a.bpy: B.append('--gpu')
-    B += ['--base', a.base]   # the graphics card renders (OptiX/CUDA on NVIDIA)
+    B += ['--base', a.base, '--table', a.table]   # the graphics card renders (OptiX/CUDA on NVIDIA)
     t0 = time.time()
     for name, move, scene, screen, dev in JOBS:
         if a.only and name not in a.only and name.split('/')[-1] not in a.only: continue
