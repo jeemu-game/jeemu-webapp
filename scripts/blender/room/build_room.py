@@ -47,6 +47,7 @@ ap.add_argument('--samples', type=int, default=48)
 ap.add_argument('--gpu', action='store_true')
 ap.add_argument('--save-blend', default='')
 ap.add_argument('--blank-photos', action='store_true', help='plain white picture areas: the website lays the real photos over them')
+ap.add_argument('--base', default='black', choices=['black', 'wood'], help="Jeemu's base: black print with mint inlays, or walnut with the logo laser-burnt in")
 ap.add_argument('--bake-ui', action='store_true', help="the site's photos, handwriting and Jeemu's screen in the picture itself (camera moves: no live overlays)")
 ap.add_argument('--screen', default='', help="with --bake-ui: what Jeemu's screen shows (screens/<name>.png); 'a>b' switches from a to b halfway through a move")
 ap.add_argument('--late', action='store_true', help='end of the night: embers, empty glasses, burnt-down candles, a gappy tower')
@@ -745,7 +746,7 @@ if scr:
     scuff(scr, lo=0.4, hi=3.0, scale=40, pores=0)
 # the real prototype: speckled black print, mint JEEMU and frog, pine blocks with numbers written on in pen
 sys.path.insert(0, HERE); import prototype
-prototype.apply(CACHE, os.path.join(HERE, '..', '..', '..', 'public', 'brand'))
+prototype.apply(CACHE, os.path.join(HERE, '..', '..', '..', 'public', 'brand'), wood=A.base == 'wood')
 
 # ---------------------------------------------------------------- world: clear night sky
 w = bpy.data.worlds.new('Night'); sc.world = w; w.use_nodes = True; wn = w.node_tree

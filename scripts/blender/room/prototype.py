@@ -54,6 +54,77 @@ def galaxy_black(m):
     return m
 
 
+def walnut(m):
+    """The wooden base: dark American walnut, sanded smooth and oiled to a satin sheen. Long straight grain with gentle
+    waves, chocolate heartwood with lighter streaks, open pores that catch the light, no plastic shine."""
+    nt, b = _nodes(m); L = nt.links.new
+    tc = nt.nodes.new('ShaderNodeTexCoord')
+    mp = nt.nodes.new('ShaderNodeMapping'); mp.inputs['Scale'].default_value = (1.0, 9.0, 1.0)   # grain runs along X
+    L(tc.outputs['Object'], mp.inputs['Vector'])
+    warp = nt.nodes.new('ShaderNodeTexNoise'); warp.inputs['Scale'].default_value = 6.0; warp.inputs['Detail'].default_value = 3.0
+    L(tc.outputs['Object'], warp.inputs['Vector'])
+    wv = nt.nodes.new('ShaderNodeVectorMath'); wv.operation = 'MULTIPLY_ADD'; wv.inputs[1].default_value = (0.0, 0.004, 0.004)
+    L(warp.outputs['Color'], wv.inputs[0]); L(mp.outputs[0], wv.inputs[2])
+    rings = nt.nodes.new('ShaderNodeTexWave'); rings.wave_type = 'BANDS'; rings.bands_direction = 'Y'
+    rings.inputs['Scale'].default_value = 34.0; rings.inputs['Distortion'].default_value = 3.5; rings.inputs['Detail'].default_value = 4.0
+    rings.inputs['Detail Scale'].default_value = 1.6; L(wv.outputs[0], rings.inputs['Vector'])
+    streak = nt.nodes.new('ShaderNodeTexNoise'); streak.inputs['Scale'].default_value = 3.0
+    L(mp.outputs[0], streak.inputs['Vector'])
+    mix_f = nt.nodes.new('ShaderNodeMath'); mix_f.operation = 'MULTIPLY_ADD'; mix_f.inputs[1].default_value = 0.65
+    L(rings.outputs['Fac'], mix_f.inputs[0]); L(streak.outputs['Fac'], mix_f.inputs[2])
+    ramp = nt.nodes.new('ShaderNodeValToRGB'); e = ramp.color_ramp.elements
+    e[0].position = 0.30; e[0].color = (0.030, 0.014, 0.008, 1)     # dark chocolate heartwood
+    e[1].position = 0.95; e[1].color = (0.105, 0.052, 0.026, 1)     # warmer, lighter streaks
+    L(mix_f.outputs[0], ramp.inputs['Fac']); L(ramp.outputs['Color'], b.inputs['Base Color'])
+    # pores: tiny dark flecks stretched along the grain, a whisper of relief
+    pores = nt.nodes.new('ShaderNodeTexVoronoi'); pores.inputs['Scale'].default_value = 900.0
+    pm = nt.nodes.new('ShaderNodeMapping'); pm.inputs['Scale'].default_value = (0.25, 1.0, 1.0); L(tc.outputs['Object'], pm.inputs['Vector'])
+    L(pm.outputs[0], pores.inputs['Vector'])
+    pr = nt.nodes.new('ShaderNodeMath'); pr.operation = 'LESS_THAN'; pr.inputs[1].default_value = 0.12; L(pores.outputs['Distance'], pr.inputs[0])
+    bump = nt.nodes.new('ShaderNodeBump'); bump.invert = True; bump.inputs['Strength'].default_value = 0.25; bump.inputs['Distance'].default_value = 0.00003
+    L(pr.outputs[0], bump.inputs['Height']); L(bump.outputs[0], b.inputs['Normal'])
+    b.inputs['Roughness'].default_value = 0.42                      # oiled, satin
+    b.inputs['Coat Weight'].default_value = 0.35; b.inputs['Coat Roughness'].default_value = 0.22
+    L(bump.outputs[0], b.inputs['Coat Normal'])
+    return m
+
+
+def laser_burn(name, mask_png):
+    """Laser engraving in wood from a white-on-transparent picture: charred dark brown, sunk slightly (bump from a blurred
+    copy), with a faint scorch round every stroke."""
+    from PIL import Image, ImageFilter
+    a = Image.open(mask_png).split()[-1]
+    base = os.path.splitext(mask_png)[0]
+    a.filter(ImageFilter.MaxFilter(3)).save(base + '_mask.png')
+    a.filter(ImageFilter.GaussianBlur(max(2, a.width // 300))).save(base + '_groove.png')
+    a.filter(ImageFilter.GaussianBlur(max(5, a.width // 90))).save(base + '_halo.png')
+    m = bpy.data.materials.new(name); nt, b = _nodes(m); L = nt.links.new
+    tex = {}
+    for k in ('mask', 'groove', 'halo'):
+        t = nt.nodes.new('ShaderNodeTexImage'); t.image = bpy.data.images.load(f'{base}_{k}.png'); t.image.colorspace_settings.name = 'Non-Color'
+        t.interpolation = 'Cubic'; t.extension = 'CLIP'; tex[k] = t.outputs['Color']
+    col = nt.nodes.new('ShaderNodeMix'); col.data_type = 'RGBA'
+    col.inputs['A'].default_value = (0.07, 0.03, 0.012, 1); col.inputs['B'].default_value = (0.012, 0.006, 0.003, 1)
+    L(tex['mask'], col.inputs['Factor']); L(col.outputs['Result'], b.inputs['Base Color'])
+    hs = nt.nodes.new('ShaderNodeMath'); hs.operation = 'MULTIPLY'; hs.inputs[1].default_value = 0.35; L(tex['halo'], hs.inputs[0])
+    al = nt.nodes.new('ShaderNodeMath'); al.operation = 'MAXIMUM'; L(tex['mask'], al.inputs[0]); L(hs.outputs[0], al.inputs[1])
+    L(al.outputs[0], b.inputs['Alpha'])
+    b.inputs['Roughness'].default_value = 0.85
+    bu = nt.nodes.new('ShaderNodeBump'); bu.invert = True; bu.inputs['Strength'].default_value = 1.0; bu.inputs['Distance'].default_value = 0.0003
+    L(tex['groove'], bu.inputs['Height']); L(bu.outputs['Normal'], b.inputs['Normal'])
+    return m
+
+
+def _wordmark_png(path, brand_dir, px=2400):
+    """JEEMU in the brand face, white on transparent; returns its width / height."""
+    from PIL import Image, ImageDraw, ImageFont
+    fo = ImageFont.truetype(os.path.join(brand_dir, 'Matcha-Style.ttf'), px // 4)
+    d = ImageDraw.Draw(Image.new('L', (8, 8))); x0, y0, x1, y1 = d.textbbox((0, 0), 'JEEMU', font=fo)
+    pad = px // 40; im = Image.new('RGBA', (x1 - x0 + 2 * pad, y1 - y0 + 2 * pad), (0, 0, 0, 0))
+    ImageDraw.Draw(im).text((pad - x0, pad - y0), 'JEEMU', font=fo, fill=(255, 255, 255, 255))
+    im.save(path); return im.width / im.height
+
+
 def plate_black(m):
     """The recessed label plate: printed face-down on the bed, so smoother and a touch glossier than the shell."""
     galaxy_black(m)
@@ -213,7 +284,8 @@ def pine(m):
             e[1].position = 0.86; e[1].color = (0.40, 0.19, 0.055, 1)   # late wood: orange-brown rings
 
 
-def apply(cache_dir, brand_dir):
+def apply(cache_dir, brand_dir, wood=False):
+    """wood: the base in walnut, the logo and the frog laser-burnt into it (instead of black print with mint inlays)."""
     os.makedirs(os.path.join(cache_dir, 'proto'), exist_ok=True)
     font = os.path.join(cache_dir, 'fonts', 'NanumPen.ttf')
     if not os.path.exists(font):
@@ -221,7 +293,7 @@ def apply(cache_dir, brand_dir):
 
     # ---- the base
     shell_m = bpy.data.materials.get('MouldedBlack')
-    if shell_m: galaxy_black(shell_m)
+    if shell_m: (walnut if wood else galaxy_black)(shell_m)
     sh = bpy.data.objects.get('Shell')
     if sh:   # keep crisp edges crisp: without this the shell's smoothing smears round the badge pocket and corners
         # CAD tessellation: long thin triangles drag the fillets' smoothing across the flat faces (dark smudges,
@@ -233,7 +305,7 @@ def apply(cache_dir, brand_dir):
         for p in sh.data.polygons:
             if any(p.normal.dot(q) > 0.9995 for q in planes): p.use_smooth = False; flat += 1
         print(f'shell: {flat} of {len(sh.data.polygons)} faces shaded flat')
-    plate_m = plate_black(bpy.data.materials.new('PlateBlack'))
+    plate_m = walnut(bpy.data.materials.new('PlateWalnut')) if wood else plate_black(bpy.data.materials.new('PlateBlack'))
     mint = mint_pla()
     inl = bpy.data.objects.get('Inlays')
     if inl:
@@ -247,15 +319,26 @@ def apply(cache_dir, brand_dir):
             cen[sx] = c
             _badge(f'Badge{sx}', c, right, up, n, r1 - r0 + 0.002, u1 - u0 + 0.002, plate_m)
         bpy.data.objects.remove(inl, do_unlink=True)
-        _wordmark(cen[1], 1, brand_dir, mint, BADGE_UP + 0.0003)   # letters stand 0.3 mm proud of the badge
         frog = os.path.join(cache_dir, 'proto', 'frog.png'); _frog_png(frog)
         right, up, n = _face_frame(-1)
-        fm = _decal_mat('ProtoFrog', frog, (1, 1, 1), 1.0, rough=0.42, use_rgb=True, bump=0.25)
+        if wood:   # burnt into the wood: the wordmark on one side, the frog on the other
+            wm = os.path.join(cache_dir, 'proto', 'wordmark.png'); ar = _wordmark_png(wm, brand_dir)
+            r1, u1, n1 = _face_frame(1); h_ = 0.0175
+            _quad('LaserWordmark', None, Matrix.Translation(cen[1] + n1 * (BADGE_UP + 0.00005)) @ Matrix((r1, u1, n1)).transposed().to_4x4(),
+                  h_ * ar, h_, laser_burn('LaserWordmark', wm))
+            fm = laser_burn('LaserFrog', frog)
+        else:
+            _wordmark(cen[1], 1, brand_dir, mint, BADGE_UP + 0.0003)   # letters stand 0.3 mm proud of the badge
+            fm = _decal_mat('ProtoFrog', frog, (1, 1, 1), 1.0, rough=0.42, use_rgb=True, bump=0.25)
         c = cen[-1] + n * (BADGE_UP + 0.00005)
         _quad('ProtoFrog', None, Matrix.Translation(c) @ Matrix((right, up, n)).transposed().to_4x4(), 0.0215, 0.0215, fm)
     top = bpy.data.objects.get('TopLogo')
     if top:
         for s in top.material_slots: s.material = plate_m
+        if wood:   # the logo on top: its inlay becomes a burn
+            char = bpy.data.materials.new('LaserChar'); _, cb = _nodes(char)
+            cb.inputs['Base Color'].default_value = (0.014, 0.007, 0.004, 1); cb.inputs['Roughness'].default_value = 0.85
+            top.material_slots[-1].material = char
 
     # ---- the blocks
     beech = bpy.data.materials.get('Beech')
