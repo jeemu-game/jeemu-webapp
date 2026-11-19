@@ -627,38 +627,39 @@
   }
  ],
  "burnt": true,
+ "baked": true,
  "insets": {
-  "Polaroid0": [
+  "top2_Polaroid0": [
    392,
    1593,
    833,
    2103
   ],
-  "Polaroid1": [
+  "top2_Polaroid1": [
    970,
    1781,
    1430,
    2306
   ],
-  "Polaroid2": [
+  "top2_Polaroid2": [
    1600,
    1868,
    2025,
    2366
   ],
-  "Polaroid3": [
+  "top2_Polaroid3": [
    2228,
    1813,
    2669,
    2323
   ],
-  "Polaroid4": [
+  "top2_Polaroid4": [
    2829,
    1706,
    3293,
    2234
   ],
-  "Polaroid5": [
+  "top2_Polaroid5": [
    3670,
    1592,
    4167,
