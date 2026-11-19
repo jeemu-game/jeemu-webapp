@@ -277,7 +277,7 @@ def marble_mat(name):
     return m
 M_TABLE = (marble_mat('TableTop') if A.table == 'marble' else
            # honey oak: between the pale pine blocks and a dark wooden base, the grain along the table's length
-           pbr('TableTop', 'oak_veneer_01', 1.2, val=0.80, tint=(1.0, 0.94, 0.88), bump=0.03, rough_mul=0.55, coat=0.22, rot=math.pi / 2, res='4k') if A.table == 'oak' else
+           pbr('TableTop', 'oak_veneer_01', 1.2, val=0.80, tint=(1.0, 0.94, 0.88), bump=0.03, rough_mul=0.55, coat=0.22, rot=0.0, res='4k') if A.table == 'oak' else
            pbr('TableTop', L['table'], 1.4, val=L['table_val'], tint=L['table_tint'], bump=0.03, rough_mul=0.55, coat=0.22, res='4k'))
 def scuff(m, lo=0.75, hi=1.6, scale=7.0, pores=0.015):
     """Real surfaces never have an even sheen: break the roughness up with smudges and add fine pores."""
@@ -784,7 +784,7 @@ if scr:
 sys.path.insert(0, HERE); import prototype
 prototype.apply(CACHE, os.path.join(HERE, '..', '..', '..', 'public', 'brand'), wood=A.base == 'wood')
 if A.base == 'wood':   # the base in real photographed hardwood: deep, straight grain, oiled to a satin sheen
-    _wd = pbr('BaseWood', 'dark_wood', 0.30, val=0.62, sat=0.92, bump=0.04, rough_mul=0.75, coat=0.25)
+    _wd = pbr('BaseWood', 'dark_wood', 0.30, val=0.62, sat=0.92, bump=0.04, rough_mul=1.0, coat=0.08)   # oiled: a soft satin, no gloss
     for _n in _wd.node_tree.nodes:   # one block of wood: the grain runs on unbroken across the filled logo pockets
         if _n.type == 'TEX_COORD': _n.object = bpy.data.objects.get('Shell')
     for o in bpy.data.objects:
