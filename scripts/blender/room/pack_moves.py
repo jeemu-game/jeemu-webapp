@@ -176,21 +176,47 @@ def pack(device, move, src, fires, index):
             entry[which] = info
         if i % 20 == 0: print(f'  {device}/{move} {i}/{n}', flush=True)
     index.setdefault(device, {})[move] = entry
-    print(f'  {device}/{move}: {n} frames')
+    print(f'  {device}/{move}: {n} frames', flush=True)
+    return entry
+
+
+FIRES = None
+def _job(args):
+    """One move, in its own process (the moves are packed side by side, one per CPU core)."""
+    global FIRES
+    device, move, src = args
+    if FIRES is None: FIRES = fire_frames()
+    return device, move, pack(device, move, src, FIRES, {})
+
+
+def _done(device, move, index):
+    """Already packed (a pack that was stopped picks up where it left off)."""
+    e = index.get(device, {}).get(move); d = os.path.join(OUT, device, move)
+    return bool(e) and os.path.exists(os.path.join(d, 'last.jpg')) and len(glob.glob(os.path.join(d, '*.webp'))) >= e['n']
 
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(); ap.add_argument('renders'); ap.add_argument('--only', nargs='*'); ap.add_argument('--device', nargs='*')
+    ap.add_argument('--jobs', type=int, default=max(1, (os.cpu_count() or 2) - 1), help='moves packed at once (default: all cores but one)')
     a = ap.parse_args()
-    fires = fire_frames()
     ip = os.path.join(OUT, 'index.json')
     index = json.load(open(ip)) if os.path.exists(ip) else {}
+    todo = []
     for device in a.device or ('desk', 'phone'):
         for src in sorted(glob.glob(os.path.join(a.renders, device, '*', 'meta.json'))):
             move = os.path.basename(os.path.dirname(src))
             if a.only and move not in a.only: continue
-            pack(device, move, os.path.dirname(src), fires, index)
-            os.makedirs(OUT, exist_ok=True); json.dump(index, open(ip, 'w'), indent=1)
+            if not a.only and _done(device, move, index): print(f'  {device}/{move}: already packed'); continue
+            todo.append((device, move, os.path.dirname(src)))
+    # the longest first (the fall), so no core sits idle at the end waiting on it
+    todo.sort(key=lambda j: -len(glob.glob(os.path.join(j[2], '[0-9][0-9][0-9].png'))))
+    os.makedirs(OUT, exist_ok=True)
+    print(f'packing {len(todo)} moves, {a.jobs} at a time', flush=True)
+    import multiprocessing as mp
+    with mp.Pool(a.jobs) as pool:
+        for device, move, entry in pool.imap_unordered(_job, todo):
+            if entry: index.setdefault(device, {})[move] = entry
+            json.dump(index, open(ip, 'w'), indent=1)
     # the site reads this at build time (it decides the page's layout): src/components/tonight/seqIndex.json
     json.dump(index, open(os.path.join(HERE, '..', '..', '..', 'src', 'components', 'tonight', 'seqIndex.json'), 'w'), indent=1)
     print('wrote', ip)
