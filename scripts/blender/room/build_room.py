@@ -48,7 +48,7 @@ ap.add_argument('--gpu', action='store_true')
 ap.add_argument('--save-blend', default='')
 ap.add_argument('--blank-photos', action='store_true', help='plain white picture areas: the website lays the real photos over them')
 ap.add_argument('--base', default='black', choices=['black', 'wood'], help="Jeemu's base: black print with mint inlays, or walnut with the logo laser-burnt in")
-ap.add_argument('--table', default='walnut', choices=['walnut', 'marble'], help='the coffee table top: walnut veneer, or a warm white marble slab')
+ap.add_argument('--table', default='walnut', choices=['walnut', 'oak', 'marble'], help='the coffee table top: walnut veneer, honey oak veneer, or a warm white marble slab')
 ap.add_argument('--bake-ui', action='store_true', help="the site's photos, handwriting and Jeemu's screen in the picture itself (camera moves: no live overlays)")
 ap.add_argument('--screen', default='', help="with --bake-ui: what Jeemu's screen shows (screens/<name>.png); 'a>b' switches from a to b halfway through a move")
 ap.add_argument('--late', action='store_true', help='end of the night: embers, empty glasses, burnt-down candles, a gappy tower')
@@ -276,6 +276,8 @@ def marble_mat(name):
         b.inputs['Subsurface Weight'].default_value = 0.12; b.inputs['Subsurface Radius'].default_value = (0.004, 0.003, 0.002)
     return m
 M_TABLE = (marble_mat('TableTop') if A.table == 'marble' else
+           # honey oak: between the pale pine blocks and a dark wooden base, the grain along the table's length
+           pbr('TableTop', 'oak_veneer_01', 1.2, val=0.80, tint=(1.0, 0.94, 0.88), bump=0.03, rough_mul=0.55, coat=0.22, rot=math.pi / 2, res='4k') if A.table == 'oak' else
            pbr('TableTop', L['table'], 1.4, val=L['table_val'], tint=L['table_tint'], bump=0.03, rough_mul=0.55, coat=0.22, res='4k'))
 def scuff(m, lo=0.75, hi=1.6, scale=7.0, pores=0.015):
     """Real surfaces never have an even sheen: break the roughness up with smudges and add fine pores."""
