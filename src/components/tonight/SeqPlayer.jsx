@@ -55,6 +55,7 @@ export const frameFit = (info, vp) => {
 // view: { seg, frame: 0..n-1 } (moving) or { seg, still: 'first'|'last' } (stopped), opacity o; next: segments to warm
 export default function SeqPlayer({ dev, vp, view, o = 1, next = [], waitlist }) {
   const canvas = useRef(null);
+  const drawn = useRef('');   // which move the canvas shows now
   const [, bump] = useState(0);
   const info = view && segInfo(dev, view.seg);
   useEffect(() => { next.forEach((s) => warm(dev, s)); }, [next.join()]);
@@ -79,8 +80,12 @@ export default function SeqPlayer({ dev, vp, view, o = 1, next = [], waitlist })
       if (view.frame + d < info.n) bitmap(url(dev, view.seg, `${pad(view.frame + d)}.webp`));
       if (view.frame - d >= 0) bitmap(url(dev, view.seg, `${pad(view.frame - d)}.webp`));
     }
-    if (!bm) return;
-    const ctx = cv.getContext('2d'); const s = Math.max(w / bm.width, h / bm.height);
+    const ctx = cv.getContext('2d');
+    if (!bm) {   // nothing decoded yet for this move: let the shot underneath show rather than another move's frame
+      if (drawn.current !== view.seg) { ctx.clearRect(0, 0, cv.width, cv.height); drawn.current = ''; }
+      return;
+    }
+    drawn.current = view.seg; const s = Math.max(w / bm.width, h / bm.height);
     ctx.drawImage(bm, (w - bm.width * s) / 2, (h - bm.height * s) / 2, bm.width * s, bm.height * s);
   });
   if (!info) return null;
@@ -89,6 +94,11 @@ export default function SeqPlayer({ dev, vp, view, o = 1, next = [], waitlist })
   const rest = view.still && info[view.still];
   return (
     <div className="sq-stage" style={{ opacity: o }} aria-hidden={!waitlist}>
+      {!view.still && (   // under the moving frames: the nearer end of this move in full, so a frame still loading never shows black
+        <div className="sq-frame" style={place}>
+          <Pic src={url(dev, view.seg, `${view.frame < info.n / 2 ? 'first' : 'last'}.jpg`)} width={fit.W} height={fit.H} alt="" draggable="false" decoding="async" />
+        </div>
+      )}
       <canvas ref={canvas} className="sq-canvas" style={{ visibility: view.still ? 'hidden' : 'visible' }} />
       {view.still && (
         <div className="sq-frame" style={place}>

@@ -4,7 +4,7 @@ import LiveScreen from './LiveScreen';
 import Pic from './Pic';
 import LiveFire from './LiveFire';
 import { ASSET_V } from './assetVersion';
-import { SMALL, MOBILE, CAPTURE } from './device';
+import { SMALL, MOBILE, CAPTURE, DEBUG } from './device';
 import MobileStage from './MobileStage';
 import SeqPlayer, { filmReady, segInfo, frameFit } from './SeqPlayer';
 import WaitlistScreen from '../waitlist/WaitlistScreen';
@@ -460,7 +460,7 @@ export default function Tonight({ onCta }) {
   const fire = cams.late ? lerp(1, 0.35, Math.max(cams.late.o, cams.top2 ? cams.top2.o : 0, ...CHAPTERS.map(([sh]) => (cams[sh] ? cams[sh].o : 0)))) : 1;
   const endOn = FILM ? inBeat('end') : MOBILE ? t >= START.toEnd[0] + START.toEnd[1] * 0.6 && t < START.toChapters[0] + START.toChapters[1] * 0.3 : onShot('end');
   // the capture script (scripts/web/capture_mobile.cjs) reads where things are
-  if (CAPTURE && typeof window !== 'undefined') {
+  if ((CAPTURE || DEBUG) && typeof window !== 'undefined') {
     window.__tn = { START, TOTAL, keys: MOBILE_KEYS, fall: MOBILE_FALL, fallCount: fall ? fall.count : 0,
       endScreen: meta.end && cams.end && meta.end.screen.map(([x, y]) => project(meta.end, cams.end, x, y).slice(0, 2)) };
   }
@@ -510,6 +510,9 @@ export default function Tonight({ onCta }) {
                     written={s === 'top' ? written : s === 'top2' ? written2 : Infinity} />
                 )}
                 {s === 'top2' && m.faqBlocks && !m.burnt && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} />)}
+                {DESK_FILM && m.screen && (s === 'top' || s === 'top2') && (   // Jeemu's screen, as the film shows it either side of this still
+                  <img className="tn-warp tn-stillscreen" src={at(`screens/${s === 'top' ? 'question' : 'waitlist'}.jpg`)} alt="" draggable="false" style={warp(320, 240, m.screen)} />
+                )}
                 {s === 'top2' && !m.faqBlocks && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} />}
               </div>
               {(s === 'top' || s === 'top2') && (
@@ -518,6 +521,9 @@ export default function Tonight({ onCta }) {
                   <div className="tn-shot" style={stageStyle(m, cam, portrait ? vp.card + 24 : 0)}>
                     {loadRest && <Pic src={at(`${s}_blur.jpg`)} width={m.width} height={m.height} draggable="false" decoding="async" />}
                     {loadRest && !m.baked && <PrintOverlays m={m} items={s === 'top2' ? CHAPTER_PRINTS : HOW_PRINTS} warp={warp} written={s === 'top' ? written : written2} soft />}
+                    {DESK_FILM && m.screen && (   // the screen in the softened copy too, or the blur would cover it with a black one
+                      <img className="tn-warp tn-stillscreen is-soft" src={at(`screens/${s === 'top' ? 'question' : 'waitlist'}.jpg`)} alt="" draggable="false" style={warp(320, 240, m.screen)} />
+                    )}
                     {loadRest && s === 'top2' && m.faqBlocks && !m.burnt && faqQuads(m).slice(0, FAQS.length).map((q, k) => <EtchedBlock key={k} q={q} warp={warp} text={FAQS[k].q} soft />)}
                     {loadRest && s === 'top2' && !m.faqBlocks && m.faq && <FaqCard q={m.faq} warp={warp} k={faqK} soft />}
                   </div>

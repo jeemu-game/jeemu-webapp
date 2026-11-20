@@ -5,6 +5,7 @@
 //   CAPTURE: ?capture, the full engine with the words hidden, for baking the phone frames.
 const QS = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
 export const CAPTURE = QS.has('capture');
+export const DEBUG = QS.has('debug');   // tests read the story's beats (window.__tn)
 const phone = typeof window !== 'undefined' && Math.min(window.screen.width, window.screen.height) < 600;
 export const SMALL = phone && !CAPTURE;
 export const MOBILE = SMALL && !QS.has('full');

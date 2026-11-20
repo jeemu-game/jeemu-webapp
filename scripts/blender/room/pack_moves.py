@@ -22,6 +22,8 @@ from post import post
 SITE = os.path.join(HERE, '..', '..', '..', 'public', 'tonight')
 OUT = os.path.join(SITE, 'seq')
 MOTION = {'desk': (1280, 720), 'phone': (540, 960)}   # scrubbed frames: the picture is moving, so smaller is fine
+INTERIOR = np.array([0.30, 0.14, 0.065], np.float32)   # what's left of the firebox interior's brightness, per channel
+BLUR_SCALE = 0.62   # the optical defocus, eased to how soft the fire reads best (the old site's fire was this soft)
 BURN = {False: (0.88, 1.02, 0.9), True: (0.66, 0.82, 1.25)}   # (flame height, brightness, saturation): evening / late
 LOOP = 150                                                  # the fire clip: 10 s at 15 fps, seamless
 
@@ -94,7 +96,7 @@ def fire_layer(size, fire, fm, late, origin=(0, 0)):
         layer = col * a + layer * (1 - a)
     else:
         layer = col * a
-    blur = fm.get('fireBlur', 3)
+    blur = fm.get('fireBlur', 3) * BLUR_SCALE
     if blur > 0.3:
         layer = np.asarray(Image.fromarray((layer.clip(0, 1) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(blur)), np.float32) / 255
     layer = saturate(layer * bright, sat).clip(0, 1)
@@ -107,6 +109,9 @@ def composite(base, fire, fm, matte, late, region=None):
     b = np.asarray(base.crop((x0, y0, x1, y1)), np.float32) / 255
     layer = fire_layer((x1 - x0, y1 - y0), fire, fm, late, (x0, y0))
     m = (np.asarray(matte.crop((x0, y0, x1, y1)), np.float32) / 255)[..., None]
+    # inside the firebox: the back of an empty firebox lit by its own fire is a deep ember red, not a glowing panel
+    # (some renderers draw the fire's area light in the mouth as a pale rectangle; the flames would wash out over it)
+    b = b * (1 - m * (1 - INTERIOR))
     out = 1 - (1 - b) * (1 - layer * m)
     return Image.fromarray((out * 255 + 0.5).clip(0, 255).astype(np.uint8))
 
