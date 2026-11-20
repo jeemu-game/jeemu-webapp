@@ -156,7 +156,8 @@ def pack(device, move, src, fires, index):
     n = len(meta['frames'])
     if len(frames) < n: print(f'  {device}/{move}: {len(frames)} of {n} frames rendered, skipped'); return
     dst = os.path.join(OUT, device, move); os.makedirs(dst, exist_ok=True)
-    late = meta.get('late', False); entry = {'n': n, 'width': meta['width'], 'height': meta['height'], 'motion': MOTION[device]}
+    late = meta.get('late', False); entry = {'n': n, 'width': meta['width'], 'height': meta['height'], 'motion': MOTION[device],
+                                             'from': os.path.basename(os.path.normpath(os.path.join(src, '..', '..')))}   # which render
     for k in ('handoffIn', 'handoffOut'):
         if k in meta: entry[k] = meta[k]
     for i, f in enumerate(frames[:n]):
@@ -189,10 +190,11 @@ def _job(args):
     return device, move, pack(device, move, src, FIRES, {})
 
 
-def _done(device, move, index):
-    """Already packed (a pack that was stopped picks up where it left off)."""
+def _done(device, move, index, renders):
+    """Already packed from this same render (a pack that was stopped picks up where it left off; another render's
+    frames, e.g. an earlier version, are always replaced)."""
     e = index.get(device, {}).get(move); d = os.path.join(OUT, device, move)
-    return bool(e) and os.path.exists(os.path.join(d, 'last.jpg')) and len(glob.glob(os.path.join(d, '*.webp'))) >= e['n']
+    return bool(e) and e.get('from') == os.path.basename(os.path.normpath(renders)) and os.path.exists(os.path.join(d, 'last.jpg')) and len(glob.glob(os.path.join(d, '*.webp'))) >= e['n']
 
 
 if __name__ == '__main__':
@@ -206,7 +208,7 @@ if __name__ == '__main__':
         for src in sorted(glob.glob(os.path.join(a.renders, device, '*', 'meta.json'))):
             move = os.path.basename(os.path.dirname(src))
             if a.only and move not in a.only: continue
-            if not a.only and _done(device, move, index): print(f'  {device}/{move}: already packed'); continue
+            if not a.only and _done(device, move, index, a.renders): print(f'  {device}/{move}: already packed'); continue
             todo.append((device, move, os.path.dirname(src)))
     # the longest first (the fall), so no core sits idle at the end waiting on it
     todo.sort(key=lambda j: -len(glob.glob(os.path.join(j[2], '[0-9][0-9][0-9].png'))))
