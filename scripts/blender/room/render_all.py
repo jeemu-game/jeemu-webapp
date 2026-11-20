@@ -61,12 +61,29 @@ def main():
     ap.add_argument('--blender', default='blender'); ap.add_argument('--samples', type=int, default=96)
     ap.add_argument('--only', nargs='*'); ap.add_argument('--list', action='store_true'); ap.add_argument('--pack', action='store_true')
     ap.add_argument('--quick', action='store_true')
+    ap.add_argument('--check', action='store_true', help='list what is rendered and what is missing, render nothing')
     ap.add_argument('--table', default='walnut', choices=['walnut', 'oak', 'marble'], help='the coffee table: walnut (default), oak or marble')
     ap.add_argument('--folder', default='renders', help='where the frames go (scripts/blender/room/<folder>): keep versions apart')
     ap.add_argument('--base', default='black', choices=['black', 'wood'], help="Jeemu's base: black (default) or wood")
     ap.add_argument('--bpy', action='store_true', help='use the pip bpy module (python build_room.py) instead of a Blender app')
     a = ap.parse_args()
     root = os.path.join(HERE, 'renders_quick' if a.quick else a.folder)
+    if a.check:   # every move: its frames and fire cutouts against the frame count in its meta; the overhead stills
+        import json, glob
+        bad = 0
+        for name, move, *_ in JOBS:
+            d = os.path.join(root, name); mp = os.path.join(d, 'meta.json')
+            if not os.path.exists(mp): print(f'MISSING   {name} (not started)'); bad += 1; continue
+            n = len(json.load(open(mp))['frames'])
+            fr = len(glob.glob(os.path.join(d, '[0-9][0-9][0-9].png'))); mk = len(glob.glob(os.path.join(d, 'm[0-9][0-9][0-9].png')))
+            ok = fr >= n and mk >= n; bad += not ok
+            print(f'{"ok       " if ok else "MISSING  "} {name}: {fr}/{n} frames, {mk}/{n} fire cutouts')
+        for st, _ in STILLS:
+            p = os.path.join(root, 'stills', st + '.png'); ins = len(glob.glob(os.path.join(root, 'stills', 'insets', st + '_*.png')))
+            ok = os.path.exists(p) and ins >= 6; bad += not ok
+            print(f'{"ok       " if ok else "MISSING  "} still {st}: {"rendered" if os.path.exists(p) else "not rendered"}, {ins}/6 close-ups')
+        print('everything is there: ready to --pack' if not bad else f'{bad} incomplete: run the render command again (it only renders what is missing)')
+        return
     if a.list:
         for j in JOBS: print(j[0])
         for s in STILLS: print('still/' + s[0])
