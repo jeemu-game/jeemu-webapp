@@ -170,6 +170,7 @@ def pack(device, move, src, fires, index):
         mp = os.path.join(src, f'm{i:03d}.png')
         matte = Image.open(mp).split()[-1] if os.path.exists(mp) else Image.new('L', base.size, 0)
         if matte.size != base.size: matte = matte.resize(base.size, Image.BILINEAR)
+        matte = matte.filter(ImageFilter.GaussianBlur(1.2))   # the cutout is rendered fast (grainy at its edge): smooth it
         im = post(composite(base, fires[i % LOOP], fm, matte, late), vig=fm.get('vig', 0.30))
         im.resize(MOTION[device], Image.LANCZOS).save(os.path.join(dst, f'{i:03d}.webp'), quality=72, method=4)
         for which, at in (('first', 0), ('last', n - 1)):
