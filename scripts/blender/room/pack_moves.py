@@ -11,7 +11,7 @@ run, meta.json). For every frame this
      with a short loop of the fire for each (first_fire.mp4 / last_fire.mp4), shown while the reader is stopped there.
 Then public/tonight/seq/index.json says what's there. Needs: pip install pillow numpy imageio-ffmpeg
 """
-import argparse, glob, json, os, subprocess, sys, tempfile
+import argparse, glob, json, os, shutil, subprocess, sys, tempfile
 import numpy as np
 from PIL import Image, ImageFilter
 
@@ -24,7 +24,9 @@ OUT = os.path.join(SITE, 'seq')
 MOTION = {'desk': (1280, 720), 'phone': (540, 960)}   # scrubbed frames: the picture is moving, so smaller is fine
 INTERIOR = np.array([0.30, 0.14, 0.065], np.float32)   # what's left of the firebox interior's brightness, per channel
 BLUR_SCALE = 0.62   # the optical defocus, eased to how soft the fire reads best (the old site's fire was this soft)
-BURN = {False: (0.88, 1.02, 0.9), True: (0.66, 0.82, 1.25)}   # (flame height, brightness, saturation): evening / late
+BURN = {False: (0.88, 1.02, 0.9), True: (0.88, 0.80, 1.1)}   # (flame height, brightness, saturation): evening / late
+# (late at night the fire keeps its height, it's just dimmer: a burnt-down fire left a black band above it)
+FPS = {'fall': 40}   # frames per second each move plays at (default 30): about 1-2.5 s a move, the fall 3.6 s
 LOOP = 150                                                  # the fire clip: 10 s at 15 fps, seamless
 
 
@@ -165,6 +167,8 @@ def pack(device, move, src, fires, index):
                                              'from': os.path.basename(os.path.normpath(os.path.join(src, '..', '..')))}   # which render
     for k in ('handoffIn', 'handoffOut'):
         if k in meta: entry[k] = meta[k]
+    for old in glob.glob(os.path.join(dst, '[0-9][0-9][0-9].webp')): os.remove(old)   # scrub frames from older packs
+    tmp = tempfile.mkdtemp()
     for i, f in enumerate(frames[:n]):
         fm = meta['frames'][i]; base = Image.open(f).convert('RGB')
         mp = os.path.join(src, f'm{i:03d}.png')
@@ -172,7 +176,7 @@ def pack(device, move, src, fires, index):
         if matte.size != base.size: matte = matte.resize(base.size, Image.BILINEAR)
         matte = matte.filter(ImageFilter.GaussianBlur(1.2))   # the cutout is rendered fast (grainy at its edge): smooth it
         im = post(composite(base, fires[i % LOOP], fm, matte, late), vig=fm.get('vig', 0.30))
-        im.resize(MOTION[device], Image.LANCZOS).save(os.path.join(dst, f'{i:03d}.webp'), quality=72, method=4)
+        im.save(os.path.join(tmp, f'{i:03d}.png'))
         for which, at in (('first', 0), ('last', n - 1)):
             if i != at: continue
             save_still(im, os.path.join(dst, which))
@@ -182,6 +186,14 @@ def pack(device, move, src, fires, index):
             if fm.get('screen'): info['screen'] = fm['screen']
             entry[which] = info
         if i % 20 == 0: print(f'  {device}/{move} {i}/{n}', flush=True)
+    # the move as video, both ways (scrolling back plays it backwards), full size: the site plays it through, start to end
+    fps = FPS.get(move, 30)
+    enc = ['-c:v', 'libx264', '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-crf', '20', '-preset', 'slow', '-g', '12', '-movflags', '+faststart', '-an']
+    for name, vf in (('fwd', []), ('rev', ['-vf', 'reverse'])):
+        subprocess.run([ffmpeg(), '-v', 'error', '-y', '-framerate', str(fps), '-i', os.path.join(tmp, '%03d.png')] + vf + enc + [os.path.join(dst, name + '.mp4')], check=True)
+    for f in glob.glob(os.path.join(tmp, '*.png')): os.remove(f)
+    os.rmdir(tmp)
+    entry['video'] = {'fps': fps, 'seconds': round(n / fps, 3)}
     index.setdefault(device, {})[move] = entry
     print(f'  {device}/{move}: {n} frames', flush=True)
     return entry
@@ -200,11 +212,12 @@ def _done(device, move, index, renders):
     """Already packed from this same render (a pack that was stopped picks up where it left off; another render's
     frames, e.g. an earlier version, are always replaced)."""
     e = index.get(device, {}).get(move); d = os.path.join(OUT, device, move)
-    return bool(e) and e.get('from') == os.path.basename(os.path.normpath(renders)) and os.path.exists(os.path.join(d, 'last.jpg')) and len(glob.glob(os.path.join(d, '*.webp'))) >= e['n']
+    return bool(e) and e.get('from') == os.path.basename(os.path.normpath(renders)) and os.path.exists(os.path.join(d, 'last.jpg')) and os.path.exists(os.path.join(d, 'rev.mp4')) and 'video' in e
 
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(); ap.add_argument('renders'); ap.add_argument('--only', nargs='*'); ap.add_argument('--device', nargs='*')
+    ap.add_argument('--use', nargs='*', help='device/move folders the film uses (others in the render folder are left out)')
     ap.add_argument('--jobs', type=int, default=max(1, (os.cpu_count() or 2) - 1), help='moves packed at once (default: all cores but one)')
     a = ap.parse_args()
     ip = os.path.join(OUT, 'index.json')
@@ -214,10 +227,16 @@ if __name__ == '__main__':
         for src in sorted(glob.glob(os.path.join(a.renders, device, '*', 'meta.json'))):
             move = os.path.basename(os.path.dirname(src))
             if a.only and move not in a.only: continue
+            if a.use and f'{device}/{move}' not in a.use: continue
             if not a.only and _done(device, move, index, a.renders): print(f'  {device}/{move}: already packed'); continue
             todo.append((device, move, os.path.dirname(src)))
     # the longest first (the fall), so no core sits idle at the end waiting on it
     todo.sort(key=lambda j: -len(glob.glob(os.path.join(j[2], '[0-9][0-9][0-9].png'))))
+    if a.use:   # moves the film no longer uses: out of the index and off the site
+        for device in list(index):
+            for move in list(index[device]):
+                if f'{device}/{move}' not in a.use:
+                    del index[device][move]; shutil.rmtree(os.path.join(OUT, device, move), ignore_errors=True)
     os.makedirs(OUT, exist_ok=True)
     print(f'packing {len(todo)} moves, {a.jobs} at a time', flush=True)
     import multiprocessing as mp

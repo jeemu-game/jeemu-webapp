@@ -424,3 +424,6 @@ a.tb-count:hover { color: var(--tn-paper); }
 
 .tn-stillscreen { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; filter: brightness(0.92); }
 .tn-stillscreen.is-soft { filter: brightness(0.92) blur(6px); }
+
+/* the film: the words come in once the camera has arrived, and go as it leaves */
+.tn-film .tn-card, .tn-film .tn-caption, .tn-film .tn-finale, .tn-film .tn-fine { transition: opacity 0.45s ease; }

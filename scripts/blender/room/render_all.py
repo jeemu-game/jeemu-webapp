@@ -29,25 +29,24 @@ for dev in ('desk', 'phone'):
     job(f'{dev}/fall', 'fall', LATE, 'late', dev)
     job(f'{dev}/fallen-end', 'fallen-end', FALLEN, 'late>waitlist', dev)
     for k in range(6): job(f'{dev}/faq{k}-faq{k + 1}', f'faq{k}-faq{k + 1}', FALLEN, 'waitlist', dev)
-# desktop: the camera rises to the overhead table, the site pans over the big still, then the camera comes down again
-job('desk/play-top', 'play-top', EVE, 'question', 'desk')
-job('desk/top-late', 'top-late', LATE, 'late', 'desk')
-job('desk/end-top2', 'end-top2', FALLEN, 'waitlist', 'desk')
-job('desk/top2-faq0', 'top2-faq0', FALLEN, 'waitlist', 'desk')
-# phones: the camera glides from print to print instead
-job('phone/play-print0', 'p-play-print0', EVE, 'question', 'phone')
-for i in range(5): job(f'phone/hprint{i}-{i + 1}', f'p-print{i}-print{i + 1}', EVE, 'question', 'phone')
-job('phone/hprints-out', 'p-prints-out', EVE, 'question', 'phone')
-job('phone/top-late', 'p-top-late', LATE, 'late', 'phone')
-job('phone/end-print0', 'p-end-print0', FALLEN, 'waitlist', 'phone')
-for i in range(5): job(f'phone/cprint{i}-{i + 1}', f'p-print{i}-print{i + 1}', FALLEN, 'waitlist', 'phone')
-job('phone/team-faq0', 'p-team-faq0', FALLEN, 'waitlist', 'phone')
+# the table, leaning over the prints (desktop two at a stop, phones one); evening to late night through Jeemu's screen
+job('desk/play-h0', 'play-h0', EVE, 'question', 'desk')
+for i in range(2): job(f'desk/h{i}-h{i + 1}', f'h{i}-h{i + 1}', EVE, 'question', 'desk')
+job('desk/h2-screen', 'h2-screen', EVE, 'question>late@0.85', 'desk')
+job('desk/end-c0', 'end-c0', FALLEN, 'waitlist', 'desk')
+for a_, b_ in (('c0', 'c1'), ('c1', 'c2'), ('c2', 'team')): job(f'desk/{a_}-{b_}', f'{a_}-{b_}', FALLEN, 'waitlist', 'desk')
+job('desk/team-q0', 'team-q0', FALLEN, 'waitlist', 'desk')
+job('phone/play-h0', 'p-play-h0', EVE, 'question', 'phone')
+for i in range(5): job(f'phone/h{i}-h{i + 1}', f'p-h{i}-h{i + 1}', EVE, 'question', 'phone')
+job('phone/h5-screen', 'p-h5-screen', EVE, 'question>late@0.85', 'phone')
+job('phone/end-c0', 'p-end-c0', FALLEN, 'waitlist', 'phone')
+for i in range(4): job(f'phone/c{i}-c{i + 1}', f'p-c{i}-c{i + 1}', FALLEN, 'waitlist', 'phone')
+job('phone/c4-team', 'p-c4-team', FALLEN, 'waitlist', 'phone')
+job('phone/team-q0', 'p-team-q0', FALLEN, 'waitlist', 'phone')
+for dev in ('desk', 'phone'):   # out of the screen at the end of the night (the tower still standing)
+    job(f'{dev}/screen-late', 'screen-late', LATE, 'late', dev)
 
-# the overhead stills the desktop site pans across (with sharp close-ups of the prints)
-STILLS = [
-    ('top', EVE + ['--view', 'top', '--width', '4800', '--height', '1524', '--insets', 'Polaroid0,Polaroid1,Polaroid2,Polaroid3,Polaroid4,Polaroid5']),
-    ('top2', FALLEN + ['--view', 'top2', '--fire', '0.25', '--width', '4800', '--height', '2520', '--insets', 'Polaroid0,Polaroid1,Polaroid2,Polaroid3,Polaroid4,Polaroid5']),
-]
+STILLS = []   # no overhead stills any more: every stop is a rendered shot
 
 
 def run(cmd):
@@ -89,9 +88,11 @@ def main():
         for s in STILLS: print('still/' + s[0])
         return
     if a.pack:
-        run([sys.executable, os.path.join(HERE, 'pack_moves.py'), root] + (['--only'] + a.only if a.only else []))
-        if not a.quick:
+        run([sys.executable, os.path.join(HERE, 'pack_moves.py'), root, '--use'] + [j[0] for j in JOBS] + (['--only'] + a.only if a.only else []))
+        if not a.quick and STILLS:
             run([sys.executable, os.path.join(HERE, 'prepare_site_assets.py'), os.path.join(root, 'stills')])
+        else:   # still give the site a new version stamp, so browsers fetch the new moves
+            run([sys.executable, os.path.join(HERE, '..', '..', 'web', 'stamp_assets.py')])
         return
     B = [sys.executable, os.path.join(HERE, 'build_room.py')] if a.bpy else [a.blender, '-b', '-P', os.path.join(HERE, 'build_room.py'), '--']
     if not a.bpy: B.append('--gpu')

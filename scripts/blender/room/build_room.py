@@ -772,7 +772,7 @@ def screen_image(name):
     return SCREEN_IMGS[name]
 if A.bake_ui and A.screen and bpy.data.materials.get('ScreenMat'):   # what the site shows on it, in the picture itself
     SCREEN_NODE = next(n for n in bpy.data.materials['ScreenMat'].node_tree.nodes if n.type == 'TEX_IMAGE')
-    SCREEN_NODE.image = screen_image(A.screen.split('>')[0]); SCREEN_NODE.interpolation = 'Cubic'
+    SCREEN_NODE.image = screen_image(A.screen.split('@')[0].split('>')[0]); SCREEN_NODE.interpolation = 'Cubic'
 elif scr_img:   # standby: a black panel. The website overlays the live screen content on top of the render.
     px = [0.004, 0.004, 0.005, 1.0] * (scr_img.size[0] * scr_img.size[1]); scr_img.pixels = px; scr_img.pack()
 scr = bpy.data.materials.get('ScreenMat')
@@ -1019,6 +1019,27 @@ MOVES = {
 }
 for i in range(5): MOVES[f'p-print{i}-print{i + 1}'] = [f'print:{i}@0.9', (f'print:{i + 1}@0.9', 30)]
 for k in range(6): MOVES[f'faq{k}-faq{k + 1}'] = [f'faq{k}', (f'faq{k + 1}', 36)]
+# The table, leaning over it (not straight down): the prints a stop at a time (desktop two, a phone one), the tower soft
+# behind. Evening to late night: the camera pushes into Jeemu's screen until it fills the frame, and comes back out of it
+# at the end of the night (a cut inside the screen: no fade). The same move names render for desktop and phone; the
+# lean states frame one or two prints by what they're given.
+MOVES.update({
+    'play-h0': ['play', ('lean:0,1', 60)],
+    'h0-h1': ['lean:0,1', ('lean:2,3', 40)], 'h1-h2': ['lean:2,3', ('lean:4,5', 40)],
+    'h2-screen': ['lean:4,5', ('screen', 60)],
+    'screen-late': ['screen', ('play', 60)],
+    'end-c0': ['close', ('lean:0,1', 60)],
+    'c0-c1': ['lean:0,1', ('lean:2,3', 40)], 'c1-c2': ['lean:2,3', ('lean:4', 40)], 'c2-team': ['lean:4', ('lean:5', 40)],
+    'team-q0': ['lean:5', ('faq0', 54)],
+    # phones: one print at a time
+    'p-play-h0': ['play', ('lean:0', 60)],
+    **{f'p-h{i}-h{i + 1}': [f'lean:{i}', (f'lean:{i + 1}', 32)] for i in range(5)},
+    'p-h5-screen': ['lean:5', ('screen', 60)],
+    'p-end-c0': ['close', ('lean:0', 60)],
+    **{f'p-c{i}-c{i + 1}': [f'lean:{i}', (f'lean:{i + 1}', 32)] for i in range(4)},
+    'p-c4-team': ['lean:4', ('lean:5', 32)],
+    'p-team-q0': ['lean:5', ('faq0', 54)],
+})
 
 def cam_state(name):
     from mathutils import Quaternion, Euler
@@ -1038,6 +1059,28 @@ def cam_state(name):
         up = Vector((-math.sin(roll), math.cos(roll), 0))
         loc_ = Vector((c.x, c.y, h)) - up * (0.5 - 0.36) * V        # the print sits a little above the middle
         return dict(loc=loc_, rot=Euler((0, 0, roll)).to_quaternion(), lens=20.25 * h / V, fstop=8, focus=h, shift=sh, vig=0.0)
+    if name.startswith('lean:'):   # leaning over one or two prints from the front of the table, 62 degrees up
+        idx = [int(x) for x in name[5:].split(',')]
+        cards = [POLAROIDS[i] for i in idx]
+        tgt_ = sum((c.matrix_world.translation for c in cards), Vector((0, 0, 0))) / len(cards); tgt_.z = 0.0
+        wide_print = cards[0].get('kind') == 'wide'
+        if A.portrait:   # a phone: the print across about 60% of the width, above the words
+            W = 0.20 if wide_print else 0.16; lens_ = 50.0; d = (W / 2) * lens_ / (20.25 * 9 / 16 / 2); sh_ = (0.0, -0.13)
+        else:            # a computer: one or two prints left of centre, the words on the right
+            W = 0.50 if len(idx) > 1 else (0.40 if wide_print else 0.30); lens_ = 50.0; d = (W / 2) * lens_ / 18.0
+            sh_ = (0.20 if wide_print else 0.13, 0.0)
+        el = math.radians(62); back = Vector((0, -math.cos(el), math.sin(el)))
+        loc_ = tgt_ + back * d
+        return dict(loc=loc_, rot=(tgt_ - loc_).to_track_quat('-Z', 'Y'), lens=lens_, fstop=2.8, focus=d, shift=sh_, vig=0.30)
+    if name == 'screen':   # square on to Jeemu's screen, close enough that it fills the frame
+        so = bpy.data.objects['Screen']; v = [so.matrix_world @ x.co for x in so.data.vertices]
+        ctr = (v[0] + v[1] + v[2] + v[3]) / 4; right = (v[1] - v[0]).normalized(); up_ = (v[2] - v[0]).normalized()
+        nrm = right.cross(up_).normalized()
+        if nrm.y > 0: nrm = -nrm   # out of the screen, towards the room
+        d = 0.109 if A.portrait else 0.085; loc_ = ctr + nrm * d
+        f_ = (ctr - loc_).normalized(); r_ = f_.cross(up_).normalized(); u_ = r_.cross(f_)
+        from mathutils import Matrix as _M
+        return dict(loc=loc_, rot=_M((r_, u_, -f_)).transposed().to_quaternion(), lens=50.0, fstop=4.0, focus=d, shift=sh, vig=0.30)
     if name.startswith('faq'):
         fc = FAQ_CAMS[int(name[3:])]
         # a phone is narrow: a wider lens there, so the whole question fits across
@@ -1132,7 +1175,8 @@ if A.move:
     _x0, _x1 = min(v.x for v in bb) + 0.012, max(v.x for v in bb) - 0.012
     _z0, _z1 = min(v.z for v in bb) + 0.012, max(v.z for v in bb) - 0.012; _by = min(v.y for v in bb)
     fire_c = Vector(((_x0 + _x1) / 2, _by, (_z0 + _z1) / 2))
-    scr_names = A.screen.split('>') if A.screen else []
+    scr_spec, _, scr_at = (A.screen or '').partition('@')   # 'a>b@0.85': switch from a to b 85% of the way through
+    scr_names = scr_spec.split('>') if scr_spec else []; scr_at = float(scr_at) if scr_at else 0.5
     def place_cam(st):
         cam.location = st['loc']; cam.rotation_mode = 'QUATERNION'; cam.rotation_quaternion = st['rot']
         cd.lens = st['lens']; cd.shift_x, cd.shift_y = st['shift']; cd.dof.focus_distance = st['focus']; cd.dof.aperture_fstop = st['fstop']
@@ -1167,7 +1211,7 @@ if A.move:
     for i in range(f0, min(f1, len(frames) - 1) + 1):
         r.filepath = os.path.join(os.path.abspath(A.out), f'{"m" if A.fire_mask else ""}{i:03d}.png')
         if os.path.exists(r.filepath): continue   # resumable
-        if SCREEN_NODE and len(scr_names) > 1: SCREEN_NODE.image = screen_image(scr_names[0 if i < len(frames) / 2 else 1])
+        if SCREEN_NODE and len(scr_names) > 1: SCREEN_NODE.image = screen_image(scr_names[0 if i < scr_at * (len(frames) - 1) else 1])
         place_cam(frames[i]); bpy.ops.render.render(write_still=True)
         print(f'move {A.move} frame {i}/{len(frames) - 1}', flush=True)
     print('wrote', A.out); raise SystemExit
