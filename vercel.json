@@ -102,5 +102,10 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/index.py": {
+      "excludeFiles": "{public/**,frontend/**,scripts/**,src/**,dist/**,node_modules/**,docs/**,previews/**,tests/**,walk/**,supabase/**,*.png,*.log}"
+    }
+  }
 }

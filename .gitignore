@@ -66,3 +66,9 @@ ehthumbs_vista.db
 # Project-specific
 *.pdf
 **/__pycache__
+
+# test output (screenshots from checks)
+/pair_*.png
+/seam_*.png
+/walk/
+/vite.log
