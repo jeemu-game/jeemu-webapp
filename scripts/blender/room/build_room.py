@@ -941,7 +941,7 @@ if A.faq_blocks:   # the questions people ask, laser-burnt into the top of falle
         t.location = (0, 0, up * 0.00762); t.rotation_euler = (flip_z, 0, turn)
         t.visible_shadow = False
         print('burnt', name, '|', ' / '.join(lines))
-        if A.faq_shot == k or (A.move and f'faq{k}' in A.move):   # the close-up: low, square to the lettering, the block left of centre, the table soft behind
+        if A.faq_shot == k or A.move:   # a move may end on any question's close-up (team-q0 ends on the first)   # the close-up: low, square to the lettering, the block left of centre, the table soft behind
             bpy.context.view_layer.update()
             Mt = t.matrix_world; P = Mt.translation.copy()
             R = Vector(Mt.col[0][:3]); R.z = 0; R.normalize(); U = Vector(Mt.col[1][:3]); U.z = 0; U.normalize()
