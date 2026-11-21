@@ -16,7 +16,7 @@ def stamp():
         "// Written by scripts/web/stamp_assets.py: changes whenever the published pictures do.\n"
         f"export const ASSET_V = '{v}';\n")
     idx = os.path.join(ROOT, 'index.html'); html = open(idx).read()
-    html = re.sub(r'(href="/tonight/(?:wide\.avif|m/wide\.avif|m/index\.json|wide\.json|wide_firemask\.png))(\?v=\w+)?"', rf'\1?v={v}"', html)
+    html = re.sub(r'(href="/tonight/(?:seq/desk/wide-close/first\.avif|seq/phone/wide-close/first\.avif))(\?v=\w+)?"', rf'\1?v={v}"', html)
     open(idx, 'w').write(html)
     return v
 
