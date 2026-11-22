@@ -29,22 +29,22 @@ for dev in ('desk', 'phone'):
     job(f'{dev}/fall', 'fall', LATE, 'late', dev)
     job(f'{dev}/fallen-end', 'fallen-end', FALLEN, 'late>waitlist', dev)
     for k in range(6): job(f'{dev}/faq{k}-faq{k + 1}', f'faq{k}-faq{k + 1}', FALLEN, 'waitlist', dev)
-# the table, leaning over the prints (desktop two at a stop, phones one); evening to late night through Jeemu's screen
+# the table, leaning over the prints (desktop two at a stop, phones one); evening to late night: back to the tower, a cut
 job('desk/play-h0', 'play-h0', EVE, 'question', 'desk')
-for i in range(2): job(f'desk/h{i}-h{i + 1}', f'h{i}-h{i + 1}', EVE, 'question', 'desk')
-job('desk/h2-screen', 'h2-screen', EVE, 'question>late@0.85', 'desk')
+job('desk/h0-h1', 'h0-h1', EVE, 'question', 'desk')
+job('desk/h1-late', 'h1-late', EVE, 'question', 'desk')
 job('desk/end-c0', 'end-c0', FALLEN, 'waitlist', 'desk')
-for a_, b_ in (('c0', 'c1'), ('c1', 'c2'), ('c2', 'team')): job(f'desk/{a_}-{b_}', f'{a_}-{b_}', FALLEN, 'waitlist', 'desk')
+for a_, b_ in (('c0', 'c1'), ('c1', 'team')): job(f'desk/{a_}-{b_}', f'{a_}-{b_}', FALLEN, 'waitlist', 'desk')
 job('desk/team-q0', 'team-q0', FALLEN, 'waitlist', 'desk')
 job('phone/play-h0', 'p-play-h0', EVE, 'question', 'phone')
-for i in range(5): job(f'phone/h{i}-h{i + 1}', f'p-h{i}-h{i + 1}', EVE, 'question', 'phone')
-job('phone/h5-screen', 'p-h5-screen', EVE, 'question>late@0.85', 'phone')
+for i in range(3): job(f'phone/h{i}-h{i + 1}', f'p-h{i}-h{i + 1}', EVE, 'question', 'phone')
+job('phone/h3-late', 'p-h3-late', EVE, 'question', 'phone')
 job('phone/end-c0', 'p-end-c0', FALLEN, 'waitlist', 'phone')
-for i in range(4): job(f'phone/c{i}-c{i + 1}', f'p-c{i}-c{i + 1}', FALLEN, 'waitlist', 'phone')
-job('phone/c4-team', 'p-c4-team', FALLEN, 'waitlist', 'phone')
+for i in range(2): job(f'phone/c{i}-c{i + 1}', f'p-c{i}-c{i + 1}', FALLEN, 'waitlist', 'phone')
+job('phone/c2-team', 'p-c2-team', FALLEN, 'waitlist', 'phone')
 job('phone/team-q0', 'p-team-q0', FALLEN, 'waitlist', 'phone')
-for dev in ('desk', 'phone'):   # out of the screen at the end of the night (the tower still standing)
-    job(f'{dev}/screen-late', 'screen-late', LATE, 'late', dev)
+for dev in ('desk', 'phone'):   # the late-night stop: the tower still standing, the candles and fire burnt down
+    job(f'{dev}/late', 'late', LATE, 'late', dev)
 
 STILLS = []   # no overhead stills any more: every stop is a rendered shot
 
@@ -62,7 +62,7 @@ def main():
     ap.add_argument('--quick', action='store_true')
     ap.add_argument('--check', action='store_true', help='list what is rendered and what is missing, render nothing')
     ap.add_argument('--table', default='walnut', choices=['walnut', 'oak', 'marble'], help='the coffee table: walnut (default), oak or marble')
-    ap.add_argument('--folder', default='renders', help='where the frames go (scripts/blender/room/<folder>): keep versions apart')
+    ap.add_argument('--folder', default='renders_v3', help='where the frames go (scripts/blender/room/<folder>): keep versions apart')
     ap.add_argument('--base', default='black', choices=['black', 'wood'], help="Jeemu's base: black (default) or wood")
     ap.add_argument('--bpy', action='store_true', help='use the pip bpy module (python build_room.py) instead of a Blender app')
     a = ap.parse_args()

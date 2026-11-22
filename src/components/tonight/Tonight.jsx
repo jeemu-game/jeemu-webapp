@@ -10,7 +10,9 @@ import FilmStage, { useFilm, filmReady, segInfo, frameFit } from './Film';
 import WaitlistScreen from '../waitlist/WaitlistScreen';
 import KickstarterScreen from '../waitlist/KickstarterScreen';
 import { useLive } from './useCountdown';
-import { SCREENS, CAPTIONS, POLAROIDS, EXTRA_PHOTOS, FINALE, STORY, TEAM_PRINT } from './copy';
+import { SCREENS, CAPTIONS, POLAROIDS as POLAROIDS_V3, EXTRA_PHOTOS as EXTRA_V3, FINALE, STORY as STORY_V3, TEAM_PRINT } from './copy';
+import { POLAROIDS_V2, EXTRA_PHOTOS_V2, STORY_V2 } from './copyV2';
+import SEQ_INDEX from './seqIndex.json';
 import { TEAM_MEMBERS, JOURNEY_MILESTONES, WHY_WE_CARE } from '../../data/teamData';
 import { FAQS } from '../../data/faq';
 
@@ -38,6 +40,10 @@ const CHAPTERS = [['end', 'toEnd', 'toChapters']];
 // questions (once each).
 // A wide window frames two prints at a stop (half the scrolling); a phone keeps one per screen so each stays readable.
 // Decided once, at load (the stops are the page's length).
+// which renders are packed: the new ones (four evening prints, three story prints, a cut to late night) or the previous
+// (six and five, through Jeemu's screen). The text beside the prints has to match what's in the picture.
+const V3 = !!(SEQ_INDEX[MOBILE ? 'phone' : 'desk'] || {}).late;
+const POLAROIDS = V3 ? POLAROIDS_V3 : POLAROIDS_V2, EXTRA_PHOTOS = V3 ? EXTRA_V3 : EXTRA_PHOTOS_V2, STORY = V3 ? STORY_V3 : STORY_V2;
 const WIDE_AT_LOAD = !MOBILE;   // computers frame the prints in pairs (the film is rendered that way); phones one at a time
 const FILM_DEV = MOBILE ? 'phone' : 'desk';
 const groups = (n) => (WIDE_AT_LOAD ? Array.from({ length: Math.ceil(n / 2) }, (_, g) => [2 * g, 2 * g + 1].filter((i) => i < n))
@@ -63,14 +69,16 @@ const CHAPTER_PRINTS = [...STORY, TEAM_PRINT];
 // Scroll length of every beat, in % of the window height
 const PRINT_STOPS = STOPS.filter((st) => st.faq === undefined), FAQ_STOPS = STOPS.filter((st) => st.faq !== undefined);
 // The rendered film (Film.jsx): the story is a row of stops, each reached by the camera move(s) named in `via`.
-// Evening to late night goes into Jeemu's screen and out again (two moves, one cut inside the screen).
+// Evening to late night: the camera rises from the prints back to the tower, then a cut to the same framing at the end
+// of the night (the late stop's own picture, move "late").
 const DESK = FILM_DEV === 'desk';
-const H_SEGS = DESK ? ['play-h0', 'h0-h1', 'h1-h2'] : ['play-h0', ...[0, 1, 2, 3, 4].map((i) => `h${i}-h${i + 1}`)];
-const C_SEGS = DESK ? ['end-c0', 'c0-c1', 'c1-c2', 'c2-team'] : ['end-c0', ...[0, 1, 2, 3].map((i) => `c${i}-c${i + 1}`), 'c4-team'];
+const H_SEGS = ['play-h0', ...HOW.slice(1).map((_, i) => `h${i}-h${i + 1}`)];
+const C_SEGS = ['end-c0', ...PRINT_STOPS.slice(1).map((st, i) => `c${i}-${st.team ? 'team' : `c${i + 1}`}`)];   // same names in both
 const RESTS = [
   { id: 'wide', seg: 'wide-close', len: 110 }, { id: 'close', via: ['wide-close'], len: 100 }, { id: 'play', via: ['close-play'], len: 110 },
   ...HOW.map((_, j) => ({ id: `p${j}`, via: [H_SEGS[j]], len: 110 })),
-  { id: 'late', via: [DESK ? 'h2-screen' : 'h5-screen', 'screen-late'], len: 120 },
+  V3 ? { id: 'late', via: [`h${HOW.length - 1}-late`], shot: { seg: 'late', which: 'last' }, len: 120 }
+    : { id: 'late', via: [`h${HOW.length - 1}-screen`, 'screen-late'], len: 120 },
   { id: 'fallen', via: ['fall'], len: 90 },
   { id: 'end', via: ['fallen-end'], len: 150, waitlist: true },
   ...PRINT_STOPS.map((st, i) => ({ id: st.id, via: [C_SEGS[i]], len: st.team ? 130 : 110 })),
@@ -258,6 +266,63 @@ export default function Tonight({ onCta }) {
   const filmTarget = (() => { if (!FILM) return 0; let i = 0; const tt = t + 18;   // a little way into a stop's beat is enough
     while (i < RESTS.length - 1 && tt >= START[RESTS[i + 1].id][0]) i++; return i; })();
   const film = useFilm(FILM_DEV, RESTS, filmTarget);
+  // One scroll gesture = one stop. In the story, wheel flicks, swipes and the arrow/page keys step to the next stop (the
+  // move plays, one more can be queued); past the last stop the page scrolls normally to the footer.
+  const filmNow = useRef({}); filmNow.current = { pos: film.pos, target: filmTarget };
+  useEffect(() => {
+    if (!FILM) return undefined;
+    const sec = section.current; if (!sec) return undefined;
+    const snaps = () => [...sec.querySelectorAll('.tn-snap')].map((el) => el.getBoundingClientRect().top + window.scrollY);
+    const inStory = () => { const ys = snaps(); return window.scrollY <= ys[ys.length - 1] + 2; };
+    const step = (dir) => {
+      const ys = snaps(); const { pos, target } = filmNow.current;
+      const next = Math.max(0, Math.min(ys.length - 1, target + dir));
+      if (next === target) {   // past either end: leave the story the normal way
+        if (dir > 0) window.scrollTo({ top: ys[ys.length - 1] + 4, behavior: 'smooth' });
+        return;
+      }
+      if (Math.abs(next - pos) > 2) return;   // two queued is enough
+      window.scrollTo({ top: ys[next], behavior: 'instant' });
+    };
+    let last = 0, stepped = false, acc = 0;
+    const onWheel = (e) => {
+      if (e.ctrlKey || !inStory()) return;
+      const ys = snaps();
+      if (e.deltaY > 0 && window.scrollY >= ys[ys.length - 1] - 2 && filmNow.current.target === ys.length - 1) return;   // on to the footer
+      e.preventDefault();
+      const now = performance.now();
+      if (now - last > 220) { stepped = false; acc = 0; }   // a new gesture
+      last = now;
+      if (stepped) return;   // one stop per gesture (a trackpad keeps sending events as it coasts)
+      acc += e.deltaY * (e.deltaMode === 1 ? 30 : 1);
+      if (Math.abs(acc) >= 24) { stepped = true; step(Math.sign(acc)); }
+    };
+    let y0 = null;
+    const skip = (el) => el && el.closest && el.closest('input, textarea, select, .nb-panel, .tn-screen');
+    const onStart = (e) => { y0 = !skip(e.target) && inStory() ? e.touches[0].clientY : null; };
+    const onMove = (e) => {
+      if (y0 === null) return;
+      const ys = snaps(); const dy = y0 - e.touches[0].clientY;
+      if (dy > 0 && filmNow.current.target === ys.length - 1) { y0 = null; return; }   // on to the footer
+      e.preventDefault();
+    };
+    const onEnd = (e) => {
+      if (y0 === null) return; const dy = y0 - e.changedTouches[0].clientY; y0 = null;
+      if (Math.abs(dy) >= 24) step(Math.sign(dy));
+    };
+    const onKey = (e) => {
+      if (e.altKey || e.ctrlKey || e.metaKey || skip(document.activeElement) || !inStory()) return;
+      const dir = { ArrowDown: 1, PageDown: 1, ' ': e.shiftKey ? -1 : 1, ArrowUp: -1, PageUp: -1 }[e.key];
+      if (!dir) return; e.preventDefault(); step(dir);
+    };
+    window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('touchstart', onStart, { passive: true });
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('touchend', onEnd, { passive: true });
+    window.addEventListener('keydown', onKey);
+    return () => { window.removeEventListener('wheel', onWheel); window.removeEventListener('touchstart', onStart);
+      window.removeEventListener('touchmove', onMove); window.removeEventListener('touchend', onEnd); window.removeEventListener('keydown', onKey); };
+  }, []);
   const arrived = FILM && !film.move ? RESTS[film.pos].id : null;   // the stop the camera is on (words show there)
 
   // ---- per-shot camera (centre in image pixels, zoom relative to "cover") and opacity
@@ -422,6 +487,7 @@ export default function Tonight({ onCta }) {
     <section className={`tn ${FILM ? 'tn-film' : ''}`} ref={section} style={{ '--tn-len': TOTAL + 100 }} aria-label="Jeemu, one game night">
       {/* where "Join the waitlist" links land: partway into the end beat, so the camera is settled on the screen */}
       <span id="waitlist" className="tn-anchor" style={{ '--at': START.end[0] + 45 }} aria-hidden="true" />
+      {FILM && RESTS.map((r, i) => <span key={r.id} className="tn-snap" style={{ '--at': i ? START[r.id][0] + 20 : 0 }} aria-hidden="true" />)}
       <span id="journey" className="tn-anchor" style={{ '--at': START[STOPS[0].id][0] + 40 }} aria-hidden="true" />
       <span id="team" className="tn-anchor" style={{ '--at': START[STOPS[FIRST_TEAM].id][0] + 40 }} aria-hidden="true" />
       <span id="faq" className="tn-anchor" style={{ '--at': START[STOPS[FIRST_FAQ].id][0] + 40 }} aria-hidden="true" />

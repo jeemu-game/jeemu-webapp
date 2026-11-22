@@ -649,18 +649,20 @@ def polaroid(i, x, y, rz, lift=0.0, kind='square', face_down=False):
     return card
 
 if not A.chapters:
-    # seven in story order along the front of the table (the site pans from one to the next), plus one face-down extra
-    POLAROIDS = [polaroid(i, x, y, rz, lift) for i, (x, y, rz, lift) in enumerate((
-        (-0.52, -0.23, 0.16, 0.0), (-0.30, -0.30, -0.22, 0.0), (-0.08, -0.25, 0.09, 0.0), (0.14, -0.31, -0.13, 0.0),
-        (0.37, -0.24, 0.24, 0.0), (0.60, -0.30, -0.18, 0.0), (0.83, -0.24, 0.12, 0.0)))]
+    # in story order along the front of the table (the site pans from one to the next), plus one face-down extra.
+    # As many as the site has (copy.js POLAROIDS + EXTRA_PHOTOS); seven without the site's prints.
+    HOW_POS = ((-0.52, -0.23, 0.16, 0.0), (-0.30, -0.30, -0.22, 0.0), (-0.08, -0.25, 0.09, 0.0), (0.14, -0.31, -0.13, 0.0),
+               (0.37, -0.24, 0.24, 0.0), (0.60, -0.30, -0.18, 0.0), (0.83, -0.24, 0.12, 0.0))
+    n_how = min(7, len(PRINTS_SITE)) if A.bake_ui else 7
+    POLAROIDS = [polaroid(i, x, y, rz, lift) for i, (x, y, rz, lift) in enumerate(HOW_POS[:n_how])]
     polaroid(7, 0.70, -0.06, 1.2, 0.0, face_down=True)
     FAQ_CARD = None
 else:
-    # after the waitlist: our story (five prints along the front), the team (a wide print at the right end),
-    # and the questions people ask (a stack of 5 x 3 inch index cards at the back)
-    POLAROIDS = [polaroid(i, x, y, rz) for i, (x, y, rz) in enumerate((
-        (-0.55, -0.22, 0.12), (-0.31, -0.30, -0.17), (-0.06, -0.33, 0.08), (0.20, -0.31, -0.12), (0.45, -0.27, 0.18)))]
-    POLAROIDS.append(polaroid(5, 0.80, -0.20, -0.07, kind='wide'))
+    # after the waitlist: our story (prints along the front), the team (a wide print just after them)
+    STORY_POS = ((-0.31, -0.30, -0.17), (-0.06, -0.33, 0.08), (0.20, -0.31, -0.12), (0.45, -0.27, 0.18), (-0.55, -0.22, 0.12))
+    n_story = min(5, len(PRINTS_SITE) - 1) if A.bake_ui else 5
+    POLAROIDS = [polaroid(i, x, y, rz) for i, (x, y, rz) in enumerate(STORY_POS[:n_story])]
+    POLAROIDS.append(polaroid(n_story, 0.50 if n_story <= 3 else 0.80, -0.22 if n_story <= 3 else -0.20, -0.07, kind='wide'))
     FAQ_CARD = None   # the questions are etched on fallen blocks now (see --meta: faqBlocks)
     for k in range(0):   # a slightly messy stack; the top one carries the question
         c = box(f'FaqCard{k}', -0.0635, -0.038, 0.0, 0.0635, 0.038, 0.00028, mat=M_INDEX)
@@ -1024,21 +1026,23 @@ for k in range(6): MOVES[f'faq{k}-faq{k + 1}'] = [f'faq{k}', (f'faq{k + 1}', 36)
 # at the end of the night (a cut inside the screen: no fade). The same move names render for desktop and phone; the
 # lean states frame one or two prints by what they're given.
 MOVES.update({
+    # evening: the camera leans over the polaroids, then rises back to the tower; the site cuts there to the same framing
+    # at the end of the night (move "late": the tower, candles and fire burnt down). No push into the screen.
     'play-h0': ['play', ('lean:0,1', 60)],
-    'h0-h1': ['lean:0,1', ('lean:2,3', 40)], 'h1-h2': ['lean:2,3', ('lean:4,5', 40)],
-    'h2-screen': ['lean:4,5', ('screen', 60)],
-    'screen-late': ['screen', ('play', 60)],
+    'h0-h1': ['lean:0,1', ('lean:2,3', 40)],
+    'h1-late': ['lean:2,3', ('play', 60)],
+    'late': ['play', ('play', 2)],   # the late-night stop itself: three still frames (its picture and fire loop)
     'end-c0': ['close', ('lean:0,1', 60)],
-    'c0-c1': ['lean:0,1', ('lean:2,3', 40)], 'c1-c2': ['lean:2,3', ('lean:4', 40)], 'c2-team': ['lean:4', ('lean:5', 40)],
-    'team-q0': ['lean:5', ('faq0', 54)],
+    'c0-c1': ['lean:0,1', ('lean:2', 40)], 'c1-team': ['lean:2', ('lean:3', 40)],
+    'team-q0': ['lean:3', ('faq0', 54)],
     # phones: one print at a time
     'p-play-h0': ['play', ('lean:0', 60)],
-    **{f'p-h{i}-h{i + 1}': [f'lean:{i}', (f'lean:{i + 1}', 32)] for i in range(5)},
-    'p-h5-screen': ['lean:5', ('screen', 60)],
+    **{f'p-h{i}-h{i + 1}': [f'lean:{i}', (f'lean:{i + 1}', 32)] for i in range(3)},
+    'p-h3-late': ['lean:3', ('play', 60)],
     'p-end-c0': ['close', ('lean:0', 60)],
-    **{f'p-c{i}-c{i + 1}': [f'lean:{i}', (f'lean:{i + 1}', 32)] for i in range(4)},
-    'p-c4-team': ['lean:4', ('lean:5', 32)],
-    'p-team-q0': ['lean:5', ('faq0', 54)],
+    **{f'p-c{i}-c{i + 1}': [f'lean:{i}', (f'lean:{i + 1}', 32)] for i in range(2)},
+    'p-c2-team': ['lean:2', ('lean:3', 32)],
+    'p-team-q0': ['lean:3', ('faq0', 54)],
 })
 
 def cam_state(name):

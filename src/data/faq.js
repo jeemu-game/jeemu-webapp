@@ -8,5 +8,5 @@ export const FAQS = [
   { q: 'When does it launch, and what does it cost?', a: `We launch on Kickstarter on ${LAUNCH_DATE}. The early bird price is ${EARLY_BIRD_PRICE} USD.` },
   { q: 'Do you ship worldwide?', a: 'Yes, we ship worldwide.' },
   { q: 'What do early-bird backers get?', a: `The ${EARLY_BIRD_PRICE} early-bird price. VIP waitlist members ($1) also get a free premium Jeemu carry bag. Joining the waitlist gets you first word when the campaign opens.` },
-  { q: 'What are the blocks like?', a: 'Standard-size wooden blocks, each branded with the Jeemu name.' }
+  { q: 'What are the blocks like?', a: 'Standard-size wooden blocks, each branded with the Jeemu name. In the box: the Jeemu base, the NFC blocks, a charging cable and a sleeve with instructions.' }
 ];
