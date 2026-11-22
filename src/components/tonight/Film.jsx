@@ -55,8 +55,11 @@ export function useFilm(dev, rests, target) {
   const tgt = useRef(target); tgt.current = target;
   // decide the next step whenever we're stopped and the reader wants to be elsewhere
   useEffect(() => {
-    if (move) return;
     const want = Math.max(0, Math.min(rests.length - 1, target));
+    if (move) {   // mid-move and the reader is suddenly far away (a menu link): drop the move, cut there
+      if (Math.abs(want - move.to) > 2) { setMove(null); setPos(want); }
+      return;
+    }
     if (want === pos) return;
     if (Math.abs(want - pos) > 2) { setPos(want); return; }   // a jump (menu link, fast fling): cut straight there
     const to = want > pos ? pos + 1 : pos - 1;

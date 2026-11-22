@@ -406,6 +406,9 @@ a.tb-count:hover { color: var(--tn-paper); }
 .tn-card.is-team .tn-team span { font-size: 0.8rem; }
 
 /* two prints at a stop: their words one after the other */
+.tn-film .tn-card.is-pair { right: clamp(16px, 2.5vw, 44px); width: min(310px, 22vw); }   /* clear of the second print (it reaches ~72% across) */
+.tn-film .tn-card.is-pair h3 { font-size: clamp(1.3rem, 1.8vw, 1.7rem); }
+.tn-film .tn-card.is-pair p { font-size: 0.95rem; }
 .tn-card section + section { margin-top: 22px; }
 /* the words sit on a soft pool of shadow, so a print further along the table never shows through them */
 @media (min-width: 761px) {
