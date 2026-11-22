@@ -210,16 +210,16 @@ export default function Tonight({ onCta }) {
   const reduce = useMemo(() => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
 
   useEffect(() => {
-    if (FILM) setTimeout(() => setLit(true), 150);
-    if (MOBILE && !DESK_FILM) { setTimeout(() => setLit(true), 150); return; }
-    (DESK_FILM ? ['top', 'top2'] : SHOTS).forEach((s) => fetch(at(`${s}.json`)).then((r) => r.json()).then((j) => setMeta((m) => ({ ...m, [s]: j }))).catch(() => {}));
+    if (FILM || MOBILE) { setTimeout(() => setLit(true), 150); return; }   // the film needs none of the stills' corner files
+    SHOTS.forEach((s) => fetch(at(`${s}.json`)).then((r) => r.json()).then((j) => setMeta((m) => ({ ...m, [s]: j }))).catch(() => {}));
   }, []);
 
   useEffect(() => {
     // The camera glides after the scroll position instead of jumping with every wheel tick or touch move: the shown
     // position eases toward the real one (time constant ~0.12 s). Big jumps (links to a section) and reduced motion snap.
     let raf = 0, glide = 0, shown = -1, target = 0, last = 0;
-    const smooth = !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    // (the film plays its own moves: it wants the real scroll position, so a jump reads as a jump and cuts there)
+    const smooth = !FILM && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     const step = (now) => {
       glide = 0;
       const dt = Math.min(64, now - (last || now)); last = now;
