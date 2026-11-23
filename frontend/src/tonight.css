@@ -1,0 +1,435 @@
+/* ==========================================================================
+   JEEMU "TONIGHT": warm night interior, smoked walnut, brass, firelight.
+   Display: Instrument Serif. Text: Manrope. Handwriting on the polaroids: Kalam (a felt-tip hand that stays legible).
+   Wordmark: Combo (the official Jeemu wordmark font).
+   ========================================================================== */
+@font-face { font-family: 'Combo'; src: url('/brand/Combo-Regular.ttf') format('truetype'); font-display: swap; }
+/* The Jeemu wordmark: Matcha Style by Khurasan Studio (free for personal and commercial use, see public/brand/Matcha-Style-licence.txt) */
+@font-face { font-family: 'Matcha'; src: url('/brand/Matcha-Style.woff2') format('woff2'), url('/brand/Matcha-Style.ttf') format('truetype'); font-display: swap; }
+
+html.theme-tonight {
+  --tn-ink: #0b0907;
+  --tn-char: #14100c;
+  --tn-paper: #f2eadf;
+  --tn-muted: #b4a593;
+  --tn-faint: #8c7f70;
+  --tn-brass: #cfa96b;
+  --tn-brass-hi: #e2c08a;
+  --tn-ember: #e2763a;
+  --tn-line: rgba(242, 234, 223, 0.12);
+  --tn-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --tn-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --tn-hand: 'Kalam', 'Segoe Print', 'Bradley Hand', cursive;
+  --tn-brand: 'Matcha', 'Combo', var(--tn-sans);
+
+  /* re-theme the shared sections (waitlist, story, team, FAQ) */
+  --bg-base: var(--tn-ink); --bg-black: #070504; --bg-surface: var(--tn-char);
+  --text-main: var(--tn-paper); --text-muted: var(--tn-muted); --text-faint: var(--tn-faint);
+  --jade-primary: var(--tn-brass); --jade-hover: var(--tn-brass-hi); --jade-dark: #a8844b;
+  --jade-surface: rgba(207, 169, 107, 0.12); --border-focus: rgba(207, 169, 107, 0.6);
+  --border-glass: var(--tn-line); --border-glass-hover: rgba(242, 234, 223, 0.24);
+  --font-sans: var(--tn-sans); --font-display: var(--tn-serif); --font-serif: var(--tn-serif);
+  --px-font: var(--tn-sans); --screen-font: var(--tn-sans); --font-mono: var(--tn-sans);
+  background: var(--tn-ink);
+}
+html.theme-tonight body { background: var(--tn-ink); font-family: var(--tn-sans); }
+html.theme-tonight ::selection { background: var(--tn-brass); color: var(--tn-ink); }
+
+/* ---------------------------------------------------------------- top bar: smoked walnut */
+.tb {
+  position: fixed; inset: 0 0 auto 0; z-index: 50; height: 56px; display: flex; align-items: center; gap: 28px;
+  padding: 0 max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-left));
+  background: #2a1b11 url('/tonight/walnut.jpg') center / cover;
+  box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.14), inset 0 -1px 0 rgba(0, 0, 0, 0.55), 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.tb::after {   /* satin finish: a soft sheen across the veneer */
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 230, 200, 0.08), rgba(255, 230, 200, 0) 45%, rgba(0, 0, 0, 0.18));
+}
+.tb-mark {
+  font-family: var(--tn-brand); font-size: 1.7rem; line-height: 1; text-decoration: none; letter-spacing: 0.01em;
+  color: rgba(20, 11, 6, 0.92);   /* pressed into the wood: dark letters, a light lip below, a shadow above */
+  text-shadow: 0 1px 0 rgba(255, 214, 170, 0.28), 0 -1px 0 rgba(0, 0, 0, 0.5);
+  position: relative; z-index: 1; padding-top: 2px;
+}
+.tb-links { display: flex; gap: 22px; margin-left: auto; position: relative; z-index: 1; }
+.tb-links a { color: rgba(242, 228, 210, 0.82); text-decoration: none; font-size: 0.86rem; font-weight: 500; letter-spacing: 0.02em; transition: color 160ms; }
+.tb-links a:hover { color: #fff; }
+.tb-cta {
+  position: relative; z-index: 1; font: 600 0.82rem/1 var(--tn-sans); letter-spacing: 0.04em; cursor: pointer;
+  padding: 11px 16px; border-radius: 999px; color: #1a120b; background: linear-gradient(180deg, #e7c890, #c49b5d);
+  border: 0; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.35); transition: transform 160ms, filter 160ms;
+}
+.tb-cta:hover { transform: translateY(-1px); filter: brightness(1.06); }
+.tb-cta:focus-visible, .tb-links a:focus-visible, .tb-mark:focus-visible, .tn-btn:focus-visible { outline: 2px solid var(--tn-brass-hi); outline-offset: 3px; }
+@media (max-width: 760px) { .tb-links { display: none; } .tb-cta { margin-left: auto; padding: 10px 14px; } .tb { height: 52px; } .tb-mark { font-size: 1.5rem; } }
+
+/* ---------------------------------------------------------------- the scroll story */
+.tn { position: relative; background: var(--tn-ink); height: calc(var(--tn-len) * 1vh); height: calc(var(--tn-len) * 1svh); }
+.tn-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; contain: strict; }
+.tn-layer { position: absolute; inset: 0; will-change: opacity; }
+.tn-shot { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.tn-shot > picture, .tn-shot > picture > img { display: block; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; }
+.tn-photo picture { display: block; width: 100%; height: 100%; }
+.tn-warp { position: absolute; left: 0; top: 0; transform-origin: 0 0; backface-visibility: hidden; }
+
+/* polaroids: the render's white picture area takes the photo with a multiply, so it keeps the room's light and shadow */
+.tn-photo { mix-blend-mode: multiply; }
+.tn-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }   /* already graded by scripts/photos */
+/* depth of field over the table: a pre-blurred copy of the shot covers everything except where the camera looks */
+.tn-dof { position: absolute; inset: 0; pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse var(--dof-rx, 24%) var(--dof-ry, 40%) at var(--dof-x, 36%) var(--dof-y, 50%), transparent 62%, #000 100%);
+  mask-image: radial-gradient(ellipse var(--dof-rx, 24%) var(--dof-ry, 40%) at var(--dof-x, 36%) var(--dof-y, 50%), transparent 62%, #000 100%); }
+.tn-photo.is-soft img, .tn-note.is-soft span { filter: blur(5px); }
+.tn-note.is-soft span { transition: none; }
+.tn-note { mix-blend-mode: multiply; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.tn-note span {
+  font-family: var(--tn-hand); font-weight: 400; line-height: 1; color: #23243a; white-space: nowrap; transform: rotate(-1.5deg);
+  clip-path: inset(-20% 100% -20% 0); transition: clip-path 1.5s cubic-bezier(0.45, 0.05, 0.4, 1) 0.15s;
+}
+.tn-note.is-written span { clip-path: inset(-20% -2% -20% 0); }
+
+/* live Jeemu screen, 320 x 240: an LCD, not a phone */
+.tn-screen { filter: drop-shadow(0 0 8px rgba(230, 190, 160, 0.25)); }
+.ls {
+  width: 320px; height: 240px; position: relative; overflow: hidden; color: #f2ece9; font-family: var(--tn-sans);
+  background: radial-gradient(120% 90% at 50% 40%, #201913, #0c0907 75%);
+}
+.ls::after {   /* faint LCD sub-pixel texture so it reads as a small screen up close */
+  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.18;
+  background: repeating-linear-gradient(90deg, rgba(255, 0, 0, 0.18) 0 1px, rgba(255, 110, 0, 0.14) 1px 2px, rgba(0, 0, 255, 0.18) 2px 3px);
+}
+.ls-bar { display: flex; justify-content: space-between; align-items: center; height: 34px; padding: 0 16px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: #bfa48f; border-bottom: 1px solid rgba(191, 164, 143, 0.18); }
+.ls-mark { font-family: var(--tn-brand); font-size: 16px; letter-spacing: 0; color: #f2ece9; font-weight: 400; }
+.ls-text { margin: 22px 18px 0; font-size: 25px; line-height: 1.18; font-weight: 600; letter-spacing: -0.01em; }
+.ls-text.ls-long { font-size: 21px; }
+.ls-caret { display: inline-block; width: 2px; height: 0.9em; margin-left: 3px; vertical-align: -0.08em; background: #e3a873; animation: ls-blink 1s steps(2) infinite; }
+.ls-foot { position: absolute; left: 18px; bottom: 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #e3a873; }
+@keyframes ls-blink { 50% { opacity: 0; } }
+
+/* firelight: the whole room breathes a little with the flames */
+.tn-fire {
+  position: absolute; inset: 0; pointer-events: none; mix-blend-mode: soft-light;
+  background: radial-gradient(90% 70% at 50% 45%, rgba(255, 150, 70, 0.55), rgba(255, 120, 40, 0) 70%);
+  animation: tn-flicker 3.7s infinite; transition: opacity 600ms;
+}
+@keyframes tn-flicker {
+  0%, 100% { filter: brightness(1); } 7% { filter: brightness(0.82); } 13% { filter: brightness(1.08); } 21% { filter: brightness(0.9); }
+  34% { filter: brightness(1.04); } 41% { filter: brightness(0.86); } 55% { filter: brightness(1.1); } 63% { filter: brightness(0.92); }
+  78% { filter: brightness(1.02); } 86% { filter: brightness(0.84); }
+}
+.tn-grain {   /* film grain lives here, not in the video (compression would smear it) */
+  position: absolute; inset: -50%; pointer-events: none; opacity: 0.07; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.6 -0.3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: tn-grain 0.6s steps(6) infinite;
+}
+@keyframes tn-grain { 0% { transform: translate(0, 0); } 33% { transform: translate(-7%, 4%); } 66% { transform: translate(5%, -6%); } 100% { transform: translate(-3%, 8%); } }
+.tn-vignette { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 55%, rgba(6, 4, 3, 0.55)), radial-gradient(130% 100% at 50% 50%, transparent 55%, rgba(5, 3, 2, 0.55)); }
+
+/* words over the picture */
+.tn-hint { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); font: 600 0.72rem/1 var(--tn-sans); letter-spacing: 0.3em; text-transform: uppercase; color: rgba(242, 234, 223, 0.7); }
+.tn-hint::after { content: ''; display: block; width: 1px; height: 34px; margin: 12px auto 0; background: linear-gradient(rgba(242, 234, 223, 0.7), transparent); animation: tn-drop 1.8s ease-in-out infinite; transform-origin: top; }
+@keyframes tn-drop { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+.tn-kicker { display: block; font: 700 0.72rem/1 var(--tn-sans); letter-spacing: 0.24em; text-transform: uppercase; color: var(--tn-brass); margin-bottom: 14px; }
+.tn-caption {
+  position: absolute; left: clamp(20px, 6vw, 96px); bottom: clamp(28px, 9vh, 96px); max-width: min(560px, 88vw); pointer-events: none;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
+}
+.tn-caption h2 { margin: 0; font: 600 clamp(1.6rem, 2.9vw, 2.6rem)/1.15 var(--tn-sans); color: var(--tn-paper); letter-spacing: -0.02em; text-wrap: balance; }
+.tn-caption.tn-on-wall { right: auto; bottom: auto; max-width: none; transform: translate(-50%, -50%); text-align: center; }
+.tn-card {
+  position: absolute; right: clamp(20px, 7vw, 120px); top: 50%; transform: translateY(-50%); width: min(360px, 32vw); pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 28px rgba(0, 0, 0, 0.55);
+}
+.tn-card h3 { margin: 0 0 10px; font: 600 clamp(1.5rem, 2.2vw, 2rem)/1.1 var(--tn-sans); color: var(--tn-paper); letter-spacing: -0.02em; }
+.tn-card p { margin: 0; font-size: 1.02rem; line-height: 1.55; color: rgba(242, 234, 223, 0.86); }
+.tn-finale {   /* centred over the tower: the words, then the fall */
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -38%); width: min(640px, 90vw); text-align: center; pointer-events: none;
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.75);
+}
+.tn-finale h2 { font: 700 clamp(2.2rem, 5.6vw, 4.4rem)/1.02 var(--tn-sans); color: var(--tn-paper); letter-spacing: -0.035em; margin-bottom: 16px; }
+.tn-finale p { font-size: clamp(1rem, 1.6vw, 1.15rem); line-height: 1.55; color: rgba(242, 234, 223, 0.86); margin: 0 auto 28px; max-width: 30em; }
+.tn-btn {
+  font: 700 0.95rem/1 var(--tn-sans); letter-spacing: 0.03em; padding: 17px 28px; border-radius: 999px; border: 0; cursor: pointer;
+  color: #1a120b; background: linear-gradient(180deg, #ecd09b, #c49b5d); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 40px rgba(226, 118, 58, 0.25);
+  transition: transform 180ms, filter 180ms;
+}
+.tn-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+.tn-progress { position: absolute; left: 0; right: 0; top: 56px; height: 2px; background: rgba(242, 234, 223, 0.06); }
+.tn-progress i { display: block; height: 100%; background: linear-gradient(90deg, var(--tn-brass), var(--tn-ember)); transform-origin: left; }
+
+/* phones and tall tablets: text along the bottom (the camera frames the polaroid above it) */
+@media (max-width: 760px), (max-aspect-ratio: 9/10) {
+  .tn-card { left: 16px; right: 16px; top: auto; bottom: max(22px, env(safe-area-inset-bottom)); transform: none; width: auto; max-width: 560px; margin: 0 auto; padding: 0; }
+  .tn-card::before { content: ''; position: absolute; z-index: -1; left: -16px; right: -16px; top: -48px; bottom: -40px; background: linear-gradient(180deg, rgba(8, 6, 4, 0), rgba(8, 6, 4, 0.78) 45%); }
+  .tn-card h3 { font-size: 1.45rem; margin-bottom: 6px; }
+  .tn-card p { font-size: 0.94rem; }
+  .tn-caption { left: 16px; right: 16px; bottom: 40px; }
+  .tn-finale { transform: translate(-50%, -45%); }
+}
+/* phones on their side: little height, so the card goes beside the photo, compact */
+@media (max-height: 500px) and (min-aspect-ratio: 9/10) {
+  .tn-card { left: auto; right: max(16px, env(safe-area-inset-right)); top: 50%; bottom: auto; transform: translateY(-40%); width: min(300px, 40vw); padding: 0; }
+  .tn-card::before { display: none; }
+  .tn-card h3 { font-size: 1.35rem; margin-bottom: 4px; }
+  .tn-card p { font-size: 0.85rem; line-height: 1.45; }
+  .tn-card .tn-kicker, .tn-caption .tn-kicker { margin-bottom: 8px; }
+  .tn-caption { bottom: 18px; }
+  .tn-caption h2 { font-size: 1.35rem; }
+  .tn-finale h2 { font-size: 2.2rem; margin-bottom: 8px; }
+  .tn-finale p { margin-bottom: 14px; font-size: 0.9rem; }
+  .tn-btn { padding: 13px 22px; }
+  .tn-hint { display: none; }
+}
+@media (max-width: 760px) {
+  .tn-progress { top: 52px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .tn-fire, .tn-grain, .tn-hint::after, .ls-caret { animation: none; }
+  .tn-note span { transition: none; }
+}
+
+/* ---------------------------------------------------------------- shared sections in the new skin */
+html.theme-tonight .px-frog { display: none; }
+html.theme-tonight .px-label { font-family: var(--tn-sans); font-weight: 700; letter-spacing: 0.24em; color: var(--tn-brass); }
+html.theme-tonight .section-title, html.theme-tonight .wl-copy h2 { font-family: var(--tn-serif); font-weight: 400; letter-spacing: -0.01em; }
+html.theme-tonight .wl { background: linear-gradient(180deg, #0b0907, #120d09 60%, #0b0907); border-top: 1px solid var(--tn-line); }
+html.theme-tonight .wl-card { clip-path: none; border-radius: 6px; background: rgba(24, 18, 13, 0.85); border: 1px solid var(--tn-line); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4); }
+html.theme-tonight .wl-card::before { display: none; }
+html.theme-tonight .wl-field input { border-radius: 4px; border: 1px solid rgba(242, 234, 223, 0.18); background: #0d0a07; }
+html.theme-tonight .btn-pixel {
+  font-family: var(--tn-sans); font-weight: 700; letter-spacing: 0.04em; text-transform: none; border-radius: 999px; clip-path: none;
+  color: #1a120b; background: linear-gradient(180deg, #ecd09b, #c49b5d); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+html.theme-tonight .wl-screen { border: 1px solid rgba(207, 169, 107, 0.35); border-radius: 4px; background: #0d0a07; }
+html.theme-tonight .spotlight-card { background: rgba(24, 18, 13, 0.7); border: 1px solid var(--tn-line); border-radius: 6px; box-shadow: none; }
+html.theme-tonight .spotlight-card:hover { transform: none; border-color: rgba(207, 169, 107, 0.35); box-shadow: none; }
+html.theme-tonight .site-footer, html.theme-tonight .section-container + .section-container { border-color: var(--tn-line); }
+html.theme-tonight .faq-trigger span { font-family: var(--tn-serif); font-weight: 400; font-size: 1.35rem; }
+html.theme-tonight .node-circle { background: #1a130d; border-color: rgba(207, 169, 107, 0.4); color: var(--tn-brass); }
+html.theme-tonight .timeline-spine { background: linear-gradient(var(--tn-brass), transparent); opacity: 0.4; }
+html.theme-tonight .wl::before, html.theme-tonight .site-footer::before { display: none; }
+html.theme-tonight .wl-rewards, html.theme-tonight .faq-item, html.theme-tonight .wl-offer li, html.theme-tonight .wl-ok {
+  border: 1px solid var(--tn-line); border-radius: 6px; background: rgba(24, 18, 13, 0.7); box-shadow: none;
+}
+html.theme-tonight .faq-item:hover { border-color: rgba(207, 169, 107, 0.35); }
+html.theme-tonight .wl-rewards h3 { font-family: var(--tn-serif); font-weight: 400; }
+html.theme-tonight .wl-rewards li, html.theme-tonight .dep { border-top: 1px solid var(--tn-line); }
+html.theme-tonight .wl-rewards li:first-child { border-top: 0; }
+html.theme-tonight .team-avatar-box { border: 1px solid rgba(207, 169, 107, 0.4); border-radius: 50%; }
+html.theme-tonight .node-circle { box-shadow: none; border-radius: 50%; }
+html.theme-tonight .site-footer { border-top: 1px solid var(--tn-line); }
+html.theme-tonight .wl-ok { color: var(--tn-paper); }
+
+/* ---------------------------------------------------------------- the waitlist, on Jeemu's screen (320 x 240 LCD) */
+.tn-anchor { position: absolute; left: 0; width: 1px; height: 1px; top: calc(var(--at) * 1vh); top: calc(var(--at) * 1svh); }
+.tn-hint { pointer-events: none; }
+.tn-fine { position: absolute; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(520px, 90vw); margin: 0;
+  text-align: center; font-size: 0.8rem; line-height: 1.5; color: rgba(242, 234, 223, 0.55); pointer-events: none; transition: opacity 400ms; }
+.ws { display: flex; flex-direction: column; }
+.ws.is-flash::before { content: ''; position: absolute; inset: 0; background: rgba(224, 160, 111, 0.22); animation: ws-flash 0.9s ease-out forwards; pointer-events: none; z-index: 2; }
+@keyframes ws-flash { 0% { opacity: 1; } 100% { opacity: 0; } }
+.ws-page { display: flex; flex-direction: column; height: 100%; margin: 0; }
+.ws .ls-bar { flex: none; }
+.ws-lead { margin: 14px 16px 0; font-size: 16px; line-height: 1.25; font-weight: 600; color: #f2ece9; }
+.ws-field { display: block; margin: 12px 16px 0; }
+.ws-field input { width: 100%; box-sizing: border-box; height: 38px; padding: 0 10px; border-radius: 3px; outline: none;
+  font: 600 16px/1 var(--tn-sans); color: #f2ece9; caret-color: #e3a873; background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(191, 164, 143, 0.35); }
+.ws-field input::placeholder { color: rgba(191, 164, 143, 0.55); font-weight: 500; }
+.ws-field input:focus { border-color: #e3a873; box-shadow: 0 0 0 1px #e3a873, 0 0 14px rgba(224, 160, 111, 0.25); }
+.ws-field input[aria-invalid='true'] { border-color: #f0b46c; }
+.ws-more { align-self: flex-start; margin: 7px 16px 0; padding: 0; border: 0; background: none; cursor: pointer;
+  font: 600 11px/1.3 var(--tn-sans); letter-spacing: 0.04em; color: #bfa48f; text-decoration: underline; text-underline-offset: 2px; }
+.ws-more:hover { color: #f2ece9; }
+.ws-error { margin: 7px 16px 0; font-size: 11.5px; line-height: 1.3; font-weight: 600; color: #f0b46c; }
+.ws-keys { display: grid; grid-template-columns: 1.15fr 1fr; gap: 8px; margin: auto 16px 14px; }
+.ws-key { display: inline-flex; align-items: center; justify-content: center; height: 36px; padding: 0 12px; border-radius: 3px; cursor: pointer; text-decoration: none;
+  font: 700 13px/1 var(--tn-sans); letter-spacing: 0.06em; text-transform: uppercase; color: #e9dacf; background: transparent; border: 1px solid rgba(191, 164, 143, 0.45); }
+.ws-key:hover:not(:disabled) { border-color: #e3a873; color: #fff; }
+.ws-key:disabled { opacity: 0.55; cursor: progress; }
+.ws-key-go { color: #1c1007; background: #e3a873; border-color: #e3a873; }
+.ws-key-go:hover:not(:disabled) { background: #f0b68a; color: #1c1007; }
+.ws-key:focus-visible, .ws-more:focus-visible { outline: 2px solid #f2ece9; outline-offset: 2px; }
+.ws-foot-key { margin: auto 16px 14px; }
+.ws-big { margin: 16px 16px 0; font-size: 24px; line-height: 1.1; font-weight: 700; letter-spacing: -0.01em; color: #f2ece9; }
+.ws-small { margin: 6px 16px 0; font-size: 12.5px; line-height: 1.35; color: #c9b7a9; }
+.ws-share { margin-top: 4px; }
+.ws-linkrow { display: flex; gap: 6px; margin: 6px 16px 0; }
+.ws-link { flex: 1; min-width: 0; height: 32px; padding: 0 8px; display: flex; align-items: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  font: 600 12px/1 var(--tn-sans); color: #e3a873; border: 1px dashed rgba(191, 164, 143, 0.4); border-radius: 3px; user-select: all; }
+.ws-linkrow .ws-key { height: 32px; font-size: 11px; }
+.ws-rewards { list-style: none; margin: 10px 16px 0; padding: 0; }
+.ws-rewards li { display: grid; grid-template-columns: 34px 1fr; gap: 8px; align-items: baseline; padding: 6px 0; border-top: 1px solid rgba(191, 164, 143, 0.16); }
+.ws-rewards li:first-child { border-top: 0; }
+.ws-rewards b { font-size: 18px; color: #e3a873; }
+.ws-rewards span { font-size: 12.5px; line-height: 1.3; color: #e9dacf; }
+.ws-note { margin: 0; padding: 4px 16px; font-size: 11px; color: #1c1007; background: #e3a873; }
+.ws-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ws-dots::after { content: '…'; animation: ws-dots 1.2s steps(4) infinite; }
+@keyframes ws-dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '…'; } }
+.tn-screen.is-ui { filter: drop-shadow(0 0 10px rgba(230, 190, 160, 0.3)); }
+@media (prefers-reduced-motion: reduce) { .ws.is-flash::before, .ws-dots::after { animation: none; } }
+
+/* ---------------------------------------------------------------- top bar: nothing but the wordmark and two links, floating over the night */
+.tb { background: none; box-shadow: none; height: 64px; gap: 26px; padding: 0 max(20px, env(safe-area-inset-right)) 0 max(20px, env(safe-area-inset-left)); }
+.tb::before { content: ''; position: absolute; inset: 0 0 -24px; pointer-events: none; background: linear-gradient(180deg, rgba(8, 6, 4, 0.55), rgba(8, 6, 4, 0)); }
+.tb::after { display: none; }
+.tb-mark { color: var(--tn-paper); text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5); font-size: 1.6rem; }
+.tb-links a { color: rgba(242, 234, 223, 0.72); text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6); }
+.tb-cta { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; color: var(--tn-paper);
+  font: 600 0.86rem/1 var(--tn-sans); letter-spacing: 0.02em; display: inline-flex; align-items: center; gap: 8px; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6); }
+.tb-cta:hover { transform: none; filter: none; color: #fff; }
+.tn-progress { top: 0; height: 2px; }
+@media (max-width: 760px) { .tb { height: 56px; } .tb-cta { padding: 0; } }
+
+
+/* ---------------------------------------------------------------- the chapters table */
+.tn-team { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 9px; }
+.tn-team li { display: flex; flex-direction: column; line-height: 1.25; }
+.tn-team b { font-weight: 600; color: rgba(242, 234, 223, 0.95); }
+.tn-team span { font-size: 0.82rem; color: rgba(242, 234, 223, 0.6); }
+.tn-sub { margin: -4px 0 10px !important; font-size: 0.78rem !important; font-weight: 600; letter-spacing: 0.02em; color: rgba(242, 234, 223, 0.6) !important; }
+/* the top index card: faint blue rules and a red margin line, like a real 5 x 3 card; the question in pen */
+.tn-index { mix-blend-mode: multiply; overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 70px 40px 30px; box-sizing: border-box;
+  background:
+    linear-gradient(transparent 58px, rgba(200, 70, 70, 0.55) 58px, rgba(200, 70, 70, 0.55) 61px, transparent 61px),
+    repeating-linear-gradient(transparent 0 92px, rgba(90, 120, 190, 0.38) 92px 94px); }
+.tn-index span { font: 400 46px/1.25 var(--tn-hand); color: #1f2238; text-align: center; transform: rotate(-1deg); animation: tn-write 0.6s ease-out both; }
+.tn-index.is-soft span { filter: blur(5px); animation: none; }
+@keyframes tn-write { from { opacity: 0; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(-20% -2% -20% 0); } }
+@media (prefers-reduced-motion: reduce) { .tn-index span { animation: none; } }
+
+/* ---------------------------------------------------------------- footer */
+.sf { padding: 64px max(20px, env(safe-area-inset-left)) max(40px, env(safe-area-inset-bottom)); background: var(--tn-ink); border-top: 1px solid var(--tn-line);
+  display: grid; gap: 18px; justify-items: center; text-align: center; }
+.sf-mark { font: 400 1.9rem/1 var(--tn-brand); color: var(--tn-paper); }
+.sf-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; }
+.sf-links a { color: rgba(242, 234, 223, 0.7); text-decoration: none; font-size: 0.9rem; }
+.sf-links a:hover { color: var(--tn-paper); }
+.sf-legal { max-width: 56ch; margin: 6px 0 0; font-size: 0.78rem; line-height: 1.55; color: var(--tn-faint); }
+
+/* live fire and candle clips over the still: black drops out (screen), the flames add light */
+.tn-firewrap { position: absolute; left: 0; top: 0; pointer-events: none; mix-blend-mode: screen; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+.tn-firewrap .tn-clip { mix-blend-mode: normal; }   /* the masked wrapper does the blending (a masked box is its own layer) */
+.tn-clip { position: absolute; left: 0; top: 0; mix-blend-mode: screen; pointer-events: none; object-fit: cover; transform-origin: 0 0; display: block; max-width: none; max-height: none; }
+
+/* the old pixel cursor belongs to the previous design: the system cursor here */
+html.theme-tonight body, html.theme-tonight body * { cursor: auto; }
+html.theme-tonight a, html.theme-tonight button, html.theme-tonight [role='button'], html.theme-tonight label { cursor: pointer; }
+html.theme-tonight input, html.theme-tonight textarea { cursor: text; }
+.sf-credits { font-size: 0.7rem; opacity: 0.8; }
+.sf-credits a { color: inherit; }
+
+/* lights up, the way a room does at night: dark, the fire catches (flickering), then its light comes up across the room */
+.tn-lights { position: absolute; inset: 0; z-index: 5; pointer-events: none; background: #050302; }
+.tn-lights.is-up { animation: tn-catch 1.5s linear 0.2s forwards; }
+@keyframes tn-catch {   /* the fire catching: a few uneven flickers, then it's going */
+  0% { opacity: 1; } 18% { opacity: 1; } 24% { opacity: 0.55; } 29% { opacity: 0.9; } 38% { opacity: 0.25; }
+  45% { opacity: 0.6; } 58% { opacity: 0.1; } 66% { opacity: 0.3; } 100% { opacity: 0; visibility: hidden; }
+}
+/* the rest of the room stays dark a moment longer, then the firelight reaches it: uneven, with a couple of dips */
+.tn-roomdark { position: absolute; left: 0; top: 0; pointer-events: none; background: #050302;
+  -webkit-mask: url('/tonight/wide_dark.png') 0 0 / 100% 100% no-repeat; mask: url('/tonight/wide_dark.png') 0 0 / 100% 100% no-repeat; }
+.tn-roomdark.is-up { animation: tn-roomup 3.2s cubic-bezier(0.45, 0, 0.3, 1) 1.1s forwards; }
+@keyframes tn-roomup {
+  0% { opacity: 1; } 22% { opacity: 0.72; } 30% { opacity: 0.8; } 55% { opacity: 0.32; } 62% { opacity: 0.4; }
+  100% { opacity: 0; visibility: hidden; }
+}
+.tn-caption.tn-on-wall h2 { animation: tn-words 1.2s ease-out 3.4s both; }
+@keyframes tn-words { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .tn-lights, .tn-roomdark { display: none; } .tn-caption.tn-on-wall h2 { animation: none; } }
+
+.tn-shot > .tn-fallframe { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* a question laser-burnt into a block: dark char sunk into the pine, the grain showing through (multiply), a darker
+   scorched edge, and the light catching the lower lip of the cut */
+.tn-etch { mix-blend-mode: multiply; display: flex; align-items: center; justify-content: center; padding: 26px 46px; box-sizing: border-box; overflow: hidden; }
+.tn-etch span { font-family: var(--tn-brand); font-weight: 400; line-height: 1.08; text-align: center; letter-spacing: 0.03em; text-transform: uppercase;
+  color: #3a200e; opacity: 0.9;
+  text-shadow: 0 -1.5px 0 rgba(20, 8, 0, 0.55), 0 1.5px 0 rgba(255, 214, 160, 0.35), 0 0 3px rgba(70, 32, 8, 0.45); }
+.tn-etch.is-soft span { filter: blur(5px); }
+
+/* countdown to the Kickstarter, quietly in the top bar */
+.tb-count { position: relative; z-index: 1; font: 500 0.82rem/1 var(--tn-sans); color: rgba(242, 234, 223, 0.6); font-variant-numeric: tabular-nums;
+  text-decoration: none; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6); white-space: nowrap; }
+a.tb-count:hover { color: var(--tn-paper); }
+/* desktop: the countdown sits in the middle of the bar */
+@media (min-width: 761px) { .tb-count { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); } }
+@media (max-width: 760px) { .tb-count { margin-left: auto; font-size: 0.76rem; } .tb-count + .tb-cta { margin-left: 14px; } }
+.tb-count-short { display: none; }
+.tb-cta { white-space: nowrap; }
+@media (max-width: 760px) { .tb-count-lead { display: none; } .tb-count-short { display: inline; } }
+@media (max-width: 350px) { .tb-count-short { font-size: 0.7rem; } .tb { gap: 12px; } .tb-mark { font-size: 1.3rem; } }
+@media (max-width: 760px) { .tb { gap: 14px; padding: 0 16px; } .tb-count + .tb-cta { margin-left: 0; } .tb-cta { font-size: 0.82rem; } }
+.tn-hint { z-index: 4; }   /* under the opening darkness, like everything else */
+/* the warm light a bed of embers throws up the back of the firebox */
+.tn-emberglow { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none;
+  background: radial-gradient(ellipse 58% 34% at 50% 100%, rgba(255, 96, 22, 0.62), rgba(190, 52, 8, 0.26) 50%, rgba(0, 0, 0, 0) 85%);
+  animation: tn-embers 4.2s ease-in-out infinite; }
+@keyframes tn-embers { 0%, 100% { opacity: 0.85; } 30% { opacity: 1; } 55% { opacity: 0.7; } 80% { opacity: 0.95; } }
+@media (prefers-reduced-motion: reduce) { .tn-emberglow { animation: none; } }
+/* sharp close-ups laid over the chapters table where things are (same picture, higher resolution), soft at the edges */
+.tn-shot > .tn-inset { position: absolute; display: block; pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%); }
+.tn-shot > .tn-inset img { display: block; width: 100%; height: 100%; }
+
+/* FAQ: the question is on the block, so the card is just the answer, set a size up */
+.tn-card.is-answer p { font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.5; color: rgba(242, 234, 223, 0.92); }
+@media (max-width: 720px) {
+  .tn-team { grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+  .tn-team span { font-size: 0.74rem; }
+}
+
+/* phones (.tn-lite, set in Tonight.jsx): blend modes over the whole picture make the phone re-composite everything on
+   every frame, which an iPhone can't do while scrolling. The same warmth, drawn plainly. */
+.tn-lite .tn-grain { display: none; }
+.tn-lite .tn-fire { mix-blend-mode: normal; animation: none; background: radial-gradient(90% 70% at 50% 45%, rgba(255, 140, 60, 0.10), rgba(255, 120, 40, 0) 70%); }
+.tn-lite .tn-photo, .tn-lite .tn-note, .tn-lite .tn-index, .tn-lite .tn-etch { mix-blend-mode: normal; }
+.tn-lite .tn-screen, .tn-lite .tn-screen.is-ui { filter: none; }
+
+/* ---------------------------------------------------------------- the phone version (MobileStage.jsx) */
+.mb-stage { position: absolute; inset: 0; overflow: hidden; background: #050302; }
+.mb-frame { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.mb-frame picture, .mb-frame img { display: block; width: 100%; height: 100%; }
+.mb-fire { position: absolute; display: block; object-fit: fill; pointer-events: none; transition: opacity 400ms; }
+.tn-caption.mb-wall { left: 50%; top: calc(56px + 13svh); width: calc(100% - 32px); }
+
+/* baking the phone frames (?capture): the picture only, the words come from the page */
+.tn-capture .tb, .tn-capture .tn-card, .tn-capture .tn-caption, .tn-capture .tn-finale, .tn-capture .tn-fine,
+.tn-capture .tn-progress, .tn-capture .tn-hint, .tn-capture .tn-grain, .tn-capture .tn-screen.is-ui { visibility: hidden !important; }
+
+/* the team on a wide window: all six, whole stories, beside the print */
+.tn-card.is-team { right: clamp(20px, 4vw, 72px); width: min(720px, 52vw); }
+.tn-card.is-team .tn-team { grid-template-columns: 1fr 1fr; gap: 18px 28px; margin-top: 10px; }
+.tn-card.is-team .tn-team p { margin-top: 6px; font-size: 0.86rem; line-height: 1.45; color: rgba(242, 234, 223, 0.82); }
+.tn-card.is-team .tn-team span { font-size: 0.8rem; }
+
+/* two prints at a stop: their words one after the other */
+.tn-film .tn-card.is-pair { right: clamp(16px, 2.5vw, 44px); width: min(310px, 22vw); }   /* clear of the second print (it reaches ~72% across) */
+.tn-film .tn-card.is-pair h3 { font-size: clamp(1.3rem, 1.8vw, 1.7rem); }
+.tn-film .tn-card.is-pair p { font-size: 0.95rem; }
+.tn-card section + section { margin-top: 22px; }
+/* the words sit on a soft pool of shadow, so a print further along the table never shows through them */
+@media (min-width: 761px) {
+  .tn-card::before { content: ''; position: absolute; inset: -70px -90px; z-index: -1; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(8, 5, 3, 0.72), rgba(8, 5, 3, 0.45) 55%, rgba(8, 5, 3, 0) 100%); }
+}
+.ws-keys.ws-keys-one { grid-template-columns: 1fr; }
+
+/* the film (SeqPlayer.jsx): rendered frames on a canvas while moving, the shot in full when stopped */
+.sq-stage { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.sq-stage .tn-screen.is-ui { pointer-events: auto; }
+.sq-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.sq-frame { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.sq-frame picture, .sq-frame img { display: block; width: 100%; height: 100%; }
+.sq-fire { position: absolute; display: block; object-fit: fill; pointer-events: none; transition: opacity 300ms; }
+
+.tn-stillscreen { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; filter: brightness(0.92); }
+.tn-stillscreen.is-soft { filter: brightness(0.92) blur(6px); }
+
+/* the film: the words come in once the camera has arrived, and go as it leaves */
+.tn-film .tn-card, .tn-film .tn-caption, .tn-film .tn-finale, .tn-film .tn-fine { transition: opacity 0.45s ease; }
+
+/* the film: where each stop sits in the page (Tonight.jsx steps the scroll between them) */
+.tn-snap { position: absolute; left: 0; width: 1px; height: 1px; top: calc(var(--at) * 1vh); top: calc(var(--at) * 1svh); pointer-events: none; }

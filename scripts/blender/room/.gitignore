@@ -1,0 +1,6 @@
+.cache/
+out*/
+log*.txt
+renders/
+renders_quick/
+renders_*/

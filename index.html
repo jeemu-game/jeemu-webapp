@@ -1,9 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!-- Google Tag Manager (GTM-WXGQWGFR) -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WXGQWGFR');
+  window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date());</script>
+  <!-- End Google Tag Manager -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="theme-color" content="#0a0c0e">
+  <meta name="theme-color" content="#0b0907">
   <title>Jeemu | Tower game, launching on Kickstarter 24 November</title>
   
   <meta name="description" content="Jeemu is a tower game. Pull a block, tap it on the base, and the screen asks you something. We help people achieve deeper connections without the awkwardness of starting the conversation. Launching on Kickstarter 24 November.">
@@ -13,8 +19,8 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jeemu.fun/">
   <meta property="og:title" content="Jeemu: a tower game that starts the conversation">
-  <meta property="og:description" content="A tower game. We help people achieve deeper connections without the awkwardness of starting the conversation. Launching on Kickstarter 24 November, early bird $89.99.">
-  <meta property="og:image" content="https://jeemu.fun/og-image.jpg">
+  <meta property="og:description" content="A tower game. We help people achieve deeper connections without the awkwardness of starting the conversation. Launching on Kickstarter 24 November, early bird $99.">
+  <meta property="og:image" content="https://jeemu.fun/og-image.jpg?v=3">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
@@ -22,20 +28,20 @@
   <!-- Fonts: a <link> (not a CSS @import) so the browser fetches them in parallel with the app instead of after its CSS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Pixelify+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&family=Kalam:wght@400&display=swap">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/story/frog-pixel.png">
+  <link rel="icon" type="image/png" href="/tonight/favicon.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <!-- Start fetching the first frame and the timeline before the app's JavaScript has run. Same phone / desktop
-       rule as StoryPlayer (portrait window = phone render). -->
-  <link rel="preload" as="image" href="/story/mobile/poster.jpg" media="(max-aspect-ratio: 749/1000)" fetchpriority="high">
-  <link rel="preload" as="fetch" href="/story/mobile/timeline.json" crossorigin media="(max-aspect-ratio: 749/1000)">
-  <link rel="preload" as="image" href="/story/poster.jpg" media="(min-aspect-ratio: 750/1000)" fetchpriority="high">
-  <link rel="preload" as="fetch" href="/story/timeline.json" crossorigin media="(min-aspect-ratio: 750/1000)">
+  <!-- The first shot of the story and where its live screen sits, fetched before the app's JavaScript runs -->
+  <link rel="preload" as="font" href="/brand/Matcha-Style.woff2" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" href="/tonight/seq/desk/wide-close/first.avif?v=86f8804a0a" type="image/avif" fetchpriority="high" media="(min-device-width: 600px)">
+  <link rel="preload" as="image" href="/tonight/seq/phone/wide-close/first.avif?v=86f8804a0a" type="image/avif" fetchpriority="high" media="(max-device-width: 599px)">
 </head>
 <body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WXGQWGFR" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>

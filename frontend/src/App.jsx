@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from './components/Navbar';
-import StoryPlayer from './components/story/StoryPlayer';
-import HowItWorks from './components/HowItWorks';
-import Waitlist from './components/Waitlist';
-import JourneyTimeline from './components/JourneyTimeline';
-import TeamSection from './components/TeamSection';
-import FaqFooter from './components/FaqFooter';
-import AdminPanel from './components/AdminPanel';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
+import TopBar from './components/tonight/TopBar';
+import Tonight from './components/tonight/Tonight';
+import SiteFooter from './components/tonight/SiteFooter';
+// the team admin page is split out of the public bundle, and brings its own fonts
+const AdminPanel = lazy(() => import('./components/AdminPanel'));
+const ADMIN_FONTS = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap';
 import { track } from './analytics';
 
 export default function App() {
@@ -45,7 +43,7 @@ export default function App() {
 
   const toWaitlist = (where = 'unknown') => {
     track('cta_click', { where });
-    document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('waitlist')?.scrollIntoView({ behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     window.history.replaceState(null, '', '#waitlist');   // like the footer link: the address shows where you are
   };
 
@@ -58,29 +56,36 @@ export default function App() {
     return () => meta.remove();
   }, [isAdminView]);
 
+  // the "Tonight" skin applies to the public page only; the team admin page keeps its own look
+  useEffect(() => {
+    document.documentElement.classList.toggle('theme-tonight', !isAdminView);
+    if (isAdminView && !document.querySelector('link[data-admin-fonts]')) {
+      const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = ADMIN_FONTS; l.dataset.adminFonts = '';
+      document.head.appendChild(l);
+    }
+  }, [isAdminView]);
+
   if (isAdminView) {
     return (
-      <AdminPanel
-        onBackToSite={() => {
-          window.history.pushState({}, '', '/');
-          setIsAdminView(false);
-        }}
-      />
+      <Suspense fallback={null}>
+        <AdminPanel
+          onBackToSite={() => {
+            window.history.pushState({}, '', '/');
+            setIsAdminView(false);
+          }}
+        />
+      </Suspense>
     );
   }
 
   return (
     <div className="jeemu-app">
-      <a className="skip-link" href="#how">Skip to content</a>
-      <Navbar onCtaClick={() => toWaitlist('nav')} />
+      <a className="skip-link" href="#waitlist">Skip to the waitlist</a>
+      <TopBar onCtaClick={() => toWaitlist('nav')} />
       <main>
-        <StoryPlayer onCta={() => toWaitlist('story')} />
-        <HowItWorks />
-        <Waitlist />
-        <JourneyTimeline />
-        <TeamSection />
-        <FaqFooter />
+        <Tonight onCta={() => toWaitlist('story')} />
       </main>
+      <SiteFooter />
     </div>
   );
 }

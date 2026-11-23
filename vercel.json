@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install && npm run build",
+  "buildCommand": "node scripts/sync-frontend.mjs && cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "rewrites": [
     {
@@ -102,5 +102,10 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/index.py": {
+      "excludeFiles": "{public/**,frontend/**,scripts/**,src/**,dist/**,node_modules/**,docs/**,previews/**,tests/**,walk/**,supabase/**,*.png,*.log}"
+    }
+  }
 }
