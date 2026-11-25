@@ -11,7 +11,7 @@ export default function SiteFooter() {
       <span className="sf-mark">Jeemu</span>
       <nav className="sf-links" aria-label="Footer">
         {live ? <a href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer">Back us on Kickstarter</a> : <a href="#waitlist">Join the waitlist</a>}
-        <a href="#journey">Our story</a>
+        <a href="#journey">How it plays</a>
         <a href="#team">Team</a>
         <a href="#faq">FAQ</a>
         {SOCIAL_LINKS.map((s) => <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>)}

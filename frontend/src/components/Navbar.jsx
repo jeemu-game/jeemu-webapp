@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 const LINKS = [
   ['#how', 'How it plays'],
-  ['#journey', 'Our story'],
+  ['#journey', 'How it plays'],
   ['#team', 'Team'],
   ['#faq', 'FAQ']
 ];

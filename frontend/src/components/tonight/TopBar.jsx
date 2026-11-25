@@ -3,7 +3,7 @@ import useCountdown, { fmtLong, fmtClock } from './useCountdown';
 import { KICKSTARTER_URL } from '../../data/offer';
 
 // No bar: the wordmark and a few quiet links float over the night scene.
-const LINKS = [['#journey', 'Our story'], ['#team', 'Team'], ['#faq', 'FAQ']];
+const LINKS = [['#journey', 'How it plays'], ['#team', 'Team'], ['#faq', 'FAQ']];
 
 export default function TopBar({ onCtaClick }) {
   const c = useCountdown();

@@ -18,10 +18,10 @@ export const CAPTIONS = {
 // The photos from tonight, in the order the camera visits them on the table.
 // note: written on the polaroid in handwriting; title/body: the clean text beside it (also what screen readers get).
 export const POLAROIDS = [
-  { photo: 'photos/h1.jpg', note: 'Pull one out. Gently...', title: 'Pull', body: 'Slide a block out the way you always have. Every block carries an NFC chip.' },
-  { photo: 'photos/h2.jpg', note: 'Tap it on the base', title: 'Tap', body: 'Touch the block to the Jeemu mark and a question appears on the screen. Play it, then stack the block on top.' },
-  { photo: 'photos/h3.jpg', note: 'never ran out of questions', title: 'I never run out of questions.', body: 'New ones keep arriving, and you can write your own in the Jeemu app.' },
-  { photo: 'photos/h4.jpg', note: 'any table, any crowd', title: 'For any crowd', body: 'Date night, family night or a full house: pick a question pack for the people at the table.' }
+  { photo: 'photos/h1.jpg', note: 'Pull one out. Gently...', title: 'Pull', body: 'Slide out a block. Each one has a chip inside.' },
+  { photo: 'photos/h2.jpg', note: 'Tap it on the base', title: 'Tap', body: 'Touch it to the base. A question appears.' },
+  { photo: 'photos/h3.jpg', note: 'never ran out of questions', title: 'Never the same twice', body: 'New question packs keep coming. Or write your own.' },
+  { photo: 'photos/h4.jpg', note: 'any table, any crowd', title: 'Any crowd', body: 'Date night, family night, a full house.' }
 ];
 // pictures for polaroids that lie on the table but are not visited
 export const EXTRA_PHOTOS = ['photos/h5.jpg'];
@@ -36,6 +36,7 @@ export const FINALE = {
 // ---- after the waitlist, on the late-night table (shot "top2")
 // Our story: five prints along the front of the table. note: handwritten on the print; title/body: beside it.
 // The full milestones (src/data/teamData.js) are also in the page for search engines and screen readers.
+// Our story: still on the late-night table in the renders (the renderer reads it), no longer shown on the site.
 export const STORY = [
   { photo: 'photos/s2.jpg', note: 'we asked everyone', title: 'The problem', body: "Everyone loves the tower game. We asked dozens of players, and once they'd seen every question, the box went back on the shelf and the phones came back out." },
   { photo: 'photos/s3.jpg', note: 'first prints!', title: 'The idea', body: 'Put the question on a smart base instead. We found a makerspace, 3D printed our first models and built the first Jeemu from parts sourced across China.' },

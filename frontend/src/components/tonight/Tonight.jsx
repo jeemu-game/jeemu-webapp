@@ -81,8 +81,10 @@ const RESTS = [
     : { id: 'late', via: [`h${HOW.length - 1}-screen`, 'screen-late'], len: 120 },
   { id: 'fallen', via: ['fall'], len: 90 },
   { id: 'end', via: ['fallen-end'], len: 150, waitlist: true },
-  ...PRINT_STOPS.map((st, i) => ({ id: st.id, via: [C_SEGS[i]], len: st.team ? 130 : 110 })),
-  ...FAQ_STOPS.map((st, k) => ({ id: st.id, via: [k ? `faq${k - 1}-faq${k}` : 'team-q0'], len: 100 }))
+  // the new renders: no story table. Straight from the waitlist to the questions (a cut), the team last (a cut to its print)
+  ...(V3 ? [] : PRINT_STOPS.map((st, i) => ({ id: st.id, via: [C_SEGS[i]], len: st.team ? 130 : 110 }))),
+  ...FAQ_STOPS.map((st, k) => ({ id: st.id, ...(k ? { via: [`faq${k - 1}-faq${k}`] } : V3 ? { shot: { seg: 'faq0-faq1', which: 'first' } } : { via: ['team-q0'] }), len: 100 })),
+  ...(V3 ? [{ id: 'team', shot: { seg: DESK ? 'c1-team' : 'c2-team', which: 'last' }, len: 130 }] : [])
 ];
 const FILM = !CAPTURE && filmReady(FILM_DEV, RESTS);
 const DESK_FILM = FILM && DESK;
@@ -488,7 +490,7 @@ export default function Tonight({ onCta }) {
       {/* where "Join the waitlist" links land: partway into the end beat, so the camera is settled on the screen */}
       <span id="waitlist" className="tn-anchor" style={{ '--at': START.end[0] + 45 }} aria-hidden="true" />
       {FILM && RESTS.map((r, i) => <span key={r.id} className="tn-snap" style={{ '--at': i ? START[r.id][0] + 20 : 0 }} aria-hidden="true" />)}
-      <span id="journey" className="tn-anchor" style={{ '--at': START[STOPS[0].id][0] + 40 }} aria-hidden="true" />
+      <span id="journey" className="tn-anchor" style={{ '--at': START.p0[0] + 40 }} aria-hidden="true" />
       <span id="team" className="tn-anchor" style={{ '--at': START[STOPS[FIRST_TEAM].id][0] + 40 }} aria-hidden="true" />
       <span id="faq" className="tn-anchor" style={{ '--at': START[STOPS[FIRST_FAQ].id][0] + 40 }} aria-hidden="true" />
       <ChapterText />

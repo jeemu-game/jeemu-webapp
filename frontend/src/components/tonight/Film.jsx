@@ -13,7 +13,7 @@ import SEQ from './seqIndex.json';
 const BASE = `${import.meta.env.BASE_URL}tonight/seq/`;
 const url = (dev, seg, f) => `${BASE}${dev}/${seg}/${f}?v=${ASSET_V}`;
 export const segInfo = (dev, seg) => SEQ[dev] && SEQ[dev][seg];
-export const filmReady = (dev, rests) => !!SEQ[dev] && rests.every((r) => [...(r.via || [r.seg]), ...(r.shot ? [r.shot.seg] : [])].every((s) => segInfo(dev, s) && segInfo(dev, s).video));
+export const filmReady = (dev, rests) => !!SEQ[dev] && rests.every((r) => [...(r.via || (r.seg ? [r.seg] : [])), ...(r.shot ? [r.shot.seg] : [])].every((s) => segInfo(dev, s) && segInfo(dev, s).video));
 export const frameFit = (info, vp) => {
   const W = info.width, H = info.height, s = Math.max(vp.w / W, vp.h / H);
   return { s, tx: (vp.w - W * s) / 2, ty: (vp.h - H * s) / 2, W, H };
@@ -177,8 +177,9 @@ export default function FilmStage({ dev, vp, rests, film, waitlist }) {
   const moveKey = move ? move.segs.map((x) => `${x.seg}/${x.dir}`).join() : '';
   useEffect(() => setShowing(false), [moveKey]);
   const prevPos = useRef(pos);
+  const shownPos = useRef(pos);   // the stop whose still was last on screen (decoded)
   useLayoutEffect(() => {   // a cut (no move drew the way here): keep the old still underneath until the new one decodes
-    if (prevPos.current !== pos && canvasAt !== pos) setUnder(prevPos.current);
+    if (prevPos.current !== pos && canvasAt !== pos && shownPos.current !== pos) setUnder(shownPos.current);
     prevPos.current = pos;
   }, [pos]);
   const srcs = move ? move.segs.map((x) => url(dev, x.seg, `${x.dir}.mp4`)) : null;
@@ -194,7 +195,7 @@ export default function FilmStage({ dev, vp, rests, film, waitlist }) {
     <div className="sq-stage">
       <canvas ref={cv} className="sq-canvas" style={{ visibility: (move && showing) || canvasAt === pos ? 'visible' : 'hidden' }} />
       {underR && !hideStills && <Still key={`u${under}`} src={still(dev, underR)} fit={frameFit(segInfo(dev, restShot(underR).seg), vp)} onReady={() => {}} visible />}
-      <Still key={src} src={src} fit={fit} visible={!hideStills} onReady={(s) => { setReady(s); setUnder(null); }}>
+      <Still key={src} src={src} fit={fit} visible={!hideStills} onReady={(s) => { setReady(s); setUnder(null); shownPos.current = pos; }}>
         {!move && end.fire && <FireLoop src={url(dev, shot.seg, `${shot.which}_fire.mp4`)} rect={end.fire} />}
         {!move && waitlist && r.waitlist && end.screen && (
           <div className="tn-warp tn-screen is-ui" style={{ width: 320, height: 240, transform: quadToMatrix3d(320, 240, end.screen) }}>{waitlist}</div>
