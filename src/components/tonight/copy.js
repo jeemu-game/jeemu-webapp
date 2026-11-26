@@ -1,5 +1,5 @@
 // All words in the "Tonight" scroll story. Handwriting on a polaroid fits about 30 characters.
-import { EARLY_BIRD_PRICE, LAUNCH_DATE } from '../../data/offer';
+import { EARLY_BIRD_PRICE, LAUNCH_DATE, leftText } from '../../data/offer';
 
 // What the live Jeemu screen shows in each shot (drawn at the device's 320 x 240 and warped onto the render)
 export const SCREENS = {
@@ -29,7 +29,8 @@ export const EXTRA_PHOTOS = ['photos/h5.jpg'];
 export const FINALE = {
   title: 'Be there when it falls.',
   sub: `Early bird prices are the best you'll see. Kickstarter, ${LAUNCH_DATE}. Early bird ${EARLY_BIRD_PRICE} USD.`,
-  subLive: `We're live on Kickstarter. Early bird ${EARLY_BIRD_PRICE} USD while the spots last.`,
+  // a Kickstarter Project We Love, fully funded in five minutes
+  get subLive() { return `A Kickstarter Project We Love, funded in five minutes. ${leftText()}: early bird ${EARLY_BIRD_PRICE} USD while the spots last.`; },
   cta: 'Join the waitlist'
 };
 

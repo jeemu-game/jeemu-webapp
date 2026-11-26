@@ -17,3 +17,9 @@ export const LAUNCH_AT = Date.parse('2026-11-24T14:00:00Z');
 // Kickstarter). Add ?live to the address to see the launch-day page early.
 const PREVIEW_LIVE = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('live');
 export const isLive = () => PREVIEW_LIVE || Date.now() >= LAUNCH_AT;
+// The campaign: 30 days from launch, ends 24 December, 9:00 am EST (14:00 UTC). Fully funded in the first five minutes.
+export const CAMPAIGN_END = Date.parse('2026-12-24T14:00:00Z');
+export const END_DATE = '24 December';
+export const FUNDED = 'Funded in 5 minutes';
+export const daysLeft = () => Math.max(0, Math.floor((CAMPAIGN_END - Date.now()) / 86400000));
+export const leftText = () => { const d = daysLeft(); return Date.now() >= CAMPAIGN_END ? "Campaign ended" : d >= 2 ? `${d} days left` : d === 1 ? "1 day left" : "Last day"; };

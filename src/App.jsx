@@ -6,6 +6,7 @@ import SiteFooter from './components/tonight/SiteFooter';
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
 const ADMIN_FONTS = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap';
 import { track } from './analytics';
+import { isLive } from './data/offer';
 
 export default function App() {
   const [isAdminView, setIsAdminView] = useState(() => {
@@ -80,7 +81,7 @@ export default function App() {
 
   return (
     <div className="jeemu-app">
-      <a className="skip-link" href="#waitlist">Skip to the waitlist</a>
+      <a className="skip-link" href="#waitlist">{isLive() ? 'Skip to backing Jeemu' : 'Skip to the waitlist'}</a>
       <TopBar onCtaClick={() => toWaitlist('nav')} />
       <main>
         <Tonight onCta={() => toWaitlist('story')} />

@@ -33,16 +33,11 @@ for dev in ('desk', 'phone'):
 job('desk/play-h0', 'play-h0', EVE, 'question', 'desk')
 job('desk/h0-h1', 'h0-h1', EVE, 'question', 'desk')
 job('desk/h1-late', 'h1-late', EVE, 'question', 'desk')
-job('desk/end-c0', 'end-c0', FALLEN, 'waitlist', 'desk')
-for a_, b_ in (('c0', 'c1'), ('c1', 'team')): job(f'desk/{a_}-{b_}', f'{a_}-{b_}', FALLEN, 'waitlist', 'desk')
-job('desk/team-q0', 'team-q0', FALLEN, 'waitlist', 'desk')
 job('phone/play-h0', 'p-play-h0', EVE, 'question', 'phone')
 for i in range(3): job(f'phone/h{i}-h{i + 1}', f'p-h{i}-h{i + 1}', EVE, 'question', 'phone')
 job('phone/h3-late', 'p-h3-late', EVE, 'question', 'phone')
-job('phone/end-c0', 'p-end-c0', FALLEN, 'waitlist', 'phone')
-for i in range(2): job(f'phone/c{i}-c{i + 1}', f'p-c{i}-c{i + 1}', FALLEN, 'waitlist', 'phone')
+job('desk/c1-team', 'c1-team', FALLEN, 'waitlist', 'desk')   # the team print, the last stop (after the questions)
 job('phone/c2-team', 'p-c2-team', FALLEN, 'waitlist', 'phone')
-job('phone/team-q0', 'p-team-q0', FALLEN, 'waitlist', 'phone')
 for dev in ('desk', 'phone'):   # the late-night stop: the tower still standing, the candles and fire burnt down
     job(f'{dev}/late', 'late', LATE, 'late', dev)
 

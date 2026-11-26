@@ -1,6 +1,6 @@
 import React from 'react';
 import useCountdown, { fmtLong, fmtClock } from './useCountdown';
-import { KICKSTARTER_URL } from '../../data/offer';
+import { KICKSTARTER_URL, FUNDED, leftText } from '../../data/offer';
 
 // No bar: the wordmark and a few quiet links float over the night scene.
 const LINKS = [['#journey', 'How it plays'], ['#team', 'Team'], ['#faq', 'FAQ']];
@@ -15,7 +15,12 @@ export default function TopBar({ onCtaClick }) {
         {LINKS.map(([href, label]) => <a key={href} href={href}>{label}</a>)}
       </nav>
       {c.live ? (   // launch day onwards: the button goes to the campaign (it says what the countdown said)
-        <a className="tb-cta" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer">Back us on Kickstarter</a>
+        <>
+          <a className="tb-count" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer">
+            <span className="tb-count-lead">{FUNDED} · {leftText()}</span><span className="tb-count-short">{leftText()}</span>
+          </a>
+          <a className="tb-cta" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer">Back us on Kickstarter</a>
+        </>
       ) : (<>
         <a className="tb-count" href={KICKSTARTER_URL} target="_blank" rel="noopener noreferrer" title="Kickstarter opens 24 November, 9:00 am EST">
           <span className="tb-count-lead">Kickstarter in {fmtLong(c)}</span><span className="tb-count-short">{fmtClock(c)}</span>
